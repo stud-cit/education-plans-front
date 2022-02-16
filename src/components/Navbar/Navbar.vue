@@ -3,7 +3,8 @@
             color="primary"
             dark
     >
-        <v-toolbar-title>My files</v-toolbar-title>
+        <v-toolbar-title class="indigo--text text--lighten-4"> {{name}} |</v-toolbar-title>
+        <v-toolbar-title class="ml-2">{{$route.meta.header}}</v-toolbar-title>
 
         <v-spacer></v-spacer>
 
@@ -21,12 +22,14 @@
 </template>
 
 <script>
-    import navigation from "../../services/navigation";
+    import navigation from "@/services/navigation";
+
     export default {
         name: "Navbar",
         data() {
             return {
                 menu: null,
+                name: process.env.VUE_APP_NAME_APP
             }
         },
         mounted() {
