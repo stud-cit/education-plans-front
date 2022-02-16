@@ -13,6 +13,9 @@ const routes = [
       path:'',
       name: 'ListPlans',
       component: Plans,
+      meta: {
+        header: 'Робота з планами'
+      }
     }]
   },
   {
