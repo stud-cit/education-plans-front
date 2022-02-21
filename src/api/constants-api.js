@@ -1,4 +1,4 @@
-const version = '/v1'
+const version = '/v1';
 
 
 export const API = {
@@ -7,4 +7,14 @@ export const API = {
     // "REGISTER": version + '/register',
     "LOGOUT": version + '/logout',
     "LIST_PLANS": version + '/plans'
-}
+};
+
+export const ALLOWED_REQUEST_PARAMETERS = {
+    "GET_PLANS": {
+        itemsPerPage: 'items_per_page',
+        page: 'page',
+        searchTitle: 'title',
+        sortBy: 'sort_by',
+        sortDesc: 'sort_desc'
+    }
+};
