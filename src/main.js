@@ -6,8 +6,10 @@ import vuetify from './plugins/vuetify'
 import '@/plugins/vee-validate'
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
+import GlobalMixin from "@/mixins/GlobalMixin";
 
 Vue.config.productionTip = false
+Vue.mixin(GlobalMixin);
 
 new Vue({
   router,
