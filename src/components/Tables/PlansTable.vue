@@ -54,13 +54,29 @@
         </template>
 
         <template v-slot:item.actions="{ item }">
-            <v-icon
+
+          <v-icon
                 small
-                class="mr-2"
+                class="mr-1"
                 color="primary"
                 @click="$emit('copy', item.id)"
             >
                 mdi-content-copy
+            </v-icon>
+            <v-icon
+                small
+                class="mr-1"
+                color="primary"
+                @click="$emit('edit', item.id)"
+            >
+              mdi-pencil-outline
+            </v-icon>
+            <v-icon
+                small
+                color="red"
+                @click="$emit('delete', item.id)"
+            >
+              mdi-trash-can-outline
             </v-icon>
         </template>
 
@@ -80,9 +96,9 @@
                     {text: 'Назва', value: 'title'},
                     {text: 'Факультет', value: 'faculty', sortable: false},
                     {text: 'Кафедра', value: 'department', sortable: false},
-                    {text: 'Рік', value: 'year'},
-                    {text: 'Дата створення', value: 'created_at'},
-                    {text: 'Дії', value: 'actions', sortable: false},
+                    {text: 'Рік', value: 'year', width: '80px'},
+                    {text: 'Дата створення', value: 'created_at', width: '150px'},
+                    {text: 'Дії', value: 'actions', width: '100px', sortable: false},
                 ],
             }
         },

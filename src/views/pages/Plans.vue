@@ -1,6 +1,12 @@
 <template>
     <v-container>
-        <plans-table :items="items" :meta="meta" @update="getPlansList" @copy="apiCopyPlan"/>
+        <plans-table :items="items"
+                     :meta="meta"
+                     @update="getPlansList"
+                     @copy="apiCopyPlan"
+                     @edit="apiEditPlan"
+                     @delete="apiDeletePlan"
+        />
     </v-container>
 </template>
 <script>
@@ -30,6 +36,14 @@
 
             apiCopyPlan(id) {
                 return api.post(API.COPY_PLAN, id);
+            },
+
+            apiEditPlan(id) {
+              alert('apiEditPlan id = ' + id);
+            },
+
+            apiDeletePlan(id) {
+              alert('apiDeletePlan id = ' + id);
             }
         }
     }
