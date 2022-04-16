@@ -6,7 +6,8 @@ export const API = {
     "LOGIN": version + '/login',
     // "REGISTER": version + '/register',
     "LOGOUT": version + '/logout',
-    "LIST_PLANS": version + '/plans'
+    "LIST_PLANS": version + '/plans',
+    "COPY_PLAN": version + '/plans/copy/'
 };
 
 export const ALLOWED_REQUEST_PARAMETERS = {

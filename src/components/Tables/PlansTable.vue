@@ -2,9 +2,9 @@
     <v-data-table
         :headers="headers"
         :items="items"
-        :options.sync="options"
-        :server-items-length="total"
         :loading="loading"
+        :server-items-length="meta.total"
+        :options.sync="options"
         :footer-props="{ 'items-per-page-options' : [15,25,50] }"
         class="elevation-1"
     >
@@ -25,7 +25,7 @@
                         color="primary"
                         outlined
                         class="ml-2"
-                        @click="update"
+                        @click="search"
                     >
                         Пошук
                     </v-btn>
@@ -50,7 +50,7 @@
         </template>
 
         <template v-slot:item.index="{ index }">
-            {{ (options.page - 1) * options.itemsPerPage + (index + 1)}}
+            {{ (meta.current_page - 1) * meta.per_page + (index + 1)}}
         </template>
 
         <template v-slot:item.actions="{ item }">
@@ -58,7 +58,7 @@
                 small
                 class="mr-2"
                 color="primary"
-                @click="copy(item.id)"
+                @click="$emit('copy', item.id)"
             >
                 mdi-content-copy
             </v-icon>
@@ -75,12 +75,11 @@
             return {
                 filterToggle: false,
                 searchTitle: '',
-                options: {},
                 headers: [
                     {text: '№', value: 'index', sortable: false},
                     {text: 'Назва', value: 'title'},
-                    {text: 'Факультет', value: 'faculty'},
-                    {text: 'Кафедра', value: 'department'},
+                    {text: 'Факультет', value: 'faculty', sortable: false},
+                    {text: 'Кафедра', value: 'department', sortable: false},
                     {text: 'Рік', value: 'year'},
                     {text: 'Дата створення', value: 'created_at'},
                     {text: 'Дії', value: 'actions', sortable: false},
@@ -92,34 +91,41 @@
                 type: Array,
                 default: () => []
             },
-            total: {
-                type: Number,
-                default: () => 0
+            meta: {
+                type: Object,
+                default: () => {}
             },
-            loading: {
-                type: Boolean,
-                default: () => true
-            }
         },
-        watch: {
-            options: {
-                handler() {
-                    this.update();
-                },
-                deep: true,
+        computed: {
+            loading() {
+                return this.$store.state.plans.loading
             },
+            options: {
+                get: function () {
+                    return this.$store.state.plans.options
+                },
+                // сеттер:
+                set: function (newValue) {
+                    this.$store.dispatch('plans/setOptions', newValue)
+                    this.update()
+                }
+            }
         },
         methods: {
             update() {
-                const params = {
-                    searchTitle: this.searchTitle,
-                    page: 1
-                };
-
-                this.$emit('update', {...this.options, ...params})
+                this.$emit('update', this.options)
             },
-            copy(id) {
-                console.log(id);
+            search() {
+                this.options.searchTitle = this.searchTitle;
+                this.resetPage();
+            },
+            resetPage() {
+                if (this.options.page == 1) {
+                   this.update();
+
+                } else {
+                    this.options.page = 1;
+                }
             }
         },
     }
