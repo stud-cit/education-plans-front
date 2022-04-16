@@ -18,8 +18,7 @@
         name: 'Plans',
         components: {PlansTable},
         data() {
-            return {
-            }
+            return {}
         },
         computed: {
             items() {
@@ -42,8 +41,18 @@
               alert('apiEditPlan id = ' + id);
             },
 
-            apiDeletePlan(id) {
-              alert('apiDeletePlan id = ' + id);
+            apiDeletePlan(id, title = '') {
+              this.$swal.fire({
+                title: `Ви хочете видалити план ?`,
+                text: `${title}`,
+                showDenyButton: true,
+                confirmButtonText: 'Так',
+                denyButtonText: `Ні`,
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  this.$store.dispatch('plans/destroy', id)
+                }
+              })
             }
         }
     }

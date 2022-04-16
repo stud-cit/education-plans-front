@@ -74,7 +74,7 @@
             <v-icon
                 small
                 color="red"
-                @click="$emit('delete', item.id)"
+                @click="$emit('delete', item.id, item.title)"
             >
               mdi-trash-can-outline
             </v-icon>
