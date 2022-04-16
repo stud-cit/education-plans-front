@@ -78,8 +78,8 @@
                 headers: [
                     {text: '№', value: 'index', sortable: false},
                     {text: 'Назва', value: 'title'},
-                    {text: 'Факультет', value: 'faculty'},
-                    {text: 'Кафедра', value: 'department'},
+                    {text: 'Факультет', value: 'faculty', sortable: false},
+                    {text: 'Кафедра', value: 'department', sortable: false},
                     {text: 'Рік', value: 'year'},
                     {text: 'Дата створення', value: 'created_at'},
                     {text: 'Дії', value: 'actions', sortable: false},
