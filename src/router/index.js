@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Plans from '../views/pages/Plans.vue'
 import Layout from "../views/Layout";
+import CreatePlan from "@/views/pages/plan/CreatePlan";
 
 Vue.use(VueRouter)
 
@@ -9,14 +10,30 @@ const routes = [
   {
     path: '/',
     component: Layout,
-    children: [{
-      path:'',
-      name: 'ListPlans',
-      component: Plans,
-      meta: {
-        header: 'Робота з планами'
+    children: [
+      {
+        path:'',
+        name: 'ListPlans',
+        component: Plans,
+        meta: {
+          header: 'Робота з планами'
+        }
+      },
+    ]
+  },
+  {
+    path: '/plan',
+    component: Layout,
+    children: [
+      {
+        path:'create',
+        name: 'CreatePlan',
+        component: CreatePlan,
+        meta: {
+          header: 'Створення нового плану'
+        }
       }
-    }]
+    ]
   },
   {
     path: '/about',

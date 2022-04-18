@@ -7,6 +7,26 @@
                  @edit="apiEditPlan"
                  @delete="apiDeletePlan"
     />
+    <v-tooltip left color="info">
+      <template v-slot:activator="{ on, attrs }">
+        <v-fab-transition>
+          <v-btn
+              color="primary"
+              dark
+              fixed
+              bottom
+              right
+              fab
+              v-bind="attrs"
+              v-on="on"
+              :to="{name: 'CreatePlan'}"
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </v-fab-transition>
+      </template>
+      <span>Створити план</span>
+    </v-tooltip>
   </v-container>
 </template>
 <script>
