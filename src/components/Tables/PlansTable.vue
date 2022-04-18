@@ -40,12 +40,37 @@
               mdi-filter
             </v-icon>
           </v-btn>
+          <v-btn
+            color="primary"
+            class="ml-2"
+            outlined
+            @click="clear"
+          >
+            Очистити
+          </v-btn>
         </v-col>
       </v-row>
 
-      <div v-show="filterToggle">
-
-      </div>
+      <v-row v-show="filterToggle" class="px-4">
+        <v-col cols="12" lg="6">
+          <v-autocomplete
+            v-model="faculty"
+            :items="faculties"
+            item-text="title"
+            item-value="id"
+            label="Факультет"
+          ></v-autocomplete>
+        </v-col>
+        <v-col cols="12" lg="6">
+          <v-autocomplete
+            v-model="department"
+            :items="departments"
+            item-text="title"
+            item-value="id"
+            label="Кафедра"
+          ></v-autocomplete>
+        </v-col>
+      </v-row>
 
     </template>
 
@@ -85,6 +110,8 @@
 </template>
 
 <script>
+import {getApiSimulator} from "@/api/simulator-api";
+
 export default {
   name: "PlansTable",
   data() {
@@ -100,6 +127,10 @@ export default {
         {text: 'Дата створення', value: 'created_at', width: '150px'},
         {text: 'Дії', value: 'actions', width: '100px', sortable: false},
       ],
+      faculty: null,
+      faculties: [],
+      department: null,
+      departments: []
     }
   },
   props: {
@@ -128,12 +159,22 @@ export default {
       }
     }
   },
+  watch: {
+    faculty(v) {
+      v !== null ? this.getDepartments(v) : this.departments = [];
+    },
+  },
+  mounted() {
+    this.apiGetFaculties();
+  },
   methods: {
     update() {
       this.$emit('update', this.options)
     },
     search() {
       this.options.searchTitle = this.searchTitle;
+      this.options.faculty = this.faculty;
+      this.options.department = this.department;
       this.resetPage();
     },
     resetPage() {
@@ -143,7 +184,23 @@ export default {
       } else {
         this.options.page = 1;
       }
-    }
+    },
+    clear() {
+      this.searchTitle = this.options.searchTitle = '';
+      this.faculty = this.options.faculty = null;
+      this.department = this.options.department = null;
+      this.resetPage();
+    },
+    apiGetFaculties() {
+      this.faculties = getApiSimulator('faculties');
+    },
+    getDepartments(id) {
+      this.departments = this.apiGetDepartments(id);
+    },
+    apiGetDepartments(id) {
+      const list = getApiSimulator('departments');
+      return list.filter((item) => item.id_faculty === id) //TODO: get data from API
+    },
   },
 }
 </script>

@@ -17,6 +17,8 @@ export const ALLOWED_REQUEST_PARAMETERS = {
         page: 'page',
         searchTitle: 'title',
         sortBy: 'sort_by',
-        sortDesc: 'sort_desc'
+        sortDesc: 'sort_desc',
+        faculty: 'faculty',
+        department: 'department'
     }
 };
