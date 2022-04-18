@@ -5,6 +5,7 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 import '@/plugins/vee-validate'
 import '@/plugins/sweet-alert-2'
+import '@/plugins/datepicker'
 import('@/assets/styles/base.css');
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
