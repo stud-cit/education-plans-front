@@ -3,6 +3,7 @@
     <v-data-table
       :headers="headers"
       :items="items"
+      :loading="loader"
       class="elevation-1"
       hide-default-footer
     >
@@ -14,7 +15,7 @@
         <v-icon small class="mr-2" color="primary" @click="edit(item.id)">
           mdi-square-edit-outline
         </v-icon>
-        <v-icon small class="mr-2" color="primary" @click="delete item.id">
+        <v-icon small class="mr-2" color="red" @click="deleteItem(item)">
           mdi-trash-can-outline
         </v-icon>
       </template>
@@ -57,9 +58,18 @@ export default {
       this.loader = true;
       return api.get(API.SETTINGS);
     },
+
     edit(id) {
       this.$router.push({name: 'RestrictEdit', params: { id }});
-    }
+    },
+
+    deleteItem(item) {
+      // console.log();
+      return api.destroy(`API.SETTINGS${item.id}`);
+    },
+    // apiDelete(id) {
+      
+    // }
   },
 };
 </script>
