@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import Plans from '../views/pages/Plans.vue'
 import Layout from "../views/Layout";
 import CreatePlan from "@/views/pages/plan/CreatePlan";
+import Settings from '@/views/pages/settings/Settings';
+import RestrictionEditor from '@/views/pages/settings/RestrictionEditor/RestrictionEditor';
 
 Vue.use(VueRouter)
 
@@ -36,16 +38,48 @@ const routes = [
     ]
   },
   {
-    path: '/about',
+    path: '/settings',
     component: Layout,
     children: [{
-      path: 'dashboard',
-      name: 'About',
-      component: () => import('../views/About'),
+      path: '',
+      name: 'Settings',
+      component: Settings,
+      meta: {
+        header: 'Налаштування'
+      }
     }]
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
+  },
+  {
+    path: '/settings/restriction-editor',
+    component: Layout,
+    children: [{
+      path: '',
+      name: 'RestrictionEditor',
+      component: RestrictionEditor,
+      meta: {
+        header: 'Редактор обмежень'
+      }
+    },
+    {
+      path: ':id',
+      params: 'name',
+      name: 'RestrictEdit',
+      meta: {header: 'Редагування'},
+      component: () => import('@/views/pages/settings/RestrictionEditor/edit'),
+      beforeEnter: (to, from, next) => {
+        if (/^[0-9]+$/.test(to.params.id)) {
+          next();
+        }
+        else {
+          next('/');
+        }
+      },
+    },
+  ]
+
   }
 ]
 

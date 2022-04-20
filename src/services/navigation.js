@@ -9,10 +9,10 @@ export default {
             icon: 'mdi-account-circle',
             route: 'ListPlans',
         };
-        const About = {
-            title: 'О Нас',
+        const Settings = {
+            title: 'Налаштування',
             icon: 'mdi-account-plus',
-            route: 'About',
+            route: 'Settings',
         };
         // const CreateDirector = {
         //     title: 'CreateDirector',
@@ -57,7 +57,7 @@ export default {
                 case ROLES.ID.admin:
                     rows.push(
                         ListPlans,
-                        About
+                        Settings
                     );
                     break;
             }
