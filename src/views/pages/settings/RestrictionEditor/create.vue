@@ -79,7 +79,7 @@ extend("max", {
 });
 
 export default {
-  name: "RestrictEdit",
+  name: "RestrictCreate",
   components: {
     ValidationProvider,
     ValidationObserver,
@@ -91,21 +91,7 @@ export default {
       value: null,
     };
   },
-  created() {
-    this.getSettings();
-  },
   methods: {
-    getSettings() {
-      this.apiSettings().then((response) => {
-        const { data } = response.data;
-        this.key = data.key;
-        this.title = data.title;
-        this.value = data.value;
-      });
-    },
-    apiSettings() {
-      return api.get(`${API.SETTINGS}${this.$route.params.id}`);
-    },
     submit() {
       this.$refs.observer.validate().then((response) => {
         if (response) {
@@ -114,7 +100,7 @@ export default {
             title: this.title,
             value: this.value,
           };
-          api.put(`${API.SETTINGS}${this.$route.params.id}`, options).then((response) => {
+          api.post(API.SETTINGS, options).then((response) => {
               const { message } = response.data;
               this.$swal.fire({
                 position: "center",

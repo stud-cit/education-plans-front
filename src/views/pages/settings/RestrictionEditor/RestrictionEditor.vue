@@ -15,11 +15,33 @@
         <v-icon small class="mr-2" color="primary" @click="edit(item.id)">
           mdi-square-edit-outline
         </v-icon>
-        <v-icon small class="mr-2" color="red" @click="deleteItem(item)">
+        <v-icon small class="mr-2" color="red" @click="deleteItem(item.id, item.title)">
           mdi-trash-can-outline
         </v-icon>
       </template>
     </v-data-table>
+
+    <v-tooltip left color="info">
+      <template v-slot:activator="{ on, attrs }">
+        <v-fab-transition>
+          <v-btn
+              color="primary"
+              dark
+              fixed
+              bottom
+              right
+              fab
+              v-bind="attrs"
+              v-on="on"
+              :to="{name: 'RestrictCreate'}"
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </v-fab-transition>
+      </template>
+      <span>Додати налаштування</span>
+    </v-tooltip>
+
   </v-container>
 </template>
 
@@ -63,13 +85,19 @@ export default {
       this.$router.push({name: 'RestrictEdit', params: { id }});
     },
 
-    deleteItem(item) {
-      // console.log();
-      return api.destroy(`API.SETTINGS${item.id}`);
+    deleteItem(id, title) {
+      this.$swal.fire({
+        title: `Ви хочете видалити план ?`,
+        text: `${title}`,
+        showDenyButton: true,
+        confirmButtonText: 'Так',
+        denyButtonText: `Ні`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          return api.destroy(API.SETTINGS + id);   
+        }
+      })
     },
-    // apiDelete(id) {
-      
-    // }
   },
 };
 </script>

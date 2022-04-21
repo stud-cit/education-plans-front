@@ -64,6 +64,12 @@ const routes = [
       }
     },
     {
+      path:'create',
+      name: 'RestrictCreate',
+      component: () => import('@/views/pages/settings/RestrictionEditor/create'),
+      meta: { header: 'Додавання налаштувань' }
+    },
+    {
       path: ':id',
       params: 'name',
       name: 'RestrictEdit',
