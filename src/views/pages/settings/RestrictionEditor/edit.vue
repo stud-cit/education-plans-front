@@ -2,33 +2,6 @@
   <v-container>
     <validation-observer ref="observer" v-slot="{ invalid }">
       <form @submit.prevent="submit">
-        <validation-provider
-          v-slot="{ errors }"
-          name="Ключ"
-          rules="required|max:255"
-        >
-          <v-text-field
-            v-model="key"
-            :counter="255"
-            :error-messages="errors"
-            label="Ключ"
-            required
-          ></v-text-field>
-        </validation-provider>
-
-        <validation-provider
-          v-slot="{ errors }"
-          name="Заголовок"
-          rules="required|max:255"
-        >
-          <v-text-field
-            v-model="title"
-            :counter="255"
-            :error-messages="errors"
-            label="Заголовок"
-            required
-          ></v-text-field>
-        </validation-provider>
 
         <validation-provider
           v-slot="{ errors }"
@@ -86,8 +59,6 @@ export default {
   },
   data() {
     return {
-      key: "",
-      title: "",
       value: null,
     };
   },
@@ -98,8 +69,6 @@ export default {
     getSettings() {
       this.apiSettings().then((response) => {
         const { data } = response.data;
-        this.key = data.key;
-        this.title = data.title;
         this.value = data.value;
       });
     },
@@ -110,8 +79,6 @@ export default {
       this.$refs.observer.validate().then((response) => {
         if (response) {
           let options = {
-            key: this.key,
-            title: this.title,
             value: this.value,
           };
           api.put(`${API.SETTINGS}${this.$route.params.id}`, options).then((response) => {
@@ -128,8 +95,6 @@ export default {
       });
     },
     clear() {
-      this.key = "";
-      this.title = "";
       this.value = null;
       this.$refs.observer.reset();
     },
