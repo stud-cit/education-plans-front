@@ -1,15 +1,27 @@
 <template>
   <v-container>
-    <template>
+    <v-row align="center" justify="space-around">
       <v-card class="mt-5 mb-8">
         <v-card-text>
-          <p class="text-h4 text--primary"> Редактор обмежень </p>
+          <p class="text-h6 text--primary">Редактор обмежень</p>
         </v-card-text>
         <v-card-actions>
-          <v-btn href="/settings/restriction-editor" color="deep-purple accent-4"> Редактор обмежень </v-btn>
+          <v-btn depressed href="/settings/restriction-editor">
+            Редактор обмежень
+          </v-btn>
         </v-card-actions>
       </v-card>
-    </template>
+      <v-card class="mt-5 mb-8">
+        <v-card-text>
+          <p class="text-h6 text--primary">Термін навчання</p>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn depressed href="/settings/study-term">
+            Термін навчання
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-row>
   </v-container>
 </template>
 <script>

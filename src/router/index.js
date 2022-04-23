@@ -5,6 +5,7 @@ import Layout from "../views/Layout";
 import CreatePlan from "@/views/pages/plan/CreatePlan";
 import Settings from '@/views/pages/settings/Settings';
 import RestrictionEditor from '@/views/pages/settings/RestrictionEditor/RestrictionEditor';
+import StudyTerm from '@/views/pages/settings/StudyTerm';
 
 Vue.use(VueRouter)
 
@@ -83,9 +84,19 @@ const routes = [
           next('/');
         }
       },
-    },
-  ]
-
+    },]
+  },
+  {
+    path : '/settings/study-term',
+    component: Layout,
+    children: [{
+      path: '',
+      name: 'StudyTerm',
+      component: StudyTerm,
+      meta: {
+        header: 'Термін навчання'
+      }
+    }]
   }
 ]
 
