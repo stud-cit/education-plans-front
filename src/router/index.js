@@ -6,6 +6,7 @@ import CreatePlan from "@/views/pages/plan/CreatePlan";
 import Settings from '@/views/pages/settings/Settings';
 import RestrictionEditor from '@/views/pages/settings/RestrictionEditor/RestrictionEditor';
 import StudyTerm from '@/views/pages/settings/StudyTerm';
+import FormStudy from '@/views/pages/settings/FormStudy';
 
 Vue.use(VueRouter)
 
@@ -74,7 +75,7 @@ const routes = [
       path: ':id',
       params: 'name',
       name: 'RestrictEdit',
-      meta: {header: 'Редагування'},
+      meta: { header: 'Редагування' },
       component: () => import('@/views/pages/settings/RestrictionEditor/edit'),
       beforeEnter: (to, from, next) => {
         if (/^[0-9]+$/.test(to.params.id)) {
@@ -93,11 +94,19 @@ const routes = [
       path: '',
       name: 'StudyTerm',
       component: StudyTerm,
-      meta: {
-        header: 'Термін навчання'
-      }
+      meta: { header: 'Термін навчання' }
     }]
-  }
+  },
+  {
+    path : '/settings/form-study',
+    component: Layout,
+    children: [{
+      path: '',
+      name: 'FormStudy',
+      component: FormStudy,
+      meta: { header: 'Форма навчання' }
+    }]
+  },
 ]
 
 const router = new VueRouter({
