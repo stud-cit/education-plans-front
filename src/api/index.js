@@ -70,6 +70,7 @@ api.interceptors.request.use(function(config) {
 
 const get = async (resource, data = false, configs = null) => data ? await api.get(`${resource}?${jsonToQuery(data)}`, configs) : await api.get(resource);
 const post = async (resource, data) => await api.post(resource, data);
+const show = async (resource, id) => await api.get(`${resource}/${id}`);
 const put = async (resource, data) => await api.put(resource, data);
 const destroy = async (resource, id) => await api.delete(resource + id);
 const patch = async (resource, id = null ,data = null) => id ? await api.patch(`${resource}/${id}`, data) : await api.patch(resource, data);
@@ -80,4 +81,5 @@ export default {
     put,
     destroy,
     patch,
+    show
 };
