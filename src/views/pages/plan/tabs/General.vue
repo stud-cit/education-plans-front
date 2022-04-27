@@ -256,6 +256,42 @@
         </v-col>
       </v-row>
       <v-row>
+        <v-col cols="12" lg="6" class="py-0">
+          <validation-provider
+            v-slot="{ errors }"
+            name="Обсяг годин аудиторної роботи на тиждень"
+            rules="required|numeric|min:1|max:3|min_value:1"
+          >
+            <v-text-field
+              v-model="countHours"
+              :error-messages="errors"
+              label="Обсяг годин аудиторної роботи на тиждень"
+              required
+              type="number"
+              :min="1"
+              :max="999"
+            ></v-text-field>
+          </validation-provider>
+        </v-col>
+        <v-col cols="12" lg="6" class="py-0">
+          <validation-provider
+            v-slot="{ errors }"
+            name="Обсяг годин аудиторної роботи на тиждень"
+            rules="required|numeric|min:1|max:3|min_value:1"
+          >
+            <v-text-field
+              v-model="countWeek"
+              :error-messages="errors"
+              label="Максимальна кількість аудиторних годин на тиждень"
+              required
+              type="number"
+              :min="1"
+              :max="999"
+            ></v-text-field>
+          </validation-provider>
+        </v-col>
+      </v-row>
+      <v-row>
         <v-col cols="12">
           <v-btn
             class="mr-4"
@@ -311,6 +347,8 @@ export default {
       formOrganizationStudy: null,
       formsOrganizationStudy: [],
       credits: null,
+      countHours: null,
+      countWeek: null,
     }
   },
   watch: {
@@ -375,6 +413,8 @@ export default {
             field_knowledge_id: this.fieldKnowledge,
             form_organization_id: this.formOrganizationStudy,
             credits: this.credits,
+            count_hours: this.countHours,
+            count_week: this.countWeek,
           };
 
           this.$emit('submit', data)
