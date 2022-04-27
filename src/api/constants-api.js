@@ -14,6 +14,7 @@ export const API = {
   "PLAN_CREATE": version + '/plans/create',
   "PLAN_STORE": version + '/plans',
   "DEPARTMENTS": version + '/departments',
+  "FACULTIES": version + '/faculties',
 };
 
 export const ALLOWED_REQUEST_PARAMETERS = {

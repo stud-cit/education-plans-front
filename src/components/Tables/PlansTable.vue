@@ -56,7 +56,7 @@
           <v-autocomplete
             v-model="faculty"
             :items="faculties"
-            item-text="title"
+            item-text="name"
             item-value="id"
             label="Факультет"
           ></v-autocomplete>
@@ -65,9 +65,10 @@
           <v-autocomplete
             v-model="department"
             :items="departments"
-            item-text="title"
+            item-text="name"
             item-value="id"
             label="Кафедра"
+            :loading="departmentsLoading"
           ></v-autocomplete>
         </v-col>
       </v-row>
@@ -110,7 +111,8 @@
 </template>
 
 <script>
-import {getApiSimulator} from "@/api/simulator-api";
+import api from "@/api";
+import {API} from "@/api/constants-api";
 
 export default {
   name: "PlansTable",
@@ -130,7 +132,8 @@ export default {
       faculty: null,
       faculties: [],
       department: null,
-      departments: []
+      departments: [],
+      departmentsLoading: false
     }
   },
   props: {
@@ -161,7 +164,7 @@ export default {
   },
   watch: {
     faculty(v) {
-      v !== null ? this.getDepartments(v) : this.departments = [];
+      v !== null ? this.apiGetDepartments(v) : this.departments = [];
     },
   },
   mounted() {
@@ -192,14 +195,17 @@ export default {
       this.resetPage();
     },
     apiGetFaculties() {
-      this.faculties = getApiSimulator('faculties');
-    },
-    getDepartments(id) {
-      this.departments = this.apiGetDepartments(id);
+      api.get(API.FACULTIES).then(({data}) => {
+        this.faculties = data.data
+      })
     },
     apiGetDepartments(id) {
-      const list = getApiSimulator('departments');
-      return list.filter((item) => item.id_faculty === id) //TODO: get data from API
+      this.departmentsLoading = true;
+
+      api.show(API.DEPARTMENTS, id).then(({data}) => {
+        this.departments = data.data
+        this.departmentsLoading = false;
+      })
     },
   },
 }
