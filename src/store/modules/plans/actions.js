@@ -7,7 +7,6 @@ export const getListPlans = (context, payload) => {
   const options = GlobalMixin.methods.GlobalHandlingRequestParameters(ALLOWED_REQUEST_PARAMETERS.GET_PLANS, payload);
   context.commit('SET_LOADING', true);
   api.get(API.LIST_PLANS, options).then(({data}) => {
-    console.log('api', data)
     context.commit('SET_PLANS', data);
     context.commit('SET_LOADING', false);
   });
