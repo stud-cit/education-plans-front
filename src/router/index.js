@@ -7,6 +7,7 @@ import Settings from '@/views/pages/settings/Settings';
 import RestrictionEditor from '@/views/pages/settings/RestrictionEditor/RestrictionEditor';
 import StudyTerm from '@/views/pages/settings/StudyTerm';
 import FormStudy from '@/views/pages/settings/FormStudy';
+import SettingUsers from "@/views/pages/settings/Users/Users";
 
 Vue.use(VueRouter)
 
@@ -42,14 +43,24 @@ const routes = [
   {
     path: '/settings',
     component: Layout,
-    children: [{
-      path: '',
-      name: 'Settings',
-      component: Settings,
-      meta: {
-        header: 'Налаштування'
+    children: [
+      {
+        path: '',
+        name: 'Settings',
+        component: Settings,
+        meta: {
+          header: 'Налаштування'
+        }
+      },
+      {
+        path: 'users',
+        name: 'SettingUsers',
+        component: SettingUsers,
+        meta: {
+          header: 'Налаштування користувачів'
+        }
       }
-    }]
+    ]
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
