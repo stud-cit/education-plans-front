@@ -10,7 +10,8 @@ export const API = {
   "DESTROY_PLAN": version + '/plans/',
   "SETTINGS": version + '/settings/',
   "STUDY_TERMS": version + '/study-terms/',
-  "FORM_STUDIES": version + '/form-studies/'
+  "FORM_STUDIES": version + '/form-studies/',
+  "FORM_ORGANIZATIONS": version + '/form-organizations'
 };
 
 export const ALLOWED_REQUEST_PARAMETERS = {
