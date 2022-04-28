@@ -31,8 +31,8 @@ api.interceptors.response.use(
         if (error.response.status === 400) {
             console.error(error.response.statusText);
         } else if (error.response.status === 422) {
-            console.log('this error')
-            vuexStore.commit("setErrors", error.response.data.errors); //TODO: this error preview
+            console.log('this error', error.response)
+          vuexStore.commit("setErrors", error.response.data.errors); //TODO: this error preview
         } else if (error.response.status === 401) {
             vuexStore.commit("auth/setUserData", null);
             localStorage.removeItem("authToken");
@@ -72,7 +72,7 @@ const get = async (resource, data = false, configs = null) => data ? await api.g
 const post = async (resource, data) => await api.post(resource, data);
 const show = async (resource, id) => await api.get(`${resource}/${id}`);
 const put = async (resource, data) => await api.put(resource, data);
-const destroy = async (resource, id) => await api.delete(resource + id);
+const destroy = async (resource, id) => await api.delete(resource + '/' + id);
 const patch = async (resource, id = null ,data = null) => id ? await api.patch(`${resource}/${id}`, data) : await api.patch(resource, data);
 
 export default {
