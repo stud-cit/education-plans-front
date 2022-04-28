@@ -11,7 +11,11 @@ export const API = {
   "SETTINGS": version + '/settings/',
   "STUDY_TERMS": version + '/study-terms/',
   "FORM_STUDIES": version + '/form-studies/',
-  "FORM_ORGANIZATIONS": version + '/form-organizations'
+  "FORM_ORGANIZATIONS": version + '/form-organizations',
+  "PLAN_CREATE": version + '/plans/create',
+  "PLAN_STORE": version + '/plans',
+  "DEPARTMENTS": version + '/departments',
+  "FACULTIES": version + '/faculties',
 };
 
 export const ALLOWED_REQUEST_PARAMETERS = {

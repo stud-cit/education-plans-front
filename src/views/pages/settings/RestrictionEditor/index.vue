@@ -46,7 +46,6 @@
       </v-snackbar>
 
       <template v-slot:item.actions="{ item }">
-      <v-btn :to="{name: 'RestrictEdit', params: { id: item.id }}">ok</v-btn>
         <v-icon small class="mr-2" color="primary"  @click="edit(item.id)">
           mdi-square-edit-outline
         </v-icon>
