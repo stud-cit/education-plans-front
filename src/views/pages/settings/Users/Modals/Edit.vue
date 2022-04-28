@@ -12,108 +12,44 @@
         >
           <form @submit.prevent="submit" @keyup.enter="submit">
             <v-card-title>
-              <span class="text-h5">
-                <template v-if="item.hasOwnProperty('id')">Редагувати користувача</template>
-                <template v-else>Створити користувача</template>
-              </span>
+              <span class="text-h5">Редагувати користувача</span>
             </v-card-title>
             <v-card-text>
               <v-container>
-                <v-row>
-                  <v-col
-                    cols="12"
-                  >
-                    {{item}}
-                    <validation-provider
-                      v-slot="{ errors }"
-                      name="ПІБ"
-                      rules="required"
-                    >
-                      <v-text-field
-                        v-model="item.full_name"
-                        :error-messages="errors"
-                        label="ПІБ"
-                        required
-                      ></v-text-field>
-                    </validation-provider>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col
-                    cols="12"
-                  >
-                    <validation-provider
-                      v-slot="{ errors }"
-                      name="Факультет"
-                      rules="required"
-                    >
-                      <v-autocomplete
-                        v-model="item.faculty_id"
-                        :items="faculties"
-                        :error-messages="errors"
-                        item-text="name"
-                        item-value="id"
-                        label="Факультет"
-                      ></v-autocomplete>
-                    </validation-provider>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col
-                    cols="12"
-                  >
-                    <validation-provider
-                      v-slot="{ errors }"
-                      name="Кафедра"
-                      rules="required"
-                    >
-                      <v-autocomplete
-                        v-model="item.department_id"
-                        :items="departments"
-                        :error-messages="errors"
-                        :loading="departmentsLoading"
-                        item-text="name"
-                        item-value="id"
-                        label="Кафедра"
-                      ></v-autocomplete>
-                    </validation-provider>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col
-                    cols="12"
-                  >
-                    <validation-provider
-                      v-slot="{ errors }"
-                      name="Роль"
-                      rules="required"
-                    >
-                      <v-autocomplete
-                        v-model="item.role_id"
-                        :items="roles"
-                        :error-messages="errors"
-                        item-text="title"
-                        item-value="id"
-                        label="Роль"
-                      ></v-autocomplete>
-                    </validation-provider>
-                  </v-col>
-                </v-row>
+                <v-text-field
+                  :value="user.full_name"
+                  label="ПІБ"
+                  disabled
+                ></v-text-field>
+
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Роль"
+                  rules="required"
+                >
+                  <v-radio-group v-model="user.role_id">
+                    <v-radio
+                      v-for="item in roles"
+                      :key="item.id"
+                      :label="item.label"
+                      :error-messages="errors"
+                      :value="item.id"
+                    ></v-radio>
+                  </v-radio-group>
+                </validation-provider>
               </v-container>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn
                 color="secondary"
-                text
                 @click="close"
               >
                 Закрити
               </v-btn>
               <v-btn
                 color="primary"
-                text
-                @click="save"
+                @click="submit"
                 :disabled="invalid"
               >
                 Зберегти
@@ -126,75 +62,36 @@
   </v-row>
 </template>
 <script>
-import api from "@/api";
-import {API} from "@/api/constants-api";
-
 export default {
   name: 'EditUserModal',
-  data: () => ({
-    faculties: [],
-    departments: [],
-    departmentsLoading: false,
-    roles: [],
-    // dialog: false,
-  }),
+  data: () => ({}),
   props: {
+    roles: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    user: {
+      type: Object,
+      default() {
+        return {};
+      }
+    },
     dialog: {
       type: Boolean,
       default() {
         return false;
       }
     },
-    item: {
-      type: Object,
-      default() {
-        return {
-          full_name: '',
-          faculty_id: null,
-          faculty: '',
-          department_id: null,
-          department: '',
-          role: '',
-        }
-      }
-    }
-  },
-  mounted() {
-    this.apiGetFaculties();
-    this.apiGetRoles();
-  },
-  watch: {
-    "item.faculty_id"(v) {
-      console.log(v)
-      v !== null ? this.apiGetDepartments(v) : this.departments = [];
-    },
   },
   methods: {
-    apiGetFaculties() {
-      api.get(API.FACULTIES).then(({data}) => {
-        this.faculties = data.data
-        console.log(data.data)
+    submit() {
+      this.$refs.observer.validate().then((validated) => {
+        if (validated) {
+          this.$emit('submit', this.user)
+        }
       })
-    },
-    apiGetDepartments(id) {
-      this.departmentsLoading = true;
-
-      api.show(API.DEPARTMENTS, id).then(({data}) => {
-        this.departments = data.data
-        console.log(data.data)
-        this.departmentsLoading = false;
-      })
-    },
-
-    apiGetRoles() {
-      this.roles = [
-        {id: 1, title: 'admin'},
-        {id: 2, title: 'something'},
-      ]
-    },
-
-    save() {
-      this.$emit('submit', this.item)
     },
     close() {
       this.$emit('close')
