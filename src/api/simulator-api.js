@@ -107,6 +107,30 @@ const apiData = {
       title: 'Семестрова',
     },
   ],
+  settingUsers: [
+    {
+      id: 1,
+      full_name: 'Петренко Петро Петрович',
+      faculty_id: '341',
+      faculty: 'Факультет іноземної філології та соціальних комунікацій',
+      department_id: '5',
+      department: 'Кафедра іноземних мов',
+      role_id: 2,
+    },
+    {
+      id: 2,
+      full_name: 'Гармата Василь Іванович',
+      // faculty_id: '382',
+      // faculty: 'Факультет іноземної філології та соціальних комунікацій',
+      department_id: '5',
+      department: 'Кафедра іноземних мов',
+      faculty_id: '355',
+      faculty: 'Факультет технічних систем та енергоефективних технологій',
+      // department_id: '246',
+      // department: 'Кафедра технічної теплофізики',
+      role_id: 1,
+    },
+  ],
 }
 function getApiSimulator(key = null) {
   if (key === null) {

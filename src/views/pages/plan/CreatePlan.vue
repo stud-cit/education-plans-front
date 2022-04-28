@@ -283,7 +283,7 @@ export default {
     },
 
     submit(data) {
-      api.post(API.PLAN_STORE, data).then((response) => {
+      api.post(API.PLANS, data).then((response) => {
         const { message } = response.data;
         this.$swal.fire({
           position: "center",
