@@ -11,8 +11,14 @@
       <template v-slot:item.index="{ index }">
         {{ index + 1 }}
       </template>
+      <template v-slot:item.role="{ item }">
+        <template v-if="roles.length">
+          {{ roles.find(el => el.id === item.role_id).label }}
+        </template>
+      </template>
+
       <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" color="primary" @click="edit(item)">
+        <v-icon small class="mr-2" color="primary" @click="openEdit(item)">
           mdi-square-edit-outline
         </v-icon>
         <v-icon
@@ -38,76 +44,112 @@
             fab
             v-bind="attrs"
             v-on="on"
-            :to="{ name: 'RestrictCreate' }"
+            @click="showCreate = true"
           >
             <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-fab-transition>
       </template>
-      <span>Додати налаштування</span>
+      <span>Додати користувача</span>
     </v-tooltip>
 
-    <EditUserModal :dialog="showEdit" :item="itemEdit" @close="() => this.showEdit = false"/>
+    <CreateUserModal
+      :dialog="showCreate"
+      :roles="roles"
+      @close="() => this.showCreate = false" @submit="create"
+    />
+
+    <EditUserModal
+      :dialog="showEdit"
+      :roles="roles"
+      :user="user"
+      @close="closeEdit" @submit="edit"
+    />
 
   </v-container>
 </template>
 
 <script>
-// import api from "@/api";
-// import { API } from "@/api/constants-api";
-import {getApiSimulator} from "@/api/simulator-api";
+import api from "@/api";
+import { API } from "@/api/constants-api";
+import CreateUserModal from "@/views/pages/settings/Users/Modals/Create"
 import EditUserModal from "@/views/pages/settings/Users/Modals/Edit";
 
 export default {
   name: "Users",
-  components: {EditUserModal},
+  components: {EditUserModal, CreateUserModal},
   data() {
     return {
       loader: false,
       items: [],
+      roles: [],
       headers: [
         {text: "№", value: "index", sortable: false},
         {text: "ПІБ", value: "full_name", sortable: false},
         {text: "Факультет", value: "faculty", sortable: false},
         {text: "Кафедра", value: "department", sortable: false},
-        {text: "Роль", value: "role", sortable: false},
-        {text: "Дії", value: "actions", sortable: false},
+        {text: "Роль", value: "role", width: '200px', sortable: false},
+        {text: "Дії", value: "actions", width: '80px', sortable: false},
       ],
-      itemEdit: null,
       showEdit: false,
+      showCreate: false,
+      user: {},
     };
   },
-  created() {
+  mounted() {
+    this.apiGetRoles();
     this.apiUsers();
   },
   methods: {
     apiUsers() {
       this.loader = true;
-      setTimeout(() => {
-        this.items = getApiSimulator('settingUsers');
+
+      api.get(API.USERS).then((response) => {
+        const { data } = response;
+        this.items = data.data;
         this.loader = false;
-      }, 1500)
-      // api.get(API.SETTING_USERS).then((response) => {
-      //   const { data } = response;
-      //   this.items = data.data;
-      //   this.loader = false;
-      // }); // ToDo with back
+      });
     },
-    edit(item) {
+    async apiGetRoles() {
+      const {data} = await api.get(API.ROLES)
+      this.roles = data.data
+    },
+    closeEdit() {
+      this.user = {};
+      this.showEdit = false;
+    },
+    openEdit(item) {
       this.showEdit = true;
-      this.itemEdit = item
-      console.log(item)
-      //this.$router.push({name: 'RestrictEdit', params: { id }});
+      this.user = item
     },
-    save(id, value) {
-      this.itemEdit = null;
-      console.log(id, value)
-      // const options = { value: value };
-      // api.put(`${API.SETTINGS}${id}`, options).then((response) => {
-      //   const { message } = response.data;
-      //   this.snack = true;
-      //   this.snackColor = 'success';
-      // });
+    create(data) {
+      api.post(API.USERS, data).then((response) => {
+        this.showCreate = false;
+        const { message } = response.data;
+        this.$swal.fire({
+          position: "center",
+          icon: "success",
+          title: message,
+          showConfirmButton: false,
+          timer: 1500,
+        })
+
+        this.apiUsers();
+      })
+    },
+    edit(data) {
+      api.put(API.USERS + '/' + data.id, {role_id: data.role_id} ).then((response) => {
+        this.showEdit = false;
+
+        const { message } = response.data;
+        this.$swal.fire({
+          position: "center",
+          icon: "success",
+          title: message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      });
     },
     deleted(id, full_name) {
       this.$swal.fire({
@@ -118,8 +160,18 @@ export default {
         denyButtonText: `Ні`,
       }).then((result) => {
         if (result.isConfirmed) {
-          console.log('destroy id = ' + id)
-          // return api.destroy(API.SETTING_USERS + id);
+          api.destroy(API.USERS,id).then( (response) => {
+            const { message } = response.data;
+            this.$swal.fire({
+              position: "center",
+              icon: "success",
+              title: message,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+
+            this.apiUsers();
+          });
         }
       })
     },
