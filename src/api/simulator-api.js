@@ -116,7 +116,6 @@ const apiData = {
       department_id: '5',
       department: 'Кафедра іноземних мов',
       role_id: 2,
-      role: 'something'
     },
     {
       id: 2,
@@ -130,7 +129,6 @@ const apiData = {
       // department_id: '246',
       // department: 'Кафедра технічної теплофізики',
       role_id: 1,
-      role: 'admin',
     },
   ],
 }
