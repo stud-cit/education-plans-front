@@ -25,7 +25,8 @@
                     v-model="user"
                     :items="users"
                     :error-messages="errors"
-                    :item-text="(item) => `${item.full_name} ${item.department_id}`"
+                    :item-text="(item) => `${item.full_name}${item.department_id}`"
+                    item-disabled="disabled"
                     return-object
                     :loading="loader"
                     label="ПІБ"
@@ -117,14 +118,7 @@ export default {
     loader: false,
     facultyLoader: false,
     user: {},
-    users: [{
-      asu_id: 1,
-      full_name: 'Гармата Василь Іванович',
-      faculty_id: 414,
-      department_id: 325,
-      faculty: 'Факультет електроніки та інформаційних технологій',
-      department: "Кафедра прикладної математики та моделювання складних систем",
-    }],
+    users: [],
   }),
   props: {
     roles: {
