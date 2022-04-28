@@ -7,6 +7,7 @@ import Settings from '@/views/pages/settings/Settings';
 import RestrictionEditor from '@/views/pages/settings/RestrictionEditor';
 import StudyTerm from '@/views/pages/settings/StudyTerm';
 import FormStudy from '@/views/pages/settings/FormStudy';
+import FormOrganization from '@/views/pages/settings/FormOrganization';
 import SettingUsers from "@/views/pages/settings/Users/Users";
 
 Vue.use(VueRouter)
@@ -59,7 +60,25 @@ const routes = [
         meta: {
           header: 'Налаштування користувачів'
         }
-      }
+      },
+      {
+        path: 'form-study',
+        name: 'FormStudy',
+        component: FormStudy,
+        meta: { 
+          header: 'Форма навчання' 
+        }
+      },
+      {
+        path: 'form-organization',
+        name: 'FormOrganization',
+        component: FormOrganization,
+        meta: {
+          header: 'Форма організації навчання'
+        }
+        
+      },
+
     ]
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
@@ -107,17 +126,7 @@ const routes = [
       component: StudyTerm,
       meta: { header: 'Термін навчання' }
     }]
-  },
-  {
-    path : '/settings/form-study',
-    component: Layout,
-    children: [{
-      path: '',
-      name: 'FormStudy',
-      component: FormStudy,
-      meta: { header: 'Форма навчання' }
-    }]
-  },
+  }
 ]
 
 const router = new VueRouter({
