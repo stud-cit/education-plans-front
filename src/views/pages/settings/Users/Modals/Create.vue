@@ -23,12 +23,11 @@
                 >
                   <v-autocomplete
                     v-model="user"
-                    :items="users"
+                    :items="workers"
                     :error-messages="errors"
                     :item-text="(item) => `${item.full_name}${item.department_id}`"
                     item-disabled="disabled"
                     return-object
-                    :loading="loader"
                     label="ПІБ"
                     :filter="filterObject"
                     @change="setFaculty"
@@ -115,12 +114,16 @@ import {API} from "@/api/constants-api";
 export default {
   name: 'CreateUserModal',
   data: () => ({
-    loader: false,
     facultyLoader: false,
     user: {},
-    users: [],
   }),
   props: {
+    workers: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
     roles: {
       type: Array,
       default() {
@@ -134,19 +137,7 @@ export default {
       }
     },
   },
-  mounted() {
-    this.apiWorkers();
-  },
   methods: {
-    apiWorkers() {
-      this.loader = true;
-
-      api.get(API.WORKERS).then((response) => {
-        const {data} = response;
-        this.users = data;
-        this.loader = false;
-      });
-    },
     apiGetFacultyByWorker(worker) {
       this.facultyLoader = true;
 

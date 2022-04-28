@@ -55,6 +55,7 @@
 
     <CreateUserModal
       :dialog="showCreate"
+      :workers="workers"
       :roles="roles"
       @close="() => this.showCreate = false" @submit="create"
     />
@@ -94,11 +95,13 @@ export default {
       showEdit: false,
       showCreate: false,
       user: {},
+      workers: [],
     };
   },
   mounted() {
     this.apiGetRoles();
     this.apiUsers();
+    this.apiWorkers();
   },
   methods: {
     apiUsers() {
@@ -108,6 +111,12 @@ export default {
         const { data } = response;
         this.items = data.data;
         this.loader = false;
+      });
+    },
+    apiWorkers() {
+      api.get(API.WORKERS).then((response) => {
+        const {data} = response;
+        this.workers = data;
       });
     },
     async apiGetRoles() {
@@ -135,6 +144,7 @@ export default {
         })
 
         this.apiUsers();
+        this.apiWorkers();
       })
     },
     edit(data) {
@@ -171,6 +181,7 @@ export default {
             });
 
             this.apiUsers();
+            this.apiWorkers();
           });
         }
       })
