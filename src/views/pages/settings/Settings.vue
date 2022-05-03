@@ -1,77 +1,40 @@
 <template>
   <v-container>
-    <v-row align="center" justify="start">
-      <v-col cols="12" sm="6" md="4" lg="2">
-        <v-card>
+      <div class="settings">
+        <v-card v-for="item in items" :key="item.title" elevation="2">
           <v-card-text>
-            <p class="text-h6 text--primary">Редактор обмежень</p>
+            <p class="text-h6 text--primary text-center">{{ item.title }}</p>
           </v-card-text>
           <v-card-actions>
-            <v-btn depressed block :to="{ name: 'RestrictionEditor' }">
+            <v-btn depressed block :to="{ name: item.to }">
               Налаштувати
             </v-btn>
           </v-card-actions>
         </v-card>
-      </v-col>
-      <v-col cols="12" sm="6" md="4" lg="2">
-        <v-card>
-          <v-card-text>
-            <p class="text-h6 text--primary">Термін навчання</p>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn depressed block :to="{ name: 'StudyTerm' }">
-              Налаштувати
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-      <v-col cols="12" sm="6" md="4" lg="2">
-        <v-card>
-          <v-card-text>
-            <p class="text-h6 text--primary">Форми навчання</p>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn depressed block :to="{ name: 'FormStudy' }">
-              Налаштувати
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-      <v-col cols="12" sm="6" md="4" lg="2">
-        <v-card>
-          <v-card-text>
-            <p class="text-h6 text--primary">Форма організації навчання</p>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn depressed block :to="{ name: 'FormOrganization' }">
-              Налаштувати
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-      <v-col cols="12" sm="6" md="4" lg="2">
-        <v-card>
-          <v-card-text>
-            <p class="text-h6 text--primary">Користувачі</p>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn depressed block :to="{ name: 'SettingUsers' }">
-              Налаштувати
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
+      </div>
   </v-container>
 </template>
 <script>
 export default {
-  name: "Settings",
-
+  name: 'Settings',
   data() {
     return {
-      items: [{ icon: "mdi-account", href: "settings" }],
+      items: [
+        { title: 'Редактор обмежень', to: 'RestrictionEditor' },
+        { title: 'Термін навчання', to: 'StudyTerm' },
+        { title: 'Форми навчання', to: 'FormStudy' },
+        { title: 'Форма організації навчання', to: 'FormOrganization' },
+        { title: 'Користувачі', to: 'SettingUsers' },
+      ],
     };
   },
 };
 </script>
+//TODO: fix adaptive grid 
+<style scope>
+.settings {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+</style>

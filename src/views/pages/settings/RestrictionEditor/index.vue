@@ -88,7 +88,7 @@ import api from "@/api";
 import { API } from "@/api/constants-api";
 
 export default {
-  name: "RestrictionEditor",
+  name: 'RestrictionEditor',
 
   data() {
     return {

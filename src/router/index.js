@@ -1,138 +1,134 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Plans from '../views/pages/Plans.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Plans from "../views/pages/Plans.vue";
 import Layout from "../views/Layout";
 import CreatePlan from "@/views/pages/plan/CreatePlan";
-import Settings from '@/views/pages/settings/Settings';
-import RestrictionEditor from '@/views/pages/settings/RestrictionEditor';
-import StudyTerm from '@/views/pages/settings/StudyTerm';
-import FormStudy from '@/views/pages/settings/FormStudy';
-import FormOrganization from '@/views/pages/settings/FormOrganization';
+import Settings from "@/views/pages/settings/Settings";
+import RestrictionEditor from "@/views/pages/settings/RestrictionEditor";
+import RestrictCreate from "@/views/pages/settings/RestrictionEditor/create";
+import RestrictEdit from "@/views/pages/settings/RestrictionEditor/edit";
+import StudyTerm from "@/views/pages/settings/StudyTerm";
+import FormStudy from "@/views/pages/settings/FormStudy";
+import FormOrganization from "@/views/pages/settings/FormOrganization";
 import SettingUsers from "@/views/pages/settings/Users/Users";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
+    path: "/",
     component: Layout,
     children: [
       {
-        path:'',
-        name: 'ListPlans',
+        path: "",
+        name: "ListPlans",
         component: Plans,
         meta: {
-          header: 'Робота з планами'
-        }
+          header: "Робота з планами",
+        },
       },
-    ]
+    ],
   },
   {
-    path: '/plan',
+    path: "/plan",
     component: Layout,
     children: [
       {
-        path:'create',
-        name: 'CreatePlan',
+        path: "create",
+        name: "CreatePlan",
         component: CreatePlan,
         meta: {
-          header: 'Створення нового плану'
-        }
-      }
-    ]
+          header: "Створення нового плану",
+        },
+      },
+    ],
   },
   {
-    path: '/settings',
+    path: "/settings",
     component: Layout,
     children: [
       {
-        path: '',
-        name: 'Settings',
+        path: "",
+        name: "Settings",
         component: Settings,
         meta: {
-          header: 'Налаштування'
-        }
+          header: "Налаштування",
+        },
       },
       {
-        path: 'users',
-        name: 'SettingUsers',
+        path: "users",
+        name: "SettingUsers",
         component: SettingUsers,
         meta: {
-          header: 'Налаштування користувачів'
-        }
+          header: "Налаштування користувачів",
+        },
       },
       {
-        path: 'form-study',
-        name: 'FormStudy',
+        path: "form-study",
+        name: "FormStudy",
         component: FormStudy,
-        meta: { 
-          header: 'Форма навчання' 
-        }
+        meta: { header: "Форма навчання" },
       },
       {
-        path: 'form-organization',
-        name: 'FormOrganization',
+        path: "form-organization",
+        name: "FormOrganization",
         component: FormOrganization,
-        meta: {
-          header: 'Форма організації навчання'
-        }
-        
+        meta: { header: "Форма організації навчання" },
+      },
+      {
+        path: "restriction-editor",
+        component: () => import("@/views/SimpleLayout"),
+        children: [
+          {
+            path: '',
+            name: "RestrictionEditor",
+            component: RestrictionEditor,
+            meta: {
+              header: "Редактор обмежень",
+            },
+          },
+          {
+            path: "create",
+            name: "RestrictCreate",
+            component: RestrictCreate,
+            meta: {
+              header: "Додавання налаштувань",
+            },
+          },
+          {
+            path: ':id',
+            params: ['id'],
+            name: 'RestrictEdit',
+            meta: { header: 'Редагування' },
+            component: RestrictEdit,
+            beforeEnter: (to, from, next) => {
+              if (/^[0-9]+$/.test(to.params.id)) {
+                next();
+              } else {
+                next("/");
+              }
+            },
+          },
+        ],
       },
 
-    ]
+      {
+        path: "study-term",
+        name: "StudyTerm",
+        component: StudyTerm,
+        meta: { header: "Термін навчання" },
+      },
+    ],
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
   },
-  {
-    path: '/settings/restriction-editor',
-    component: Layout,
-    children: [{
-      path: '',
-      name: 'RestrictionEditor',
-      component: RestrictionEditor,
-      meta: {
-        header: 'Редактор обмежень'
-      }
-    },
-    {
-      path:'create',
-      name: 'RestrictCreate',
-      component: () => import('@/views/pages/settings/RestrictionEditor/create'),
-      meta: { header: 'Додавання налаштувань' }
-    },
-    {
-      path: ':id',
-      params: 'name',
-      name: 'RestrictEdit',
-      meta: { header: 'Редагування' },
-      component: () => import('@/views/pages/settings/RestrictionEditor/edit'),
-      beforeEnter: (to, from, next) => {
-        if (/^[0-9]+$/.test(to.params.id)) {
-          next();
-        }
-        else {
-          next('/');
-        }
-      },
-    },]
-  },
-  {
-    path : '/settings/study-term',
-    component: Layout,
-    children: [{
-      path: '',
-      name: 'StudyTerm',
-      component: StudyTerm,
-      meta: { header: 'Термін навчання' }
-    }]
-  }
-]
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;
