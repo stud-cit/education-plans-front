@@ -6,9 +6,9 @@ export const API = {
   // "REGISTER": version + '/register',
   "LOGOUT": version + '/logout',
   "COPY_PLAN": version + '/plans/copy/',
-  "SETTINGS": version + '/settings/',
-  "STUDY_TERMS": version + '/study-terms/',
-  "FORM_STUDIES": version + '/form-studies/',
+  "SETTINGS": version + '/settings',
+  "STUDY_TERMS": version + '/study-terms',
+  "FORM_STUDIES": version + '/form-studies',
   "FORM_ORGANIZATIONS": version + '/form-organizations',
   "PLAN_CREATE": version + '/plans/create',
   "PLANS": version + '/plans',
@@ -18,6 +18,7 @@ export const API = {
   "ROLES": version + '/roles',
   "WORKERS": version + '/workers',
   "FACULTY_BY_WORKER": version + '/faculty-by-worker',
+  "CYCLES": version + '/cycles', // for tests
 };
 
 export const ALLOWED_REQUEST_PARAMETERS = {

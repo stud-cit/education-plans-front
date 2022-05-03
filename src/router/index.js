@@ -70,7 +70,7 @@ const routes = [
         }
       },
       {
-        path: 'form-organization',
+        path: 'form-organizations',
         name: 'FormOrganization',
         component: FormOrganization,
         meta: {
