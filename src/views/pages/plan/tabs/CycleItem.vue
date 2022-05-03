@@ -38,7 +38,7 @@
               <v-list-item-title @click="addCycle(item)">Цикл</v-list-item-title>
             </v-list-item>
             <v-list-item link>
-              <v-list-item-title>Предмет</v-list-item-title>
+              <v-list-item-title @click="addSubject(item)">Дисципліна</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -52,11 +52,12 @@
       v-for="(child, subIndex) in item.cycles"
       :key="child.id"
       @addCycle="addCycle"
+      @addSubject="addSubject"
       @editCycle="editCycle"
       @delCycle="delCycle"/>
 
 
-      <v-row class="subject head ma-0 mb-1" v-if="item.subjects">
+      <v-row class="subject head ma-0 mb-1" v-if="item.subjects && item.subjects.length > 0">
         <v-col cols="7" class="pa-0 text-left">
           Назва предмету
         </v-col>
@@ -77,19 +78,19 @@
 
       <v-row class="subject ma-0 mb-1" v-for="(subject, subjectIndex) in item.subjects" :key="subjectIndex">
         <v-col cols="7" class="pa-0 text-left">
-          {{subject.title}}
+          {{subject.title ? subject.title : subject.selective_discipline.title}}
         </v-col>
         <v-col class="pa-0">
-          0
+          {{ subject.hours }}
         </v-col>
         <v-col class="pa-0">
-          0
+          {{ subject.practices }}
         </v-col>
         <v-col class="pa-0">
-          0
+          {{ subject.laboratories }}
         </v-col>
         <v-col class="pa-0">
-          0
+          {{ subject.credits }}
         </v-col>
         <v-col class="pa-0 text-right">
           <v-btn small icon>
@@ -121,6 +122,9 @@ export default {
   methods: {
     addCycle(item) {
       this.$emit('addCycle', item)
+    },
+    addSubject(item) {
+      this.$emit('addSubject', item)
     },
     editCycle(item) {
       this.$emit('editCycle', item)

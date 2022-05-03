@@ -70,8 +70,8 @@ const routes = [
         meta: { header: "Форма навчання" },
       },
       {
-        path: "form-organization",
-        name: "FormOrganization",
+        path: 'form-organizations',
+        name: 'FormOrganization',
         component: FormOrganization,
         meta: { header: "Форма організації навчання" },
       },

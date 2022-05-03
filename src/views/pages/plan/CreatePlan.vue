@@ -1,5 +1,133 @@
 <template>
   <v-container>
+    <v-dialog
+      v-model="subjectDialog"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+      scrollable
+    >
+      <v-card tile>
+        <v-toolbar
+          flat
+          dark
+          color="primary"
+        >
+          <v-btn
+            icon
+            dark
+            @click="subjectDialog = false"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>Предмет</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
+            <v-btn
+              dark
+              text
+              @click="subjectDialog = false"
+            >
+              Зберегти
+            </v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
+        <v-card-text class="py-5">
+          <v-container>
+            <v-row>
+              <v-col cols="3" class="py-0" style="display:flex; align-items: end">
+                <v-checkbox
+                  class="ma-0"
+                  label="Дисципліна за вибором"
+                ></v-checkbox>
+              </v-col>
+              <v-col cols="9" class="py-0">
+                <v-autocomplete
+                  :items="[1,2,3,4]"
+                  label="Предмет"
+                ></v-autocomplete>
+              </v-col>
+              <v-col cols="6" class="py-0">
+                <v-text-field
+                  label="Кредитів"
+                  required
+                ></v-text-field>
+              </v-col>
+              <v-col cols="6" class="py-0">
+                <v-text-field
+                  label="Обсяг годин лекцій"
+                  required
+                ></v-text-field>
+              </v-col>
+              <v-col cols="6" class="py-0">
+                <v-text-field
+                  label="Обсяг годин практичних занять"
+                  required
+                ></v-text-field>
+              </v-col>
+              <v-col cols="6" class="py-0">
+                <v-text-field
+                  label="Обсяг годин лабораторних занять"
+                  required
+                ></v-text-field>
+              </v-col>
+            </v-row>
+
+            <table class="table-modules">
+              <tr>
+                <td colspan="16">Розподіл годин на тиждень за курсами, семестрами і модульними атестаційними циклами</td>
+              </tr>
+              <tr>
+                <td colspan="4" v-for="index in 4" :key="index">{{ index }} курс</td>
+              </tr>
+              <tr>
+                <td colspan="16">Семестри</td>
+              </tr>
+              <tr>
+                <td colspan="2" v-for="index in 8" :key="index">{{ index }}</td>
+              </tr>
+              <tr>
+                <td colspan="16">Модульні атестаційні цикли</td>
+              </tr>
+              <tr>
+                <td v-for="(item, i) in 16" :key="i">
+                  <v-text-field>
+                  </v-text-field>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="16">
+                  <v-row>
+                    <v-col>
+                      <v-autocomplete
+                        :items="[1,2,3,4]"
+                        label="Форма контролю"
+                      ></v-autocomplete>
+                    </v-col>
+                    <v-col>
+                      <v-autocomplete
+                        :items="[1,2,3,4]"
+                        label="Індивідуальні завдання"
+                      ></v-autocomplete>
+                    </v-col>
+                  </v-row>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="16">Розподіл кредитів на вивчення за семестрами</td>
+              </tr>
+              <tr>
+                <td colspan="2" v-for="index in 8" :key="index">
+                  <v-text-field>
+                  </v-text-field>
+                </td>
+              </tr>
+            </table>
+
+          </v-container>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
 
     <v-dialog
       v-model="cycleDialog"
@@ -41,6 +169,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
     <v-tabs v-model="tab">
       <v-tab>Загальна інформація</v-tab>
       <v-tab>Цикли / предмети</v-tab>
@@ -61,6 +190,7 @@
           :index="index"
           v-for="(item, index) in cycles"
           :key="item.id"
+          @addSubject="addSubject"
           @addCycle="addCycle"
           @editCycle="editCycle"
           @delCycle="delCycle"/>
@@ -95,169 +225,17 @@ export default {
   },
   data() {
     return {
-      tab: 0,
-      cycles: [
-        {
-          id: 1,
-          title: "1 ЦИКЛ ДИСЦИПЛІН ЗАГАЛЬНОЇ ПІДГОТОВКИ",
-          credit: 65,
-          cycle_id: null,
-          cycles: [
-            {
-              id: 2,
-              title: "1.1 Обов'язкові навчальні дисципліни",
-              credit: 50,
-              cycle_id: 1,
-              subjects: [
-                {
-                  title: "Іноземна мова"
-                },
-                {
-                  title: 'Українознавство зі змістовим модулем "Комунікативний курс української мови"'
-                },
-                {
-                  title: "Філософія"
-                }
-              ]
-            },
-            {
-              id: 3,
-              title: "1.2 Вибіркові навчальні дисципліни",
-              credit: 15,
-              cycle_id: 1,
-              subjects: [
-                {
-                  title: "Фізичне виховання (вибір форм рухової активності)"
-                },
-                {
-                  title: "Вибіркові дисципліни гуманітарного спрямування (додаток 1)"
-                },
-                {
-                  title: "Вибіркові дисципліни інших спеціальностей  (додаток 2)"
-                },
-                {
-                  title: "Іноземна мова"
-                },
-              ]
-            }
-          ],
-          subjects: []
-        },
-        {
-          id: 4,
-          title: "2. ЦИКЛ ДИСЦИПЛІН ПРОФЕСІЙНОЇ ПІДГОТОВКИ",
-          credit: 160,
-          cycle_id: null,
-          cycles: [
-            {
-              id: 5,
-              title: "2.1 Обов'язкові навчальні дисципліни",
-              credit: 115,
-              cycle_id: 4,
-              cycles: [
-                {
-                  id: 6,
-                  title: "2.1.1 Обов’язкові навчальні дисципліни за спеціальністю",
-                  credit: 55,
-                  cycle_id: 5,
-                  subjects: [
-                    {
-                      title: "Іноземна мова"
-                    },
-                    {
-                      title: 'Українознавство зі змістовим модулем "Комунікативний курс української мови"'
-                    },
-                    {
-                      title: "Філософія"
-                    }
-                  ]
-                },
-                {
-                  id: 7,
-                  title: "2.1.2. Обов'язкові навчальні дисципліни за освітньою програмою",
-                  credit: 60,
-                  cycle_id: 5,
-                  subjects: [
-                    {
-                      title: "Іноземна мова"
-                    },
-                    {
-                      title: 'Українознавство зі змістовим модулем "Комунікативний курс української мови"'
-                    },
-                    {
-                      title: "Філософія"
-                    }
-                  ]
-                }
-              ],
-              subjects: []
-            },
-            {
-              id: 8,
-              title: "2.2. Вибіркові навчальні дисципліни",
-              credit: 45,
-              cycle_id: 4,
-              cycles: [
-                {
-                  id: 9,
-                  title: "2.2.1 Вибіркові навчальні дисципліни за спецальністю",
-                  credit: 10,
-                  cycle_id: 8,
-                  subjects: [
-                    {
-                      title: "Вибіркові дисципліни за спеціальністю"
-                    }
-                  ]
-                },
-                {
-                  id: 10,
-                  title: "2.2.2 Вибіркові навчальні дисципліни за освітньою програмою",
-                  credit: 35,
-                  cycle_id: 8,
-                  subjects: [
-                    {
-                      title: "Вибіркові дисципліни за освітньою програмою"
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
-          subjects: []
-        },
-        {
-          id: 11,
-          title: "3. Цикл практичної підготовки",
-          credit: 10,
-          cycle_id: null,
-          subjects: [
-            {
-              title: "Практика"
-            },
-            {
-              title: "Практика"
-            }
-          ]
-        },
-        {
-          id: 12,
-          title: "4. Атестація",
-          credit: 5,
-          cycle_id: null,
-          subjects: [
-            {
-              title: "Кваліфікаційна робота бакалавра"
-            },
-            {
-              title: "Атестаційний кваліфікаційний іспит"
-            }
-          ]
-        }
-      ],
+      tab: 1,
+      cycles: [],
       cycleDialog: false,
+      subjectDialog: false,
+      dialog: true,
       cycleForm: {
         title: "",
         credit: 0,
+      },
+      subjectForm: {
+        
       },
 
       generalTabFields: null,
@@ -266,9 +244,14 @@ export default {
 
   mounted() {
     this.apiGetFields();
+    this.apiGetCycles();
   },
 
   methods: {
+    addSubject(item) {
+      console.log(item)
+      this.subjectDialog = true;
+    },
     addCycle(item) {
       console.log(item)
       this.cycleForm = {title: "", credit: 0}
@@ -301,7 +284,29 @@ export default {
         this.generalTabFields = data
       })
     },
+
+    // for tests
+    apiGetCycles() {
+      api.get(API.CYCLES).then(({data}) => {
+        this.cycles = data;
+      })
+    },
   }
 }
 
 </script>
+
+<style lang="css" scoped>
+  table.table-modules {
+    margin-top: 20px;
+    border: 1px solid #dee2e6;
+    border-collapse: collapse;
+  }
+  table.table-modules td {
+    text-align: center;
+    color: #000;
+    font-size: 14px;
+    padding: 0.75rem;
+    border: 1px solid #dee2e6;
+  }
+</style>
