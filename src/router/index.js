@@ -42,6 +42,14 @@ const routes = [
           header: "Створення нового плану",
         },
       },
+      {
+        path: "edit/:id",
+        name: "EditPlan",
+        component: CreatePlan,
+        meta: {
+          header: "Редагування плану",
+        },
+      },
     ],
   },
   {
