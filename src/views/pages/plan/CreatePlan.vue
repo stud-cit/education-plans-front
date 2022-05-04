@@ -20,7 +20,7 @@
           >
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>Предмет</v-toolbar-title>
+          <v-toolbar-title>Нова дисципліна</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn
@@ -37,38 +37,52 @@
             <v-row>
               <v-col cols="3" class="py-0" style="display:flex; align-items: end">
                 <v-checkbox
+                  v-model="subjectForm.selectiveDiscipline"
                   class="ma-0"
                   label="Дисципліна за вибором"
                 ></v-checkbox>
               </v-col>
               <v-col cols="9" class="py-0">
                 <v-autocomplete
-                  :items="[1,2,3,4]"
-                  label="Предмет"
+                  v-if="subjectForm.selectiveDiscipline"
+                  :items="selectiveDiscipline"
+                  v-model="subjectForm.selective_discipline_id"
+                  label="Вибіркова дисципліна"
+                  item-text="title"
+                  item-value="id"
+                ></v-autocomplete>
+                <v-autocomplete
+                  v-else
+                  :items="['Фізика','Математика','Іноземна мова','Філосовія']"
+                  label="Дисципліна"
                 ></v-autocomplete>
               </v-col>
               <v-col cols="6" class="py-0">
                 <v-text-field
                   label="Кредитів"
                   required
+                  v-model="subjectForm.credits"
                 ></v-text-field>
               </v-col>
               <v-col cols="6" class="py-0">
                 <v-text-field
                   label="Обсяг годин лекцій"
                   required
+                  v-model="subjectForm.hours"
                 ></v-text-field>
               </v-col>
               <v-col cols="6" class="py-0">
                 <v-text-field
                   label="Обсяг годин практичних занять"
                   required
+                  v-model="subjectForm.practices"
                 ></v-text-field>
               </v-col>
               <v-col cols="6" class="py-0">
                 <v-text-field
                   label="Обсяг годин лабораторних занять"
                   required
+                  v-model="subjectForm.laboratories"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -91,11 +105,14 @@
               </tr>
               <tr>
                 <td v-for="(item, i) in 16" :key="i">
-                  <v-text-field>
+                  <v-text-field
+                    @focus="test = true"
+                    @blur="test = false"
+                  >
                   </v-text-field>
                 </td>
               </tr>
-              <tr>
+              <tr v-if="test">
                 <td colspan="16">
                   <v-row>
                     <v-col>
@@ -204,7 +221,7 @@
         </div>
       </v-tab-item>
       <v-tab-item>
-        3
+        <Title></Title>
       </v-tab-item>
     </v-tabs-items>
   </v-container>
@@ -216,17 +233,21 @@ import api from "@/api";
 import {API} from "@/api/constants-api";
 import General from "@/views/pages/plan/tabs/General";
 import { mapGetters } from 'vuex'
+import Title from "@/views/pages/plan/tabs/Title";
 
 export default {
   name: "CreatePlan",
   components: {
     General,
+    Title,
     CycleItem
   },
   data() {
     return {
       tab: 0,
+      test: false,
       cycles: [],
+      selectiveDiscipline: [],
       cycleDialog: false,
       subjectDialog: false,
       dialog: true,
@@ -235,7 +256,13 @@ export default {
         credit: 0,
       },
       subjectForm: {
-
+        selectiveDiscipline: false,
+        selective_discipline_id: null,
+        title: "",
+        credits: "",
+        hours: "",
+        practices: "",
+        laboratories: ""
       },
 
       generalTabFields: null,
@@ -248,6 +275,7 @@ export default {
   },
   mounted() {
     this.apiGetCycles();
+    this.apiGetSelectiveDiscipline();
   },
 
   methods: {
@@ -280,6 +308,12 @@ export default {
       }).catch((errors) => {
         console.log(errors.response.data)
       });
+    },
+
+    apiGetSelectiveDiscipline() {
+      api.get(API.SELECTIVE_DISCIPLINES).then(({data}) => {
+        this.selectiveDiscipline = data.data
+      })
     },
 
     // for tests
