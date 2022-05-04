@@ -31,11 +31,11 @@ export default {
   },
 };
 </script>
-//TODO: fix adaptive grid
-<style scope>
+
+<style scoped>
 .settings {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
 }
 </style>
