@@ -11,3 +11,7 @@ export const SET_OPTIONS = (state, payload) => {
 export const SET_LOADING = (state, payload) => {
     state.loading = payload;
 }
+
+export const SET_PLAN = (state, payload) => {
+  state.plan = payload;
+}

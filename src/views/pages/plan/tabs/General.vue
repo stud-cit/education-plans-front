@@ -313,11 +313,6 @@ import {API} from "@/api/constants-api";
 
 export default {
   name: "General",
-  props: {
-    fields: {
-      required: true,
-    }
-  },
   data() {
     return {
       title: null,
@@ -351,6 +346,9 @@ export default {
       countWeek: null,
     }
   },
+  mounted() {
+    this.apiGetFields();
+  },
   watch: {
     faculty(v) {
       v !== null ? this.apiGetDepartments(v) : this.departments = [];
@@ -358,18 +356,6 @@ export default {
     termStudy(v) {
       this.numberSemesters = v !== null ? v.number_semesters : null
     },
-    fields(v) {
-      this.faculties = v.faculties ?? [];
-      this.educationsLevel = v.educations_level ?? [];
-      this.formsStudy = v.forms_study ?? [];
-      this.termsStudy = v.terms_study ?? [];
-      this.educationalPrograms = v.educational_programs ?? [];
-      this.specialities = v.specialities ?? [];
-      this.qualifications = v.qualifications ?? [];
-      this.specialities = v.specialities ?? [];
-      this.fieldsKnowledge = v.fields_knowledge ?? [];
-      this.formsOrganizationStudy = v.forms_organizationStudy ?? [];
-    }
   },
   methods: {
     fakerYears() {
@@ -383,6 +369,20 @@ export default {
       }
       years.push(currentYear)
       return years.sort();
+    },
+    apiGetFields() {
+      api.get(API.PLAN_CREATE).then(({data}) => {
+        this.faculties = data.faculties ?? [];
+        this.educationsLevel = data.educations_level ?? [];
+        this.formsStudy = data.forms_study ?? [];
+        this.termsStudy = data.terms_study ?? [];
+        this.educationalPrograms = data.educational_programs ?? [];
+        this.specialities = data.specialities ?? [];
+        this.qualifications = data.qualifications ?? [];
+        this.specialities = data.specialities ?? [];
+        this.fieldsKnowledge = data.fields_knowledge ?? [];
+        this.formsOrganizationStudy = data.forms_organizationStudy ?? [];
+      })
     },
     apiGetDepartments(id) {
       this.departmentsLoading = true;

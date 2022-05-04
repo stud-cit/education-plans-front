@@ -172,14 +172,13 @@
 
     <v-tabs v-model="tab">
       <v-tab>Загальна інформація</v-tab>
-      <v-tab>Цикли / предмети</v-tab>
-      <v-tab>Титульний лист</v-tab>
+      <v-tab :disabled="plan === null">Цикли / предмети</v-tab>
+      <v-tab :disabled="plan === null">Титульний лист</v-tab>
     </v-tabs>
 
     <v-tabs-items v-model="tab">
       <v-tab-item>
         <General
-          :fields="generalTabFields"
           @submit="submit"
         />
       </v-tab-item>
@@ -216,6 +215,7 @@ import CycleItem from '@/views/pages/plan/tabs/CycleItem.vue';
 import api from "@/api";
 import {API} from "@/api/constants-api";
 import General from "@/views/pages/plan/tabs/General";
+import { mapGetters } from 'vuex'
 
 export default {
   name: "CreatePlan",
@@ -225,7 +225,7 @@ export default {
   },
   data() {
     return {
-      tab: 1,
+      tab: 0,
       cycles: [],
       cycleDialog: false,
       subjectDialog: false,
@@ -235,15 +235,18 @@ export default {
         credit: 0,
       },
       subjectForm: {
-        
+
       },
 
       generalTabFields: null,
     }
   },
-
+  computed: {
+    ...mapGetters({
+      plan: "plans/plan"
+    })
+  },
   mounted() {
-    this.apiGetFields();
     this.apiGetCycles();
   },
 
@@ -264,9 +267,8 @@ export default {
     delCycle(item) {
       console.log(item)
     },
-
     submit(data) {
-      api.post(API.PLANS, data).then((response) => {
+      this.$store.dispatch('plans/store', data).then( (response) => {
         const { message } = response.data;
         this.$swal.fire({
           position: "center",
@@ -275,14 +277,9 @@ export default {
           showConfirmButton: false,
           timer: 1500,
         });
+      }).catch((errors) => {
+        console.log(errors.response.data)
       });
-      console.log(data)
-    },
-
-    apiGetFields() {
-      api.get(API.PLAN_CREATE).then(({data}) => {
-        this.generalTabFields = data
-      })
     },
 
     // for tests

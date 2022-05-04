@@ -25,6 +25,13 @@ export const copy = (context, id) => {
   });
 }
 
+export const store = (context, data) => {
+  return api.post(API.PLANS, data).then((response) => {
+    context.commit('SET_PLAN', data);
+    return  response;
+  });
+}
+
 export const setOptions = (context, payload) => {
   context.commit('SET_OPTIONS', payload)
 }
