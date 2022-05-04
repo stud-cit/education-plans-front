@@ -9,6 +9,7 @@ import StudyTerm from '@/views/pages/settings/StudyTerm';
 import FormStudy from '@/views/pages/settings/FormStudy';
 import FormOrganization from '@/views/pages/settings/FormOrganization';
 import SettingUsers from "@/views/pages/settings/Users/Users";
+import SelectiveDisciplines from "@/views/pages/settings/SelectiveDisciplines/SelectiveDisciplines";
 
 Vue.use(VueRouter)
 
@@ -62,11 +63,19 @@ const routes = [
         }
       },
       {
+        path: 'selective-disciplines',
+        name: 'SelectiveDisciplines',
+        component: SelectiveDisciplines,
+        meta: {
+          header: 'Вибіркови дисципліни'
+        }
+      },
+      {
         path: 'form-study',
         name: 'FormStudy',
         component: FormStudy,
-        meta: { 
-          header: 'Форма навчання' 
+        meta: {
+          header: 'Форма навчання'
         }
       },
       {
@@ -76,7 +85,7 @@ const routes = [
         meta: {
           header: 'Форма організації навчання'
         }
-        
+
       },
 
     ]
