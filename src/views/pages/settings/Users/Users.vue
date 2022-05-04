@@ -58,6 +58,7 @@
       :workers="workers"
       :roles="roles"
       @close="() => this.showCreate = false" @submit="create"
+      ref="createUserModal"
     />
 
     <EditUserModal
@@ -142,9 +143,12 @@ export default {
           showConfirmButton: false,
           timer: 1500,
         })
+        this.$refs.createUserModal.clear();
 
         this.apiUsers();
         this.apiWorkers();
+      }).catch((errors) => {
+        this.$refs.createUserModal.setErrors(errors.response.data.errors)
       })
     },
     edit(data) {
