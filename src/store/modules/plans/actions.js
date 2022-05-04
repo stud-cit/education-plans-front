@@ -27,6 +27,7 @@ export const copy = (context, id) => {
 
 export const store = (context, data) => {
   return api.post(API.PLANS, data).then((response) => {
+    data.id = response.data.id
     context.commit('SET_PLAN', data);
     return  response;
   });
