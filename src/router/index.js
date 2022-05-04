@@ -11,6 +11,7 @@ import StudyTerm from "@/views/pages/settings/StudyTerm";
 import FormStudy from "@/views/pages/settings/FormStudy";
 import FormOrganization from "@/views/pages/settings/FormOrganization";
 import SettingUsers from "@/views/pages/settings/Users/Users";
+import SelectiveDisciplines from "@/views/pages/settings/SelectiveDisciplines/SelectiveDisciplines";
 
 Vue.use(VueRouter);
 
@@ -117,6 +118,14 @@ const routes = [
         name: "StudyTerm",
         component: StudyTerm,
         meta: { header: "Термін навчання" },
+      },
+      {
+        path: 'selective-disciplines',
+        name: 'SelectiveDisciplines',
+        component: SelectiveDisciplines,
+        meta: {
+          header: 'Вибіркови дисципліни'
+        }
       },
     ],
     // route level code-splitting

@@ -30,7 +30,7 @@ export default {
   },
 };
 </script>
-//TODO: fix adaptive grid 
+//TODO: fix adaptive grid
 <style scope>
 .settings {
   display: grid;

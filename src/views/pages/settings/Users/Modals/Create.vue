@@ -20,6 +20,7 @@
                   v-slot="{ errors }"
                   name="ПІБ"
                   rules="required"
+                  vid="asu_id"
                 >
                   <v-autocomplete
                     v-model="user"
@@ -47,7 +48,7 @@
                 <validation-provider
                   v-slot="{ errors }"
                   name="Факультет"
-                  rules="required"
+                  vid="faculty_id"
                 >
                   <v-text-field
                     :value="user.faculty"
@@ -176,6 +177,11 @@ export default {
     clear() {
       this.$refs.observer.reset()
       this.user = {}
+    },
+    setErrors(errors) {
+      this.$refs.observer.setErrors(
+        errors
+      );
     }
   }
 }
