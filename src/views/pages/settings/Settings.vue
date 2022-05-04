@@ -25,6 +25,7 @@ export default {
         { title: 'Форми навчання', to: 'FormStudy' },
         { title: 'Форма організації навчання', to: 'FormOrganization' },
         { title: 'Користувачі', to: 'SettingUsers' },
+        { title: 'Вибіркові дисципліни', to: 'SelectiveDisciplines' },
       ],
     };
   },
