@@ -1,7 +1,7 @@
 <template>
   <v-container>
       <div class="settings">
-        <v-card v-for="item in items" :key="item.title" elevation="2">
+        <v-card class="d-flex flex-column justify-space-between" v-for="item in items" :key="item.title" elevation="2">
           <v-card-text>
             <p class="text-h6 text--primary text-center">{{ item.title }}</p>
           </v-card-text>
