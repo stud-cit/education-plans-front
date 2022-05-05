@@ -292,6 +292,50 @@
         </v-col>
       </v-row>
       <v-row>
+        <v-col cols="12" class="py-0">
+          <table>
+            <thead>
+              <tr v-if="numberWeeks.length">
+                <th class="text-center" :colspan="termStudy.course * 4">
+                  Кількість тижнів у модульному атестаційному циклі
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+            <tr v-if="numberWeeks.length">
+              <td v-for="(course, ind) in termStudy.course" :key="ind" :colspan="4">
+                {{course}} курс
+              </td>
+            </tr>
+            <tr v-if="numberWeeks.length">
+              <template  v-for="element in numberWeeks">
+                <td v-for="item in 4" :key="element.course +'-'+ item">
+                  <validation-provider
+                      v-slot="{ errors }"
+                      name="Кількість тижнів у модульному атестаційному циклі"
+                      rules="required|numeric|min:1|max:2|min_value:1"
+                    >
+                      <v-text-field
+                        v-model="element.weeks[item]"
+                        :error-messages="errors"
+                        required
+                        outlined
+                        type="number"
+                        :min="1"
+                        :max="16"
+                        dense
+                        hide-details
+                        class="rounded-0"
+                      ></v-text-field>
+                  </validation-provider>
+                </td>
+              </template>
+            </tr>
+            </tbody>
+          </table>
+        </v-col>
+      </v-row>
+      <v-row>
         <v-col cols="12">
           <v-btn
             class="mr-4"
@@ -344,6 +388,7 @@ export default {
       credits: null,
       countHours: null,
       countWeek: null,
+      numberWeeks: []
     }
   },
   mounted() {
@@ -354,10 +399,23 @@ export default {
       v !== null ? this.apiGetDepartments(v) : this.departments = [];
     },
     termStudy(v) {
-      this.numberSemesters = v !== null ? v.number_semesters : null
+      if (v !== null) {
+        this.numberSemesters = v.number_semesters;
+        this.selectedTermStudy(v);
+      } else {
+        this.numberSemesters = null;
+        this.numberWeeks = [];
+      }
     },
   },
   methods: {
+    selectedTermStudy(course) {
+      this.numberWeeks = [];
+      for (let i = 0; i < course.course;) {
+       let template = {course: ++i, weeks: []}
+        this.numberWeeks.push(template);
+      }
+    },
     fakerYears() {
       let years = []
       const limit = 10
@@ -415,6 +473,7 @@ export default {
             credits: this.credits,
             count_hours: this.countHours,
             count_week: this.countWeek,
+            number_weeks: this.numberWeeks
           };
 
           this.$emit('submit', data)
@@ -425,6 +484,34 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="css" scoped>
+table {
+  width: 100%;
+  font-size: 12px;
+  border: 1px solid #dee2e6;
+  border-collapse: collapse;
+}
+table td {
+  text-align: center;
+  color: #000;
+  font-size: 14px;
+  border: 1px solid #dee2e6;
+  width: 19.5px;
+}
+table th {
+  padding: 10px 0;
+  font-size: 1rem;
+  font-weight: normal;
+  color: rgba(0, 0, 0, 0.6);
+}
+table td input {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  outline: none;
+}
+table td input:focus {
+  border: 1px solid #000;
+  box-sizing: border-box;
+}
 </style>
