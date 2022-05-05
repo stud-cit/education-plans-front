@@ -14,6 +14,12 @@ import SettingUsers from '@/views/pages/settings/Users/Users';
 import SelectiveDisciplines from '@/views/pages/settings/SelectiveDisciplines/SelectiveDisciplines';
 
 Vue.use(VueRouter);
+const BREADCRUMBS = {
+  SETTINGS: [
+    { text: 'Робота з планами', to: { name: 'ListPlans' } },
+    { text: 'Налаштування', to: { name: 'Settings'} },
+  ]
+}
 
 const routes = [
   {
@@ -26,6 +32,9 @@ const routes = [
         component: Plans,
         meta: {
           header: 'Робота з планами',
+          breadCrumb: [
+            { text: 'Робота з планами' }
+          ]
         },
       },
     ],
@@ -40,6 +49,15 @@ const routes = [
         component: CreatePlan,
         meta: {
           header: 'Створення нового плану',
+          breadCrumb: [
+            {
+              text: 'Робота з планами',
+              to: { name: 'ListPlans' }
+            },
+            {
+              text: 'Створення нового плану',
+            }
+          ]
         },
       },
       {
@@ -48,6 +66,19 @@ const routes = [
         component: CreatePlan,
         meta: {
           header: "Редагування плану",
+          breadCrumb() {
+            const paramToPageB = this.$route.params.id;
+            return [
+              { text: 'Робота з планами', to: { name: 'ListPlans' } },
+              { text: paramToPageB,
+                to: {
+                  name: 'EditPlan',
+                  params: { paramToPageB: paramToPageB }
+                }
+              },
+              { text: 'Редагування плану' }
+            ]
+          }
         },
       },
     ],
@@ -62,6 +93,10 @@ const routes = [
         component: Settings,
         meta: {
           header: 'Налаштування',
+          breadCrumb: [
+            { text: 'Робота з планами', to: { name: 'ListPlans' } },
+            { text: 'Налаштування' }
+          ]
         },
       },
       {
@@ -70,19 +105,35 @@ const routes = [
         component: SettingUsers,
         meta: {
           header: 'Налаштування користувачів',
+          breadCrumb: [
+            ...BREADCRUMBS.SETTINGS,
+            { text: 'Налаштування користувачів' }
+          ]
         },
       },
       {
         path: 'form-study',
         name: 'FormStudy',
         component: FormStudy,
-        meta: { header: 'Форма навчання' },
+        meta: {
+          header: 'Форма навчання',
+          breadCrumb: [
+            ...BREADCRUMBS.SETTINGS,
+            { text: 'Форма навчання' }
+          ]
+        },
       },
       {
         path: 'form-organizations',
         name: 'FormOrganization',
         component: FormOrganization,
-        meta: { header: 'Форма організації навчання' },
+        meta: {
+          header: 'Форма організації навчання',
+          breadCrumb: [
+            ...BREADCRUMBS.SETTINGS,
+            { text: 'Форма організації навчання' }
+          ]
+        },
       },
       {
         path: 'restriction-editor',
@@ -94,6 +145,10 @@ const routes = [
             component: RestrictionEditor,
             meta: {
               header: 'Редактор обмежень',
+              breadCrumb: [
+                ...BREADCRUMBS.SETTINGS,
+                { text: 'Редактор обмежень' }
+              ]
             },
           },
           {
@@ -102,13 +157,31 @@ const routes = [
             component: RestrictCreate,
             meta: {
               header: 'Додавання налаштувань',
+              breadCrumb: [
+                ...BREADCRUMBS.SETTINGS,
+                { text: 'Редактор обмежень', to: { name: 'RestrictionEditor'} },
+                { text: 'Додавання налаштувань' }
+              ]
             },
           },
           {
             path: ':id',
             params: ['id'],
             name: 'RestrictEdit',
-            meta: { header: 'Редагування' },
+            meta: {
+              header: 'Редагування',
+              breadCrumb() {
+                const paramToPageB = this.$route.params.id;
+                return [
+                  ...BREADCRUMBS.SETTINGS,
+                  { text: 'Редактор обмежень', to: { name: 'RestrictionEditor'} },
+                  { text: paramToPageB,
+                    to: { params: { paramToPageB: paramToPageB } }
+                  },
+                  { text: 'Редагування' }
+                ]
+              }
+            },
             component: RestrictEdit,
             beforeEnter: (to, from, next) => {
               if (/^[0-9]+$/.test(to.params.id)) {
@@ -125,7 +198,13 @@ const routes = [
         path: 'study-term',
         name: 'StudyTerm',
         component: StudyTerm,
-        meta: { header: 'Термін навчання' },
+        meta: {
+          header: 'Термін навчання',
+          breadCrumb: [
+            ...BREADCRUMBS.SETTINGS,
+            { text: 'Термін навчання' }
+          ]
+        },
       },
       {
         path: 'selective-disciplines',
@@ -133,6 +212,10 @@ const routes = [
         component: SelectiveDisciplines,
         meta: {
           header: 'Вибіркові дисципліни',
+          breadCrumb: [
+            ...BREADCRUMBS.SETTINGS,
+            { text: 'Вибіркові дисципліни' }
+          ]
         },
       },
     ],
