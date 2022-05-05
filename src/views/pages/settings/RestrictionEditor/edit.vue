@@ -73,7 +73,7 @@ export default {
       });
     },
     apiSettings() {
-      return api.get(`${API.SETTINGS}${this.$route.params.id}`);
+      return api.show(API.SETTINGS,this.$route.params.id);
     },
     submit() {
       this.$refs.observer.validate().then((response) => {
