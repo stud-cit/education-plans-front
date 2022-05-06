@@ -3,7 +3,7 @@
     <v-data-table
       :headers="headers"
       :items="items"
-      loading="loader"
+      :loading="loader"
       class="elevation-1"
       hide-default-footer
     >
