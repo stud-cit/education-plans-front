@@ -179,7 +179,7 @@
           <v-btn
             color="blue darken-1"
             text
-            @click="cycleDialog = false"
+            @click="saveCycle"
           >
             Зберегти
           </v-btn>
@@ -189,8 +189,8 @@
 
     <v-tabs v-model="tab">
       <v-tab>Загальна інформація</v-tab>
-      <v-tab :disabled="plan === null">Цикли / предмети</v-tab>
-      <v-tab :disabled="plan === null">Титульний лист</v-tab>
+      <v-tab :disabled="$route.name == 'CreatePlan'">Цикли / предмети</v-tab>
+      <v-tab :disabled="$route.name == 'CreatePlan'">Титульний лист</v-tab>
     </v-tabs>
 
     <v-tabs-items v-model="tab">
@@ -204,7 +204,7 @@
         <CycleItem
           :item="item"
           :index="index"
-          v-for="(item, index) in cycles"
+          v-for="(item, index) in data.cycles"
           :key="item.id"
           @addSubject="addSubject"
           @addCycle="addCycle"
@@ -246,7 +246,6 @@ export default {
     return {
       tab: 0,
       test: false,
-      cycles: [],
       selectiveDiscipline: [],
       cycleDialog: false,
       subjectDialog: false,
@@ -254,6 +253,8 @@ export default {
       cycleForm: {
         title: "",
         credit: 0,
+        plan_id: null,
+        cycle_id: null
       },
       subjectForm: {
         selectiveDiscipline: false,
@@ -266,6 +267,8 @@ export default {
       },
 
       generalTabFields: null,
+
+      data: Object,
     }
   },
   computed: {
@@ -274,8 +277,10 @@ export default {
     })
   },
   mounted() {
-    this.apiGetCycles();
     this.apiGetSelectiveDiscipline();
+    if(this.$route.name == 'EditPlan') {
+      this.apiGetPlanId();
+    }
   },
 
   methods: {
@@ -283,17 +288,51 @@ export default {
       console.log(item)
       this.subjectDialog = true;
     },
+    saveCycle() {
+      if(this.cycleForm.id) {
+        api.patch(API.CYCLES, this.cycleForm.id, this.cycleForm).then(() => {
+          this.cycleDialog = false;
+        }).catch((errors) => {
+          console.log(errors.response.data)
+        });
+      } else {
+        this.cycleForm.plan_id = this.$route.params.id;
+        api.post(API.CYCLES, this.cycleForm).then(() => {
+          this.apiGetPlanId();
+          this.cycleDialog = false;
+        }).catch((errors) => {
+          console.log(errors.response.data)
+        });
+      }
+    },
     addCycle(item) {
-      console.log(item)
-      this.cycleForm = {title: "", credit: 0}
+      this.cycleForm = {
+        title: "", 
+        credit: 0, 
+        cycle_id: item.id
+      }
       this.cycleDialog = true;
     },
     editCycle(item) {
-      this.cycleDialog = true;
       this.cycleForm = Object.assign(item, {});
+      this.cycleDialog = true;
     },
     delCycle(item) {
-      console.log(item)
+      this.$swal.fire({
+        title: `Бажаєте видалити?`,
+        text: `Інформацію неможливо буде відновити`,
+        showDenyButton: true,
+        confirmButtonText: 'Так',
+        denyButtonText: `Ні`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          api.destroy(API.CYCLES, item.id).then(() => {
+            this.apiGetPlanId();
+          }).catch((errors) => {
+            console.log(errors.response.data)
+          });
+        }
+      })
     },
     submit(data) {
       this.$store.dispatch('plans/store', data).then( (response) => {
@@ -305,6 +344,7 @@ export default {
           showConfirmButton: false,
           timer: 1500,
         });
+        this.$router.push({path: '/plan/edit/'+response.data.id});
       }).catch((errors) => {
         console.log(errors.response.data)
       });
@@ -316,12 +356,12 @@ export default {
       })
     },
 
-    // for tests
-    apiGetCycles() {
-      api.get(API.CYCLES).then(({data}) => {
-        this.cycles = data;
+    apiGetPlanId() {
+      api.show(API.PLANS, this.$route.params.id).then((response) => {
+        this.data = response.data.data;
       })
     },
+
   }
 }
 
