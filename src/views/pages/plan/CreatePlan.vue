@@ -87,33 +87,30 @@
               </v-col>
             </v-row>
 
-            <table class="table-modules">
+            <table class="table-modules" v-if="data.id">
               <tr>
-                <td colspan="16">Розподіл годин на тиждень за курсами, семестрами і модульними атестаційними циклами</td>
+                <td :colspan="countModules * 2">Розподіл годин на тиждень за курсами, семестрами і модульними атестаційними циклами</td>
               </tr>
               <tr>
-                <td colspan="4" v-for="index in 4" :key="index">{{ index }} курс</td>
+                <td colspan="4" v-for="index in data.study_term.course" :key="index">{{ index }} курс</td>
               </tr>
               <tr>
-                <td colspan="16">Семестри</td>
+                <td :colspan="countModules * 2">Семестри</td>
               </tr>
               <tr>
-                <td colspan="2" v-for="index in 8" :key="index">{{ index }}</td>
+                <td colspan="2" v-for="index in data.study_term.module" :key="index">{{ index }}</td>
+              </tr>
+              <tr v-if="data.form_organization.id == 1">
+                <td :colspan="countModules * 2">Модульні атестаційні цикли</td>
               </tr>
               <tr>
-                <td colspan="16">Модульні атестаційні цикли</td>
-              </tr>
-              <tr>
-                <td v-for="(item, i) in 16" :key="i">
-                  <v-text-field
-                    @focus="test = true"
-                    @blur="test = false"
-                  >
+                <td colspan="2" v-for="(item, i) in countModules" :key="i">
+                  <v-text-field @click="test = !test">
                   </v-text-field>
                 </td>
               </tr>
               <tr v-if="test">
-                <td colspan="16">
+                <td :colspan="countModules * 2">
                   <v-row>
                     <v-col>
                       <v-autocomplete
@@ -131,10 +128,10 @@
                 </td>
               </tr>
               <tr>
-                <td colspan="16">Розподіл кредитів на вивчення за семестрами</td>
+                <td :colspan="countModules * 2">Розподіл кредитів на вивчення за семестрами</td>
               </tr>
               <tr>
-                <td colspan="2" v-for="index in 8" :key="index">
+                <td colspan="2" v-for="index in data.study_term.module" :key="index">
                   <v-text-field>
                   </v-text-field>
                 </td>
@@ -274,7 +271,10 @@ export default {
   computed: {
     ...mapGetters({
       plan: "plans/plan"
-    })
+    }),
+    countModules() {
+      return this.data.study_term.module;
+    }
   },
   mounted() {
     this.apiGetSelectiveDiscipline();
@@ -369,6 +369,7 @@ export default {
 
 <style lang="css" scoped>
   table.table-modules {
+    margin: auto;
     margin-top: 20px;
     border: 1px solid #dee2e6;
     border-collapse: collapse;
