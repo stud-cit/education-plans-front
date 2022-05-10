@@ -53,6 +53,7 @@
       :key="child.id"
       @addCycle="addCycle"
       @addSubject="addSubject"
+      @editSubject="editSubject"
       @editCycle="editCycle"
       @delCycle="delCycle"/>
 
@@ -93,10 +94,10 @@
           {{ subject.credits }}
         </v-col>
         <v-col class="pa-0 text-right">
-          <v-btn small icon>
+          <v-btn small icon @click="editSubject(subject)">
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
-          <v-btn small icon>
+          <v-btn small icon @click="delSubject(item)">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
         </v-col>
@@ -120,11 +121,17 @@ export default {
     }
   },
   methods: {
-    addCycle(item) {
-      this.$emit('addCycle', item)
-    },
     addSubject(item) {
       this.$emit('addSubject', item)
+    },
+    editSubject(item) {
+      this.$emit('editSubject', item)
+    },
+    delSubject(item) {
+      this.$emit('delSubject', item)
+    },
+    addCycle(item) {
+      this.$emit('addCycle', item)
     },
     editCycle(item) {
       this.$emit('editCycle', item)

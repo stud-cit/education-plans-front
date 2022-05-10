@@ -26,7 +26,7 @@
             <v-btn
               dark
               text
-              @click="subjectDialog = false"
+              @click="saveSubject()"
             >
               Зберегти
             </v-btn>
@@ -104,24 +104,29 @@
                 <td :colspan="countModules * 2">Модульні атестаційні цикли</td>
               </tr>
               <tr>
-                <td colspan="2" v-for="(item, i) in countModules" :key="i">
-                  <v-text-field @click="test = !test">
+                <td colspan="2" v-for="(subject, index) in subjectForm.hours_weeks" :key="index" :class="{ activMod: index === activMod }">
+                  <v-text-field 
+                    v-model="subject.hour"
+                    @click="activMod = index; moduleNumber = subject"
+                  >
                   </v-text-field>
                 </td>
               </tr>
-              <tr v-if="test">
+              <tr v-if="moduleNumber">
                 <td :colspan="countModules * 2">
                   <v-row>
                     <v-col>
                       <v-autocomplete
-                        :items="[1,2,3,4]"
+                        :items="['Залік','Диференційний залік','Іспит']"
                         label="Форма контролю"
+                        v-model="moduleNumber.form_control_id"
                       ></v-autocomplete>
                     </v-col>
                     <v-col>
                       <v-autocomplete
-                        :items="[1,2,3,4]"
+                        :items="['Контрольна робота','Курсова робота','Без завдання']"
                         label="Індивідуальні завдання"
+                        v-model="moduleNumber.individual_task"
                       ></v-autocomplete>
                     </v-col>
                   </v-row>
@@ -204,6 +209,8 @@
           v-for="(item, index) in data.cycles"
           :key="item.id"
           @addSubject="addSubject"
+          @editSubject="editSubject"
+          @delSubject="delSubject"
           @addCycle="addCycle"
           @editCycle="editCycle"
           @delCycle="delCycle"/>
@@ -260,8 +267,11 @@ export default {
         credits: "",
         hours: "",
         practices: "",
-        laboratories: ""
+        laboratories: "",
+        hours_weeks: []
       },
+      moduleNumber: null,
+      activMod: null,
 
       generalTabFields: null,
 
@@ -285,8 +295,36 @@ export default {
 
   methods: {
     addSubject(item) {
-      console.log(item)
+      this.activMod = null;
+      this.moduleNumber = null;
+      this.subjectForm = {
+        cycle_id: item.id,
+        selectiveDiscipline: false,
+        selective_discipline_id: null,
+        title: "",
+        credits: "",
+        hours: "",
+        practices: "",
+        laboratories: "",
+        hours_weeks: []
+      };
+      for (let index = 0; index < this.countModules; index++) {
+        this.subjectForm.hours_weeks.push({
+          hour: 0
+        });
+      }
       this.subjectDialog = true;
+    },
+    editSubject(item) {
+      this.subjectForm = Object.assign(this.subjectForm, item);
+      this.subjectDialog = true;
+    },
+    delSubject(item) {
+      console.log(item)
+    },
+    saveSubject() {
+      console.log('save')
+      this.subjectDialog = false;
     },
     saveCycle() {
       if(this.cycleForm.id) {
@@ -380,5 +418,8 @@ export default {
     font-size: 14px;
     padding: 0.75rem;
     border: 1px solid #dee2e6;
+  }
+  .activMod {
+    background: #dedede;
   }
 </style>
