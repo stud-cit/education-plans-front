@@ -1,15 +1,24 @@
 <template>
   <div>
-    <v-row class="cycle ma-0 mb-1">
+    <v-row :class="['cycle', cycleIndexError == item.id ? 'error' : '', 'ma-0', 'mb-1']">
       <v-col cols="10" class="pa-0">
-        {{ item.title }}
+        <input type="text" :disabled="cycleIndex != item.id" v-model="item.title">
       </v-col>
       <v-col class="pa-0">
-        {{ item.credit }}
+        <input 
+          type="text" 
+          class="credits"
+          :disabled="cycleIndex != item.id" 
+          v-model="item.credit"
+          @input="checkCredit(parentItem, item)"
+        >
       </v-col>
       <v-col class="pa-0 text-right">
-        <v-btn small icon @click="editCycle(item)">
+        <v-btn small icon @click="cycleIndex = item.id" v-if="cycleIndex != item.id">
           <v-icon>mdi-pencil</v-icon>
+        </v-btn>
+        <v-btn small icon @click="saveCycle(item)" v-else>
+          <v-icon>mdi-floppy</v-icon>
         </v-btn>
         <v-btn small icon @click="delCycle(item)">
           <v-icon>mdi-delete</v-icon>
@@ -49,13 +58,16 @@
       :parentItem="item"
       v-bind:item="child"
       :index="subIndex"
+      :indexComponent="indexComponent"
       v-for="(child, subIndex) in item.cycles"
-      :key="child.id"
+      :key="child.id + indexComponent"
       @addCycle="addCycle"
       @addSubject="addSubject"
+      @saveCycle="saveCycle"
       @editSubject="editSubject"
       @editCycle="editCycle"
-      @delCycle="delCycle"/>
+      @delCycle="delCycle"
+      @errorCycle="errorCycle"/>
 
 
       <v-row class="subject head ma-0 mb-1" v-if="item.subjects && item.subjects.length > 0">
@@ -116,11 +128,62 @@ export default {
       type: Number,
       required: true
     },
+    indexComponent: {
+      type: Number,
+      required: true
+    },
     parentItem: {
+      required: false
+    },
+    data: {
+      type: Object,
       required: false
     }
   },
+  data() {
+    return {
+      cycleIndex: null,
+      cycleIndexError: null
+    }
+  },
+  mounted() {
+    this.checkCredit(this.parentItem, this.item);
+  },
   methods: {
+    checkCredit(parentItem, item) {
+      if(parentItem) {
+        this.checkCreditMethod(
+          parentItem, 
+          item, 
+          parentItem.credit, 
+          "Перевищена кількість кредитів"
+        );
+      } else {
+        this.checkCreditMethod(
+          this.data, 
+          item, 
+          this.data.credits, 
+          "Перевищена загальна кількість кредитів: " + this.data.credits
+        );
+      }
+    },
+    checkCreditMethod(data, item, limitCredit, message) {
+      var cycles = data.cycles;
+      var credints = [];
+      (function flat(cycles) {
+        cycles.forEach(function(el) {
+          if (Array.isArray(el)) flat(el);
+          else credints.push(el.credit);
+        });
+      })(cycles);
+      if(limitCredit < credints.reduce((prev, curr) => +prev + +curr, 0)) {
+        this.cycleIndexError = item.id;
+        this.errorCycle(message);
+      } else {
+        this.cycleIndexError = null;
+        this.errorCycle(null);
+      }
+    },
     addSubject(item) {
       this.$emit('addSubject', item)
     },
@@ -136,8 +199,15 @@ export default {
     editCycle(item) {
       this.$emit('editCycle', item)
     },
+    saveCycle(item) {
+      this.$emit('saveCycle', item)
+      this.cycleIndex = null
+    },
     delCycle(item) {
       this.$emit('delCycle', item)
+    },
+    errorCycle(item) {
+      this.$emit('errorCycle', item)
     },
   }
 }
@@ -161,5 +231,16 @@ export default {
   }
   .cycle {
     background: #fbfbfb;
+  }
+  .cycle.error {
+    background: #ff6464;
+    color: #fff;
+  }
+  .cycle.error input, .cycle.error i {
+    color: #fff;
+  }
+  .cycle input {
+    width: 90%;
+    text-align: center;
   }
 </style>

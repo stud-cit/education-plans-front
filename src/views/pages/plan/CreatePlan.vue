@@ -182,7 +182,7 @@
           <v-btn
             color="blue darken-1"
             text
-            @click="saveCycle"
+            @click="saveCycle()"
           >
             Зберегти
           </v-btn>
@@ -190,7 +190,7 @@
       </v-card>
     </v-dialog>
 
-    <v-tabs v-model="tab">
+    <v-tabs v-model="tab" class="mb-2">
       <v-tab>Загальна інформація</v-tab>
       <v-tab :disabled="$route.name == 'CreatePlan'">Цикли / предмети</v-tab>
       <v-tab :disabled="$route.name == 'CreatePlan'">Графіки</v-tab>
@@ -205,17 +205,31 @@
       </v-tab-item>
       <v-tab-item>
 
+        <v-alert
+          dense
+          outlined
+          type="error"
+          class="mb-2"
+          v-for="(error, errorIndex) in alertErrorCycle"
+          :key="'error'+errorIndex"
+        >
+          {{ error }}
+        </v-alert>
+
         <CycleItem
           :item="item"
           :index="index"
           v-for="(item, index) in data.cycles"
-          :key="item.id"
+          :key="item.id + indexComponent"
+          :indexComponent="indexComponent"
+          :data="data"
           @addSubject="addSubject"
           @editSubject="editSubject"
           @delSubject="delSubject"
           @addCycle="addCycle"
-          @editCycle="editCycle"
-          @delCycle="delCycle"/>
+          @saveCycle="saveCycle"
+          @delCycle="delCycle"
+          @errorCycle="errorCycle"/>
 
         <div class="text-center mt-4">
           <v-btn
@@ -250,11 +264,12 @@ export default {
   },
   data() {
     return {
-      tab: 0,
+      tab: 1,
       selectiveDiscipline: [],
       cycleDialog: false,
+      alertErrorCycle: [],
       subjectDialog: false,
-      dialog: true,
+      indexComponent: 1,
       cycleForm: {
         title: "",
         credit: 0,
@@ -364,10 +379,11 @@ export default {
       console.log('save')
       this.subjectDialog = false;
     },
-    saveCycle() {
-      if(this.cycleForm.id) {
-        api.patch(API.CYCLES, this.cycleForm.id, this.cycleForm).then(() => {
-          this.cycleDialog = false;
+    saveCycle(item = null) {
+      if(item != null) {
+        api.patch(API.CYCLES, item.id, item).then(() => {
+          this.alertErrorCycle = [];
+          this.indexComponent += 1;
         }).catch((errors) => {
           console.log(errors.response.data)
         });
@@ -389,10 +405,6 @@ export default {
       }
       this.cycleDialog = true;
     },
-    editCycle(item) {
-      this.cycleForm = Object.assign(item, {});
-      this.cycleDialog = true;
-    },
     delCycle(item) {
       this.$swal.fire({
         title: `Бажаєте видалити?`,
@@ -409,6 +421,11 @@ export default {
           });
         }
       })
+    },
+    errorCycle(item) {
+      if(item && this.alertErrorCycle.indexOf(item) == -1) {
+        this.alertErrorCycle.push(item)
+      }
     },
     submit(data) {
       this.$store.dispatch('plans/store', data).then( (response) => {
@@ -435,6 +452,8 @@ export default {
     apiGetPlanId() {
       api.show(API.PLANS, this.$route.params.id).then((response) => {
         this.data = response.data.data;
+        this.alertErrorCycle = [];
+        this.indexComponent += 1;
       })
     },
 
