@@ -53,6 +53,7 @@
                 ></v-autocomplete>
                 <v-autocomplete
                   v-else
+                  v-model="subjectForm.title"
                   :items="['Фізика','Математика','Іноземна мова','Філосовія']"
                   label="Дисципліна"
                 ></v-autocomplete>
@@ -104,7 +105,7 @@
                 <td :colspan="countModules * 2">Модульні атестаційні цикли</td>
               </tr>
               <tr>
-                <td colspan="2" v-for="(subject, index) in subjectForm.hours_weeks" :key="index" :class="{ activMod: index === activMod }">
+                <td :colspan="data.form_organization.id == 1 ? 0 : 2" v-for="(subject, index) in subjectForm.hours_modules" :key="index" :class="{ activMod: index === activMod }">
                   <v-text-field 
                     v-model="subject.hour"
                     @click="activMod = index; moduleNumber = subject"
@@ -192,13 +193,14 @@
     <v-tabs v-model="tab">
       <v-tab>Загальна інформація</v-tab>
       <v-tab :disabled="$route.name == 'CreatePlan'">Цикли / предмети</v-tab>
-      <v-tab :disabled="$route.name == 'CreatePlan'">Титульний лист</v-tab>
+      <v-tab :disabled="$route.name == 'CreatePlan'">Графіки</v-tab>
     </v-tabs>
 
     <v-tabs-items v-model="tab">
       <v-tab-item>
         <General
           @submit="submit"
+          :data="data"
         />
       </v-tab-item>
       <v-tab-item>
@@ -249,7 +251,6 @@ export default {
   data() {
     return {
       tab: 0,
-      test: false,
       selectiveDiscipline: [],
       cycleDialog: false,
       subjectDialog: false,
@@ -268,7 +269,7 @@ export default {
         hours: "",
         practices: "",
         laboratories: "",
-        hours_weeks: []
+        hours_modules: []
       },
       moduleNumber: null,
       activMod: null,
@@ -306,17 +307,54 @@ export default {
         hours: "",
         practices: "",
         laboratories: "",
-        hours_weeks: []
+        hours_modules: []
       };
-      for (let index = 0; index < this.countModules; index++) {
-        this.subjectForm.hours_weeks.push({
-          hour: 0
-        });
+      var semesters = this.data.study_term.semesters;
+      for (let course = 0; course < this.data.study_term.course; course++) {
+        let moduleNumber = 1;
+        for (let semester = 0; semester < 2; semester++) {
+          for (let module = 0; module < (this.data.form_organization.id == 1 ? 2 : 1); module++) {
+            if(semesters != 0) {
+              this.subjectForm.hours_modules.push({
+                hour: 0,
+                course: course+1,
+                semester: semester+1,
+                module: moduleNumber++
+              })
+            }
+          }
+          semesters--;
+        }
       }
       this.subjectDialog = true;
     },
     editSubject(item) {
       this.subjectForm = Object.assign(this.subjectForm, item);
+      var semesters = this.data.study_term.semesters;
+      var index = 0;
+      var newHoursModules = [];
+      for (let course = 0; course < this.data.study_term.course; course++) {
+        let moduleNumber = 1;
+        for (let semester = 0; semester < 2; semester++) {
+          for (let module = 0; module < (this.data.form_organization.id == 1 ? 2 : 1); module++) {
+            if(semesters != 0) {
+              if(this.subjectForm.hours_modules[index]) {
+                newHoursModules.push(this.subjectForm.hours_modules[index]);
+              } else {
+                newHoursModules.push({
+                  hour: 0,
+                  course: course+1,
+                  semester: semester+1,
+                  module: moduleNumber++
+                })
+              }
+            }
+            index++;
+          }
+          semesters--;
+        }
+      }
+      this.subjectForm.hours_modules = newHoursModules;
       this.subjectDialog = true;
     },
     delSubject(item) {
