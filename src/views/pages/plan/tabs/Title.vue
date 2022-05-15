@@ -52,7 +52,7 @@
         <td>Кваліфікаційна робота бакалавра</td>
         <td>Квалфікаційні (атестаційні) іспити</td>
       </tr>
-      <tr v-for="i in countCourses" :key="i">
+      <tr v-for="i in data.study_term.course" :key="i">
         <td>{{ i }}</td>
         <td></td>
         <td></td>
@@ -113,6 +113,7 @@
             <td>
               Семестр
             </td>
+          </tr>
           <tr v-for="i in 4" :key="i">
             <td>{{i}}</td>
             <td></td>
@@ -125,6 +126,7 @@
       class="mt-4"
       type="submit"
       color="primary"
+      @click="save()"
     >
       Зберегти
     </v-btn>
@@ -133,6 +135,12 @@
 <script>
 export default {
   name: "Title",
+  props: {
+    data: {
+      type: Object,
+      required: true
+    },
+  },
   data() {
     return {
       year: {
@@ -140,22 +148,24 @@ export default {
         header: [],
         courses: []
       },
-      countCourses: 4,
-      curretYear: 2021,
       month: ['Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень']
     }
   },
-  created() {
+  mounted() {
     this.start();
   },
   methods: {
+    save() {
+      console.log(this.year)
+    },
+
     start() {
-      for (let index = 0; index < this.countCourses; index++) {
+      for (let index = 0; index < this.data.study_term.course; index++) {
         this.year.courses.push([]);
       }
 
       for (let index = 0; index < 12; index++) {
-        var date = new Date(this.curretYear, 9 + index, 0);
+        var date = new Date(this.data.year, 9 + index, 0);
         var countWeek = this.getWeeks(date.getFullYear(), date.getMonth(), 0);
         this.year.weeks += countWeek;
 
@@ -206,6 +216,7 @@ export default {
     height: 100%;
     text-align: center;
     outline: none;
+    text-transform: uppercase;
   }
   table td input:focus {
     border: 1px solid #000;

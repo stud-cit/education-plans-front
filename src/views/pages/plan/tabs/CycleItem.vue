@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row :class="['cycle', cycleIndexError == item.id ? 'error' : '', 'ma-0', 'mb-1']">
+    <v-row :class="['cycle-subject', 'cycle', cycleIndexError == item.id ? 'error' : '', 'ma-0', 'mb-1']">
       <v-col cols="10" class="pa-0">
         <input type="text" :disabled="cycleIndex != item.id" v-model="item.title">
       </v-col>
@@ -54,6 +54,31 @@
       </v-col>
     </v-row>
 
+    <v-row class="cycle-subject head ma-0 mb-1" v-if="item.subjects && item.subjects.length > 0">
+      <v-col cols="7" class="pa-0 text-left">
+        Назва предмету
+      </v-col>
+      <v-col class="pa-0">
+        Лекцій
+      </v-col>
+      <v-col class="pa-0">
+        Практичних
+      </v-col>
+      <v-col class="pa-0">
+        Лабораторних
+      </v-col>
+      <v-col class="pa-0">
+        Кредитів
+      </v-col>
+      <v-col class="pa-0"></v-col>
+    </v-row>
+
+    <SubjectItem
+      v-for="(subject, subjectIndex) in item.subjects" 
+      :key="subjectIndex"
+      :subject="subject"
+      :item="item"/>
+
     <CycleItem 
       :parentItem="item"
       v-bind:item="child"
@@ -64,61 +89,19 @@
       @addCycle="addCycle"
       @addSubject="addSubject"
       @saveCycle="saveCycle"
-      @editSubject="editSubject"
       @editCycle="editCycle"
       @delCycle="delCycle"
       @errorCycle="errorCycle"/>
 
-
-      <v-row class="subject head ma-0 mb-1" v-if="item.subjects && item.subjects.length > 0">
-        <v-col cols="7" class="pa-0 text-left">
-          Назва предмету
-        </v-col>
-        <v-col class="pa-0">
-          Лекцій
-        </v-col>
-        <v-col class="pa-0">
-          Практичних
-        </v-col>
-        <v-col class="pa-0">
-          Лабораторних
-        </v-col>
-        <v-col class="pa-0">
-          Кредитів
-        </v-col>
-        <v-col class="pa-0"></v-col>
-      </v-row>
-
-      <v-row class="subject ma-0 mb-1" v-for="(subject, subjectIndex) in item.subjects" :key="subjectIndex">
-        <v-col cols="7" class="pa-0 text-left">
-          {{subject.title ? subject.title : subject.selective_discipline.title}}
-        </v-col>
-        <v-col class="pa-0">
-          {{ subject.hours }}
-        </v-col>
-        <v-col class="pa-0">
-          {{ subject.practices }}
-        </v-col>
-        <v-col class="pa-0">
-          {{ subject.laboratories }}
-        </v-col>
-        <v-col class="pa-0">
-          {{ subject.credits }}
-        </v-col>
-        <v-col class="pa-0 text-right">
-          <v-btn small icon @click="editSubject(subject)">
-            <v-icon>mdi-pencil</v-icon>
-          </v-btn>
-          <v-btn small icon @click="delSubject(item)">
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
-        </v-col>
-      </v-row> 
   </div>
 </template>
 <script>
+import SubjectItem from '@/views/pages/plan/tabs/SubjectItem.vue';
 export default {
   name: "CycleItem",
+  components: {
+    SubjectItem
+  },
   props: {
     item: {
       type: Object,
@@ -187,12 +170,6 @@ export default {
     addSubject(item) {
       this.$emit('addSubject', item)
     },
-    editSubject(item) {
-      this.$emit('editSubject', item)
-    },
-    delSubject(item) {
-      this.$emit('delSubject', item)
-    },
     addCycle(item) {
       this.$emit('addCycle', item)
     },
@@ -212,8 +189,8 @@ export default {
   }
 }
 </script>
-<style scoped>
-  .cycle, .subject {
+<style>
+  .cycle-subject {
     width: 100%;
     padding: 5px 10px 5px 10px;
     background: #fff;
@@ -225,22 +202,22 @@ export default {
     display: flex;
     align-items: center;
   }
-  .subject.head {
-    text-align: center;
-    color: #9b9b9b;
-  }
-  .cycle {
-    background: #fbfbfb;
-  }
-  .cycle.error {
+  .cycle-subject.error {
     background: #ff6464;
     color: #fff;
   }
-  .cycle.error input, .cycle.error i {
-    color: #fff;
+  .cycle-subject.error input, .cycle-subject.error i {
+    color: #fff !important;
   }
-  .cycle input {
+  .cycle-subject input {
     width: 90%;
     text-align: center;
+  }
+  .cycle-subject.head {
+    text-align: center;
+    color: #9b9b9b;
+  }
+  .cycle-subject.cycle {
+    background: #f8f8f8;
   }
 </style>

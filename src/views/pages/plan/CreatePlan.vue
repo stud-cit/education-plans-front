@@ -20,7 +20,7 @@
           >
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>Нова дисципліна</v-toolbar-title>
+          <v-toolbar-title>{{ subjectForm.id != null ? subjectForm.title : 'Нова дисципліна' }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn
@@ -60,33 +60,43 @@
               </v-col>
               <v-col cols="6" class="py-0">
                 <v-text-field
+                  type="number"
                   label="Кредитів"
-                  required
                   v-model="subjectForm.credits"
                 ></v-text-field>
               </v-col>
               <v-col cols="6" class="py-0">
                 <v-text-field
+                  type="number"
                   label="Обсяг годин лекцій"
-                  required
                   v-model="subjectForm.hours"
                 ></v-text-field>
               </v-col>
               <v-col cols="6" class="py-0">
                 <v-text-field
+                  type="number"
                   label="Обсяг годин практичних занять"
-                  required
                   v-model="subjectForm.practices"
                 ></v-text-field>
               </v-col>
               <v-col cols="6" class="py-0">
                 <v-text-field
+                  type="number"
                   label="Обсяг годин лабораторних занять"
-                  required
                   v-model="subjectForm.laboratories"
                 ></v-text-field>
               </v-col>
             </v-row>
+
+            <v-alert
+              dense
+              outlined
+              type="error"
+              class="mb-2"
+              v-if="checkCountHoursModules"
+            >
+              Перевищено загальну кількість годин. Кількість розподілених годин має відповідати сумі годин лекцій, практичних, лабораторних.
+            </v-alert>
 
             <table class="table-modules" v-if="data.id">
               <tr>
@@ -107,6 +117,7 @@
               <tr>
                 <td :colspan="data.form_organization.id == 1 ? 0 : 2" v-for="(subject, index) in subjectForm.hours_modules" :key="index" :class="{ activMod: index === activMod }">
                   <v-text-field 
+                    type="number"
                     v-model="subject.hour"
                     @click="activMod = index; moduleNumber = subject"
                   >
@@ -118,16 +129,20 @@
                   <v-row>
                     <v-col>
                       <v-autocomplete
-                        :items="['Залік','Диференційний залік','Іспит']"
+                        :items="formControls"
                         label="Форма контролю"
+                        item-text="title"
+                        item-value="id"
                         v-model="moduleNumber.form_control_id"
                       ></v-autocomplete>
                     </v-col>
                     <v-col>
                       <v-autocomplete
-                        :items="['Контрольна робота','Курсова робота','Без завдання']"
+                        :items="individualTasks"
                         label="Індивідуальні завдання"
-                        v-model="moduleNumber.individual_task"
+                        item-text="title"
+                        item-value="id"
+                        v-model="moduleNumber.individual_task_id"
                       ></v-autocomplete>
                     </v-col>
                   </v-row>
@@ -224,8 +239,6 @@
           :indexComponent="indexComponent"
           :data="data"
           @addSubject="addSubject"
-          @editSubject="editSubject"
-          @delSubject="delSubject"
           @addCycle="addCycle"
           @saveCycle="saveCycle"
           @delCycle="delCycle"
@@ -241,7 +254,7 @@
         </div>
       </v-tab-item>
       <v-tab-item>
-        <Title></Title>
+        <Title :data="data"></Title>
       </v-tab-item>
     </v-tabs-items>
   </v-container>
@@ -255,6 +268,8 @@ import General from "@/views/pages/plan/tabs/General";
 import { mapGetters } from 'vuex'
 import Title from "@/views/pages/plan/tabs/Title";
 
+import {eventBus} from '@/main'
+
 export default {
   name: "CreatePlan",
   components: {
@@ -264,7 +279,7 @@ export default {
   },
   data() {
     return {
-      tab: 1,
+      tab: 0,
       selectiveDiscipline: [],
       cycleDialog: false,
       alertErrorCycle: [],
@@ -277,6 +292,7 @@ export default {
         cycle_id: null
       },
       subjectForm: {
+        sumSubjectsCredits: 0,
         selectiveDiscipline: false,
         selective_discipline_id: null,
         title: "",
@@ -291,6 +307,9 @@ export default {
 
       generalTabFields: null,
 
+      individualTasks: [],
+      formControls: [],
+
       data: Object,
     }
   },
@@ -300,13 +319,29 @@ export default {
     }),
     countModules() {
       return this.data.study_term.module;
+    },
+    checkCountHoursModules() {
+      let sumHours = +this.subjectForm.hours + +this.subjectForm.practices + +this.subjectForm.laboratories;
+      let sumHoursModules = this.subjectForm.hours_modules.map(item => item.hour).reduce((prev, curr) => prev + curr, 0);
+      return sumHoursModules > sumHours;
     }
   },
   mounted() {
     this.apiGetSelectiveDiscipline();
     if(this.$route.name == 'EditPlan') {
       this.apiGetPlanId();
+      this.apiGetIndividualTasks();
+      this.apiGetFormControls();
     }
+    eventBus.$on('editSubject', (data) => {
+      this.editSubject(data);
+    });
+    eventBus.$on('delSubject', (data) => {
+      this.delSubject(data);
+    });
+    eventBus.$on('errorSubject', (data) => {
+      this.errorCycle(data);
+    });
   },
 
   methods: {
@@ -314,6 +349,7 @@ export default {
       this.activMod = null;
       this.moduleNumber = null;
       this.subjectForm = {
+        sumSubjectsCredits: item.subjects.map(item => item.credits).reduce((prev, curr) => prev + curr, 0),
         cycle_id: item.id,
         selectiveDiscipline: false,
         selective_discipline_id: null,
@@ -334,8 +370,10 @@ export default {
                 hour: 0,
                 course: course+1,
                 semester: semester+1,
-                module: moduleNumber++
-              })
+                module: moduleNumber++,
+                individual_task_id: 3,
+                form_control_id: 4
+              });
             }
           }
           semesters--;
@@ -343,8 +381,11 @@ export default {
       }
       this.subjectDialog = true;
     },
-    editSubject(item) {
-      this.subjectForm = Object.assign(this.subjectForm, item);
+    editSubject({subject, cycle}) {
+      this.subjectForm = Object.assign(this.subjectForm, subject);
+      this.subjectForm.sumSubjectsCredits = cycle.subjects
+        .map(subjectItem => subjectItem.id != subject.id ? subject.credits : 0)
+        .reduce((prev, curr) => prev + curr, 0);
       var semesters = this.data.study_term.semesters;
       var index = 0;
       var newHoursModules = [];
@@ -449,6 +490,18 @@ export default {
       })
     },
 
+    apiGetIndividualTasks() {
+      api.get(API.INDIVIDUAL_TASKS).then(({data}) => {
+        this.individualTasks = data.data
+      })
+    },
+
+    apiGetFormControls() {
+      api.get(API.FORM_CONTROLS).then(({data}) => {
+        this.formControls = data.data
+      })
+    },
+
     apiGetPlanId() {
       api.show(API.PLANS, this.$route.params.id).then((response) => {
         this.data = response.data.data;
@@ -465,7 +518,6 @@ export default {
 <style lang="css" scoped>
   table.table-modules {
     margin: auto;
-    margin-top: 20px;
     border: 1px solid #dee2e6;
     border-collapse: collapse;
   }
@@ -477,6 +529,6 @@ export default {
     border: 1px solid #dee2e6;
   }
   .activMod {
-    background: #dedede;
+    background: #f2f2f2;
   }
 </style>
