@@ -62,28 +62,30 @@
                 <v-text-field
                   type="number"
                   label="Кредитів"
-                  v-model="subjectForm.credits"
+                  min="0"
+                  v-model.number="subjectForm.credits"
+                  :rules="[v => (v + subjectForm.sumSubjectsCredits) <= cycleForm.credit || 'Перевищена кількість кредитів']"
                 ></v-text-field>
               </v-col>
               <v-col cols="6" class="py-0">
                 <v-text-field
                   type="number"
                   label="Обсяг годин лекцій"
-                  v-model="subjectForm.hours"
+                  v-model.number="subjectForm.hours"
                 ></v-text-field>
               </v-col>
               <v-col cols="6" class="py-0">
                 <v-text-field
                   type="number"
                   label="Обсяг годин практичних занять"
-                  v-model="subjectForm.practices"
+                  v-model.number="subjectForm.practices"
                 ></v-text-field>
               </v-col>
               <v-col cols="6" class="py-0">
                 <v-text-field
                   type="number"
                   label="Обсяг годин лабораторних занять"
-                  v-model="subjectForm.laboratories"
+                  v-model.number="subjectForm.laboratories"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -96,6 +98,16 @@
               v-if="checkCountHoursModules"
             >
               Перевищено загальну кількість годин. Кількість розподілених годин має відповідати сумі годин лекцій, практичних, лабораторних.
+            </v-alert>
+
+            <v-alert
+              dense
+              outlined
+              type="error"
+              class="mb-2"
+              v-if="checkLastHourModule"
+            >
+              Необхідно вказати форму контролю та індивідуальне завдання в останньому модулі.
             </v-alert>
 
             <table class="table-modules" v-if="data.id">
@@ -115,10 +127,16 @@
                 <td :colspan="countModules * 2">Модульні атестаційні цикли</td>
               </tr>
               <tr>
-                <td :colspan="data.form_organization.id == 1 ? 0 : 2" v-for="(subject, index) in subjectForm.hours_modules" :key="index" :class="{ activMod: index === activMod }">
+                <td 
+                  :colspan="data.form_organization.id == 1 ? 0 : 2" 
+                  v-for="(subject, index) in subjectForm.hours_modules" 
+                  :key="index" 
+                  :class="[index === activMod ? 'activMod' : '', (checkLastHourModule && index == subjectForm.hours_modules.length - 1) ? 'error' : '']"
+                >
                   <v-text-field 
                     type="number"
-                    v-model="subject.hour"
+                    :dark="checkLastHourModule && index == subjectForm.hours_modules.length - 1"
+                    v-model.number="subject.hour"
                     @click="activMod = index; moduleNumber = subject"
                   >
                   </v-text-field>
@@ -175,12 +193,16 @@
             <v-text-field
               label="Назва циклу"
               v-model="cycleForm.title"
+              :rules="[v => !!v || 'Поле обов\'язкове для заповнення']"
               required
             ></v-text-field>
 
             <v-text-field
               label="Кредитів"
               v-model="cycleForm.credit"
+              type="number"
+              min="0"
+              :rules="[v => (+v + cycleForm.sumCyclesCredits) <= cycleForm.parrentCycleCredit || 'Перевищена кількість кредитів']"
               required
             ></v-text-field>
           </v-container>
@@ -235,7 +257,7 @@
           :item="item"
           :index="index"
           v-for="(item, index) in data.cycles"
-          :key="item.id + indexComponent"
+          :key="'cycle' + item.id + indexComponent"
           :indexComponent="indexComponent"
           :data="data"
           @addSubject="addSubject"
@@ -289,7 +311,9 @@ export default {
         title: "",
         credit: 0,
         plan_id: null,
-        cycle_id: null
+        cycle_id: null,
+        parrentCycleCredit: 0,
+        sumCyclesCredits: 0
       },
       subjectForm: {
         sumSubjectsCredits: 0,
@@ -322,8 +346,16 @@ export default {
     },
     checkCountHoursModules() {
       let sumHours = +this.subjectForm.hours + +this.subjectForm.practices + +this.subjectForm.laboratories;
-      let sumHoursModules = this.subjectForm.hours_modules.map(item => item.hour).reduce((prev, curr) => prev + curr, 0);
+      let sumHoursModules = this.sumArray(this.subjectForm.hours_modules, 'hour');
       return sumHoursModules > sumHours;
+    },
+    checkLastHourModule() {
+      if(this.subjectForm.hours_modules.length > 0) {
+        let lastItem = this.subjectForm.hours_modules[this.subjectForm.hours_modules.length - 1];
+        return lastItem.individual_task_id == 3 || lastItem.form_control_id == 4;
+      } else {
+        return false;
+      }
     }
   },
   mounted() {
@@ -348,8 +380,9 @@ export default {
     addSubject(item) {
       this.activMod = null;
       this.moduleNumber = null;
+      this.cycleForm = item;
       this.subjectForm = {
-        sumSubjectsCredits: item.subjects.map(item => item.credits).reduce((prev, curr) => prev + curr, 0),
+        sumSubjectsCredits: this.sumArray(item.subjects, 'credits'),
         cycle_id: item.id,
         selectiveDiscipline: false,
         selective_discipline_id: null,
@@ -383,9 +416,8 @@ export default {
     },
     editSubject({subject, cycle}) {
       this.subjectForm = Object.assign(this.subjectForm, subject);
-      this.subjectForm.sumSubjectsCredits = cycle.subjects
-        .map(subjectItem => subjectItem.id != subject.id ? subject.credits : 0)
-        .reduce((prev, curr) => prev + curr, 0);
+      this.cycleForm = cycle;
+      this.subjectForm.sumSubjectsCredits = this.sumArray(cycle.subjects, 'credits') - subject.credits;
       var semesters = this.data.study_term.semesters;
       var index = 0;
       var newHoursModules = [];
@@ -401,7 +433,9 @@ export default {
                   hour: 0,
                   course: course+1,
                   semester: semester+1,
-                  module: moduleNumber++
+                  module: moduleNumber++,
+                  individual_task_id: 3,
+                  form_control_id: 4
                 })
               }
             }
@@ -414,11 +448,39 @@ export default {
       this.subjectDialog = true;
     },
     delSubject(item) {
-      console.log(item)
+      this.$swal.fire({
+        title: `Бажаєте видалити?`,
+        text: `Інформацію неможливо буде відновити`,
+        showDenyButton: true,
+        confirmButtonText: 'Так',
+        denyButtonText: `Ні`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          api.destroy(API.SUBJECTS, item.id).then(() => {
+            this.apiGetPlanId();
+          }).catch((errors) => {
+            console.log(errors.response.data)
+          });
+        }
+      })
     },
     saveSubject() {
-      console.log('save')
-      this.subjectDialog = false;
+      if(this.subjectForm.id) {
+        api.patch(API.SUBJECTS, this.subjectForm.id, this.subjectForm).then(() => {
+          this.alertErrorCycle = [];
+          this.indexComponent += 1;
+          this.subjectDialog = false;
+        }).catch((errors) => {
+          console.log(errors.response.data)
+        });
+      } else {
+        api.post(API.SUBJECTS, this.subjectForm).then(() => {
+          this.apiGetPlanId();
+          this.subjectDialog = false;
+        }).catch((errors) => {
+          console.log(errors.response.data)
+        });
+      }
     },
     saveCycle(item = null) {
       if(item != null) {
@@ -442,7 +504,9 @@ export default {
       this.cycleForm = {
         title: "", 
         credit: 0, 
-        cycle_id: item.id
+        cycle_id: item.id,
+        parrentCycleCredit: item.credit == null ? this.data.credits : item.credit,
+        sumCyclesCredits: item.id ? this.sumArray(item.cycles, 'credit') : 0
       }
       this.cycleDialog = true;
     },
@@ -482,6 +546,10 @@ export default {
       }).catch((errors) => {
         console.log(errors.response.data)
       });
+    },
+
+    sumArray(array, field) {
+      return array.map(item => item[field]).reduce((prev, curr) => +prev + +curr, 0);
     },
 
     apiGetSelectiveDiscipline() {

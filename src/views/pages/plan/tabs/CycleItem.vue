@@ -85,7 +85,7 @@
       :index="subIndex"
       :indexComponent="indexComponent"
       v-for="(child, subIndex) in item.cycles"
-      :key="child.id + indexComponent"
+      :key="'cycle' + child.id + indexComponent"
       @addCycle="addCycle"
       @addSubject="addSubject"
       @saveCycle="saveCycle"
@@ -139,14 +139,14 @@ export default {
           parentItem, 
           item, 
           parentItem.credit, 
-          "Перевищена кількість кредитів"
+          "Перевищена кількість кредитів в циклі " + parentItem.title + ": "
         );
       } else {
         this.checkCreditMethod(
           this.data, 
           item, 
           this.data.credits, 
-          "Перевищена загальна кількість кредитів: " + this.data.credits
+          "Перевищена загальна кількість кредитів: "
         );
       }
     },
@@ -159,9 +159,12 @@ export default {
           else credints.push(el.credit);
         });
       })(cycles);
-      if(limitCredit < credints.reduce((prev, curr) => +prev + +curr, 0)) {
+      let sumCredits = credints.reduce((prev, curr) => +prev + +curr, 0);
+      if(limitCredit < sumCredits) {
         this.cycleIndexError = item.id;
-        this.errorCycle(message);
+        if(this.cycleIndex == null) {
+          this.errorCycle(message + sumCredits + " із " + limitCredit);
+        }
       } else {
         this.cycleIndexError = null;
         this.errorCycle(null);
@@ -202,11 +205,7 @@ export default {
     display: flex;
     align-items: center;
   }
-  .cycle-subject.error {
-    background: #ff6464;
-    color: #fff;
-  }
-  .cycle-subject.error input, .cycle-subject.error i {
+  .cycle-subject.error, .cycle-subject.error input, .cycle-subject.error i {
     color: #fff !important;
   }
   .cycle-subject input {

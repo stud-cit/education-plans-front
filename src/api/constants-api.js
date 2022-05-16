@@ -22,6 +22,7 @@ export const API = {
   "FACULTY_BY_WORKER": version + '/faculty-by-worker',
   "SELECTIVE_DISCIPLINES": version + '/selective-discipline',
   "CYCLES": version + '/cycles',
+  "SUBJECTS": version + '/subjects',
 };
 
 export const ALLOWED_REQUEST_PARAMETERS = {

@@ -51,9 +51,10 @@ export default {
   },
   methods: {
     checkCredit() {
-      if(this.item.subjects.map(subjectItem => subjectItem.credits).reduce((prev, curr) => prev + curr, 0) > this.item.credit) {
+      let sumCredits = this.item.subjects.map(subjectItem => subjectItem.credits).reduce((prev, curr) => prev + curr, 0);
+      if(sumCredits > this.item.credit) {
         this.subjectIndexError = this.subject.id;
-        this.errorSubject("Перевищена кількість кредитів");
+        this.errorSubject("Перевищено суму кредитів дисциплін в циклі " + this.item.title + ": " + sumCredits + " із " + this.item.credit);
       } else {
         this.subjectIndexError = null;
         this.errorSubject(null);
