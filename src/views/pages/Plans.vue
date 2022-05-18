@@ -65,8 +65,8 @@ export default {
       })
     },
 
-    apiEditPlan(id) {
-      this.$router.push({name: 'EditPlan', params: { id }});
+    apiEditPlan(id, title) {
+      this.$router.push({name: 'EditPlan', params: { id, title }});
     },
 
     apiDeletePlan(id, title = '') {
