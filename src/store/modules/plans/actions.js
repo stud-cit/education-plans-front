@@ -43,3 +43,6 @@ export const setOptions = (context, payload) => {
   context.commit('SET_OPTIONS', payload)
 }
 
+export const clear = (context) => {
+  context.commit('SET_PLAN', null)
+}
