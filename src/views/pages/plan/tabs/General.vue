@@ -295,20 +295,20 @@
         <v-col cols="12" class="py-0">
           <table>
             <thead>
-              <tr v-if="numberWeeks.length">
+              <tr v-if="hoursWeek.length">
                 <th class="text-center" :colspan="termStudy.course * 4">
                   Кількість тижнів у модульному атестаційному циклі
                 </th>
               </tr>
             </thead>
             <tbody>
-            <tr v-if="numberWeeks.length">
+            <tr v-if="hoursWeek.length">
               <td v-for="(course, ind) in termStudy.course" :key="ind" :colspan="4">
                 {{course}} курс
               </td>
             </tr>
-            <tr v-if="numberWeeks.length">
-              <template  v-for="element in numberWeeks">
+            <tr v-if="hoursWeek.length">
+              <template  v-for="element in hoursWeek">
                 <td v-for="item in 4" :key="element.course +'-'+ item">
                   <validation-provider
                       v-slot="{ errors }"
@@ -316,7 +316,7 @@
                       rules="required|numeric|min:1|max:2|min_value:1"
                     >
                       <v-text-field
-                        v-model="element.weeks[item]"
+                        v-model="element.weeks[item-1]"
                         :error-messages="errors"
                         required
                         outlined
@@ -388,7 +388,7 @@ export default {
       credits: null,
       countHours: null,
       countWeek: null,
-      numberWeeks: []
+      hoursWeek: []
     }
   },
   props: {
@@ -430,8 +430,12 @@ export default {
     },
     termStudy(v) {
       if (v !== null) {
-        this.numberSemesters = v.number_semesters;
-        this.selectedTermStudy(v);
+        this.numberSemesters = v.semesters;
+        if(Object.keys(this.plan).length !== 0 && JSON.parse(this.plan.hours_week).length !== 0 && v.id === this.plan.term_study_id ) {
+          this.hoursWeek = JSON.parse(this.plan.hours_week);
+        } else {
+          this.selectedTermStudy(v);
+        }
       } else {
         this.numberSemesters = null;
         this.numberWeeks = [];
@@ -440,10 +444,10 @@ export default {
   },
   methods: {
     selectedTermStudy(course) {
-      this.numberWeeks = [];
+      this.hoursWeek = [];
       for (let i = 0; i < course.course;) {
        let template = {course: ++i, weeks: []}
-        this.numberWeeks.push(template);
+        this.hoursWeek.push(template);
       }
     },
     fakerYears() {
@@ -493,8 +497,7 @@ export default {
             study_term_id: this.termStudy.id,
             year: this.year,
             number_semesters: this.numberSemesters,
-            // specialityId: this.speciality,//todo
-            specialization_id: this.speciality,
+            speciality_id: this.speciality,
             specialization: this.specialization,
             education_program_id: this.educationalProgram,
             qualification_id: this.qualification,
@@ -503,7 +506,7 @@ export default {
             credits: this.credits,
             count_hours: this.countHours,
             count_week: this.countWeek,
-            number_weeks: this.numberWeeks
+            hours_week: JSON.stringify(this.hoursWeek),
           };
 
           this.$emit('submit', data)
