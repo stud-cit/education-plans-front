@@ -1,5 +1,5 @@
 export default {
-    plan: null,
+    plan: {},
     plans: {
         items: [],
         meta: {}

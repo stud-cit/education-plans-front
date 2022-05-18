@@ -110,25 +110,25 @@
               Необхідно вказати форму контролю та індивідуальне завдання в останньому модулі.
             </v-alert>
 
-            <table class="table-modules" v-if="data.id">
+            <table class="table-modules" v-if="plan && plan.id">
               <tr>
                 <td :colspan="countModules * 2">Розподіл годин на тиждень за курсами, семестрами і модульними атестаційними циклами</td>
               </tr>
               <tr>
-                <td colspan="4" v-for="index in data.study_term.course" :key="index">{{ index }} курс</td>
+                <td colspan="4" v-for="index in plan.study_term.course" :key="index">{{ index }} курс</td>
               </tr>
               <tr>
                 <td :colspan="countModules * 2">Семестри</td>
               </tr>
               <tr>
-                <td colspan="2" v-for="index in data.study_term.module" :key="index">{{ index }}</td>
+                <td colspan="2" v-for="index in plan.study_term.module" :key="index">{{ index }}</td>
               </tr>
-              <tr v-if="data.form_organization.id == 1">
+              <tr v-if="plan.form_organization.id == 1">
                 <td :colspan="countModules * 2">Модульні атестаційні цикли</td>
               </tr>
               <tr>
                 <td
-                  :colspan="data.form_organization.id == 1 ? 0 : 2"
+                  :colspan="plan.form_organization.id == 1 ? 0 : 2"
                   v-for="(subject, index) in subjectForm.hours_modules"
                   :key="index"
                   :class="[index === activMod ? 'activMod' : '', (checkLastHourModule && index == subjectForm.hours_modules.length - 1) ? 'error' : '']"
@@ -170,7 +170,7 @@
                 <td :colspan="countModules * 2">Розподіл кредитів на вивчення за семестрами</td>
               </tr>
               <tr>
-                <td colspan="2" v-for="index in data.study_term.module" :key="index">
+                <td colspan="2" v-for="index in plan.study_term.module" :key="index">
                   <v-text-field>
                   </v-text-field>
                 </td>
@@ -256,10 +256,10 @@
         <CycleItem
           :item="item"
           :index="index"
-          v-for="(item, index) in data.cycles"
+          v-for="(item, index) in plan.cycles"
           :key="'cycle' + item.id + indexComponent"
           :indexComponent="indexComponent"
-          :data="data"
+          :data="plan"
           @addSubject="addSubject"
           @addCycle="addCycle"
           @saveCycle="saveCycle"
@@ -276,7 +276,7 @@
         </div>
       </v-tab-item>
       <v-tab-item>
-        <Title :data="data"></Title>
+        <Title :data="plan"></Title>
       </v-tab-item>
     </v-tabs-items>
   </v-container>
@@ -333,8 +333,6 @@ export default {
 
       individualTasks: [],
       formControls: [],
-
-      data: Object,
     }
   },
   computed: {
@@ -342,7 +340,7 @@ export default {
       plan: "plans/plan"
     }),
     countModules() {
-      return this.data.study_term.module;
+      return this.plan.study_term.module;
     },
     checkCountHoursModules() {
       let sumHours = +this.subjectForm.hours + +this.subjectForm.practices + +this.subjectForm.laboratories;
@@ -395,11 +393,11 @@ export default {
         laboratories: "",
         hours_modules: []
       };
-      var semesters = this.data.study_term.semesters;
-      for (let course = 0; course < this.data.study_term.course; course++) {
+      var semesters = this.plan.study_term.semesters;
+      for (let course = 0; course < this.plan.study_term.course; course++) {
         let moduleNumber = 1;
         for (let semester = 0; semester < 2; semester++) {
-          for (let module = 0; module < (this.data.form_organization.id == 1 ? 2 : 1); module++) {
+          for (let module = 0; module < (this.plan.form_organization.id == 1 ? 2 : 1); module++) {
             if(semesters != 0) {
               this.subjectForm.hours_modules.push({
                 hour: 0,
@@ -420,13 +418,13 @@ export default {
       this.subjectForm = Object.assign(this.subjectForm, subject);
       this.cycleForm = cycle;
       this.subjectForm.sumSubjectsCredits = this.sumArray(cycle.subjects, 'credits') - subject.credits;
-      var semesters = this.data.study_term.semesters;
+      var semesters = this.plan.study_term.semesters;
       var index = 0;
       var newHoursModules = [];
-      for (let course = 0; course < this.data.study_term.course; course++) {
+      for (let course = 0; course < this.plan.study_term.course; course++) {
         let moduleNumber = 1;
         for (let semester = 0; semester < 2; semester++) {
-          for (let module = 0; module < (this.data.form_organization.id == 1 ? 2 : 1); module++) {
+          for (let module = 0; module < (this.plan.form_organization.id == 1 ? 2 : 1); module++) {
             if(semesters != 0) {
               if(this.subjectForm.hours_modules[index]) {
                 newHoursModules.push(this.subjectForm.hours_modules[index]);
@@ -507,7 +505,7 @@ export default {
         title: "",
         credit: 0,
         cycle_id: item.id,
-        parrentCycleCredit: item.credit == null ? this.data.credits : item.credit,
+        parrentCycleCredit: item.credit == null ? this.plan.credits : item.credit,
         sumCyclesCredits: item.id ? this.sumArray(item.cycles, 'credit') : 0
       }
       this.cycleDialog = true;
@@ -574,11 +572,15 @@ export default {
 
     apiGetPlanId() {
       // api.show(API.PLANS, this.$route.params.id).then((response) => {
-      //   this.data = response.data.data;
+      //   this.plan = response.data.data;
       //   this.alertErrorCycle = [];
       //   this.indexComponent += 1;
       // })
       this.$store.dispatch('plans/show', this.$route.params.id).then(({data}) => {
+        this.alertErrorCycle = [];
+        this.indexComponent += 1;
+
+
         // this.$router.afterEach((to,from,failure) => {
         //   console.log('to',to)
         //   console.log('from',from)
@@ -595,7 +597,7 @@ export default {
         console.log('apiGetPlanId',errors.response.data)
       });
       // api.show(API.PLANS, this.$route.params.id).then((response) => {
-      //   this.data = response.data.data;
+      //   this.plan = response.data.data;
       // })
     },
 
