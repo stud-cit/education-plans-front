@@ -14,6 +14,8 @@ import GlobalMixin from "@/mixins/GlobalMixin";
 Vue.config.productionTip = false
 Vue.mixin(GlobalMixin);
 
+export const eventBus = new Vue()
+
 new Vue({
   router,
   store,
