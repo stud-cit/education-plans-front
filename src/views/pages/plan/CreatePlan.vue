@@ -197,6 +197,7 @@
       <v-tab-item>
         <General
           @submit="submit"
+          :plan="plan"
         />
       </v-tab-item>
       <v-tab-item>
@@ -278,8 +279,10 @@ export default {
   },
   mounted() {
     this.apiGetSelectiveDiscipline();
-    if(this.$route.name == 'EditPlan') {
+    if(this.$route.name === 'EditPlan') {
       this.apiGetPlanId();
+    } else {
+      this.$store.dispatch('plans/clear');
     }
   },
 
@@ -307,8 +310,8 @@ export default {
     },
     addCycle(item) {
       this.cycleForm = {
-        title: "", 
-        credit: 0, 
+        title: "",
+        credit: 0,
         cycle_id: item.id
       }
       this.cycleDialog = true;
@@ -344,7 +347,7 @@ export default {
           showConfirmButton: false,
           timer: 1500,
         });
-        this.$router.push({path: '/plan/edit/'+response.data.id});
+        this.$router.push({name: 'EditPlan', params: {id: response.data.id, title: data.title }});
       }).catch((errors) => {
         console.log(errors.response.data)
       });
@@ -357,9 +360,25 @@ export default {
     },
 
     apiGetPlanId() {
-      api.show(API.PLANS, this.$route.params.id).then((response) => {
-        this.data = response.data.data;
-      })
+      this.$store.dispatch('plans/show', this.$route.params.id).then(({data}) => {
+        // this.$router.afterEach((to,from,failure) => {
+        //   console.log('to',to)
+        //   console.log('from',from)
+        //   console.log('failure',failure)
+        // } )
+
+        // const resolved = this.$router.resolve({
+        //   name: 'EditPlan',
+        //   params: { id: this.$route.params.id, title: data.data.title }
+        // })
+        // this.$route.params.title = 'bio';
+        console.log('this.$route', this.$route.params ,data.data.title)
+      }).catch((errors) => {
+        console.log('apiGetPlanId',errors.response.data)
+      });
+      // api.show(API.PLANS, this.$route.params.id).then((response) => {
+      //   this.data = response.data.data;
+      // })
     },
 
   }

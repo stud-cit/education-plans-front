@@ -391,10 +391,40 @@ export default {
       numberWeeks: []
     }
   },
+  props: {
+    plan: {
+      type: Object,
+      default(){
+        return null;
+      },
+      required: false
+    }
+  },
   mounted() {
     this.apiGetFields();
   },
   watch: {
+    plan(v) {
+      if (v !== null) {
+        this.title = this.plan.title;
+        this.faculty = this.plan.faculty_id;
+        this.department = this.plan.department_id;
+        this.educationLevel = this.plan.education_level_id;
+        this.formStudy = this.plan.form_study_id;
+        setTimeout(() => { this.termStudy = this.termsStudy.find((el => el.id === this.plan.term_study_id))},0);
+        this.year = this.plan.year;
+        this.speciality = this.plan.speciality_id;
+        this.specialization =  this.plan.specialization;
+        this.educationalProgram = this.plan.education_program_id;
+        this.qualification = this.plan.qualification_id;
+        this.fieldKnowledge = this.plan.field_knowledge_id;
+        this.formOrganizationStudy = this.plan.form_organization_id
+        this.credits = this.plan.credits;
+        this.countHours = this.plan.count_hours;
+        this.countWeek = this.plan.count_week;
+        // this.numberWeeks
+      }
+    },
     faculty(v) {
       v !== null ? this.apiGetDepartments(v) : this.departments = [];
     },
