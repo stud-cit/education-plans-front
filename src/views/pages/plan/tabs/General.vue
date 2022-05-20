@@ -295,14 +295,14 @@
         <v-col cols="12" class="py-0">
           <table>
             <thead>
-              <tr v-if="hoursWeek.length">
+              <tr v-if="hoursWeek.length && termStudy">
                 <th class="text-center" :colspan="termStudy.course * 4">
                   Кількість тижнів у модульному атестаційному циклі
                 </th>
               </tr>
             </thead>
             <tbody>
-            <tr v-if="hoursWeek.length">
+            <tr v-if="hoursWeek.length && termStudy">
               <td v-for="(course, ind) in termStudy.course" :key="ind" :colspan="4">
                 {{course}} курс
               </td>
@@ -431,7 +431,10 @@ export default {
     termStudy(v) {
       if (v !== null) {
         this.numberSemesters = v.semesters;
-        if(Object.keys(this.plan).length !== 0 && JSON.parse(this.plan.hours_week).length !== 0 && v.id === this.plan.term_study_id ) {
+        if(Object.keys(this.plan).length !== 0 &&
+          JSON.parse(this.plan.hours_week).length !== 0 &&
+          v.id === this.plan.term_study_id
+        ) {
           this.hoursWeek = JSON.parse(this.plan.hours_week);
         } else {
           this.selectedTermStudy(v);
