@@ -6,7 +6,7 @@ import GlobalMixin from "../../../mixins/GlobalMixin";
 export const getListPlans = (context, payload) => {
   const options = GlobalMixin.methods.GlobalHandlingRequestParameters(ALLOWED_REQUEST_PARAMETERS.GET_PLANS, payload);
   context.commit('SET_LOADING', true);
-  api.get(API.PLANS, options).then(({data}) => {
+  api.get(API.PLANS, options, {showLoader: true}).then(({data}) => {
     context.commit('SET_PLANS', data);
     context.commit('SET_LOADING', false);
   });

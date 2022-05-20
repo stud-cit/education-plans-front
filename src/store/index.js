@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 import plans from "./modules/plans";
+import loader from "@/store/modules/loader";
 
 export default new Vuex.Store({
   state: {
@@ -19,6 +20,7 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-      plans
+      plans,
+      loader
   }
 })
