@@ -17,7 +17,7 @@
         <v-btn small icon @click="cycleIndex = item.id" v-if="cycleIndex != item.id">
           <v-icon>mdi-pencil</v-icon>
         </v-btn>
-        <v-btn small icon @click="saveCycle(item)" v-else>
+        <v-btn :disabled="item.credit == '' || item.title == ''" small icon @click="saveCycle(item)" v-else>
           <v-icon>mdi-floppy</v-icon>
         </v-btn>
         <v-btn small icon @click="delCycle(item)">
@@ -75,7 +75,7 @@
 
     <SubjectItem
       v-for="(subject, subjectIndex) in item.subjects" 
-      :key="subjectIndex"
+      :key="'subject' + subjectIndex + indexComponent"
       :subject="subject"
       :item="item"/>
 
@@ -85,13 +85,12 @@
       :index="subIndex"
       :indexComponent="indexComponent"
       v-for="(child, subIndex) in item.cycles"
-      :key="'cycle' + child.id + indexComponent"
+      :key="'cycle_' + child.id + indexComponent"
       @addCycle="addCycle"
       @addSubject="addSubject"
       @saveCycle="saveCycle"
       @editCycle="editCycle"
-      @delCycle="delCycle"
-      @errorCycle="errorCycle"/>
+      @delCycle="delCycle"/>
 
   </div>
 </template>
@@ -163,11 +162,11 @@ export default {
       if(limitCredit < sumCredits) {
         this.cycleIndexError = item.id;
         if(this.cycleIndex == null) {
-          this.errorCycle(message + sumCredits + " із " + limitCredit);
+          this.$store.dispatch('plans/setErrorsPlan', message + sumCredits + " із " + limitCredit);
         }
       } else {
         this.cycleIndexError = null;
-        this.errorCycle(null);
+        this.$store.dispatch('plans/setErrorsPlan', null);
       }
     },
     addSubject(item) {
@@ -185,9 +184,6 @@ export default {
     },
     delCycle(item) {
       this.$emit('delCycle', item)
-    },
-    errorCycle(item) {
-      this.$emit('errorCycle', item)
     },
   }
 }

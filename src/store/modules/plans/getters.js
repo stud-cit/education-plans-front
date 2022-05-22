@@ -18,3 +18,11 @@ export const options = (state) => {
     return state.plans.options
 }
 
+export const indexComponent = (state) => {
+  return state.indexComponent
+}
+
+export const errorsPlan = (state) => {
+  return state.errorsPlan
+}
+
