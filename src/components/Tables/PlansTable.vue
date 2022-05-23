@@ -93,7 +93,7 @@
           small
           class="mr-1"
           color="primary"
-          @click="$emit('edit', item.id)"
+          @click="$emit('edit', item.id, item.title)"
       >
         mdi-pencil-outline
       </v-icon>

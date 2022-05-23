@@ -61,22 +61,16 @@ const routes = [
         },
       },
       {
-        path: "edit/:id",
+        path: "edit/:id:title",
         name: "EditPlan",
         component: CreatePlan,
         meta: {
           header: "Редагування плану",
           breadCrumb() {
-            const paramToPageB = this.$route.params.id;
+            const paramToPageB = this.$route.params.title;
             return [
               { text: 'Робота з планами', to: { name: 'ListPlans' } },
-              { text: paramToPageB,
-                to: {
-                  name: 'EditPlan',
-                  params: { paramToPageB: paramToPageB }
-                }
-              },
-              { text: 'Редагування плану' }
+              { text: paramToPageB}
             ]
           }
         },

@@ -6,7 +6,7 @@ import GlobalMixin from "../../../mixins/GlobalMixin";
 export const getListPlans = (context, payload) => {
   const options = GlobalMixin.methods.GlobalHandlingRequestParameters(ALLOWED_REQUEST_PARAMETERS.GET_PLANS, payload);
   context.commit('SET_LOADING', true);
-  api.get(API.PLANS, options).then(({data}) => {
+  api.get(API.PLANS, options, {showLoader: true}).then(({data}) => {
     context.commit('SET_PLANS', data);
     context.commit('SET_LOADING', false);
   });
@@ -33,8 +33,12 @@ export const store = (context, data) => {
 }
 
 export const show = (context, id) => {
-  return api.show(API.PLANS, id).then((response) => {
+  context.commit('SET_LOADING', true);
+  return api.show(API.PLANS, id, {showLoader: true}).then((response) => {
+    context.commit('CLEAR_ERRORS_PLAN');
     context.commit('SET_PLAN', response.data.data);
+    context.commit('SET_INDEX_COMPONENT');
+    context.commit('SET_LOADING', false);
     return  response;
   });
 }
@@ -43,3 +47,14 @@ export const setOptions = (context, payload) => {
   context.commit('SET_OPTIONS', payload)
 }
 
+export const setErrorsPlan = (context, payload) => {
+  context.commit('SET_ERRORS_PLAN', payload)
+}
+
+export const clearErrorsPlan = (context) => {
+  context.commit('CLEAR_ERRORS_PLAN');
+}
+
+export const clear = (context) => {
+  context.commit('SET_PLAN', null)
+}
