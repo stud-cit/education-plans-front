@@ -56,6 +56,7 @@ export default {
   mounted() {
     if(this.$route.name === 'EditPlan') {
       this.apiGetPlanId();
+      this.apiGetOptions();
     } else {
       this.$store.dispatch('plans/clear');
     }
@@ -80,6 +81,10 @@ export default {
 
     apiGetPlanId() {
       this.$store.dispatch('plans/show', this.$route.params.id);
+    },
+
+    apiGetOptions() {
+      this.$store.dispatch('plans/getOptions');
     }
   }
 }

@@ -43,6 +43,17 @@ export const show = (context, id) => {
   });
 }
 
+export const getOptions = (context) => {
+  return api.get(API.SETTINGS).then((response) => {
+    let data = {};
+    response.data.data.forEach(item => {
+      data[item.key] = item.value;
+    });
+    context.commit('SET_OPTIONS', data);
+    return  response;
+  });
+}
+
 export const setOptions = (context, payload) => {
   context.commit('SET_OPTIONS', payload)
 }

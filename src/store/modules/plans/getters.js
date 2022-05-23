@@ -15,7 +15,7 @@ export const meta = (state) => {
 }
 
 export const options = (state) => {
-    return state.plans.options
+    return state.options
 }
 
 export const indexComponent = (state) => {
