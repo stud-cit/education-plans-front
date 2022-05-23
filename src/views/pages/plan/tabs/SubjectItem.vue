@@ -54,10 +54,10 @@ export default {
       let sumCredits = this.item.subjects.map(subjectItem => subjectItem.credits).reduce((prev, curr) => prev + curr, 0);
       if(sumCredits > this.item.credit) {
         this.subjectIndexError = this.subject.id;
-        this.errorSubject("Перевищено суму кредитів дисциплін в циклі " + this.item.title + ": " + sumCredits + " із " + this.item.credit);
+        this.$store.dispatch('plans/setErrorsPlan', "Перевищено суму кредитів дисциплін в циклі " + this.item.title + ": " + sumCredits + " із " + this.item.credit);
       } else {
         this.subjectIndexError = null;
-        this.errorSubject(null);
+        this.$store.dispatch('plans/setErrorsPlan', null);
       }
     },
     editSubject(subject, cycle) {
@@ -65,9 +65,6 @@ export default {
     },
     delSubject(subject) {
       eventBus.$emit('delSubject', subject)
-    },
-    errorSubject(item) {
-      eventBus.$emit('errorSubject', item)
     },
   }
 }
