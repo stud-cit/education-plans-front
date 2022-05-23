@@ -1,9 +1,9 @@
 <template>
   <v-container>
-    <validation-observer ref="observer" v-slot="{ invalid }">
+    <ValidationObserver ref="observer" v-slot="{ invalid }">
       <form @submit.prevent="submit">
 
-        <validation-provider
+        <ValidationProvider
           v-slot="{ errors }"
           name="Значення"
           rules="required|numeric|min:1|max:3"
@@ -15,12 +15,12 @@
             label="Значення"
             required
           ></v-text-field>
-        </validation-provider>
-
+        </ValidationProvider>
+        <br>
         <v-btn class="mr-4" type="submit" :disabled="invalid"> Зберегти </v-btn>
         <v-btn @click="clear"> Очистити </v-btn>
       </form>
-    </validation-observer>
+    </ValidationObserver>
   </v-container>
 </template>
 <script>
@@ -31,14 +31,11 @@ import {
   extend,
   ValidationObserver,
   ValidationProvider,
-  setInteractionMode,
 } from "vee-validate";
-
-setInteractionMode("eager");
 
 extend("numeric", {
   ...numeric,
-  message: "{_field_} needs to be {length} digits. ({_value_})",
+  message: "Поле {_field_} повинно бути цифровим",
 });
 
 extend("required", {
@@ -81,7 +78,7 @@ export default {
           let options = {
             value: this.value,
           };
-          api.put(`${API.SETTINGS}${this.$route.params.id}`, options).then((response) => {
+          api.put(`${API.SETTINGS}/${this.$route.params.id}`, options).then((response) => {
               const { message } = response.data;
               this.$swal.fire({
                 position: "center",
