@@ -432,6 +432,7 @@ export default {
       if (v !== null) {
         this.numberSemesters = v.semesters;
         if(Object.keys(this.plan).length !== 0 &&
+          this.plan.hours_week !== null &&
           JSON.parse(this.plan.hours_week).length !== 0 &&
           v.id === this.plan.term_study_id
         ) {
