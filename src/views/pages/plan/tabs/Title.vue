@@ -1,4 +1,5 @@
 <template>
+  <ValidationObserver v-slot="{ invalid }">
   <div>
     <table>
       <tr>
@@ -24,12 +25,30 @@
           {{ cursIndex + 1 }}
         </td>
         <td v-for="(week, i) in k" :key="i">
-          <input type="text" v-model="week.val">
+          
+          <ValidationProvider rules="oneOf:'Т,Т*,С,П,К,А,Д,т,т*,с,п,к,а,д" name="Тиждень" v-slot="{ errors }">
+            <input
+              type="text"
+              :class="[ errors[0] ? 'errors' : '' ]"
+              v-model="week.val" >
+            <span class="orange--text accent-2">{{ errors[0] }}</span>
+          </ValidationProvider>
+
         </td>
       </tr>
       <tr>
         <td :colspan="year.weeks + 1" class="text-left pa-2">
-          ПОЗНАЧЕННЯ: Т – теоретична підготовка; Т* – атестаційний тиждень, проводиться в межах теоретичної підготовки; С – семестровий контроль (екзаменаційна сесія); П – практична підготовка; К – канікули; А – атестація; Д – підготовка кваліфікаційної роботи.
+        <!--
+        <v-alert
+          :class="`is-${invalid}`"
+          outlined
+          type="warning"
+          prominent
+          border="left"
+        >
+          Ви ввели не допустиме значення!
+        </v-alert> -->
+          <p class="text-bold">ПОЗНАЧЕННЯ: Т – теоретична підготовка; Т* – атестаційний тиждень,проводиться в межах теоретичної підготовки;С – семестровий контроль (екзаменаційна сесія); П – практична підготовка; К – канікули; А – атестація; Д – підготовка кваліфікаційної роботи.</p>
         </td>
       </tr>
     </table>
@@ -126,13 +145,17 @@
       class="mt-4"
       type="submit"
       color="primary"
+      :disabled="invalid"
       @click="save()"
     >
       Зберегти
     </v-btn>
   </div>
+  </ValidationObserver>
 </template>
 <script>
+import { ValidationProvider, ValidationObserver } from 'vee-validate';
+
 export default {
   name: "Title",
   props: {
@@ -156,7 +179,7 @@ export default {
   },
   methods: {
     save() {
-      console.log(this.year)
+      console.log(this.year);
     },
 
     start() {
@@ -191,6 +214,10 @@ export default {
       var result = Math.floor( (l.getDate()- (l.getDay()?l.getDay():7))/7+1);
       return result;
     }
+  },
+  component: {
+    ValidationProvider,
+    ValidationObserver,
   }
 }
 </script>
@@ -222,4 +249,8 @@ export default {
     border: 1px solid #000;
     box-sizing: border-box;
   }
+  .errors {
+    border: solid 2px red;
+  }
+    
 </style>
