@@ -1,6 +1,6 @@
 <template>
-  <ValidationObserver v-slot="{ invalid }">
   <div>
+  <ValidationObserver ref="observer" v-slot="{ valid, invalid, errors }">
     <table>
       <tr>
         <th :colspan="year.weeks + 1">
@@ -27,27 +27,29 @@
         <td v-for="(week, i) in k" :key="i">
           
           <ValidationProvider rules="oneOf:'Т,Т*,С,П,К,А,Д,т,т*,с,п,к,а,д" name="Тиждень" v-slot="{ errors }">
-            <input
+            <v-text-field
+              hide-details
               type="text"
               :class="[ errors[0] ? 'errors' : '' ]"
-              v-model="week.val" >
-            <span class="orange--text accent-2">{{ errors[0] }}</span>
+              v-model="week.val" ></v-text-field>
+            <!-- <span class="orange--text accent-2">{{ errors[0] }}</span> -->
           </ValidationProvider>
 
         </td>
       </tr>
       <tr>
         <td :colspan="year.weeks + 1" class="text-left pa-2">
-        <!--
+        
         <v-alert
-          :class="`is-${invalid}`"
+          :class="`is-${ invalid }`"
           outlined
           type="warning"
           prominent
           border="left"
         >
+        {{ errors }}
           Ви ввели не допустиме значення!
-        </v-alert> -->
+        </v-alert>
           <p class="text-bold">ПОЗНАЧЕННЯ: Т – теоретична підготовка; Т* – атестаційний тиждень,проводиться в межах теоретичної підготовки;С – семестровий контроль (екзаменаційна сесія); П – практична підготовка; К – канікули; А – атестація; Д – підготовка кваліфікаційної роботи.</p>
         </td>
       </tr>
@@ -143,15 +145,15 @@
     </v-row>
     <v-btn
       class="mt-4"
-      type="submit"
       color="primary"
       :disabled="invalid"
+      type="submit"
       @click="save()"
     >
       Зберегти
     </v-btn>
+    </ValidationObserver>
   </div>
-  </ValidationObserver>
 </template>
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate';
@@ -163,6 +165,10 @@ export default {
       type: Object,
       required: true
     },
+  },
+  components: {
+    ValidationProvider,
+    ValidationObserver,
   },
   data() {
     return {
@@ -180,6 +186,16 @@ export default {
   methods: {
     save() {
       console.log(this.year);
+      this.$refs.observer.validate().then((response) => {
+        if (response) {
+          
+          const data = {
+            'schedule_education_process' : this.year,
+          };
+
+          this.$emit('submit', data)
+        }
+      });
     },
 
     start() {
@@ -215,10 +231,6 @@ export default {
       return result;
     }
   },
-  component: {
-    ValidationProvider,
-    ValidationObserver,
-  }
 }
 </script>
 <style lang="css" scoped>
