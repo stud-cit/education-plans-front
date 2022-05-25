@@ -11,17 +11,18 @@
         <General
           @submit="submit"
           :plan="plan"
+          :edit="$route.name === 'EditPlan'"
         />
       </v-tab-item>
       <v-tab-item>
-        <Cycles 
+        <Cycles
           v-if="$route.name == 'EditPlan'"
           @apiGetPlanId="apiGetPlanId"
           :plan="plan"
         />
       </v-tab-item>
       <v-tab-item>
-        <Title 
+        <Title
           v-if="$route.name == 'EditPlan'"
           :data="plan"
         ></Title>

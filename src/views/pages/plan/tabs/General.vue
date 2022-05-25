@@ -103,6 +103,7 @@
               item-text="title"
               label="Термін навчання"
               return-object
+              :disabled="edit"
             ></v-autocomplete>
           </validation-provider>
         </v-col>
@@ -251,6 +252,7 @@
               item-value="id"
               label="Форма організації навчання"
               required
+              :disabled="edit"
             ></v-autocomplete>
           </validation-provider>
         </v-col>
@@ -412,7 +414,10 @@ export default {
         return null;
       },
       required: false
-    }
+    },
+    edit: {
+      type: Boolean
+    },
   },
   mounted() {
     this.apiGetFields();
