@@ -262,9 +262,9 @@
           <table>
             <thead>
               <tr v-if="hoursWeek.length && studyTerm">
-                <th class="text-center" :colspan="studyTerm.course * 4">
+                <td :colspan="studyTerm.course * 4">
                   Кількість тижнів у модульному атестаційному циклі
-                </th>
+                </td>
               </tr>
             </thead>
             <tbody>
@@ -286,13 +286,11 @@
                         v-model="element.weeks[item-1]"
                         :error-messages="errors"
                         required
-                        outlined
                         type="number"
                         :min="1"
                         :max="16"
                         dense
                         hide-details
-                        class="rounded-0"
                       ></v-text-field>
                   </validation-provider>
                 </td>
@@ -307,9 +305,9 @@
           <table>
             <thead>
             <tr v-if="maxHoursSemesters.length && studyTerm">
-              <th class="text-center" :colspan="studyTerm.course * 4">
+              <td :colspan="studyTerm.course * 4">
                 Максимальна кількість годин за семестрами
-              </th>
+              </td>
             </tr>
             </thead>
             <tbody>
@@ -336,13 +334,11 @@
                       v-model="element.hours[item-1]"
                       :error-messages="errors"
                       required
-                      outlined
                       type="number"
                       :min="1"
                       :max="16"
                       dense
                       hide-details
-                      class="rounded-0"
                     ></v-text-field>
                   </validation-provider>
                 </td>
