@@ -1,6 +1,6 @@
 <template>
   <div>
-  <ValidationObserver ref="observer" v-slot="{ valid, invalid, errors }">
+    <ValidationObserver ref="observer" v-slot="{ valid, invalid, errors }">
     <table>
       <tr>
         <th :colspan="year.weeks + 1">
@@ -25,35 +25,33 @@
           {{ cursIndex + 1 }}
         </td>
         <td v-for="(week, i) in k" :key="i">
-          
-          <ValidationProvider rules="oneOf:'Т,Т*,С,П,К,А,Д,т,т*,с,п,к,а,д" name="Тиждень" v-slot="{ errors }">
-            <v-text-field
-              hide-details
+          <ValidationProvider
+            :vid="'data_' + i + '_row_' + week.course + '_col_' + week.month"
+            rules="oneOf:'Т,Т*,С,П,К,А,Д,т,т*,с,п,к,а,д"
+            name="Тиждень"
+            v-slot="{ errors }">
+            <input
               type="text"
               :class="[ errors[0] ? 'errors' : '' ]"
-              v-model="week.val" ></v-text-field>
-            <!-- <span class="orange--text accent-2">{{ errors[0] }}</span> -->
+              v-model="week.val">
           </ValidationProvider>
-
         </td>
       </tr>
-      <tr>
+      <tfoot>
         <td :colspan="year.weeks + 1" class="text-left pa-2">
-        
-        <v-alert
-          :class="`is-${ invalid }`"
-          outlined
-          type="warning"
-          prominent
-          border="left"
-        >
-        {{ errors }}
-          Ви ввели не допустиме значення!
-        </v-alert>
           <p class="text-bold">ПОЗНАЧЕННЯ: Т – теоретична підготовка; Т* – атестаційний тиждень,проводиться в межах теоретичної підготовки;С – семестровий контроль (екзаменаційна сесія); П – практична підготовка; К – канікули; А – атестація; Д – підготовка кваліфікаційної роботи.</p>
         </td>
-      </tr>
+      </tfoot>
     </table>
+    <v-alert
+      outlined
+      type="warning"
+      prominent
+      border="left"
+      :value="hasErrors(errors)"
+    >
+      Ви ввели не допустиме значення!
+    </v-alert>
     <br>
     <table>
       <tr>
@@ -156,8 +154,6 @@
   </div>
 </template>
 <script>
-import { ValidationProvider, ValidationObserver } from 'vee-validate';
-
 export default {
   name: "Title",
   props: {
@@ -165,10 +161,6 @@ export default {
       type: Object,
       required: true
     },
-  },
-  components: {
-    ValidationProvider,
-    ValidationObserver,
   },
   data() {
     return {
@@ -180,20 +172,36 @@ export default {
       month: ['Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень']
     }
   },
+  computed: {
+    // dispatch('plans/show');
+  },
   mounted() {
     this.start();
   },
   methods: {
     save() {
-      console.log(this.year);
       this.$refs.observer.validate().then((response) => {
         if (response) {
-          
+          console.log(this.data);
           const data = {
-            'schedule_education_process' : this.year,
+              ...this.data,
+              study_term_id: 1,
+              hours_week: JSON.stringify([{a: 1}]),
+            'schedule_education_process' : JSON.stringify(this.year),
           };
-
-          this.$emit('submit', data)
+         // TODO: CHANGE TO UPDATE? NOT STORE
+         this.$store.dispatch('plans/store', data).then( (response) =>  {
+           const { message } = response.data;
+           this.$swal.fire({
+            position: "center",
+            icon: "success",
+            title: message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+         }).catch((errors) => {
+           console.log(errors.response.data);
+           });
         }
       });
     },
@@ -229,7 +237,20 @@ export default {
       var l=new Date(year, month+1, 0);
       var result = Math.floor( (l.getDate()- (l.getDay()?l.getDay():7))/7+1);
       return result;
-    }
+    },
+    hasErrors(obj) {
+      let result = false;
+
+      for (const prop in obj) {
+        
+        if (obj[prop].length > 0) {
+          result = true;
+          break;
+        }
+
+      }
+      return result;
+    },
   },
 }
 </script>
