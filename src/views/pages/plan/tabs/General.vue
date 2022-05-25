@@ -97,7 +97,7 @@
             rules="required"
           >
             <v-autocomplete
-              v-model="termStudy"
+              v-model="studyTerm"
               :items="termsStudy"
               :error-messages="errors"
               item-text="title"
@@ -261,15 +261,15 @@
         <v-col cols="12" class="py-0">
           <table>
             <thead>
-              <tr v-if="hoursWeek.length && termStudy">
-                <th class="text-center" :colspan="termStudy.course * 4">
+              <tr v-if="hoursWeek.length && studyTerm">
+                <th class="text-center" :colspan="studyTerm.course * 4">
                   Кількість тижнів у модульному атестаційному циклі
                 </th>
               </tr>
             </thead>
             <tbody>
-            <tr v-if="hoursWeek.length && termStudy">
-              <td v-for="(course, ind) in termStudy.course" :key="ind" :colspan="4">
+            <tr v-if="hoursWeek.length && studyTerm">
+              <td v-for="(course, ind) in studyTerm.course" :key="ind" :colspan="4">
                 {{course}} курс
               </td>
             </tr>
@@ -306,20 +306,20 @@
         <v-col cols="12" class="pb-0">
           <table>
             <thead>
-            <tr v-if="maxHoursSemesters.length && termStudy">
-              <th class="text-center" :colspan="termStudy.course * 4">
+            <tr v-if="maxHoursSemesters.length && studyTerm">
+              <th class="text-center" :colspan="studyTerm.course * 4">
                 Максимальна кількість годин за семестрами
               </th>
             </tr>
             </thead>
             <tbody>
-            <tr v-if="maxHoursSemesters.length && termStudy">
-              <td v-for="(course, ind) in termStudy.course" :key="ind" :colspan="4">
+            <tr v-if="maxHoursSemesters.length && studyTerm">
+              <td v-for="(course, ind) in studyTerm.course" :key="ind" :colspan="4">
                 {{course}} курс
               </td>
             </tr>
-            <tr v-if="maxHoursSemesters.length && termStudy">
-              <td v-for="(semester, ind) in termStudy.semesters" :key="ind" :colspan="2">
+            <tr v-if="maxHoursSemesters.length && studyTerm">
+              <td v-for="(semester, ind) in studyTerm.semesters" :key="ind" :colspan="2">
                 {{semester}} семестр
               </td>
             </tr>
@@ -386,7 +386,7 @@ export default {
       educationsLevel: [],
       formStudy: null,
       formsStudy: [],
-      termStudy: null,
+      studyTerm: null,
       termsStudy: [],
       year: new Date().getFullYear(),
       years: this.fakerYears(),
@@ -430,7 +430,7 @@ export default {
         this.department = this.plan.department_id;
         this.educationLevel = this.plan.education_level_id;
         this.formStudy = this.plan.form_study_id;
-        setTimeout(() => { this.termStudy = this.termsStudy.find((el => el.id === this.plan.term_study_id))},0);
+        setTimeout(() => { this.studyTerm = this.termsStudy.find((el => el.id === this.plan.study_term_id))},0);
         this.year = this.plan.year;
         this.speciality = this.plan.speciality_id;
         this.specialization =  this.plan.specialization;
@@ -444,11 +444,11 @@ export default {
     faculty(v) {
       v !== null ? this.apiGetDepartments(v) : this.departments = [];
     },
-    termStudy(v) {
+    studyTerm(v) {
       if (v !== null) {
         this.numberSemesters = v.semesters;
         if (this.plan &&
-          v.id === this.plan.term_study_id &&
+          v.id === this.plan.study_term_id &&
           this.checkValueTable('hours_week', this.plan) &&
           this.checkValueTable('max_hours_semesters', this.plan)
         ) {
@@ -525,7 +525,7 @@ export default {
             department_id: this.department,
             education_level_id: this.educationLevel,
             form_study_id: this.formStudy,
-            study_term_id: this.termStudy.id,
+            study_term_id: this.studyTerm.id,
             year: this.year,
             number_semesters: this.numberSemesters,
             speciality_id: this.speciality,
