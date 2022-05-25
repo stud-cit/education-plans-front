@@ -75,6 +75,7 @@ export default {
           timer: 1500,
         });
         this.$router.push({name: 'EditPlan', params: {id: response.data.id, title: data.title }});
+        this.apiGetPlanId();
       }).catch((errors) => {
         console.log(errors.response.data)
       });
