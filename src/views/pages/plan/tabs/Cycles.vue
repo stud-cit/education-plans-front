@@ -158,6 +158,8 @@
                     :dark="checkLastHourModule && index == subjectForm.hours_modules.length - 1 || checkCountHoursSemester.indexOf(subject.semester) != -1"
                     v-model.number="subject.hour"
                     @click="activMod = index; moduleNumber = subject"
+                    dense
+                    hide-details
                   >
                   </v-text-field>
                 </td>
@@ -172,6 +174,7 @@
                         item-text="title"
                         item-value="id"
                         v-model="moduleNumber.form_control_id"
+                        hide-details
                       ></v-autocomplete>
                     </v-col>
                     <v-col>
@@ -181,6 +184,7 @@
                         item-text="title"
                         item-value="id"
                         v-model="moduleNumber.individual_task_id"
+                        hide-details
                       ></v-autocomplete>
                     </v-col>
                   </v-row>
@@ -199,7 +203,10 @@
                   <v-text-field 
                     type="number"
                     :dark="checkCountHoursSemester.indexOf(item.semester) != -1"
-                    v-model.number="item.credit">
+                    v-model.number="item.credit"
+                    dense
+                    hide-details
+                    >
                   </v-text-field>
                 </td>
               </tr>
@@ -231,7 +238,8 @@
               type="number"
               min="0"
               :rules="[v => (+v + cycleForm.sumCyclesCredits) <= cycleForm.parrentCycleCredit || 'Перевищена кількість кредитів']"
-              required
+              dense
+              hide-details
             ></v-text-field>
           </v-container>
         </v-card-text>
@@ -294,6 +302,16 @@
       v-if="plan.count_coursework > options['exam']"
     >
       Перевищена кількість екзаменів.
+    </v-alert>
+
+    <v-alert
+      dense
+      outlined
+      type="error"
+      class="mb-2"
+      v-if="plan.count_credits_selective_discipline < options['min-quantity-credits']"
+    >
+      Кількість кредитів для вибіркових дисциплін має бути не менше {{ options['min-quantity-credits'] }}.
     </v-alert>
     
     <CycleItem
