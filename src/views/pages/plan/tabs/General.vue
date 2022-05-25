@@ -258,13 +258,13 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12" class="py-0">
+        <v-col cols="12" class="py-0 mt-3">
           <table>
             <thead>
               <tr v-if="hoursWeek.length && termStudy">
-                <th class="text-center" :colspan="termStudy.course * 4">
+                <td :colspan="termStudy.course * 4">
                   Кількість тижнів у модульному атестаційному циклі
-                </th>
+                </td>
               </tr>
             </thead>
             <tbody>
@@ -286,13 +286,11 @@
                         v-model="element.weeks[item-1]"
                         :error-messages="errors"
                         required
-                        outlined
                         type="number"
                         :min="1"
                         :max="16"
                         dense
                         hide-details
-                        class="rounded-0"
                       ></v-text-field>
                   </validation-provider>
                 </td>
@@ -307,9 +305,9 @@
           <table>
             <thead>
             <tr v-if="maxHoursSemesters.length && termStudy">
-              <th class="text-center" :colspan="termStudy.course * 4">
+              <td :colspan="termStudy.course * 4">
                 Максимальна кількість годин за семестрами
-              </th>
+              </td>
             </tr>
             </thead>
             <tbody>
@@ -336,13 +334,11 @@
                       v-model="element.hours[item-1]"
                       :error-messages="errors"
                       required
-                      outlined
                       type="number"
                       :min="1"
                       :max="16"
                       dense
                       hide-details
-                      class="rounded-0"
                     ></v-text-field>
                   </validation-provider>
                 </td>
@@ -549,8 +545,7 @@ export default {
 
 <style lang="css" scoped>
 table {
-  width: 100%;
-  font-size: 12px;
+  margin: auto;
   border: 1px solid #dee2e6;
   border-collapse: collapse;
 }
@@ -558,23 +553,7 @@ table td {
   text-align: center;
   color: #000;
   font-size: 14px;
+  padding: 0.75rem;
   border: 1px solid #dee2e6;
-  width: 19.5px;
-}
-table th {
-  padding: 10px 0;
-  font-size: 1rem;
-  font-weight: normal;
-  color: rgba(0, 0, 0, 0.6);
-}
-table td input {
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  outline: none;
-}
-table td input:focus {
-  border: 1px solid #000;
-  box-sizing: border-box;
 }
 </style>
