@@ -1,6 +1,6 @@
 <template>
-  <ValidationObserver v-slot="{ invalid }">
   <div>
+    <ValidationObserver ref="observer" v-slot="{ valid, invalid, errors }">
     <table>
       <tr>
         <th :colspan="year.weeks + 1">
@@ -25,34 +25,41 @@
           {{ cursIndex + 1 }}
         </td>
         <td v-for="(week, i) in k" :key="i">
-          
-          <ValidationProvider rules="oneOf:'Т,Т*,С,П,К,А,Д,т,т*,с,п,к,а,д" name="Тиждень" v-slot="{ errors }">
+          <ValidationProvider
+            :vid="'data_' + i + '_row_' + week.course + '_col_' + week.month"
+            rules="required|oneOf:'Т,Т*,С,П,К,А,Д,т,т*,с,п,к,а,д"
+            name="Тиждень"
+            v-slot="{ errors }">
             <input
               type="text"
               :class="[ errors[0] ? 'errors' : '' ]"
-              v-model="week.val" >
-            <span class="orange--text accent-2">{{ errors[0] }}</span>
+              v-model="week.val">
           </ValidationProvider>
-
         </td>
       </tr>
-      <tr>
+      <tfoot>
         <td :colspan="year.weeks + 1" class="text-left pa-2">
-        <!--
-        <v-alert
-          :class="`is-${invalid}`"
-          outlined
-          type="warning"
-          prominent
-          border="left"
-        >
-          Ви ввели не допустиме значення!
-        </v-alert> -->
-          <p class="text-bold">ПОЗНАЧЕННЯ: Т – теоретична підготовка; Т* – атестаційний тиждень,проводиться в межах теоретичної підготовки;С – семестровий контроль (екзаменаційна сесія); П – практична підготовка; К – канікули; А – атестація; Д – підготовка кваліфікаційної роботи.</p>
+          <p class="text-bold">
+            ПОЗНАЧЕННЯ: Т – теоретична підготовка;
+            Т* – атестаційний тиждень,проводиться в межах теоретичної підготовки;
+            С – семестровий контроль (екзаменаційна сесія);
+            П – практична підготовка; К – канікули; А – атестація;
+            Д – підготовка кваліфікаційної роботи.
+          </p>
         </td>
-      </tr>
+      </tfoot>
     </table>
-    <br>
+
+    <v-alert
+      outlined
+      type="warning"
+      prominent
+      border="left"
+      :value="hasErrors(errors)"
+    >
+      Ви ввели недопустиме значення!
+    </v-alert>
+   
     <table>
       <tr>
         <th colspan="8">ІІ. ЗВЕДЕНІ ДАНІ ПРО БЮДЖЕТ ЧАСУ, тижні</th>
@@ -67,7 +74,6 @@
         <td rowspan="2">Усього</td>
       </tr>
       <tr>
-
         <td>Кваліфікаційна робота бакалавра</td>
         <td>Кваліфікаційні (атестаційні) іспити</td>
       </tr>
@@ -143,19 +149,17 @@
     </v-row>
     <v-btn
       class="mt-4"
-      type="submit"
       color="primary"
       :disabled="invalid"
+      type="submit"
       @click="save()"
     >
       Зберегти
     </v-btn>
+    </ValidationObserver>
   </div>
-  </ValidationObserver>
 </template>
 <script>
-import { ValidationProvider, ValidationObserver } from 'vee-validate';
-
 export default {
   name: "Title",
   props: {
@@ -171,15 +175,46 @@ export default {
         header: [],
         courses: []
       },
-      month: ['Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень']
+      month: [
+        'Січень', 'Лютий', 'Березень',
+        'Квітень', 'Травень', 'Червень',
+        'Липень', 'Серпень', 'Вересень',
+        'Жовтень', 'Листопад', 'Грудень'
+      ]
     }
   },
+  computed: {
+  },
   mounted() {
-    this.start();
+    this.getScheduleEducationProcessData();
   },
   methods: {
     save() {
-      console.log(this.year);
+      this.$refs.observer.validate().then((response) => {
+        if (response) {
+          console.log(this.data);
+          const data = {
+            ...this.data,
+            study_term_id: 1,
+            hours_week: JSON.stringify([{a: 1}]),
+            max_hours_semesters: JSON.stringify({a: 1}),
+            'schedule_education_process' : JSON.stringify(this.year),
+          };
+         // TODO: CHANGE TO UPDATE, NOT STORE
+         this.$store.dispatch('plans/store', data).then( (response) =>  {
+           const { message } = response.data;
+           this.$swal.fire({
+            position: "center",
+            icon: "success",
+            title: message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+         }).catch((errors) => {
+           console.log(errors.response.data);
+           });
+        }
+      });
     },
 
     start() {
@@ -213,12 +248,29 @@ export default {
       var l=new Date(year, month+1, 0);
       var result = Math.floor( (l.getDate()- (l.getDay()?l.getDay():7))/7+1);
       return result;
+    },
+    hasErrors(obj) {
+      let result = false;
+
+      for (const prop in obj) {
+        
+        if (obj[prop].length > 0) {
+          result = true;
+          break;
+        }
+
+      }
+      return result;
+    },
+    getScheduleEducationProcessData() {
+      if (this.data.schedule_education_process) {
+        this.year = this.data.schedule_education_process;
+      } else {
+        this.start();
+      }
     }
+
   },
-  component: {
-    ValidationProvider,
-    ValidationObserver,
-  }
 }
 </script>
 <style lang="css" scoped>
@@ -227,6 +279,7 @@ export default {
     font-size: 12px;
     border: 1px solid #dee2e6;
     border-collapse: collapse;
+    margin-bottom: 15px;
   }
   table td {
     text-align: center;
@@ -248,6 +301,9 @@ export default {
   table td input:focus {
     border: 1px solid #000;
     box-sizing: border-box;
+  }
+  table tfoot {
+     font-weight: bold;
   }
   .errors {
     border: solid 2px red;

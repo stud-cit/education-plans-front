@@ -11,17 +11,18 @@
         <General
           @submit="submit"
           :plan="plan"
+          :edit="$route.name === 'EditPlan'"
         />
       </v-tab-item>
       <v-tab-item>
-        <Cycles 
+        <Cycles
           v-if="$route.name == 'EditPlan'"
           @apiGetPlanId="apiGetPlanId"
           :plan="plan"
         />
       </v-tab-item>
       <v-tab-item>
-        <Title 
+        <Title
           v-if="$route.name == 'EditPlan'"
           :data="plan"
         ></Title>
@@ -74,6 +75,7 @@ export default {
           timer: 1500,
         });
         this.$router.push({name: 'EditPlan', params: {id: response.data.id, title: data.title }});
+        this.apiGetPlanId();
       }).catch((errors) => {
         console.log(errors.response.data)
       });

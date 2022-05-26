@@ -2,7 +2,6 @@
   <v-data-table
       :headers="headers"
       :items="items"
-      :loading="loading"
       :server-items-length="meta.total"
       :options.sync="options"
       :footer-props="{ 'items-per-page-options' : [15,25,50] }"
