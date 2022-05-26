@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 import plans from "./modules/plans";
 import loader from "@/store/modules/loader";
+import auth from './modules/auth'
 
 export default new Vuex.Store({
   state: {
@@ -20,6 +21,7 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
+      auth,
       plans,
       loader
   }
