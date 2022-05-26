@@ -27,7 +27,7 @@
         <td v-for="(week, i) in k" :key="i">
           <ValidationProvider
             :vid="'data_' + i + '_row_' + week.course + '_col_' + week.month"
-            rules="oneOf:'Т,Т*,С,П,К,А,Д,т,т*,с,п,к,а,д"
+            rules="required|oneOf:'Т,Т*,С,П,К,А,Д,т,т*,с,п,к,а,д"
             name="Тиждень"
             v-slot="{ errors }">
             <input
@@ -39,10 +39,17 @@
       </tr>
       <tfoot>
         <td :colspan="year.weeks + 1" class="text-left pa-2">
-          <p class="text-bold">ПОЗНАЧЕННЯ: Т – теоретична підготовка; Т* – атестаційний тиждень,проводиться в межах теоретичної підготовки;С – семестровий контроль (екзаменаційна сесія); П – практична підготовка; К – канікули; А – атестація; Д – підготовка кваліфікаційної роботи.</p>
+          <p class="text-bold">
+            ПОЗНАЧЕННЯ: Т – теоретична підготовка;
+            Т* – атестаційний тиждень,проводиться в межах теоретичної підготовки;
+            С – семестровий контроль (екзаменаційна сесія);
+            П – практична підготовка; К – канікули; А – атестація;
+            Д – підготовка кваліфікаційної роботи.
+          </p>
         </td>
       </tfoot>
     </table>
+
     <v-alert
       outlined
       type="warning"
@@ -50,9 +57,9 @@
       border="left"
       :value="hasErrors(errors)"
     >
-      Ви ввели не допустиме значення!
+      Ви ввели недопустиме значення!
     </v-alert>
-    <br>
+   
     <table>
       <tr>
         <th colspan="8">ІІ. ЗВЕДЕНІ ДАНІ ПРО БЮДЖЕТ ЧАСУ, тижні</th>
@@ -67,7 +74,6 @@
         <td rowspan="2">Усього</td>
       </tr>
       <tr>
-
         <td>Кваліфікаційна робота бакалавра</td>
         <td>Кваліфікаційні (атестаційні) іспити</td>
       </tr>
@@ -169,14 +175,18 @@ export default {
         header: [],
         courses: []
       },
-      month: ['Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень']
+      month: [
+        'Січень', 'Лютий', 'Березень',
+        'Квітень', 'Травень', 'Червень',
+        'Липень', 'Серпень', 'Вересень',
+        'Жовтень', 'Листопад', 'Грудень'
+      ]
     }
   },
   computed: {
-    // dispatch('plans/show');
   },
   mounted() {
-    this.start();
+    this.getScheduleEducationProcessData();
   },
   methods: {
     save() {
@@ -184,12 +194,13 @@ export default {
         if (response) {
           console.log(this.data);
           const data = {
-              ...this.data,
-              study_term_id: 1,
-              hours_week: JSON.stringify([{a: 1}]),
+            ...this.data,
+            study_term_id: 1,
+            hours_week: JSON.stringify([{a: 1}]),
+            max_hours_semesters: JSON.stringify({a: 1}),
             'schedule_education_process' : JSON.stringify(this.year),
           };
-         // TODO: CHANGE TO UPDATE? NOT STORE
+         // TODO: CHANGE TO UPDATE, NOT STORE
          this.$store.dispatch('plans/store', data).then( (response) =>  {
            const { message } = response.data;
            this.$swal.fire({
@@ -251,6 +262,14 @@ export default {
       }
       return result;
     },
+    getScheduleEducationProcessData() {
+      if (this.data.schedule_education_process) {
+        this.year = this.data.schedule_education_process;
+      } else {
+        this.start();
+      }
+    }
+
   },
 }
 </script>
@@ -260,6 +279,7 @@ export default {
     font-size: 12px;
     border: 1px solid #dee2e6;
     border-collapse: collapse;
+    margin-bottom: 15px;
   }
   table td {
     text-align: center;
@@ -281,6 +301,9 @@ export default {
   table td input:focus {
     border: 1px solid #000;
     box-sizing: border-box;
+  }
+  table tfoot {
+     font-weight: bold;
   }
   .errors {
     border: solid 2px red;
