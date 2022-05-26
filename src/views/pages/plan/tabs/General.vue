@@ -97,12 +97,13 @@
             rules="required"
           >
             <v-autocomplete
-              v-model="termStudy"
+              v-model="studyTerm"
               :items="termsStudy"
               :error-messages="errors"
               item-text="title"
               label="Термін навчання"
               return-object
+              :disabled="edit"
             ></v-autocomplete>
           </validation-provider>
         </v-col>
@@ -251,59 +252,24 @@
               item-value="id"
               label="Форма організації навчання"
               required
+              :disabled="edit"
             ></v-autocomplete>
           </validation-provider>
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12" lg="6" class="py-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Обсяг годин аудиторної роботи на тиждень"
-            rules="required|numeric|min:1|max:3|min_value:1"
-          >
-            <v-text-field
-              v-model="countHours"
-              :error-messages="errors"
-              label="Обсяг годин аудиторної роботи на тиждень"
-              required
-              type="number"
-              :min="1"
-              :max="999"
-            ></v-text-field>
-          </validation-provider>
-        </v-col>
-        <v-col cols="12" lg="6" class="py-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Обсяг годин аудиторної роботи на тиждень"
-            rules="required|numeric|min:1|max:3|min_value:1"
-          >
-            <v-text-field
-              v-model="countWeek"
-              :error-messages="errors"
-              label="Максимальна кількість аудиторних годин на тиждень"
-              required
-              type="number"
-              :min="1"
-              :max="999"
-            ></v-text-field>
-          </validation-provider>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12" class="py-0">
+        <v-col cols="12" class="py-0 mt-3">
           <table>
             <thead>
-              <tr v-if="hoursWeek.length && termStudy">
-                <th class="text-center" :colspan="termStudy.course * 4">
+              <tr v-if="hoursWeek.length && studyTerm">
+                <td :colspan="studyTerm.course * 4">
                   Кількість тижнів у модульному атестаційному циклі
-                </th>
+                </td>
               </tr>
             </thead>
             <tbody>
-            <tr v-if="hoursWeek.length && termStudy">
-              <td v-for="(course, ind) in termStudy.course" :key="ind" :colspan="4">
+            <tr v-if="hoursWeek.length && studyTerm">
+              <td v-for="(course, ind) in studyTerm.course" :key="ind" :colspan="4">
                 {{course}} курс
               </td>
             </tr>
@@ -312,21 +278,68 @@
                 <td v-for="item in 4" :key="element.course +'-'+ item">
                   <validation-provider
                       v-slot="{ errors }"
-                      name="Кількість тижнів у модульному атестаційному циклі"
                       rules="required|numeric|min:1|max:2|min_value:1"
+                      name="Кількість тижнів у модульному атестаційному циклі"
+                      :vid="'cw_' + element.course + '_' + item"
                     >
-                      <v-text-field
+                    <v-text-field
                         v-model="element.weeks[item-1]"
                         :error-messages="errors"
                         required
-                        outlined
                         type="number"
                         :min="1"
                         :max="16"
                         dense
                         hide-details
-                        class="rounded-0"
                       ></v-text-field>
+                  </validation-provider>
+                </td>
+              </template>
+            </tr>
+            </tbody>
+          </table>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" class="pb-0">
+          <table>
+            <thead>
+            <tr v-if="maxHoursSemesters.length && studyTerm">
+              <td :colspan="studyTerm.course * 4">
+                Максимальна кількість годин за семестрами
+              </td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-if="maxHoursSemesters.length && studyTerm">
+              <td v-for="(course, ind) in studyTerm.course" :key="ind" :colspan="4">
+                {{course}} курс
+              </td>
+            </tr>
+            <tr v-if="maxHoursSemesters.length && studyTerm">
+              <td v-for="(semester, ind) in studyTerm.semesters" :key="ind" :colspan="2">
+                {{semester}} семестр
+              </td>
+            </tr>
+            <tr v-if="maxHoursSemesters.length">
+              <template  v-for="element in maxHoursSemesters">
+                <td v-for="item in 2" :key="element.semester +'-'+ item">
+                  <validation-provider
+                    v-slot="{ errors }"
+                    rules="required|numeric|min:1|max:2|min_value:1"
+                    name="Кількість тижнів у модульному атестаційному циклі"
+                    :vid="'cw_' + element.semester + '_' + item"
+                  >
+                    <v-text-field
+                      v-model="element.hours[item-1]"
+                      :error-messages="errors"
+                      required
+                      type="number"
+                      :min="1"
+                      :max="16"
+                      dense
+                      hide-details
+                    ></v-text-field>
                   </validation-provider>
                 </td>
               </template>
@@ -369,7 +382,7 @@ export default {
       educationsLevel: [],
       formStudy: null,
       formsStudy: [],
-      termStudy: null,
+      studyTerm: null,
       termsStudy: [],
       year: new Date().getFullYear(),
       years: this.fakerYears(),
@@ -386,9 +399,8 @@ export default {
       formOrganizationStudy: null,
       formsOrganizationStudy: [],
       credits: null,
-      countHours: null,
-      countWeek: null,
-      hoursWeek: []
+      hoursWeek: [],
+      maxHoursSemesters: []
     }
   },
   props: {
@@ -398,7 +410,10 @@ export default {
         return null;
       },
       required: false
-    }
+    },
+    edit: {
+      type: Boolean
+    },
   },
   mounted() {
     this.apiGetFields();
@@ -411,7 +426,7 @@ export default {
         this.department = this.plan.department_id;
         this.educationLevel = this.plan.education_level_id;
         this.formStudy = this.plan.form_study_id;
-        setTimeout(() => { this.termStudy = this.termsStudy.find((el => el.id === this.plan.term_study_id))},0);
+        setTimeout(() => { this.studyTerm = this.termsStudy.find((el => el.id === this.plan.study_term_id))},0);
         this.year = this.plan.year;
         this.speciality = this.plan.speciality_id;
         this.specialization =  this.plan.specialization;
@@ -420,39 +435,47 @@ export default {
         this.fieldKnowledge = this.plan.field_knowledge_id;
         this.formOrganizationStudy = this.plan.form_organization_id
         this.credits = this.plan.credits;
-        this.countHours = this.plan.count_hours;
-        this.countWeek = this.plan.count_week;
-        // this.numberWeeks
       }
     },
     faculty(v) {
       v !== null ? this.apiGetDepartments(v) : this.departments = [];
     },
-    termStudy(v) {
+    studyTerm(v) {
       if (v !== null) {
         this.numberSemesters = v.semesters;
-        if(Object.keys(this.plan).length !== 0 &&
-          this.plan.hours_week !== null &&
-          JSON.parse(this.plan.hours_week).length !== 0 &&
-          v.id === this.plan.term_study_id
+        if (this.plan &&
+          v.id === this.plan.study_term_id &&
+          this.checkValueTable('hours_week', this.plan) &&
+          this.checkValueTable('max_hours_semesters', this.plan)
         ) {
           this.hoursWeek = JSON.parse(this.plan.hours_week);
+          this.maxHoursSemesters = JSON.parse(this.plan.max_hours_semesters);
         } else {
-          this.selectedTermStudy(v);
+          this.buildTable(v.course, 'hoursWeek', ['course', 'weeks'])
+          this.buildTable(v.semesters, 'maxHoursSemesters', ['semester', 'hours'])
         }
       } else {
         this.numberSemesters = null;
-        this.numberWeeks = [];
+        this.hoursWeek = [];
+        this.maxHoursSemesters = [];
       }
     },
   },
   methods: {
-    selectedTermStudy(course) {
-      this.hoursWeek = [];
-      for (let i = 0; i < course.course;) {
-       let template = {course: ++i, weeks: []}
-        this.hoursWeek.push(template);
+    buildTable(obj, vName, template = ['iterator', 'items'], defaultVal = []) {
+      this[vName] = defaultVal;
+      for (let i = 0; i < obj;) {
+        let temp = {[template[0]]: ++i, [template[1]]: []}
+        this[vName].push(temp);
       }
+    },
+    checkValueTable(key, obj) {
+      if (obj[key] !== null) {
+        if (JSON.parse(obj[key]).length) {
+          return true;
+        }
+      }
+      return false;
     },
     fakerYears() {
       let years = []
@@ -498,7 +521,7 @@ export default {
             department_id: this.department,
             education_level_id: this.educationLevel,
             form_study_id: this.formStudy,
-            study_term_id: this.termStudy.id,
+            study_term_id: this.studyTerm.id,
             year: this.year,
             number_semesters: this.numberSemesters,
             speciality_id: this.speciality,
@@ -508,8 +531,7 @@ export default {
             field_knowledge_id: this.fieldKnowledge,
             form_organization_id: this.formOrganizationStudy,
             credits: this.credits,
-            count_hours: this.countHours,
-            count_week: this.countWeek,
+            max_hours_semesters: JSON.stringify(this.maxHoursSemesters),
             hours_week: JSON.stringify(this.hoursWeek),
           };
 
@@ -523,8 +545,7 @@ export default {
 
 <style lang="css" scoped>
 table {
-  width: 100%;
-  font-size: 12px;
+  margin: auto;
   border: 1px solid #dee2e6;
   border-collapse: collapse;
 }
@@ -532,23 +553,7 @@ table td {
   text-align: center;
   color: #000;
   font-size: 14px;
+  padding: 0.75rem;
   border: 1px solid #dee2e6;
-  width: 19.5px;
-}
-table th {
-  padding: 10px 0;
-  font-size: 1rem;
-  font-weight: normal;
-  color: rgba(0, 0, 0, 0.6);
-}
-table td input {
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  outline: none;
-}
-table td input:focus {
-  border: 1px solid #000;
-  box-sizing: border-box;
 }
 </style>
