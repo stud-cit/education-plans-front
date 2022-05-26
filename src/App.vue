@@ -1,7 +1,6 @@
 <template >
  <div >
   <v-app>
-      <h1 >sfsdf</h1>
       <router-view  />
   </v-app>
   </div>
@@ -32,7 +31,7 @@ export default {
   },
   methods: {
     apiAuth() {
-      return api.get(API.FORM_STUDIES);
+      return api.get(API.CHECK_AUTH);
     },
     checkAuth() {
 
@@ -41,10 +40,11 @@ export default {
       if(!userData) {
         
         this.apiAuth().then((response) => {
+          
 
           if(response.status == 200) {
-            const {data} = response; 
-            this.$store.commit("auth/setUserData", data);
+            
+            this.$store.commit("auth/setUserData", 'Peter');
           }
 
           else {
@@ -56,16 +56,17 @@ export default {
       // fetch('http://127.0.0.1:8000/api/v1/form-studies').then((response) => 
       // { 
         
-      //   return response;
+      //   // const {data} = response;
+      //   console.log(response);
       // })
       // .then((data) => {
-      //  console.log(data);
+       
       //   if(data != 200) {
 
       //     // window.location.href = "http://cabinet.sumdu.edu.ua/index/service/"+process.env.MIX_APP_TOKEN;
       //   }
       //   else {
-      //      console.log(data.status);
+           
       //     this.auth = true;
       //   }
       // });
