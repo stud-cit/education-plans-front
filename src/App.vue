@@ -1,19 +1,28 @@
-<template>
+<template >
+ <div >
   <v-app>
-      <router-view/>
+      <router-view  />
   </v-app>
+  </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import api from "@/api";
+import { API } from '@/api/constants-api';
+
 
 export default {
     name: 'App',
     data: () => ({
+      auth: false
     //
   }),
   computed: {
     ...mapGetters(["errors"]),
+  },
+  created() {
+    // this.checkAuth();
   },
   watch: {
     errors() {
@@ -21,26 +30,70 @@ export default {
     }
   },
   methods: {
-      showAlert() {
-        if (Object.keys(this.errors).length !== 0) {
-          let errors = '';
+    apiAuth() {
+      return api.get(API.CHECK_AUTH);
+    },
+    checkAuth() {
 
-          for(const messages of Object.values(this.errors)) {
-             for (const error of messages) {
-              errors += `${error} </br>`
-            }
+      const userData = this.$store.getters["auth/user"];
+
+      if(!userData) {
+        
+        this.apiAuth().then((response) => {
+          
+
+          if(response.status == 200) {
+            
+            this.$store.commit("auth/setUserData", 'Peter');
           }
 
-          this.$swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            html: errors,
-            confirmButtonText: 'Так',
-          }).then(() => {
-            this.$store.commit("setErrors", {});
-          })
-        }
+          else {
+            // window.location.href = "http://cabinet.sumdu.edu.ua/index/service/"+process.env.MIX_APP_TOKEN;
+          }
+        })
+        
       }
+      // fetch('http://127.0.0.1:8000/api/v1/form-studies').then((response) => 
+      // { 
+        
+      //   // const {data} = response;
+      //   console.log(response);
+      // })
+      // .then((data) => {
+       
+      //   if(data != 200) {
+
+      //     // window.location.href = "http://cabinet.sumdu.edu.ua/index/service/"+process.env.MIX_APP_TOKEN;
+      //   }
+      //   else {
+           
+      //     this.auth = true;
+      //   }
+      // });
+  
+
+     
+    },
+    showAlert() {
+      if (Object.keys(this.errors).length !== 0) {
+        let errors = '';
+
+        for(const messages of Object.values(this.errors)) {
+            for (const error of messages) {
+            errors += `${error} </br>`
+          }
+        }
+
+        this.$swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          html: errors,
+          confirmButtonText: 'Так',
+        }).then(() => {
+          this.$store.commit("setErrors", {});
+        })
+      }
+    }
   }
 };
 </script>
