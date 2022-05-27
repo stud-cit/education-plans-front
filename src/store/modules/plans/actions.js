@@ -32,6 +32,13 @@ export const store = (context, data) => {
   });
 }
 
+export const update = (context, data) => {
+  return api.put(`${API.PLANS}/${data.id}`, data).then((response) => {
+    context.commit('SET_PLAN', data);
+    return  response;
+  });
+}
+
 export const show = (context, id) => {
   context.commit('SET_LOADING', true);
   return api.show(API.PLANS, id, {showLoader: true}).then((response) => {
