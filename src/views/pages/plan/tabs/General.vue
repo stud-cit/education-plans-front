@@ -257,93 +257,73 @@
           </validation-provider>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col cols="12" class="py-0 mt-3">
+      <v-row v-if="objHoursWeeks.length">
+        <v-col>
           <table>
             <thead>
-              <tr v-if="hoursWeek.length && studyTerm">
-                <td :colspan="studyTerm.course * 4">
+              <tr>
+                <td v-for="course in studyTerm.course" :key="course" :colspan="objHoursWeeks.length / studyTerm.semesters * 2">
+                  {{course}} курс
+                </td>
+              </tr>
+              <tr>
+                <td v-for="semester in studyTerm.semesters" :key="semester" :colspan="objHoursWeeks.length / studyTerm.semesters">
+                  {{semester}} семестр
+                </td>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td :colspan="objHoursWeeks.length">
                   Кількість тижнів у модульному атестаційному циклі
                 </td>
               </tr>
-            </thead>
-            <tbody>
-            <tr v-if="hoursWeek.length && studyTerm">
-              <td v-for="(course, ind) in studyTerm.course" :key="ind" :colspan="4">
-                {{course}} курс
-              </td>
-            </tr>
-            <tr v-if="hoursWeek.length">
-              <template  v-for="element in hoursWeek">
-                <td v-for="item in 4" :key="element.course +'-'+ item">
-                  <validation-provider
-                      v-slot="{ errors }"
-                      rules="required|numeric|min:1|max:2|min_value:1"
-                      name="Кількість тижнів у модульному атестаційному циклі"
-                      :vid="'cw_' + element.course + '_' + item"
-                    >
-                    <v-text-field
-                        v-model="element.weeks[item-1]"
-                        :error-messages="errors"
-                        required
-                        type="number"
-                        :min="1"
-                        :max="16"
-                        dense
-                        hide-details
-                      ></v-text-field>
-                  </validation-provider>
-                </td>
-              </template>
-            </tr>
-            </tbody>
-          </table>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12" class="pb-0">
-          <table>
-            <thead>
-            <tr v-if="maxHoursSemesters.length && studyTerm">
-              <td :colspan="studyTerm.course * 4">
-                Максимальна кількість годин за семестрами
-              </td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-if="maxHoursSemesters.length && studyTerm">
-              <td v-for="(course, ind) in studyTerm.course" :key="ind" :colspan="4">
-                {{course}} курс
-              </td>
-            </tr>
-            <tr v-if="maxHoursSemesters.length && studyTerm">
-              <td v-for="(semester, ind) in studyTerm.semesters" :key="ind" :colspan="2">
-                {{semester}} семестр
-              </td>
-            </tr>
-            <tr v-if="maxHoursSemesters.length">
-              <template  v-for="element in maxHoursSemesters">
-                <td v-for="item in 2" :key="element.semester +'-'+ item">
+              <tr>
+                <td v-for="(item, index) in objHoursWeeks" :key="index">
                   <validation-provider
                     v-slot="{ errors }"
-                    rules="required|numeric|min:1|max:2|min_value:1"
+                    rules="required|numeric|min:1|min_value:1"
                     name="Кількість тижнів у модульному атестаційному циклі"
-                    :vid="'cw_' + element.semester + '_' + item"
+                    :vid="'weeds_' + item.index + '_' + item.course"
                   >
                     <v-text-field
-                      v-model="element.hours[item-1]"
+                      v-model.number="item.week"
                       :error-messages="errors"
                       required
                       type="number"
                       :min="1"
-                      :max="16"
                       dense
                       hide-details
                     ></v-text-field>
                   </validation-provider>
                 </td>
-              </template>
-            </tr>
+              </tr>
+
+              <tr>
+                <td :colspan="objHoursWeeks.length">
+                  Максимальна кількість годин за семестрами
+                </td>
+              </tr>
+              <tr>
+                <td v-for="(item, index) in objHoursWeeks" :key="index">
+                  <validation-provider
+                    v-slot="{ errors }"
+                    rules="required|numeric|min:1|min_value:1"
+                    name="Максимальна кількість годин за семестрами"
+                    :vid="'hours_' + item.index + '_' + item.course"
+                  >
+                    <v-text-field
+                      v-model.number="item.hour"
+                      :error-messages="errors"
+                      required
+                      type="number"
+                      :min="1"
+                      dense
+                      hide-details
+                    ></v-text-field>
+                  </validation-provider>
+                </td>
+              </tr>
             </tbody>
           </table>
         </v-col>
@@ -367,6 +347,7 @@
 <script>
 import api from "@/api";
 import {API} from "@/api/constants-api";
+import { FORM_ORGANIZATIONS_TABLE } from "@/utils/constants"
 
 export default {
   name: "General",
@@ -399,8 +380,7 @@ export default {
       formOrganizationStudy: null,
       formsOrganizationStudy: [],
       credits: null,
-      hoursWeek: [],
-      maxHoursSemesters: []
+      objHoursWeeks: [],
     }
   },
   props: {
@@ -433,7 +413,7 @@ export default {
         this.educationalProgram = this.plan.education_program_id;
         this.qualification = this.plan.qualification_id;
         this.fieldKnowledge = this.plan.field_knowledge_id;
-        this.formOrganizationStudy = this.plan.form_organization_id
+        this.formOrganizationStudy = this.plan.form_organization_id;
         this.credits = this.plan.credits;
       }
     },
@@ -441,25 +421,14 @@ export default {
       v !== null ? this.apiGetDepartments(v) : this.departments = [];
     },
     studyTerm(v) {
+      this.buildObjHoursWeeks();
       if (v !== null) {
         this.numberSemesters = v.semesters;
-        if (this.plan &&
-          v.id === this.plan.study_term_id &&
-          this.checkValueTable('hours_week', this.plan) &&
-          this.checkValueTable('max_hours_semesters', this.plan)
-        ) {
-          this.hoursWeek = JSON.parse(this.plan.hours_week);
-          this.maxHoursSemesters = JSON.parse(this.plan.max_hours_semesters);
-        } else {
-          this.buildTable(v.course, 'hoursWeek', ['course', 'weeks'])
-          this.buildTable(v.semesters, 'maxHoursSemesters', ['semester', 'hours'])
-        }
-      } else {
-        this.numberSemesters = null;
-        this.hoursWeek = [];
-        this.maxHoursSemesters = [];
       }
     },
+    formOrganizationStudy() {
+      this.buildObjHoursWeeks();
+    }
   },
   methods: {
     buildTable(obj, vName, template = ['iterator', 'items'], defaultVal = []) {
@@ -511,7 +480,49 @@ export default {
         this.departmentsLoading = false;
       })
     },
+    buildObjHoursWeeks() {
+      const result = [];
+      const studyTerm = this.studyTerm;
+      const formOrganization = this.formOrganizationStudy;
 
+      if (studyTerm !== null && formOrganization !== null ) {
+
+        if (this.plan !== null &&
+          studyTerm.id === this.plan.study_term_id &&
+          formOrganization === this.plan.form_organization_id &&
+          this.plan.hours_weeks_semesters
+        ) {
+          this.objHoursWeeks = this.plan.hours_weeks_semesters;
+          return;
+        }
+
+        let currentSemester = 1;
+        for (let course = 1; course <= studyTerm.course; course++) {
+          const obj = {course};
+          for (let semester = 1; semester <= 2; semester++ ) {
+            if (currentSemester <= studyTerm.semesters) {
+              obj.semester = currentSemester;
+
+              for (let item = 1; item <= FORM_ORGANIZATIONS_TABLE[formOrganization]; item++ ) {
+                result.push(
+                  {
+                    ...obj,
+                    week: '',
+                    hour: '',
+                    index: item,
+                  }
+                );
+              }
+            }
+            currentSemester++;
+          }
+        }
+        this.objHoursWeeks = result;
+
+      } else {
+        this.objHoursWeeks = [];
+      }
+    },
     submit() {
       this.$refs.observer.validate().then((validated) => {
         if (validated) {
@@ -531,8 +542,7 @@ export default {
             field_knowledge_id: this.fieldKnowledge,
             form_organization_id: this.formOrganizationStudy,
             credits: this.credits,
-            max_hours_semesters: JSON.stringify(this.maxHoursSemesters),
-            hours_week: JSON.stringify(this.hoursWeek),
+            hours_weeks_semesters: JSON.stringify(this.objHoursWeeks),
           };
 
           this.$emit('submit', data)
@@ -545,7 +555,7 @@ export default {
 
 <style lang="css" scoped>
 table {
-  margin: auto;
+  width: 100%;
   border: 1px solid #dee2e6;
   border-collapse: collapse;
 }
