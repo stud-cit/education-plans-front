@@ -548,6 +548,7 @@ table {
   margin: auto;
   border: 1px solid #dee2e6;
   border-collapse: collapse;
+  width: 100%;
 }
 table td {
   text-align: center;

@@ -478,7 +478,7 @@ export default {
                 semester: semesterNumber,
                 module: moduleNumber++,
                 individual_task_id: 3,
-                form_control_id: 4
+                form_control_id: 10
               });
             }
           }
@@ -520,7 +520,7 @@ export default {
                   semester: indexSemester + 1,
                   module: moduleNumber++,
                   individual_task_id: 3,
-                  form_control_id: 4
+                  form_control_id: 10
                 })
               }
             }
