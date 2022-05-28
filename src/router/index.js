@@ -12,6 +12,8 @@ import FormStudy from '@/views/pages/settings/FormStudy';
 import FormOrganization from '@/views/pages/settings/FormOrganization';
 import SettingUsers from '@/views/pages/settings/Users/Users';
 import SelectiveDisciplines from '@/views/pages/settings/SelectiveDisciplines/SelectiveDisciplines';
+import NotFoundPage from '@/views/NotFoundPage';
+import Forbidden from '@/views/Forbidden';
 
 Vue.use(VueRouter);
 const BREADCRUMBS = {
@@ -216,6 +218,16 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
+  },
+  {
+        path: '*',
+        name: 'NotFoundPage',
+        component: NotFoundPage, 
+  },
+  {
+    path: '403',
+    name: 'Forbidden',
+    component: Forbidden
   },
 ];
 
