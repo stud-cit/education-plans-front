@@ -56,7 +56,7 @@
       </v-btn>
     </div>
 
-    <v-stepper elevation="1" class="my-2" v-if="plan.verification && $route.name === 'EditPlan'">
+    <v-stepper elevation="1" class="my-2" v-if="$route.name === 'EditPlan' && plan.verification && plan.verification.length > 0">
       <v-stepper-header>
         <template v-for="(item, index) in checkVerification">
           <v-stepper-step
@@ -201,6 +201,8 @@ export default {
           this.$router.push({name: 'EditPlan', params: {id: response.data.id, title: data.title }});
         }
         this.apiGetPlanId();
+        this.apiGetOptions();
+        this.apiGetVerifications();
       }).catch((errors) => {
         console.log(errors.response.data)
       });
