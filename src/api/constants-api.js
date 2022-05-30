@@ -3,7 +3,7 @@ const version = '/v1';
 export const API = {
   "USER": version + '/getUser',
   "LOGIN": version + '/login',
-  "CHECK_AUTH": version + '/check-auth',
+  "AUTH": version + '/auth',
   // "REGISTER": version + '/register',
   "LOGOUT": version + '/logout',
   "COPY_PLAN": version + '/plans/copy/',

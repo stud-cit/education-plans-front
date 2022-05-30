@@ -1,5 +1,5 @@
 <template >
- <div >
+ <div v-if="auth">
   <v-app>
       <router-view  />
   </v-app>
@@ -8,6 +8,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+// import axios from 'axios';
 import api from "@/api";
 import { API } from '@/api/constants-api';
 
@@ -15,14 +16,16 @@ import { API } from '@/api/constants-api';
 export default {
     name: 'App',
     data: () => ({
-      auth: false
+      auth: true,
+      // auth: false,
+      cabinet_api: "https://cabinet.sumdu.edu.ua/api/",
     //
   }),
   computed: {
     ...mapGetters(["errors"]),
   },
   created() {
-    // this.checkAuth();
+    // this.authUser();
   },
   watch: {
     errors() {
@@ -30,46 +33,41 @@ export default {
     }
   },
   methods: {
-    apiAuth() {
-      return api.get(API.CHECK_AUTH);
-    },
-    checkAuth() {
+   
+    authUser() {
 
       const userData = this.$store.getters["auth/user"];
-
+      
       if(!userData) {
         
-        this.apiAuth().then((response) => {
+        const key = this.$route.query.key;
+
+        if(!key) {
+          window.location.href = '/?key='+process.env.VUE_APP_SERVICE_KEY;
+          // window.location.href = "http://cabinet.sumdu.edu.ua/index/service/"+process.env.VUE_APP_SERVICE_KEY;
+        }
+
+        api.get(API.AUTH, {key: key}).then(({data}) => {
+        console.log(data)
+
+        if(data) {
           
+          this.$store.commit("auth/setUserData", data);
+          this.auth = true;
+        }
 
-          if(response.status == 200) {
-            
-            this.$store.commit("auth/setUserData", 'Peter');
-          }
-
-          else {
-            // window.location.href = "http://cabinet.sumdu.edu.ua/index/service/"+process.env.MIX_APP_TOKEN;
-          }
-        })
+        // else {
+          
+        // }
+        });
+        
+          
+          
+          
+        
         
       }
-      // fetch('http://127.0.0.1:8000/api/v1/form-studies').then((response) => 
-      // { 
-        
-      //   // const {data} = response;
-      //   console.log(response);
-      // })
-      // .then((data) => {
-       
-      //   if(data != 200) {
-
-      //     // window.location.href = "http://cabinet.sumdu.edu.ua/index/service/"+process.env.MIX_APP_TOKEN;
-      //   }
-      //   else {
-           
-      //     this.auth = true;
-      //   }
-      // });
+      
   
 
      
