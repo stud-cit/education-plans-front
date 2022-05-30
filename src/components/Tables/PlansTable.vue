@@ -5,7 +5,8 @@
       :server-items-length="meta.total"
       :options.sync="options"
       :footer-props="{ 'items-per-page-options' : [15,25,50] }"
-      class="elevation-1"
+      class="elevation-1 plans-table"
+      :item-class="itemRowBackground"
   >
     <template v-slot:top>
       <v-row>
@@ -206,6 +207,18 @@ export default {
         this.departmentsLoading = false;
       })
     },
+    itemRowBackground (item) {
+      return item.status
+    }
   },
 }
 </script>
+
+<style>
+ .plans-table .error, .plans-table .error .v-icon {
+   color: #fff !important;
+ }
+  .plans-table .success, .plans-table .success .v-icon {
+   color: #fff !important;
+ }
+</style>

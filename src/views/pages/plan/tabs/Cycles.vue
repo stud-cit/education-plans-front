@@ -309,7 +309,7 @@
       outlined
       type="error"
       class="mb-2"
-      v-if="plan.count_credits_selective_discipline < options['min-quantity-credits']"
+      v-if="plan.count_credits_selective_discipline < options['min-quantity-credits'] && plan.credits.length > 0"
     >
       Кількість кредитів для вибіркових дисциплін має бути не менше {{ options['min-quantity-credits'] }}.
     </v-alert>
@@ -327,12 +327,20 @@
       @delCycle="delCycle"/>
 
     <div class="text-center mt-4">
-      <v-btn
-        icon
-        large
-      >
-        <v-icon @click="addCycle({})">mdi-plus</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            icon
+            large
+            v-bind="attrs"
+            v-on="on"
+            @click="addCycle({})"
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </template>
+        <span>Додати цикл</span>
+      </v-tooltip>
     </div>
   </div>
 </template>
@@ -464,12 +472,14 @@ export default {
       var semesterNumber = 1;
       for (let course = 0; course < this.plan.study_term.course; course++) {
         let moduleNumber = 1;
-        for (let semester = 0; semester < 2; semester++) {
-          this.subjectForm.semesters_credits.push({
-            credit: 0,
-            course: course+1,
-            semester: semesterNumber
-          });
+        for (let semester = 0; semester < semesters; semester++) {
+          if(semesters != 0) {
+            this.subjectForm.semesters_credits.push({
+              credit: 0,
+              course: course+1,
+              semester: semesterNumber
+            });
+          }
           for (let module = 0; module < (this.plan.form_organization.id == 1 ? 2 : 1); module++) {
             if(semesters != 0) {
               this.subjectForm.hours_modules.push({
@@ -478,7 +488,7 @@ export default {
                 semester: semesterNumber,
                 module: moduleNumber++,
                 individual_task_id: 3,
-                form_control_id: 4
+                form_control_id: 10
               });
             }
           }
@@ -500,14 +510,16 @@ export default {
       for (let course = 0; course < this.plan.study_term.course; course++) {
         let moduleNumber = 1;
         for (let semester = 0; semester < 2; semester++) {
-          if(this.subjectForm.semesters_credits[indexSemester]) {
-            newSemestersCredits.push(this.subjectForm.semesters_credits[indexSemester]);
-          } else {
-            newSemestersCredits.push({
-              credit: 0,
-              course: course+1,
-              semester: indexSemester + 1
-            })
+          if(semesters != 0) {
+            if(this.subjectForm.semesters_credits[indexSemester]) {
+              newSemestersCredits.push(this.subjectForm.semesters_credits[indexSemester]);
+            } else {
+              newSemestersCredits.push({
+                credit: 0,
+                course: course+1,
+                semester: indexSemester + 1
+              })
+            }
           }
           for (let module = 0; module < (this.plan.form_organization.id == 1 ? 2 : 1); module++) {
             if(semesters != 0) {
@@ -520,7 +532,7 @@ export default {
                   semester: indexSemester + 1,
                   module: moduleNumber++,
                   individual_task_id: 3,
-                  form_control_id: 4
+                  form_control_id: 10
                 })
               }
             }

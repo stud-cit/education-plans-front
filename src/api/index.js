@@ -30,6 +30,8 @@ api.interceptors.response.use(
 
         if (error.response.status === 400) {
             console.error(error.response.statusText);
+        } else if (error.response.status === 403) {
+            router.push({ name: 'Forbidden'});
         } else if (error.response.status === 422) {
             console.log('this error', error.response)
           vuexStore.commit("setErrors", error.response.data.errors); //TODO: this error preview

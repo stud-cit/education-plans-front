@@ -24,6 +24,8 @@ export const API = {
   "SELECTIVE_DISCIPLINES": version + '/selective-discipline',
   "CYCLES": version + '/cycles',
   "SUBJECTS": version + '/subjects',
+  "PLAN_VERIFICATION": version + '/plans/verification',
+  "VERIFICATIONS": version + '/verifications',
 };
 
 export const ALLOWED_REQUEST_PARAMETERS = {
