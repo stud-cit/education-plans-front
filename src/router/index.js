@@ -223,15 +223,15 @@ const routes = [
   {
     path: '*',
     name: 'NotFoundPage',
-    component: NotFoundPage, 
+    component: NotFoundPage,
   },
   {
-    path: '403',
+    path: '/403',
     name: 'Forbidden',
     component: Forbidden
   },
   {
-    path: '401',
+    path: '/401',
     name: 'Unauthorized',
     component: Unauthorized
   }
