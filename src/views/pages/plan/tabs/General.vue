@@ -431,21 +431,6 @@ export default {
     }
   },
   methods: {
-    buildTable(obj, vName, template = ['iterator', 'items'], defaultVal = []) {
-      this[vName] = defaultVal;
-      for (let i = 0; i < obj;) {
-        let temp = {[template[0]]: ++i, [template[1]]: []}
-        this[vName].push(temp);
-      }
-    },
-    checkValueTable(key, obj) {
-      if (obj[key] !== null) {
-        if (JSON.parse(obj[key]).length) {
-          return true;
-        }
-      }
-      return false;
-    },
     fakerYears() {
       let years = []
       const limit = 10

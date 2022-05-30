@@ -107,6 +107,7 @@
         <Title
           v-if="$route.name == 'EditPlan'"
           :data="plan"
+          @submit="submit"
         ></Title>
       </v-tab-item>
     </v-tabs-items>

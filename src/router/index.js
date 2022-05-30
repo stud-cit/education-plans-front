@@ -223,7 +223,7 @@ const routes = [
   {
     path: '*',
     name: 'NotFoundPage',
-    component: NotFoundPage, 
+    component: NotFoundPage,
   },
   {
     path: '/403',

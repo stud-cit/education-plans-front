@@ -27,7 +27,7 @@
         <td v-for="(week, i) in k" :key="i">
           <ValidationProvider
             :vid="'data_' + i + '_row_' + week.course + '_col_' + week.month"
-            rules="required|oneOf:'Т,Т*,С,П,К,А,Д,т,т*,с,п,к,а,д"
+            rules="oneOf:'Т,Т*,С,П,К,А,Д,т,т*,с,п,к,а,д"
             name="Тиждень"
             v-slot="{ errors }">
             <input
@@ -59,7 +59,7 @@
     >
       Ви ввели недопустиме значення!
     </v-alert>
-   
+
     <table>
       <tr>
         <th colspan="8">ІІ. ЗВЕДЕНІ ДАНІ ПРО БЮДЖЕТ ЧАСУ, тижні</th>
@@ -192,27 +192,12 @@ export default {
     save() {
       this.$refs.observer.validate().then((response) => {
         if (response) {
-          console.log(this.data);
           const data = {
             ...this.data,
-            study_term_id: 1,
-            hours_week: JSON.stringify([{a: 1}]),
-            max_hours_semesters: JSON.stringify({a: 1}),
+            'hours_weeks_semesters': JSON.stringify(this.data.hours_weeks_semesters),
             'schedule_education_process' : JSON.stringify(this.year),
           };
-         // TODO: CHANGE TO UPDATE, NOT STORE
-         this.$store.dispatch('plans/store', data).then( (response) =>  {
-           const { message } = response.data;
-           this.$swal.fire({
-            position: "center",
-            icon: "success",
-            title: message,
-            showConfirmButton: false,
-            timer: 1500,
-          });
-         }).catch((errors) => {
-           console.log(errors.response.data);
-           });
+          this.$emit('submit', data);
         }
       });
     },
@@ -253,7 +238,7 @@ export default {
       let result = false;
 
       for (const prop in obj) {
-        
+
         if (obj[prop].length > 0) {
           result = true;
           break;
@@ -308,5 +293,5 @@ export default {
   .errors {
     border: solid 2px red;
   }
-    
+
 </style>
