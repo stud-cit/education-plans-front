@@ -281,7 +281,17 @@
       class="mb-2"
       v-if="getErrorsSemesters"
     >
-      Перевищена кількість кредитів в {{ getErrorsSemesters }} семестрі.
+      Перевищена кількість кредитів у {{ getErrorsSemesters }} семестрі.
+    </v-alert>
+
+    <v-alert
+      dense
+      outlined
+      type="error"
+      class="mb-2"
+      v-if="getErrorsSemestersHours"
+    >
+      Перевищена кількість годин у {{ getErrorsSemestersHours }} семестрі.
     </v-alert>
 
     <v-alert
@@ -425,9 +435,22 @@ export default {
       return res;
     },
     getErrorsSemesters() {
-      return this.plan.sum_semesters_credits.filter(item => {
-        return item > this.options['quantity-credits-semester'];
-      }).map((item, index) => index+1).join(', ');
+      let result = [];
+      this.plan.sum_semesters_credits.forEach((item, index) => {
+        if(item > this.options['quantity-credits-semester']) {
+          result.push(index+1);
+        }
+      });
+      return result.join(', ');
+    },
+    getErrorsSemestersHours() {
+      let result = [];
+      this.plan.sum_semesters_hours.forEach((item, index) => {
+        if(item > this.sumArray(this.plan.hours_weeks_semesters.filter(i => i.semester == index+1), 'hour')) {
+          result.push(index+1);
+        }
+      });
+      return result.join(', ');
     },
     ...mapGetters({
       errorsPlan: "plans/errorsPlan",

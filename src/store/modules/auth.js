@@ -5,7 +5,9 @@ export default {
     namespaced: true,
 
     state: {
-        userData: null
+        userData: {
+          role_id: null
+        }
     },
 
     getters: {

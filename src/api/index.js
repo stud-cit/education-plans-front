@@ -38,7 +38,7 @@ api.interceptors.response.use(
         } else if (error.response.status === 401) {
             vuexStore.commit("auth/setUserData", null);
             localStorage.removeItem("authToken");
-            router.push({ name: "Login" });
+            router.push({ name: "Unauthorized" });
         } else if (error.response.status === 404) {
             router.push({ name: "NotFoundPage" });
         } else if(error.response.status === 500) {

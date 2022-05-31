@@ -1,5 +1,5 @@
 export default {
-    plan: {},
+    plan: null,
     errorsPlan: [],
     indexComponent: 1,
     plans: {

@@ -27,7 +27,7 @@
       </v-card>
     </v-dialog>
 
-    <div class="text-right" v-if="plan.verification && $route.name === 'EditPlan'">
+    <div class="text-right" v-if="$route.name === 'EditPlan' && plan">
       <v-btn
         small
         depressed
@@ -41,7 +41,9 @@
         depressed
         color="primary"
         class="ml-2"
-        :disabled="plan.verification.length == 0"
+        v-show="[2, 3, 4].indexOf(user.role_id) != -1"
+        :disabled="!!plan"
+        @click="verification({verification_statuses_id: user.role_id, status: true})"
       >
         Верифікувати
       </v-btn>
@@ -50,13 +52,15 @@
         depressed
         color="error"
         class="ml-2"
-        :disabled="plan.verification.length == 0"
+        v-show="[2, 3, 4].indexOf(user.role_id) != -1"
+        :disabled="!!plan"
+        @click="verification({verification_statuses_id: user.role_id, status: false})"
       >
         Відхилити верифікацію
       </v-btn>
     </div>
 
-    <v-stepper elevation="1" class="my-2" v-if="$route.name === 'EditPlan' && plan.verification && plan.verification.length > 0">
+    <v-stepper elevation="1" class="my-2" v-if="$route.name === 'EditPlan' && plan">
       <v-stepper-header>
         <template v-for="(item, index) in checkVerification">
           <v-stepper-step
@@ -153,21 +157,39 @@ export default {
       });
     },
     ...mapGetters({
-      plan: "plans/plan"
+      plan: "plans/plan",
+      user: "auth/user"
     })
   },
   mounted() {
-    if(this.$route.name === 'EditPlan') {
-      this.apiGetPlanId();
-      this.apiGetOptions();
-      this.apiGetVerifications();
-    } else {
-      this.$store.dispatch('plans/clear');
-    }
+    this.start();
   },
 
   methods: {
     verification(status) {
+      status.user_id = this.user.id;
+      if(!status.status) {
+        this.$swal.fire({
+          title: 'Введіть причину відхилення верифікації',
+          input: 'textarea',
+          inputAttributes: {
+            autocapitalize: 'off'
+          },
+          showCancelButton: true,
+          confirmButtonText: 'Надіслати',
+          cancelButtonText: 'Відміна'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            status.comment = result.value;
+            this.sendVerification(status);
+          }
+        });
+      } else {
+        this.sendVerification(status);
+      }
+    },
+
+    sendVerification(status) {
       api.patch(API.PLAN_VERIFICATION, this.$route.params.id, status).then(() => {
         this.apiGetPlanId();
       }).catch((errors) => {
@@ -223,8 +245,24 @@ export default {
           return item;
         })
       })
+    },
+
+    start() {
+      if(this.$route.name === 'EditPlan') {
+        this.apiGetPlanId();
+        this.apiGetOptions();
+        this.apiGetVerifications();
+      } else {
+        this.$store.dispatch('plans/clear');
+      }
     }
-  }
+  },
+
+  watch: {
+    $route() {
+      this.start();
+    }
+  },
 }
 
 </script>

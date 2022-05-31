@@ -257,6 +257,14 @@
           </validation-provider>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col cols="12" class="py-0">
+          <v-checkbox
+            v-model="published"
+            label="Відкрити спільний доступ"
+          ></v-checkbox>
+        </v-col>
+      </v-row>
       <v-row v-if="objHoursWeeks.length">
         <v-col>
           <table>
@@ -381,6 +389,7 @@ export default {
       formsOrganizationStudy: [],
       credits: null,
       objHoursWeeks: [],
+      published: false
     }
   },
   props: {
@@ -415,6 +424,7 @@ export default {
         this.fieldKnowledge = this.plan.field_knowledge_id;
         this.formOrganizationStudy = this.plan.form_organization_id;
         this.credits = this.plan.credits;
+        this.published = this.plan.published;
       }
     },
     faculty(v) {
@@ -528,6 +538,7 @@ export default {
             form_organization_id: this.formOrganizationStudy,
             credits: this.credits,
             hours_weeks_semesters: JSON.stringify(this.objHoursWeeks),
+            published: this.published,
           };
 
           this.$emit('submit', data)

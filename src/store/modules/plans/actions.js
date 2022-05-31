@@ -34,7 +34,7 @@ export const store = (context, data) => {
 
 export const update = (context, data) => {
   return api.put(`${API.PLANS}/${data.id}`, data).then((response) => {
-    context.commit('SET_PLAN', data);
+    context.commit('SET_LOADING', false);
     return  response;
   });
 }
