@@ -146,11 +146,16 @@
             name="Спеціалізація"
             rules=""
           >
-            <v-text-field
+            <v-autocomplete
               v-model="specialization"
+              :items="specializations"
+              :loading="specializationsLoading"
               :error-messages="errors"
+              item-text="title"
+              item-value="id"
               label="Спеціалізація"
-            ></v-text-field>
+              :disabled="specializations.length === 0"
+            ></v-autocomplete>
           </validation-provider>
         </v-col>
       </v-row>
@@ -379,6 +384,8 @@ export default {
       speciality: null,
       specialities: [],
       specialization: null,
+      specializations: [],
+      specializationsLoading: false,
       educationalProgram: null,
       educationalPrograms: [],
       qualification: null,
@@ -438,6 +445,9 @@ export default {
     },
     formOrganizationStudy() {
       this.buildObjHoursWeeks();
+    },
+    speciality(v) {
+      v !== null ? this.apiGetSpecializations(v) : this.specializations = [];
     }
   },
   methods: {
@@ -473,6 +483,14 @@ export default {
       api.show(API.DEPARTMENTS, id).then(({data}) => {
         this.departments = data.data
         this.departmentsLoading = false;
+      })
+    },
+    apiGetSpecializations(id) {
+      this.specializationsLoading = true;
+
+      api.show(API.SPECIALIZATIONS, id).then(({data}) => {
+        this.specializations = data.data
+        this.specializationsLoading = false;
       })
     },
     buildObjHoursWeeks() {

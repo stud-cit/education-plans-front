@@ -26,6 +26,7 @@ export const API = {
   "SUBJECTS": version + '/subjects',
   "PLAN_VERIFICATION": version + '/plans/verification',
   "VERIFICATIONS": version + '/verifications',
+  "SPECIALIZATIONS": version + '/specializations',
 };
 
 export const ALLOWED_REQUEST_PARAMETERS = {
