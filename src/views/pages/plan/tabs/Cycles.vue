@@ -53,9 +53,12 @@
                 ></v-autocomplete>
                 <v-autocomplete
                   v-else
-                  v-model="subjectForm.title"
-                  :items="['Фізика','Математика','Іноземна мова','Філосовія']"
+                  v-model="subjectForm.asu_id"
+                  :items="subjects"
                   label="Дисципліна"
+                  item-text="title"
+                  item-value="id"
+                  value="number"
                 ></v-autocomplete>
               </v-col>
               <v-col cols="6" class="py-0">
@@ -371,6 +374,7 @@ export default {
   data() {
     return {
       selectiveDiscipline: [],
+      subjects: [],
       cycleDialog: false,
       subjectDialog: false,
       cycleForm: {
@@ -386,6 +390,7 @@ export default {
         selectiveDiscipline: false,
         selective_discipline_id: null,
         title: "",
+        asu_id: null,
         credits: "",
         hours: "",
         practices: "",
@@ -463,6 +468,7 @@ export default {
     if(this.$route.name === 'EditPlan') {
       this.apiGetIndividualTasks();
       this.apiGetFormControls();
+      this.apiGetSubjects();
     } else {
       this.$store.dispatch('plans/clear');
     }
@@ -654,6 +660,12 @@ export default {
     apiGetSelectiveDiscipline() {
       api.get(API.SELECTIVE_DISCIPLINES).then(({data}) => {
         this.selectiveDiscipline = data.data
+      })
+    },
+
+    apiGetSubjects() {
+      api.get(API.SUBJECTS).then(({data}) => {
+        this.subjects = data.data
       })
     },
 

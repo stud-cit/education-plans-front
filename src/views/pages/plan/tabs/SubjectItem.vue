@@ -2,7 +2,7 @@
   <div>
     <v-row :class="['cycle-subject', subjectIndexError == subject.id ? 'error' : '', 'ma-0', 'mb-1']">
       <v-col cols="7" class="pa-0 text-left">
-        {{subject.title ? subject.title : subject.selective_discipline.title}}
+        {{subject.selective_discipline_id ?  subject.selective_discipline.title : subject.title}}
       </v-col>
       <v-col class="pa-0">
         {{ subject.hours }}
