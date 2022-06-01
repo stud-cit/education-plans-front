@@ -80,7 +80,14 @@
     </template>
 
     <template v-slot:item.actions="{ item }">
-
+      <v-icon
+        small
+        class="mr-1"
+        color="primary"
+        @click="$emit('preview', item.id, item.title)"
+      >
+        mdi-eye-outline
+      </v-icon>
       <v-icon
           small
           class="mr-1"
@@ -127,7 +134,7 @@ export default {
         {text: 'Кафедра', value: 'department', sortable: false},
         {text: 'Рік', value: 'year', width: '80px'},
         {text: 'Дата створення', value: 'created_at', width: '150px'},
-        {text: 'Дії', value: 'actions', width: '100px', sortable: false},
+        {text: 'Дії', value: 'actions', width: '120px', sortable: false},
       ],
       faculty: null,
       faculties: [],

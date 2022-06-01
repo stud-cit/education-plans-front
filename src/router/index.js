@@ -15,6 +15,7 @@ import SelectiveDisciplines from '@/views/pages/settings/SelectiveDisciplines/Se
 import NotFoundPage from '@/views/NotFoundPage';
 import Forbidden from '@/views/Forbidden';
 import Unauthorized from '@/views/Unauthorized';
+import PreviewPlan from "@/views/pages/plan/PreviewPlan";
 
 Vue.use(VueRouter);
 const BREADCRUMBS = {
@@ -69,6 +70,21 @@ const routes = [
         component: CreatePlan,
         meta: {
           header: "Редагування плану",
+          breadCrumb() {
+            const paramToPageB = this.$route.params.title;
+            return [
+              { text: 'Робота з планами', to: { name: 'ListPlans' } },
+              { text: paramToPageB}
+            ]
+          }
+        },
+      },
+      {
+        path: "preview/:id:title",
+        name: "PreviewPlan",
+        component: PreviewPlan,
+        meta: {
+          header: "Попередній перегляд плану",
           breadCrumb() {
             const paramToPageB = this.$route.params.title;
             return [

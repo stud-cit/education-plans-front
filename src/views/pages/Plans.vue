@@ -5,6 +5,7 @@
                  @update="getPlansList"
                  @copy="apiCopyPlan"
                  @edit="apiEditPlan"
+                 @preview="apiPreviewPlan"
                  @delete="apiDeletePlan"
     />
     <v-tooltip left color="info">
@@ -67,6 +68,10 @@ export default {
 
     apiEditPlan(id, title) {
       this.$router.push({name: 'EditPlan', params: { id, title }});
+    },
+
+    apiPreviewPlan(id, title) {
+      this.$router.push({name: 'PreviewPlan', params: { id, title }});
     },
 
     apiDeletePlan(id, title = '') {
