@@ -21,6 +21,80 @@
         </v-col>
       </v-row>
       <v-row>
+        <v-col cols="12" class="pb-0">
+          <validation-provider
+            v-slot="{ errors }"
+            name="Галузь знань "
+            rules="required"
+          >
+            <v-autocomplete
+              v-model="fieldKnowledge"
+              :items="fieldsKnowledge"
+              :error-messages="errors"
+              item-text="title"
+              item-value="id"
+              label="Галузь знань "
+            ></v-autocomplete>
+          </validation-provider>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" class="pb-0">
+          <validation-provider
+            v-slot="{ errors }"
+            name="Спеціальність"
+            rules="required"
+          >
+            <v-autocomplete
+              v-model="speciality"
+              :items="specialities"
+              :error-messages="errors"
+              item-text="title"
+              item-value="id"
+              label="Спеціальність"
+            ></v-autocomplete>
+          </validation-provider>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" class="pb-0">
+          <validation-provider
+            v-slot="{ errors }"
+            name="Освітній (Освітньо-науковий) рівень"
+            rules="required"
+          >
+            <v-autocomplete
+              v-model="educationLevel"
+              :items="educationsLevel"
+              :error-messages="errors"
+              item-text="title"
+              item-value="id"
+              label="Освітній (Освітньо-науковий) рівень"
+            ></v-autocomplete>
+          </validation-provider>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" class="pb-0">
+          <validation-provider
+            v-slot="{ errors }"
+            name="Спеціалізація"
+            rules=""
+          >
+            <v-autocomplete
+              v-model="specialization"
+              :items="specializations"
+              :loading="specializationsLoading"
+              :error-messages="errors"
+              item-text="title"
+              item-value="id"
+              label="Спеціалізація"
+              :disabled="specializations.length === 0"
+            ></v-autocomplete>
+          </validation-provider>
+        </v-col>
+      </v-row>
+      <v-row>
         <v-col cols="12" lg="6" class="py-0">
           <validation-provider
             v-slot="{ errors }"
@@ -59,16 +133,18 @@
         <v-col cols="12" lg="6" class="py-0">
           <validation-provider
             v-slot="{ errors }"
-            name="Освітній (Освітньо-науковий) рівень"
+            name="Форма організації навчання"
             rules="required"
           >
             <v-autocomplete
-              v-model="educationLevel"
-              :items="educationsLevel"
+              v-model="formOrganizationStudy"
+              :items="formsOrganizationStudy"
               :error-messages="errors"
               item-text="title"
               item-value="id"
-              label="Освітній (Освітньо-науковий) рівень"
+              label="Форма організації навчання"
+              required
+              :disabled="edit"
             ></v-autocomplete>
           </validation-provider>
         </v-col>
@@ -127,42 +203,6 @@
         <v-col cols="12" lg="6" class="py-0">
           <validation-provider
             v-slot="{ errors }"
-            name="Спеціальність"
-            rules="required"
-          >
-            <v-autocomplete
-              v-model="speciality"
-              :items="specialities"
-              :error-messages="errors"
-              item-text="title"
-              item-value="id"
-              label="Спеціальність"
-            ></v-autocomplete>
-          </validation-provider>
-        </v-col>
-        <v-col cols="12" lg="6" class="py-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Спеціалізація"
-            rules=""
-          >
-            <v-autocomplete
-              v-model="specialization"
-              :items="specializations"
-              :loading="specializationsLoading"
-              :error-messages="errors"
-              item-text="title"
-              item-value="id"
-              label="Спеціалізація"
-              :disabled="specializations.length === 0"
-            ></v-autocomplete>
-          </validation-provider>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12" lg="6" class="py-0">
-          <validation-provider
-            v-slot="{ errors }"
             name="Освітня програма"
             rules="required"
           >
@@ -194,38 +234,6 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12" md="6" class="py-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Галузь знань "
-            rules="required"
-          >
-            <v-autocomplete
-              v-model="fieldKnowledge"
-              :items="fieldsKnowledge"
-              :error-messages="errors"
-              item-text="title"
-              item-value="id"
-              label="Галузь знань "
-            ></v-autocomplete>
-          </validation-provider>
-        </v-col>
-        <v-col cols="12" md="6" class="py-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Рік прийому"
-            rules="required|numeric|digits:4"
-          >
-            <v-autocomplete
-              v-model="year"
-              :items="years"
-              :error-messages="errors"
-              label="Рік прийому"
-            ></v-autocomplete>
-          </validation-provider>
-        </v-col>
-      </v-row>
-      <v-row>
         <v-col cols="12" lg="6" class="py-0">
           <validation-provider
             v-slot="{ errors }"
@@ -246,18 +254,14 @@
         <v-col cols="12" lg="6" class="py-0">
           <validation-provider
             v-slot="{ errors }"
-            name="Форма організації навчання"
-            rules="required"
+            name="Рік прийому"
+            rules="required|numeric|digits:4"
           >
             <v-autocomplete
-              v-model="formOrganizationStudy"
-              :items="formsOrganizationStudy"
+              v-model="year"
+              :items="years"
               :error-messages="errors"
-              item-text="title"
-              item-value="id"
-              label="Форма організації навчання"
-              required
-              :disabled="edit"
+              label="Рік прийому"
             ></v-autocomplete>
           </validation-provider>
         </v-col>
