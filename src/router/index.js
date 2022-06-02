@@ -16,6 +16,7 @@ import NotFoundPage from '@/views/NotFoundPage';
 import Forbidden from '@/views/Forbidden';
 import Unauthorized from '@/views/Unauthorized';
 import PreviewPlan from "@/views/pages/plan/PreviewPlan";
+import Login from '@/views/pages/LoginLayout';
 
 Vue.use(VueRouter);
 const BREADCRUMBS = {
@@ -27,6 +28,12 @@ const BREADCRUMBS = {
 
 const routes = [
   {
+    path: '/login',
+    name: 'Login',
+    meta: { guest: true },
+    component: Login
+  },
+  {
     path: '/',
     component: Layout,
     children: [
@@ -35,6 +42,7 @@ const routes = [
         name: 'ListPlans',
         component: Plans,
         meta: {
+          requiresAuth: true,
           header: 'Робота з планами',
           breadCrumb: [
             { text: 'Робота з планами' }
@@ -52,6 +60,7 @@ const routes = [
         name: 'CreatePlan',
         component: CreatePlan,
         meta: {
+          requiresAuth: true,
           header: 'Створення нового плану',
           breadCrumb: [
             {
@@ -69,6 +78,7 @@ const routes = [
         name: "EditPlan",
         component: CreatePlan,
         meta: {
+          requiresAuth: true,
           header: "Редагування плану",
           breadCrumb() {
             const paramToPageB = this.$route.params.title;
@@ -84,6 +94,7 @@ const routes = [
         name: "PreviewPlan",
         component: PreviewPlan,
         meta: {
+          requiresAuth: true,
           header: "Попередній перегляд плану",
           breadCrumb() {
             const paramToPageB = this.$route.params.title;
@@ -105,6 +116,7 @@ const routes = [
         name: 'Settings',
         component: Settings,
         meta: {
+          requiresAuth: true,
           header: 'Налаштування',
           breadCrumb: [
             { text: 'Робота з планами', to: { name: 'ListPlans' } },
@@ -117,6 +129,7 @@ const routes = [
         name: 'SettingUsers',
         component: SettingUsers,
         meta: {
+          requiresAuth: true,
           header: 'Налаштування користувачів',
           breadCrumb: [
             ...BREADCRUMBS.SETTINGS,
@@ -129,6 +142,7 @@ const routes = [
         name: 'FormStudy',
         component: FormStudy,
         meta: {
+          requiresAuth: true,
           header: 'Форма навчання',
           breadCrumb: [
             ...BREADCRUMBS.SETTINGS,
@@ -141,6 +155,7 @@ const routes = [
         name: 'FormOrganization',
         component: FormOrganization,
         meta: {
+          requiresAuth: true,
           header: 'Форма організації навчання',
           breadCrumb: [
             ...BREADCRUMBS.SETTINGS,
@@ -157,6 +172,7 @@ const routes = [
             name: 'RestrictionEditor',
             component: RestrictionEditor,
             meta: {
+              requiresAuth: true,
               header: 'Редактор обмежень',
               breadCrumb: [
                 ...BREADCRUMBS.SETTINGS,
@@ -169,6 +185,7 @@ const routes = [
             name: 'RestrictCreate',
             component: RestrictCreate,
             meta: {
+              requiresAuth: true,
               header: 'Додавання налаштувань',
               breadCrumb: [
                 ...BREADCRUMBS.SETTINGS,
@@ -182,6 +199,7 @@ const routes = [
             params: ['id'],
             name: 'RestrictEdit',
             meta: {
+              requiresAuth: true,
               header: 'Редагування',
               breadCrumb() {
                 const paramToPageB = this.$route.params.id;
@@ -212,6 +230,7 @@ const routes = [
         name: 'StudyTerm',
         component: StudyTerm,
         meta: {
+          requiresAuth: true,
           header: 'Термін навчання',
           breadCrumb: [
             ...BREADCRUMBS.SETTINGS,
@@ -224,6 +243,7 @@ const routes = [
         name: 'SelectiveDisciplines',
         component: SelectiveDisciplines,
         meta: {
+          requiresAuth: true,
           header: 'Вибіркові дисципліни',
           breadCrumb: [
             ...BREADCRUMBS.SETTINGS,
@@ -257,6 +277,30 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (localStorage.getItem("authToken")) {
+      next();
+      return;
+    }
+    next("/login");
+  } else {
+    next();
+  }
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.guest)) {
+    if (localStorage.getItem("authToken")) {
+      next("/");
+      return;
+    }
+    next();
+  } else {
+    next();
+  }
 });
 
 // router.beforeEach((to, from, next) => {
