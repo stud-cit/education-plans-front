@@ -25,10 +25,10 @@
           <validation-provider
             v-slot="{ errors }"
             name="Галузь знань "
-            rules="required"
+            rules=""
           >
             <v-autocomplete
-              v-model="fieldKnowledge"
+              v-model.number="fieldKnowledge"
               :items="fieldsKnowledge"
               :error-messages="errors"
               item-text="title"
@@ -43,11 +43,13 @@
           <validation-provider
             v-slot="{ errors }"
             name="Спеціальність"
-            rules="required"
+            rules=""
           >
             <v-autocomplete
-              v-model="speciality"
+              v-model.number="speciality"
               :items="specialities"
+              :loading="specialitiesLoading"
+              :disabled="specialities.length === 0"
               :error-messages="errors"
               item-text="title"
               item-value="id"
@@ -60,16 +62,18 @@
         <v-col cols="12" class="pb-0">
           <validation-provider
             v-slot="{ errors }"
-            name="Освітній (Освітньо-науковий) рівень"
-            rules="required"
+            name="Освітня програма"
+            rules=""
           >
             <v-autocomplete
-              v-model="educationLevel"
-              :items="educationsLevel"
+              v-model.number="educationalProgram"
+              :items="educationalPrograms"
+              :loading="educationalProgramsLoading"
+              :disabled="educationalPrograms.length === 0"
               :error-messages="errors"
               item-text="title"
               item-value="id"
-              label="Освітній (Освітньо-науковий) рівень"
+              label="Освітня програма"
             ></v-autocomplete>
           </validation-provider>
         </v-col>
@@ -82,7 +86,7 @@
             rules=""
           >
             <v-autocomplete
-              v-model="specialization"
+              v-model.number="specialization"
               :items="specializations"
               :loading="specializationsLoading"
               :error-messages="errors"
@@ -90,6 +94,24 @@
               item-value="id"
               label="Спеціалізація"
               :disabled="specializations.length === 0"
+            ></v-autocomplete>
+          </validation-provider>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" class="pb-0">
+          <validation-provider
+            v-slot="{ errors }"
+            name="Кваліфікація"
+            rules="required"
+          >
+            <v-autocomplete
+              v-model="qualification"
+              :items="qualifications"
+              :error-messages="errors"
+              item-text="title"
+              item-value="id"
+              label="Кваліфікація"
             ></v-autocomplete>
           </validation-provider>
         </v-col>
@@ -203,37 +225,19 @@
         <v-col cols="12" lg="6" class="py-0">
           <validation-provider
             v-slot="{ errors }"
-            name="Освітня програма"
+            name="Освітній (Освітньо-науковий) рівень"
             rules="required"
           >
             <v-autocomplete
-              v-model="educationalProgram"
-              :items="educationalPrograms"
+              v-model="educationLevel"
+              :items="educationsLevel"
               :error-messages="errors"
               item-text="title"
               item-value="id"
-              label="Освітня програма"
+              label="Освітній (Освітньо-науковий) рівень"
             ></v-autocomplete>
           </validation-provider>
         </v-col>
-        <v-col cols="12" lg="6" class="py-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Кваліфікація"
-            rules="required"
-          >
-            <v-autocomplete
-              v-model="qualification"
-              :items="qualifications"
-              :error-messages="errors"
-              item-text="title"
-              item-value="id"
-              label="Кваліфікація"
-            ></v-autocomplete>
-          </validation-provider>
-        </v-col>
-      </v-row>
-      <v-row>
         <v-col cols="12" lg="6" class="py-0">
           <validation-provider
             v-slot="{ errors }"
@@ -251,6 +255,8 @@
             ></v-text-field>
           </validation-provider>
         </v-col>
+      </v-row>
+      <v-row>
         <v-col cols="12" lg="6" class="py-0">
           <validation-provider
             v-slot="{ errors }"
@@ -265,9 +271,7 @@
             ></v-autocomplete>
           </validation-provider>
         </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12" class="py-0">
+        <v-col cols="12" lg="6" class="py-0">
           <v-checkbox
             v-model="published"
             label="Відкрити спільний доступ"
@@ -387,11 +391,13 @@ export default {
       numberSemesters: null,
       speciality: null,
       specialities: [],
+      specialitiesLoading: false,
       specialization: null,
       specializations: [],
       specializationsLoading: false,
       educationalProgram: null,
       educationalPrograms: [],
+      educationalProgramsLoading: false,
       qualification: null,
       qualifications: [],
       fieldKnowledge: null,
@@ -429,7 +435,7 @@ export default {
         setTimeout(() => { this.studyTerm = this.termsStudy.find((el => el.id === this.plan.study_term_id))},0);
         this.year = this.plan.year;
         this.speciality = this.plan.speciality_id;
-        this.specialization =  this.plan.specialization;
+        this.specialization = this.plan.specialization_id;
         this.educationalProgram = this.plan.education_program_id;
         this.qualification = this.plan.qualification_id;
         this.fieldKnowledge = this.plan.field_knowledge_id;
@@ -450,8 +456,19 @@ export default {
     formOrganizationStudy() {
       this.buildObjHoursWeeks();
     },
+    fieldKnowledge(v) {
+      if (this.plan && v !== this.plan.field_knowledge_id) {
+        this.speciality = null;
+      }
+      v !== null ? this.apiGetSpecialities(v) : this.specialities = [];
+    },
     speciality(v) {
+      if (this.plan && v !== this.plan.speciality_id) {
+        this.specialization = null;
+        this.educationalProgram = null;
+      }
       v !== null ? this.apiGetSpecializations(v) : this.specializations = [];
+      v !== null ? this.apiGetEducationPrograms(v) : this.educationalPrograms = [];
     }
   },
   methods: {
@@ -473,10 +490,7 @@ export default {
         this.educationsLevel = data.educations_level ?? [];
         this.formsStudy = data.forms_study ?? [];
         this.termsStudy = data.terms_study ?? [];
-        this.educationalPrograms = data.educational_programs ?? [];
-        this.specialities = data.specialities ?? [];
         this.qualifications = data.qualifications ?? [];
-        this.specialities = data.specialities ?? [];
         this.fieldsKnowledge = data.fields_knowledge ?? [];
         this.formsOrganizationStudy = data.forms_organizationStudy ?? [];
       })
@@ -495,6 +509,22 @@ export default {
       api.show(API.SPECIALIZATIONS, id).then(({data}) => {
         this.specializations = data.data
         this.specializationsLoading = false;
+      })
+    },
+    apiGetSpecialities(id) {
+      this.specialitiesLoading = true;
+
+      api.show(API.SPECIALITIES, id).then(({data}) => {
+        this.specialities = data.data
+        this.specialitiesLoading = false;
+      })
+    },
+    apiGetEducationPrograms(id) {
+      this.educationalProgramsLoading = true;
+
+      api.show(API.EDUCATIONAL_PROGRAMS, id).then(({data}) => {
+        this.educationalPrograms = data.data
+        this.educationalProgramsLoading = false;
       })
     },
     buildObjHoursWeeks() {
@@ -553,7 +583,7 @@ export default {
             year: this.year,
             number_semesters: this.numberSemesters,
             speciality_id: this.speciality,
-            specialization: this.specialization,
+            specialization_id: this.specialization,
             education_program_id: this.educationalProgram,
             qualification_id: this.qualification,
             field_knowledge_id: this.fieldKnowledge,
