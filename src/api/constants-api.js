@@ -27,6 +27,8 @@ export const API = {
   "PLAN_VERIFICATION": version + '/plans/verification',
   "VERIFICATIONS": version + '/verifications',
   "SPECIALIZATIONS": version + '/specializations',
+  "SPECIALITIES": version + '/specialities',
+  "EDUCATIONAL_PROGRAMS": version + '/education-programs',
 };
 
 export const ALLOWED_REQUEST_PARAMETERS = {
