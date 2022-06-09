@@ -371,6 +371,8 @@
 </template>
 
 <script>
+import api from "@/api";
+import {API} from "@/api/constants-api";
 // import * as XLSX from 'xlsx/xlsx.mjs';
 // import { writeFileXLSX as XLSX } from "xlsx";
 import ModularCyclicHeaderTable from '@c/Tables/PreviewTablePlan/ModularCyclicHeaderTable'
@@ -378,7 +380,6 @@ import SemesterHeaderTable from "@c/Tables/PreviewTablePlan/SemesterHeaderTable"
 import {FORM_ORGANIZATIONS, FORM_ORGANIZATIONS_TABLE} from '@/utils/constants'
 import * as XLSX from 'xlsx/xlsx.mjs';
 // import XLSX from 'xlsx'
-import {mapGetters} from "vuex";
 import ScheduleEducationalProcessWeeks
   from "@c/Tables/PreviewTablePlan/ScheduleEducationalProcess/ScheduleEducationalProcessWeeks";
 import ScheduleEducationalProcessMonth
@@ -396,6 +397,7 @@ export default {
   data() {
     return {
       exports: false,
+      plan: null,
       fullColspanTitle: 54,
       fullColspanPlan: 22,
       FORM_ORGANIZATIONS: FORM_ORGANIZATIONS,
@@ -435,11 +437,6 @@ export default {
       ],
     }
   },
-  computed: {
-    ...mapGetters({
-      plan: 'plans/plan'
-    })
-  },
   mounted() {
     this.apiPreviewPlan();
   },
@@ -450,8 +447,9 @@ export default {
     apiPreviewPlan() {
       const id = this.$route.params.id
       if (id) {
-        this.$store.dispatch('plans/show', id).then((responce) => {
-          if (responce.status === 200) {
+        api.edit(API.PLANS, id, {showLoader: true}).then((response) => {
+          if (response.status === 200) {
+            this.plan = response.data.data;
             this.getFullColspan();
             this.generateTable(this.plan);
           }
