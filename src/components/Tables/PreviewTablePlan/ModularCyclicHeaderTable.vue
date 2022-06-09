@@ -1,0 +1,110 @@
+<template>
+  <thead>
+    <tr class="table-subtitle">
+      <td class="border-table" :colspan="14 + plan.study_term.semesters * 2">
+        V. ПЛАН НАВЧАЛЬНОГО ПРОЦЕСУ
+      </td>
+    </tr>
+    <tr>
+      <td class="border-table" rowspan="8" width="20">№</td>
+      <td class="border-table" rowspan="8" width="180">Назви навчальних дисциплін</td>
+      <td class="border-table" rowspan="1" colspan="3" width="200">Розподіл контрольних заходів за семестрами</td>
+      <td class="border-table" rowspan="8" width="50">Кількість кредитів ЄКТС</td>
+      <td class="border-table" rowspan="1" colspan="6">Кількість годин</td>
+      <td class="border-table" rowspan="1" :colspan="plan.study_term.semesters * 2">
+        Розподіл годин на тиждень за курсами, семестрами і модульними атестаційними циклами
+      </td>
+      <td class="border-table" rowspan="8">Кафедра викладання</td>
+      <td class="border-table" rowspan="8">Потоки</td>
+    </tr>
+    <tr>
+      <td class="border-table" rowspan="7">Екзамени</td>
+      <td class="border-table" rowspan="7">Заліки</td>
+      <td class="border-table" rowspan="7">Індивідуальні завдання</td>
+
+      <td class="border-table" rowspan="7">загальний обсяг</td>
+      <td class="border-table" rowspan="1" colspan="4">аудиторних</td>
+      <td class="border-table" rowspan="7">самостійна робота</td>
+
+      <td class="border-table" v-for="course in plan.study_term.course"
+          :colspan="plan.study_term.semesters % plan.study_term.course > 0 && course ===  plan.study_term.course ? 2 : 4"
+          :key="'course_' + course">
+        {{course}} курс
+      </td>
+    </tr>
+    <tr>
+      <td class="border-table" rowspan="6">всього</td>
+      <td class="border-table" rowspan="1" colspan="3">у тому числі:</td>
+      <td class="border-table" rowspan="1" :colspan="plan.study_term.semesters * 2">Семестри</td>
+    </tr>
+    <tr>
+      <td class="border-table" colspan="3" rowspan="1"></td>
+      <td class="border-table" v-for="semester in plan.study_term.semesters" colspan="2" :key="'semester_' + semester">
+        {{semester}}
+      </td>
+    </tr>
+    <tr>
+      <td class="border-table" rowspan="4">лекції</td>
+      <td class="border-table" rowspan="4">практичні, семінарські</td>
+      <td class="border-table" rowspan="4">лабораторні</td>
+      <td class="border-table" rowspan="1" :colspan="plan.study_term.semesters * 2">Модульні атестаційні цикли</td>
+    </tr>
+    <tr>
+      <template v-for="course in plan.study_term.course">
+        <td class="border-table" rowspan="1" :key="'mod_1_' + course">I</td>
+        <td class="border-table" rowspan="1" :key="'mod_2_' + course">II</td>
+        <template
+          v-if="plan.study_term.semesters % plan.study_term.course === 0 ||
+                plan.study_term.semesters % plan.study_term.course > 0 && course !==  plan.study_term.course"
+        >
+          <td class="border-table" rowspan="1" :key="'mod_3_' + course">III</td>
+          <td class="border-table" rowspan="1" :key="'mod_4_' + course">IV</td>
+        </template>
+      </template>
+    </tr>
+    <tr>
+      <td class="border-table" rowspan="1" :colspan="plan.study_term.semesters * 2">Кількість тижнів у модульному атестаційному циклі</td>
+    </tr>
+    <tr>
+      <template v-for="semester in plan.study_term.semesters">
+        <td
+          v-for="index in 2"
+          :key="semester + '_' + index"
+          rowspan="1" colspan="1"
+          class="border-table"
+        >
+          <template
+            v-if="getMaxHour(semester, index, plan.hours_weeks_semesters )"
+          >
+            {{getMaxHour(semester, index, plan.hours_weeks_semesters ).hour}}
+          </template>
+        </td>
+      </template>
+    </tr>
+    <tr>
+      <td class="border-table" v-for="item in 14 + plan.study_term.semesters * 2" :key="item">
+        {{item}}
+      </td>
+    </tr>
+  </thead>
+</template>
+
+<script>
+export default {
+  name: "ModularCyclicHeaderTable",
+  props: {
+    plan: {
+      required: true,
+    }
+  },
+  methods: {
+    getMaxHour(semester, index, obj) {
+      return obj.find((item) => item.semester === semester && item.index === index)
+    },
+  }
+}
+</script>
+
+<style scoped>
+
+</style>
