@@ -29,6 +29,7 @@ export const API = {
   "SPECIALIZATIONS": version + '/specializations',
   "SPECIALITIES": version + '/specialities',
   "EDUCATIONAL_PROGRAMS": version + '/education-programs',
+  "POSITIONS": version + '/positions',
 };
 
 export const ALLOWED_REQUEST_PARAMETERS = {

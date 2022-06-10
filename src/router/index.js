@@ -12,6 +12,7 @@ import FormStudy from '@/views/pages/settings/FormStudy';
 import FormOrganization from '@/views/pages/settings/FormOrganization';
 import SettingUsers from '@/views/pages/settings/Users/Users';
 import SelectiveDisciplines from '@/views/pages/settings/SelectiveDisciplines/SelectiveDisciplines';
+import Position from '@/views/pages/settings/Position';
 import NotFoundPage from '@/views/NotFoundPage';
 import Forbidden from '@/views/Forbidden';
 import Unauthorized from '@/views/Unauthorized';
@@ -248,6 +249,19 @@ const routes = [
           breadCrumb: [
             ...BREADCRUMBS.SETTINGS,
             { text: 'Вибіркові дисципліни' }
+          ]
+        },
+      },
+      {
+        path: 'position',
+        name: 'Position',
+        component: Position,
+        meta: {
+          requiresAuth: true,
+          header: 'Посади',
+          breadCrumb: [
+            ...BREADCRUMBS.SETTINGS,
+            { text: 'Посади' }
           ]
         },
       },
