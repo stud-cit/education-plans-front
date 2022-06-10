@@ -1,8 +1,8 @@
 <template>
   <div>
-    <navbar/>
-    <bread-crumbs/>
-    <loader :show="loading" />
+    <navbar class="no-print"/>
+    <bread-crumbs class="no-print"/>
+    <loader :show="loading" class="no-print"/>
     <router-view/>
   </div>
 </template>
