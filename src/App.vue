@@ -33,13 +33,12 @@ export default {
     }
   },
   methods: {
-   
     authUser() {
 
       const userData = this.$store.getters["auth/user"];
-      
+
       if(!userData) {
-        
+
         const key = this.$route.query.key;
 
         if(!key) {
@@ -51,34 +50,29 @@ export default {
         console.log(data)
 
         if(data) {
-          
+
           this.$store.commit("auth/setUserData", data);
           this.auth = true;
         }
 
         // else {
-          
+
         // }
         });
-        
-          
-          
-          
-        
-        
       }
-      
-  
-
-     
     },
     showAlert() {
       if (Object.keys(this.errors).length !== 0) {
         let errors = '';
 
         for(const messages of Object.values(this.errors)) {
+          // console.log('messages',messages);
+          if (typeof messages !== "string") {
             for (const error of messages) {
-            errors += `${error} </br>`
+              errors += `${error} </br>`
+            }
+          } else {
+            errors += `${messages} </br>`;
           }
         }
 
