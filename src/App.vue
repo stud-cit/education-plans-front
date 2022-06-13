@@ -78,7 +78,7 @@ export default {
 
         this.$swal.fire({
           icon: 'error',
-          title: 'Зверніться до адміністратора',
+          title: 'Ой... виникла помилка',
           html: errors,
           confirmButtonText: 'Зачинити',
         }).then(() => {
