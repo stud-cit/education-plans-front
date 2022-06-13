@@ -42,7 +42,8 @@ api.interceptors.response.use(
         } else if (error.response.status === 404) {
             router.push({ name: "NotFoundPage" });
         } else if(error.response.status === 500) {
-            console.error(error.response.statusText);
+            vuexStore.commit("setErrors", { error: error.response.data.message });
+            console.error(error.response.data.message);
         } else {
             return Promise.reject(error);
         }

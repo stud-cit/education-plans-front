@@ -78,9 +78,9 @@ export default {
 
         this.$swal.fire({
           icon: 'error',
-          title: 'Oops...',
+          title: 'Зверніться до адміністратора',
           html: errors,
-          confirmButtonText: 'Так',
+          confirmButtonText: 'Зачинити',
         }).then(() => {
           this.$store.commit("setErrors", {});
         })
