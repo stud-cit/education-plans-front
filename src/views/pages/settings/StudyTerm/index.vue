@@ -4,6 +4,7 @@
       :headers="headers"
       :items="items"
       :loading="loader"
+      loading-text="Завантаження... Будь ласка зачекайте"
       class="elevation-1"
       hide-default-footer
     >
@@ -27,7 +28,7 @@ export default {
         { text: "Місяців", value: "month", sortable: false },
         { text: "Курсів", value: "course", sortable: false },
         { text: "Модулів", value: "module", sortable: false },
-        { text: "Семестрів", value: "number_semesters", sortable: false },
+        { text: "Семестрів", value: "semesters", sortable: false },
       ],
       items: [],
       loader: false,
