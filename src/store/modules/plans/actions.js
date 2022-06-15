@@ -41,7 +41,7 @@ export const update = (context, data) => {
 
 export const show = (context, id) => {
   context.commit('SET_LOADING', true);
-  return api.show(API.PLANS, id, {showLoader: true}).then((response) => {
+  return api.edit(API.PLANS, id, {showLoader: true}).then((response) => {
     context.commit('CLEAR_ERRORS_PLAN');
     context.commit('SET_PLAN', response.data.data);
     context.commit('SET_INDEX_COMPONENT');

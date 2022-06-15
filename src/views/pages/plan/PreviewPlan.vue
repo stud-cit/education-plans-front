@@ -447,7 +447,7 @@ export default {
     apiPreviewPlan() {
       const id = this.$route.params.id
       if (id) {
-        api.edit(API.PLANS, id, {showLoader: true}).then((response) => {
+        api.show(API.PLANS, id, {showLoader: true}).then((response) => {
           if (response.status === 200) {
             this.plan = response.data.data;
             this.getFullColspan();
