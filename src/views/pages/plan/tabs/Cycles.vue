@@ -20,7 +20,7 @@
           >
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>{{ subjectForm.id != null ? subjectForm.title : 'Нова дисципліна' }}</v-toolbar-title>
+          <v-toolbar-title>{{ sebjectTitle }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn
@@ -50,6 +50,7 @@
                   label="Вибіркова дисципліна"
                   item-text="title"
                   item-value="id"
+                  value="number"
                 ></v-autocomplete>
                 <v-autocomplete
                   v-else
@@ -389,6 +390,7 @@ export default {
         sumCyclesCredits: 0
       },
       subjectForm: {
+        id: null,
         sumSubjectsCredits: 0,
         selectiveDiscipline: false,
         selective_discipline_id: null,
@@ -408,6 +410,17 @@ export default {
     }
   },
   computed: {
+    sebjectTitle() {
+      let value = 'Нова дисципліна';
+      if(this.subjectForm.id) {
+        if(this.subjectForm.selective_discipline) {
+          value = this.subjectForm.selective_discipline.title;
+        } else {
+          value = this.subjectForm.title;
+        }
+      }
+      return value;
+    },
     countModules() {
       return this.plan.study_term.module;
     },
@@ -542,6 +555,7 @@ export default {
     },
     editSubject({subject, cycle}) {
       this.subjectForm = Object.assign(this.subjectForm, subject);
+      this.subjectForm.selectiveDiscipline = this.subjectForm.selective_discipline ? true : false;
       this.cycleForm = cycle;
       this.subjectForm.sumSubjectsCredits = this.sumArray(cycle.subjects, 'credits') - subject.credits;
       var semesters = this.plan.study_term.semesters;
