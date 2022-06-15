@@ -322,7 +322,7 @@
 
               <tr>
                 <td :colspan="objHoursWeeks.length">
-                  Максимальна кількість годин за семестрами
+                  Максимальна кількість годин в тижні модульного атестаційного циклу
                 </td>
               </tr>
               <tr>
@@ -330,7 +330,7 @@
                   <validation-provider
                     v-slot="{ errors }"
                     rules="required|numeric|min:1|min_value:1"
-                    name="Максимальна кількість годин за семестрами"
+                    name="Максимальна кількість годин в тижні модульного атестаційного циклу"
                     :vid="'hours_' + item.index + '_' + item.course"
                   >
                     <v-text-field
