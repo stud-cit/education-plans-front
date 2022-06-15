@@ -429,7 +429,7 @@ export default {
           return item.semester == lastSemestersCredits.semester;
         })
         let lastItem = hoursModules[hoursModules.length - 1];
-        if(lastItem.form_control_id == 4) {
+        if(lastItem.form_control_id == 10) {
          res = this.subjectForm.hours_modules.indexOf(lastItem);
         }
       }
