@@ -20,7 +20,7 @@
           >
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>{{ subjectForm.id != null ? subjectForm.title : 'Нова дисципліна' }}</v-toolbar-title>
+          <v-toolbar-title>{{ sebjectTitle }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn
@@ -50,6 +50,7 @@
                   label="Вибіркова дисципліна"
                   item-text="title"
                   item-value="id"
+                  value="number"
                 ></v-autocomplete>
                 <v-autocomplete
                   v-else
@@ -74,6 +75,7 @@
                 <v-text-field
                   type="number"
                   label="Обсяг годин лекцій"
+                  min="0"
                   v-model.number="subjectForm.hours"
                 ></v-text-field>
               </v-col>
@@ -81,6 +83,7 @@
                 <v-text-field
                   type="number"
                   label="Обсяг годин практичних занять"
+                  min="0"
                   v-model.number="subjectForm.practices"
                 ></v-text-field>
               </v-col>
@@ -88,6 +91,7 @@
                 <v-text-field
                   type="number"
                   label="Обсяг годин лабораторних занять"
+                  min="0"
                   v-model.number="subjectForm.laboratories"
                 ></v-text-field>
               </v-col>
@@ -128,9 +132,9 @@
               outlined
               type="error"
               class="mb-2"
-              v-if="checkLastHourModule"
+              v-if="checkLastHourModule != null"
             >
-              Необхідно вказати форму контролю та індивідуальне завдання в останньому модулі.
+              Необхідно вказати форму контролю в останньому модулі.
             </v-alert>
 
             <table class="table-modules" v-if="plan && plan.id">
@@ -154,11 +158,11 @@
                   :colspan="plan.form_organization.id == 1 ? 0 : 2"
                   v-for="(subject, index) in subjectForm.hours_modules"
                   :key="index"
-                  :class="[index === activMod ? 'activMod' : '', checkLastHourModule && index == subjectForm.hours_modules.length - 1 || checkCountHoursSemester.indexOf(subject.semester) != -1 ? 'error' : '']"
+                  :class="[index === activMod ? 'activMod' : '', checkLastHourModule == index || checkCountHoursSemester.indexOf(subject.semester) != -1 ? 'error' : '']"
                 >
                   <v-text-field
                     type="number"
-                    :dark="checkLastHourModule && index == subjectForm.hours_modules.length - 1 || checkCountHoursSemester.indexOf(subject.semester) != -1"
+                    :dark="checkLastHourModule == index || checkCountHoursSemester.indexOf(subject.semester) != -1"
                     v-model.number="subject.hour"
                     @click="activMod = index; moduleNumber = subject"
                     dense
@@ -386,15 +390,16 @@ export default {
         sumCyclesCredits: 0
       },
       subjectForm: {
+        id: null,
         sumSubjectsCredits: 0,
         selectiveDiscipline: false,
         selective_discipline_id: null,
         title: "",
         asu_id: null,
-        credits: "",
-        hours: "",
-        practices: "",
-        laboratories: "",
+        credits: 0,
+        hours: 0,
+        practices: 0,
+        laboratories: 0,
         hours_modules: [],
         semesters_credits: []
       },
@@ -405,6 +410,17 @@ export default {
     }
   },
   computed: {
+    sebjectTitle() {
+      let value = 'Нова дисципліна';
+      if(this.subjectForm.id) {
+        if(this.subjectForm.selective_discipline) {
+          value = this.subjectForm.selective_discipline.title;
+        } else {
+          value = this.subjectForm.title;
+        }
+      }
+      return value;
+    },
     countModules() {
       return this.plan.study_term.module;
     },
@@ -418,21 +434,31 @@ export default {
       return (this.subjectForm.credits * 30) * (this.options['min-classroom-load'] / 100) > sumHours || (this.subjectForm.credits * 30) * (this.options['max-classroom-load'] / 100) < sumHours;
     },
     checkLastHourModule() {
-      if(this.subjectForm.hours_modules.length > 0) {
-        let lastItem = this.subjectForm.hours_modules[this.subjectForm.hours_modules.length - 1];
-        return lastItem.individual_task_id == 3 || lastItem.form_control_id == 4;
-      } else {
-        return false;
+      let res = null;
+      let semestersCredits = this.subjectForm.semesters_credits.filter(item => item.credit);
+      let lastSemestersCredits = semestersCredits[semestersCredits.length - 1];
+      if(lastSemestersCredits) {
+        let hoursModules = this.subjectForm.hours_modules.filter(item => {
+          return item.semester == lastSemestersCredits.semester;
+        })
+        let lastItem = hoursModules[hoursModules.length - 1];
+        if(lastItem.form_control_id == 10) {
+         res = this.subjectForm.hours_modules.indexOf(lastItem);
+        }
       }
+      return res;
     },
     checkCountHoursSemester() {
       var res = [];
       for (let index = 0; index < this.subjectForm.semesters_credits.length; index++) {
         let semesterItem = this.subjectForm.semesters_credits[index];
-        let modules = this.subjectForm.hours_modules.filter(elem => {
+        let modules = this.subjectForm.hours_modules.map((item, index) => {
+          item.checkHour = +item.hour * +this.plan.hours_weeks_semesters[index].week;
+          return item;
+        }).filter(elem => {
           return elem.semester == semesterItem.semester;
         });
-        let sumHoursModules = this.sumArray(modules, 'hour');
+        let sumHoursModules = this.sumArray(modules, 'checkHour');
         if((semesterItem.credit * 30) * (this.options['min-classroom-load'] / 100) > sumHoursModules || (semesterItem.credit * 30) * (this.options['max-classroom-load'] / 100) < sumHoursModules) {
           res.push(semesterItem.semester);
         }
@@ -490,10 +516,10 @@ export default {
         selectiveDiscipline: false,
         selective_discipline_id: null,
         title: "",
-        credits: "",
-        hours: "",
-        practices: "",
-        laboratories: "",
+        credits: 0,
+        hours: 0,
+        practices: 0,
+        laboratories: 0,
         hours_modules: [],
         semesters_credits: []
       };
@@ -529,6 +555,7 @@ export default {
     },
     editSubject({subject, cycle}) {
       this.subjectForm = Object.assign(this.subjectForm, subject);
+      this.subjectForm.selectiveDiscipline = this.subjectForm.selective_discipline ? true : false;
       this.cycleForm = cycle;
       this.subjectForm.sumSubjectsCredits = this.sumArray(cycle.subjects, 'credits') - subject.credits;
       var semesters = this.plan.study_term.semesters;
