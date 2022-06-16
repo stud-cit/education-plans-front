@@ -90,6 +90,7 @@
       <v-tab>Загальна інформація</v-tab>
       <v-tab :disabled="$route.name == 'CreatePlan'">Цикли / предмети</v-tab>
       <v-tab :disabled="$route.name == 'CreatePlan'">Графіки</v-tab>
+      <v-tab :disabled="$route.name == 'CreatePlan'">Підписи</v-tab>
     </v-tabs>
 
     <v-tabs-items v-model="tab">
@@ -114,6 +115,11 @@
           @submit="submit"
         ></Title>
       </v-tab-item>
+      <v-tab-item>
+        <Signatures
+          :data="plan"
+        ></Signatures>
+      </v-tab-item>
     </v-tabs-items>
   </v-container>
 </template>
@@ -123,6 +129,7 @@ import General from "@/views/pages/plan/tabs/General";
 import { mapGetters } from 'vuex';
 import Title from "@/views/pages/plan/tabs/Title";
 import Cycles from "@/views/pages/plan/tabs/Cycles";
+import Signatures from "@/views/pages/plan/tabs/Signatures";
 import api from "@/api";
 import {API} from "@/api/constants-api";
 
@@ -131,7 +138,8 @@ export default {
   components: {
     General,
     Title,
-    Cycles
+    Cycles,
+    Signatures,
   },
   data() {
     return {
