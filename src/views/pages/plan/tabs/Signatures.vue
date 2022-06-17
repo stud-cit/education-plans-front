@@ -56,10 +56,10 @@
               <v-btn
                 v-bind="attrs"
                 v-on="on"
+                outlined
                 fab
-                dark
                 small
-                color="pink"
+                color="red"
                 @click="remove(index, item)"
               >
                 <v-icon aria-hidden="false">

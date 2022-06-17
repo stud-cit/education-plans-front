@@ -712,7 +712,7 @@ export default {
 </script>
 <style lang="css" scoped>
   table.table-modules {
-    margin: auto;
+    width: 100%;
     border: 1px solid #dee2e6;
     border-collapse: collapse;
   }

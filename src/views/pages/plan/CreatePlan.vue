@@ -41,9 +41,9 @@
         depressed
         color="primary"
         class="ml-2"
-        v-show="[2, 3, 4].indexOf(user.role_id) != -1"
+        v-show="[2, 3, 4].indexOf(authUser.role_id) != -1"
         :disabled="!!plan"
-        @click="verification({verification_statuses_id: user.role_id, status: true})"
+        @click="verification({verification_statuses_id: authUser.role_id, status: true})"
       >
         Верифікувати
       </v-btn>
@@ -52,9 +52,9 @@
         depressed
         color="error"
         class="ml-2"
-        v-show="[2, 3, 4].indexOf(user.role_id) != -1"
+        v-show="[2, 3, 4].indexOf(authUser.role_id) != -1"
         :disabled="!!plan"
-        @click="verification({verification_statuses_id: user.role_id, status: false})"
+        @click="verification({verification_statuses_id: authUser.role_id, status: false})"
       >
         Відхилити верифікацію
       </v-btn>
@@ -164,9 +164,11 @@ export default {
         return element;
       });
     },
+    authUser() {
+      return JSON.parse(localStorage.getItem("user"));
+    },
     ...mapGetters({
-      plan: "plans/plan",
-      user: "auth/user"
+      plan: "plans/plan"
     })
   },
   mounted() {
@@ -175,7 +177,7 @@ export default {
 
   methods: {
     verification(status) {
-      status.user_id = this.user.id;
+      status.user_id = this.authUser.id;
       if(!status.status) {
         this.$swal.fire({
           title: 'Введіть причину відхилення верифікації',
