@@ -43,6 +43,7 @@
               data-vv-name="Посадова особа"
               item-text="full_name"
               item-value="asu_id"
+              :loading="workerLoader"
               required
             ></v-autocomplete>
           </validation-provider>
@@ -120,7 +121,9 @@ export default {
     return {
       signatures: [],
       positions: [],
-      workers: []
+      positionLoader: true,
+      workers: [],
+      workerLoader: true,
     }
   },
   computed: {
@@ -147,6 +150,7 @@ export default {
       api.get(API.WORKERS).then((response) => {
         const {data} = response;
         this.workers = data;
+        this.workerLoader = false;
       });
     },
     addItem() {
