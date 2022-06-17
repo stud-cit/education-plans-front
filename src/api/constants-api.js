@@ -1,7 +1,7 @@
 const version = '/v1';
 
 export const API = {
-  "USER": version + '/getUser',
+  "USER": version + '/user',
   "LOGIN": version + '/login',
   "AUTH": version + '/auth',
   // "REGISTER": version + '/register',
