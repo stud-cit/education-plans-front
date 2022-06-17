@@ -303,7 +303,7 @@
                 <td v-for="(item, index) in objHoursWeeks" :key="index">
                   <validation-provider
                     v-slot="{ errors }"
-                    rules="required|numeric|min:1|min_value:1"
+                    rules="required|numeric|min_value:1"
                     name="Кількість тижнів у модульному атестаційному циклі"
                     :vid="'weeds_' + item.index + '_' + item.course"
                   >
@@ -329,7 +329,7 @@
                 <td v-for="(item, index) in objHoursWeeks" :key="index">
                   <validation-provider
                     v-slot="{ errors }"
-                    rules="required|numeric|min:1|min_value:1"
+                    rules="required|numeric|min_value:0"
                     name="Максимальна кількість годин в тижні модульного атестаційного циклу"
                     :vid="'hours_' + item.index + '_' + item.course"
                   >
@@ -338,7 +338,7 @@
                       :error-messages="errors"
                       required
                       type="number"
-                      :min="1"
+                      :min="0"
                       dense
                       hide-details
                     ></v-text-field>
@@ -555,7 +555,7 @@ export default {
                   {
                     ...obj,
                     week: '',
-                    hour: '',
+                    hour: 0,
                     index: item,
                   }
                 );
