@@ -12,6 +12,13 @@
         {{ ++index }}
       </template>
 
+      <template v-slot:item.agreed="{ item }">
+        <v-simple-checkbox
+          v-model="item.agreed"
+          @click="edit(item)"
+        ></v-simple-checkbox>
+      </template>
+
       <template v-slot:item.position="{ item }">
         <template v-if="item.edit">
           <validation-observer
@@ -102,6 +109,7 @@ export default {
       headers: [
         { text: '№', value: 'index', sortable: false, width: '20px' },
         { text: 'Посада', value: 'position', sortable: false },
+        { text: 'Погоджено', value: 'agreed', sortable: false },
         { text: 'Дії', value: 'actions', width: '80px', sortable: false },
       ],
       items: [],
@@ -124,9 +132,9 @@ export default {
       return api.get(API.POSITIONS);
     },
     edit(data) {
-      let { id, position } = data;
+      let { id, position, agreed } = data;
       if (position === '') return;
-      api.put(`${API.POSITIONS}/${id}`, { position } ).then((response) => {
+      api.put(`${API.POSITIONS}/${id}`, { position, agreed } ).then((response) => {
         data.edit = false;
         const { message } = response.data;
         this.$swal.fire({
