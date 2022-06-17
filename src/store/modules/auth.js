@@ -5,9 +5,7 @@ export default {
     namespaced: true,
 
     state: {
-        userData: {
-          role_id: null
-        }
+      userData: null
     },
 
     getters: {
@@ -25,7 +23,7 @@ export default {
             api
                 .get(API.USER)
                 .then(response => {
-                    commit("setUserData", response);
+                    commit("setUserData", response.data);
                 })
                 .catch(() => {
                     localStorage.removeItem("user");
