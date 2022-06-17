@@ -42,15 +42,12 @@
 
       <template v-slot:item.actions="{ item }">
         <template v-if="item.edit">
-          <v-icon small class="mr-2" color="success" @click="edit(item)">
-            mdi-check
-          </v-icon>
+          <v-icon small class="mr-2" color="success" @click="edit(item)"> mdi-check </v-icon>
         </template>
         <template v-else>
-          <v-icon small class="mr-2" color="primary" @click="item.edit = true">
-            mdi-square-edit-outline
-          </v-icon>
+          <v-icon small class="mr-2" color="primary" @click="item.edit = true"> mdi-square-edit-outline </v-icon>
         </template>
+
         <v-icon
           small
           class="mr-2"
@@ -59,36 +56,36 @@
         >
           mdi-trash-can-outline
         </v-icon>
-        
-        <v-tooltip left color="info">
-        <template v-slot:activator="{ on, attrs }">
-          <v-fab-transition>
-            <v-btn
-              color="primary"
-              dark
-              fixed
-              bottom
-              right
-              fab
-              v-bind="attrs"
-              v-on="on"
-              @click="showCreate = true"
-            >
-              <v-icon>mdi-plus</v-icon>
-            </v-btn>
-          </v-fab-transition>
-        </template>
-        <span>Додати посаду</span>
-      </v-tooltip>
-
-      <CreatePositionModal
-        :dialog="showCreate"
-        @close="() => { this.showCreate = false }" @submit="create"
-      />
 
       </template>
     </v-data-table>
-    
+
+    <v-tooltip left color="info">
+      <template v-slot:activator="{ on, attrs }">
+        <v-fab-transition>
+          <v-btn
+            color="primary"
+            dark
+            fixed
+            bottom
+            right
+            fab
+            v-bind="attrs"
+            v-on="on"
+            @click="showCreate = true"
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </v-fab-transition>
+      </template>
+      <span>Додати посаду</span>
+    </v-tooltip>
+
+    <CreatePositionModal
+      :dialog="showCreate"
+      @close="() => { this.showCreate = false }" @submit="create"
+    />
+
   </v-container>
 </template>
 
@@ -103,7 +100,7 @@ export default {
   data() {
     return {
       headers: [
-        { text: '№', value: 'index', sortable: false },
+        { text: '№', value: 'index', sortable: false, width: '20px' },
         { text: 'Посада', value: 'position', sortable: false },
         { text: 'Дії', value: 'actions', width: '80px', sortable: false },
       ],
@@ -127,7 +124,7 @@ export default {
       return api.get(API.POSITIONS);
     },
     edit(data) {
-      let { id, position } = data; 
+      let { id, position } = data;
       if (position === '') return;
       api.put(`${API.POSITIONS}/${id}`, { position } ).then((response) => {
         data.edit = false;
