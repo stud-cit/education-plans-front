@@ -14,6 +14,11 @@ export default {
                 }
             }
             return obj;
+        },
+        GlobalSumPropertyInArray(items, prop){
+          return items.reduce( function(a, b){
+            return a + b[prop];
+          }, 0);
         }
     }
 }

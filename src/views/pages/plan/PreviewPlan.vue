@@ -222,29 +222,34 @@
           </template>
 
           <tbody>
-            <template v-for="(cycle, index) in getCyclesRow(this.plan.cycles)">
+            <template v-for="(cycle, index) in cycles">
               <tr v-if="cycle.cycle_id === null" class="table-subtitle" :key="index">
-                <td class="border-table" :colspan="14 + plan.study_term.semesters * 2">
+                <td class="border-table"
+                    :colspan="14 + plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
+                >
                   {{cycle.title}}
                 </td>
               </tr>
               <tr v-if="cycle.asu_id || cycle.selective_discipline_id" :key="'subject_' + index">
                 <td class="border-table">{{cycle.index}}</td>
                 <td class="border-table">{{ cycle.asu_id ? cycle.title : cycle.selective_discipline.title}}</td>
-                <td class="border-table"></td><!--Todo Екзамени-->
-                <td class="border-table"></td><!--Todo Заліки-->
-                <td class="border-table"></td><!--Todo Індивідуальні завдання-->
-                <td class="border-table"></td><!--Todo Кількість кредитів ЄКТС-->
-                <td class="border-table"></td><!--Todo загальний обсяг-->
-                <td class="border-table"></td><!--Todo всього-->
-                <td class="border-table"></td><!--Todo лекції-->
-                <td class="border-table"></td><!--Todo практичні, семінарські-->
-                <td class="border-table"></td><!--Todo лабораторні-->
-                <td class="border-table"></td><!--Todo самостійна робота-->
+                <td class="border-table">{{ cycle.exams }}</td><!--Екзамени-->
+                <td class="border-table">{{ cycle.test }}</td><!--Заліки-->
+                <td class="border-table">{{ cycle.individual_tasks }}</td><!--Індивідуальні завдання-->
+                <td class="border-table">{{ cycle.credits }}</td><!--Кількість кредитів ЄКТС-->
+                <td class="border-table">{{ cycle.total_volume_hour }}</td><!--загальний обсяг-->
+                <td class="border-table">{{ cycle.total_classroom }}</td><!--всього-->
+                <td class="border-table">{{ cycle.hours }}</td><!--лекції-->
+                <td class="border-table">{{ cycle.practices }}</td><!--практичні, семінарські-->
+                <td class="border-table">{{ cycle.laboratories }}</td><!--лабораторні-->
+                <td class="border-table">{{ cycle.individual_work }}</td><!--самостійна робота-->
 
-                <td v-for="(hour, idx) in cycle.hours_modules.length > 0 ? cycle.hours_modules : plan.study_term.semesters * 2"
-                    :key="'hour_' + idx"
-                    class="border-table"
+                <td
+                  v-for="(hour, idx) in cycle.hours_modules.length > 0 ?
+                    cycle.hours_modules :
+                    plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
+                  :key="'hour_' + idx"
+                  class="border-table"
                 >
                   <template v-if="hour.hasOwnProperty('hour')">
                     {{hour.hour}}
@@ -258,47 +263,77 @@
               <tr v-if="cycle.total" :key="'total_' + index" class="table-bold">
                 <td class="border-table">{{cycle.index}}</td>
                 <td class="border-table">{{cycle.title}}</td>
-                <td class="border-table"></td><!--Todo Екзамени-->
-                <td class="border-table"></td><!--Todo Заліки-->
-                <td class="border-table"></td><!--Todo Індивідуальні завдання-->
-                <td class="border-table"></td><!--Todo Кількість кредитів ЄКТС-->
-                <td class="border-table"></td><!--Todo загальний обсяг-->
-                <td class="border-table"></td><!--Todo всього-->
-                <td class="border-table"></td><!--Todo лекції-->
-                <td class="border-table"></td><!--Todo практичні, семінарські-->
-                <td class="border-table"></td><!--Todo лабораторні-->
-                <td class="border-table"></td><!--Todo самостійна робота-->
+                <td class="border-table"></td><!--Екзамени-->
+                <td class="border-table"></td><!--Заліки-->
+                <td class="border-table"></td><!--Індивідуальні завдання-->
+                <td class="border-table">{{cycle.credits}}</td><!--Кількість кредитів ЄКТС-->
+                <td class="border-table">{{ cycle.total_volume_hour }}</td><!--загальний обсяг-->
+                <td class="border-table">
+                  {{ cycle.total_classroom }}
+                </td><!--Todo всього-->
+                <td class="border-table">{{ cycle.hours }}</td><!--лекції-->
+                <td class="border-table">{{ cycle.practices }}</td><!--практичні, семінарські-->
+                <td class="border-table">{{ cycle.laboratories }}</td><!--лабораторні-->
+                <td class="border-table">{{cycle.individual_work}}</td><!--самостійна робота-->
 
-                <td v-for="(hour, idx) in plan.study_term.semesters * 2"
-                    :key="'hour_' + idx"
-                    class="border-table"
+                <td
+                  v-for="(hour, idx) in cycle.hours_modules.length > 0 ?
+                   cycle.hours_modules :
+                   plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
+                  :key="'hour_' + idx"
+                  class="border-table"
                 >
-
-                </td><!--Todo for course-->
+                  {{cycle.hours_modules.length > 0 ? hour : 0}}
+                </td>
 
                 <td class="border-table"></td><!--Todo Кафедра викладання -->
                 <td class="border-table"></td><!--Todo Потоки-->
               </tr>
+
               <tr v-if="cycle.cycle_id !== null && cycle.asu_id === undefined && !cycle.total" :key="'cycle_' + index" >
-                <td :colspan="14 + plan.study_term.semesters * 2" class="table-bold border-table">
+                <td :colspan="14 + plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
+                    class="table-bold border-table"
+                >
                   {{cycle.title}}
                 </td>
               </tr>
+
             </template>
             <tr class="table-bold">
               <td class="border-table"></td>
-              <td colspan="1" class="text-left border-table">Усього атестації</td>
-              <td class="border-table" v-for="td in this.fullColspanPlan - 2" :key="td"></td>
-            </tr>
-            <tr class="table-bold">
-              <td class="border-table"></td>
               <td colspan="1" class="text-left border-table">Загальна кількість</td>
-              <td class="border-table" v-for="td in this.fullColspanPlan - 2" :key="td"></td>
+              <td class="border-table" v-for="td in 3" :key="'td_1_' + td"></td>
+              <td class="border-table">{{ totalPlan.credits }}</td><!--Кількість кредитів ЄКТС-->
+              <td class="border-table">{{ totalPlan.total_volume_hour }}</td><!--загальний обсяг-->
+              <td class="border-table">{{ totalPlan.total_classroom }}</td><!--всього-->
+              <td class="border-table">{{ totalPlan.hours }}</td><!--лекції-->
+              <td class="border-table">{{ totalPlan.practices }}</td><!--практичні, семінарські-->
+              <td class="border-table">{{ totalPlan.laboratories }}</td><!--лабораторні-->
+              <td class="border-table">{{ totalPlan.individual_work }}</td><!--самостійна робота-->
+              <td
+                v-for="(hour, idx) in totalPlan.hours_modules.length > 0 ?
+                   totalPlan.hours_modules :
+                   plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
+                :key="'total_plan_' + idx"
+                class="border-table"
+              >
+                {{totalPlan.hours_modules.length > 0 ? hour : 0}}
+              </td>
+              <td class="border-table" v-for="td in 2" :key="'td_2_' + td"></td>
             </tr>
             <tr class="table-bold">
               <td class="border-table"></td>
               <td colspan="11" class="text-left border-table">Кількість годин на тиждень</td>
-              <td class="border-table" v-for="td in this.fullColspanPlan - 12" :key="td"></td>
+              <td
+                v-for="(hour, idx) in totalPlan.hours_modules.length > 0 ?
+                   totalPlan.hours_modules :
+                   plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
+                :key="'hour_' + idx"
+                class="border-table"
+              >
+                {{totalPlan.hours_modules.length > 0 ? hour : 0}}
+              </td>
+              <td class="border-table" v-for="td in 2" :key="td"></td>
             </tr>
             <tr class="table-bold">
               <td class="border-table"></td>
@@ -350,7 +385,7 @@
           dark
           small
           color="red accent-4"
-          @click="ExportPDF()"
+          @click="exportPDF()"
         >
           <v-icon>mdi-pdf-box</v-icon>
         </v-btn>
@@ -359,7 +394,7 @@
           dark
           small
           color="green darken-4"
-          @click="ExportExcel('xlsx'/*'xls'*/)"
+          @click="exportExcel('xlsx'/*'xls'*/)"
         >
           <v-icon>
             mdi-file-excel
@@ -396,11 +431,14 @@ export default {
   },
   data() {
     return {
+      cycles: [],
       exports: false,
       plan: null,
+      totalPlan: null,
       fullColspanTitle: 54,
       fullColspanPlan: 22,
       FORM_ORGANIZATIONS: FORM_ORGANIZATIONS,
+      FORM_ORGANIZATIONS_TABLE: FORM_ORGANIZATIONS_TABLE,
       professions : [
         [
           { title: 'Галузь знань', colspan: 6 },
@@ -452,6 +490,7 @@ export default {
             this.plan = response.data.data;
             this.getFullColspan();
             this.generateTable(this.plan);
+            this.updateCycles(this.getCyclesRow(this.plan.cycles));
           }
         })
       }
@@ -471,7 +510,7 @@ export default {
       }
     },
 
-    ExportExcel(type, fn, dl) {
+    exportExcel(type, fn, dl) {
       const title = this.$refs.exportableTitle;
       const plan = this.$refs.exportablePlan;
       const workbook = XLSX.utils.book_new();
@@ -497,8 +536,48 @@ export default {
         XLSX.write(workbook, {bookType:type, bookSST:true, type: 'base64'}) :
         XLSX.writeFile(workbook, fn || (this.plan.title + '.' + (type || 'xlsx')));
     },
+
+    updateCycles(cycles) {
+      let prev = 0;
+      let total_cycles = [];
+
+      this.cycles = cycles.map((cycle, index) => {
+        if (cycle.full_total) {
+          const total = cycles.slice(prev, index).filter((cycle) => cycle.total && !cycle.full_total);
+          prev = index;
+
+          const data = {
+            credits: this.GlobalSumPropertyInArray(total, 'credits'),
+            total_volume_hour: this.GlobalSumPropertyInArray(total, 'total_volume_hour'),
+            hours: this.GlobalSumPropertyInArray(total, 'hours'),
+            practices: this.GlobalSumPropertyInArray(total, 'practices'),
+            laboratories: this.GlobalSumPropertyInArray(total, 'laboratories'),
+            total_classroom: this.GlobalSumPropertyInArray(total, 'total_classroom'),
+            individual_work: this.GlobalSumPropertyInArray(total, 'individual_work'),
+            hours_modules: this.getHoursModulesTotal(total)
+          }
+
+          cycle = {...cycle, ...data }
+          total_cycles.push(cycle);
+        }
+        return cycle;
+      })
+
+      this.totalPlan = {
+        credits: this.GlobalSumPropertyInArray(total_cycles, 'credits'),
+        total_volume_hour: this.GlobalSumPropertyInArray(total_cycles, 'total_volume_hour'),
+        hours: this.GlobalSumPropertyInArray(total_cycles, 'hours'),
+        practices: this.GlobalSumPropertyInArray(total_cycles, 'practices'),
+        laboratories: this.GlobalSumPropertyInArray(total_cycles, 'laboratories'),
+        total_classroom: this.GlobalSumPropertyInArray(total_cycles, 'total_classroom'),
+        individual_work: this.GlobalSumPropertyInArray(total_cycles, 'individual_work'),
+        hours_modules: this.getHoursModulesTotal(total_cycles)
+      }
+    },
+
     getCyclesRow(cycles) {
       let _cycles = [];
+
       for (let cycle of cycles) {
         const _cycle = {...cycle};
         delete _cycle.subjects;
@@ -508,31 +587,77 @@ export default {
 
         if (cycle.subjects.length > 0) {
           cycle.subjects.map((el,index) => el.index = ++index)
+
+          cycle.subjects.map((subject) => {
+            subject.total_classroom = this.totalClassroom(subject.hours_modules)
+            subject.individual_work = (subject.total_volume_hour - subject.hours - subject.practices -subject.laboratories)
+          })
+
           _cycles.push(...cycle.subjects)
 
           const total = {
             total: true,
+            parent_id: cycle.cycle_id === null ? cycle.id : null,
             title: 'Усього',
+            credits: this.GlobalSumPropertyInArray(cycle.subjects, 'credits'),
+            total_volume_hour: this.GlobalSumPropertyInArray(cycle.subjects, 'total_volume_hour'),
+            hours: this.GlobalSumPropertyInArray(cycle.subjects, 'hours'),
+            practices: this.GlobalSumPropertyInArray(cycle.subjects, 'practices'),
+            laboratories: this.GlobalSumPropertyInArray(cycle.subjects, 'laboratories'),
+            total_classroom: this.GlobalSumPropertyInArray(cycle.subjects, 'total_classroom'),
+            individual_work: this.GlobalSumPropertyInArray(cycle.subjects, 'individual_work'),
+            hours_modules:  this.getHoursModulesTotal(cycle.subjects, true)
           }
           _cycles.push(total);
         }
+
         if (cycle.cycles.length > 0) {
           _cycles.push(...this.getCyclesRow(cycle.cycles));
         }
+
         if (
           cycle.cycle_id === null
         ) {
           const fullTotal = {
             total: true,
-            title: 'Усього за навчальними дисциплінами загальної підготовки',
+            full_total: true,
+            title: 'Усього за цикл',
+            hours_modules: [] //Todo is if check total
           }
           _cycles.push(fullTotal);
         }
       }
       return _cycles;
     },
-    ExportPDF() {
+    exportPDF() {
       window.print();
+    },
+    totalClassroom(hours_modules) {
+      const hours_modules_length = hours_modules.length
+      let total = 0;
+
+      if (hours_modules_length || hours_modules_length === this.plan.hours_weeks_semesters.length) {
+        this.plan.hours_weeks_semesters.forEach((element, index) => {
+          total += element.hour * hours_modules[index].hour;
+        })
+      }
+
+      return total;
+    },
+    getHoursModulesTotal(obj, inside_hour = false ) {
+      let hours_modules_total = [];
+      obj.forEach((item) => {
+        if (item.hours_modules.length) {
+          item.hours_modules.forEach((hours_module, index) => {
+            if (hours_modules_total[index]) {
+              hours_modules_total[index] += inside_hour ? hours_module.hour : hours_module
+            } else {
+              hours_modules_total[index] = inside_hour ? hours_module.hour : hours_module
+            }
+          })
+        }
+      })
+      return hours_modules_total;
     }
   }
 }

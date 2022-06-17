@@ -38,7 +38,6 @@ export default {
   },
   methods: {
     getMenu() {
-      localStorage.setItem('user', JSON.stringify({role_id: 1})); //TODO::delete string
       const user = JSON.parse(localStorage.getItem('user'));
       this.menu = navigation.getItems(user)
     },
