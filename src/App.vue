@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 // import axios from 'axios';
 import api from "@/api";
 import { API } from '@/api/constants-api';
@@ -26,6 +26,7 @@ export default {
   },
   created() {
     // this.authUser();
+    this.authUserForTest();
   },
   watch: {
     errors() {
@@ -33,6 +34,13 @@ export default {
     }
   },
   methods: {
+    ...mapActions("auth", ["getUserData"]),
+    authUserForTest() {
+      if (localStorage.getItem("authToken")) {
+        this.getUserData();
+      }
+    },
+
     authUser() {
 
       const userData = this.$store.getters["auth/user"];

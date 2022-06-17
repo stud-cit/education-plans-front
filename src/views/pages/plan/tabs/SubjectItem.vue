@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row :class="['cycle-subject', subjectIndexError == subject.id ? 'error' : '', 'ma-0', 'mb-1']">
-      <v-col cols="7" class="pa-0 text-left">
+      <v-col cols="6" class="pa-0 text-left">
         {{subject.selective_discipline_id ?  subject.selective_discipline.title : subject.title}}
       </v-col>
       <v-col class="pa-0">
@@ -12,6 +12,9 @@
       </v-col>
       <v-col class="pa-0">
         {{ subject.laboratories }}
+      </v-col>
+      <v-col class="pa-0">
+        {{ sumHour(subject.hours_modules, 'hour') }}
       </v-col>
       <v-col class="pa-0">
         {{ subject.credits }}
@@ -50,6 +53,9 @@ export default {
     this.checkCredit();
   },
   methods: {
+    sumHour(array, field) {
+      return array.map(item => item[field]).reduce((prev, curr) => +prev + +curr, 0);
+    },
     checkCredit() {
       let sumCredits = this.item.subjects.map(subjectItem => subjectItem.credits).reduce((prev, curr) => prev + curr, 0);
       if(sumCredits > this.item.credit) {
