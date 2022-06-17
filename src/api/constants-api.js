@@ -30,6 +30,7 @@ export const API = {
   "SPECIALITIES": version + '/specialities',
   "EDUCATIONAL_PROGRAMS": version + '/education-programs',
   "POSITIONS": version + '/positions',
+  "SIGNATURES": version + '/signatures',
 };
 
 export const ALLOWED_REQUEST_PARAMETERS = {
