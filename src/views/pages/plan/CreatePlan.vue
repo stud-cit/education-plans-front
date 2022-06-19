@@ -42,7 +42,6 @@
         color="primary"
         class="ml-2"
         v-show="[2, 3, 4].indexOf(authUser.role_id) != -1"
-        :disabled="!!plan"
         @click="verification({verification_statuses_id: authUser.role_id, status: true})"
       >
         Верифікувати
@@ -53,7 +52,6 @@
         color="error"
         class="ml-2"
         v-show="[2, 3, 4].indexOf(authUser.role_id) != -1"
-        :disabled="!!plan"
         @click="verification({verification_statuses_id: authUser.role_id, status: false})"
       >
         Відхилити верифікацію
