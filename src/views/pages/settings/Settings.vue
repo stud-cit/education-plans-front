@@ -27,6 +27,7 @@ export default {
         { title: 'Користувачі', to: 'SettingUsers' },
         { title: 'Вибіркові дисципліни', to: 'SelectiveDisciplines' },
         { title: 'Посади', to: 'Position' },
+        { title: 'Примітки', to: 'Note' },
       ],
     };
   },

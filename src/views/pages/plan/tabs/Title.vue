@@ -27,37 +27,37 @@
         <td v-for="(week, i) in k" :key="i">
           <ValidationProvider
             :vid="'data_' + i + '_row_' + week.course + '_col_' + week.month"
-            rules="oneOf:'Т,Т*,С,П,К,А,Д,т,т*,с,п,к,а,д"
+            :rules="'oneOf:' + rule "
             name="Тиждень"
             v-slot="{ errors }">
             <input
               type="text"
               :class="[ errors[0] ? 'errors' : '' ]"
-              v-model="week.val">
+              v-model="week.val"
+              @input="(val) => (week.val = week.val.toUpperCase())"
+            >
           </ValidationProvider>
         </td>
       </tr>
       <tfoot>
         <td :colspan="year.weeks + 1" class="text-left pa-2">
-          <p class="text-bold">
-            ПОЗНАЧЕННЯ: Т – теоретична підготовка;
-            Т* – атестаційний тиждень,проводиться в межах теоретичної підготовки;
-            С – семестровий контроль (екзаменаційна сесія);
-            П – практична підготовка; К – канікули; А – атестація;
-            Д – підготовка кваліфікаційної роботи.
+           <p class="text-bold" v-if="noteLoaded">
+            ПОЗНАЧЕННЯ: {{ notes }}
           </p>
+          <v-skeleton-loader v-else
+            v-bind="notes"
+            type="sentences,text@1"
+          ></v-skeleton-loader>
         </td>
       </tfoot>
     </table>
 
     <v-alert
       outlined
-      type="warning"
-      prominent
-      border="left"
+      type="error"
       :value="hasErrors(errors)"
     >
-      Ви ввели недопустиме значення!
+      Ви ввели недопустиме значення, зверніть увагу на розкладку клавіатури допускається тільки українська!
     </v-alert>
 
     <table>
@@ -160,6 +160,9 @@
   </div>
 </template>
 <script>
+import api from '@/api';
+import { API } from '@/api/constants-api';
+
 export default {
   name: "Title",
   props: {
@@ -170,6 +173,9 @@ export default {
   },
   data() {
     return {
+      rule: 'Т,Т*,С,П,К,А,Д,т,т*,с,п,к,а,д',
+      notes: '',
+      noteLoaded: false,
       year: {
         weeks: 0,
         header: [],
@@ -186,6 +192,7 @@ export default {
   computed: {
   },
   mounted() {
+    this.getRules();
     this.getScheduleEducationProcessData();
   },
   methods: {
@@ -253,6 +260,14 @@ export default {
       } else {
         this.start();
       }
+    },
+    getRules() {
+      api.get(`${API.NOTES}/rules`).then( (response) => {
+        this.noteLoaded = true;
+        const { rule, notes } = response.data.data;
+        this.rule = rule;
+        this.notes = notes;
+      });
     }
 
   },
@@ -281,7 +296,6 @@ export default {
     height: 100%;
     text-align: center;
     outline: none;
-    text-transform: uppercase;
   }
   table td input:focus {
     border: 1px solid #000;

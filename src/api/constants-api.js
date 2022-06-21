@@ -31,6 +31,7 @@ export const API = {
   "EDUCATIONAL_PROGRAMS": version + '/education-programs',
   "POSITIONS": version + '/positions',
   "SIGNATURES": version + '/signatures',
+  "NOTES": version + '/notes'
 };
 
 export const ALLOWED_REQUEST_PARAMETERS = {
