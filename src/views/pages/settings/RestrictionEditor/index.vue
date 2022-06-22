@@ -12,43 +12,45 @@
         {{ index + 1 }}
       </template>
 
-      <template v-slot:item.value="props">
-        <v-edit-dialog
-          :return-value.sync="props.item.value"
-          large
-          persistent
-          cancel-text='Відміна'
-          save-text='Зберегти'
-          @save="save(props.item.id, props.item.value)"
-          @open="open"
-        >
-          <div>{{ props.item.value }}</div>
-          <template v-slot:input>
-            <div class="mt-4 text-h6">Редагування</div>
-            <v-text-field
-              v-model="props.item.value"
-              :rules="[required, number, max3digits]"
-              label="Редагування"
-              single-line
-              counter
-              autofocus
-            ></v-text-field>
-          </template>
-        </v-edit-dialog>
+      <template v-slot:item.value="{ item }">
+        <template v-if="item.edit">
+          <validation-observer
+            ref="observer"
+          >
+            <validation-provider
+              v-slot="{ errors }"
+              name="Значення"
+              rules="required|digits|max:3"
+            >
+              <v-text-field
+                v-model="item.value"
+                :counter="3"
+                :error-messages="errors"
+                label="Значення"
+                required
+                autofocus
+                @change="edit(item)"
+                @blur="closeEdit(item)"
+              ></v-text-field>
+            </validation-provider>
+          </validation-observer>
+        </template>
+        <template v-else>
+          {{item.value}}
+        </template>
       </template>
 
-      <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
-        {{ snackText }}
-
-        <template v-slot:action="{ attrs }">
-          <v-btn v-bind="attrs" text @click="snack = false"> Закрити </v-btn>
-        </template>
-      </v-snackbar>
-
       <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" color="primary"  @click="edit(item.id)">
-          mdi-square-edit-outline
-        </v-icon>
+       <template v-if="item.edit">
+          <v-icon small class="mr-2" color="success" @click="edit(item)">
+            mdi-check
+          </v-icon>
+        </template>
+        <template v-else>
+          <v-icon small class="mr-2" color="primary" @click="item.edit = true">
+            mdi-square-edit-outline
+          </v-icon>
+        </template>
         <v-icon
           small
           class="mr-2"
@@ -92,12 +94,7 @@ export default {
 
   data() {
     return {
-      snack: false,
-      snackColor: '',
-      snackText: '',
       loader: false,
-      number: v => Number.isInteger(v) ? true :  'Тільки цілі числа!', 
-      required: v => !!v || 'Поле обов\'язкове!', 
       max3digits: v => v.length <= 3 || 'Максимум 3 цифри!',
       items: [],
       headers: [
@@ -124,10 +121,6 @@ export default {
       this.loader = true;
       return api.get(API.SETTINGS);
     },
-
-    edit(id) {
-      this.$router.push({name: 'RestrictEdit', params: { id }});
-    },
     save(id, value) {
       const options = { value: value };
       api.put(`${API.SETTINGS}${id}`, options).then((response) => {
@@ -137,16 +130,28 @@ export default {
         this.snackText = message;
        });
     },
-
-    open () {
-      this.snack = true
-      this.snackColor = 'info'
-      this.snackText = 'Dialog opened'
+    closeEdit(item) {
+      if (item.value === '') return;
+      item.edit = false;
+    },
+    edit(data) {
+      if (data.value === '') return;
+      api.put(API.SETTINGS + '/' + data.id, {value: data.value} ).then((response) => {
+        data.edit = false;
+        const { message } = response.data;
+        this.$swal.fire({
+          position: "center",
+          icon: "success",
+          title: message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      })
     },
 
     deleteItem(id, title) {
       this.$swal.fire({
-        title: `Ви хочете видалити план ?`,
+        title: `Ви хочете видалити налаштування?`,
         text: `${title}`,
         showDenyButton: true,
         confirmButtonText: 'Так',

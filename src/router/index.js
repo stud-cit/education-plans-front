@@ -6,7 +6,6 @@ import CreatePlan from '@/views/pages/plan/CreatePlan';
 import Settings from '@/views/pages/settings/Settings';
 import RestrictionEditor from '@/views/pages/settings/RestrictionEditor';
 import RestrictCreate from '@/views/pages/settings/RestrictionEditor/create';
-import RestrictEdit from '@/views/pages/settings/RestrictionEditor/edit';
 import StudyTerm from '@/views/pages/settings/StudyTerm';
 import FormStudy from '@/views/pages/settings/FormStudy';
 import FormOrganization from '@/views/pages/settings/FormOrganization';
@@ -196,34 +195,7 @@ const routes = [
               ]
             },
           },
-          {
-            path: ':id',
-            params: ['id'],
-            name: 'RestrictEdit',
-            meta: {
-              requiresAuth: true,
-              header: 'Редагування',
-              breadCrumb() {
-                const paramToPageB = this.$route.params.id;
-                return [
-                  ...BREADCRUMBS.SETTINGS,
-                  { text: 'Редактор обмежень', to: { name: 'RestrictionEditor'} },
-                  { text: paramToPageB,
-                    to: { params: { paramToPageB: paramToPageB } }
-                  },
-                  { text: 'Редагування' }
-                ]
-              }
-            },
-            component: RestrictEdit,
-            beforeEnter: (to, from, next) => {
-              if (/^[0-9]+$/.test(to.params.id)) {
-                next();
-              } else {
-                next('/');
-              }
-            },
-          },
+
         ],
       },
 
