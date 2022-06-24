@@ -86,7 +86,7 @@ export default {
       items: [],
       roles: [],
       headers: [
-        {text: "№", value: "index", sortable: false},
+        {text: "№", value: "index", sortable: false, width: '20px'},
         {text: "ПІБ", value: "full_name", sortable: false},
         {text: "Факультет", value: "faculty", sortable: false},
         {text: "Кафедра", value: "department", sortable: false},

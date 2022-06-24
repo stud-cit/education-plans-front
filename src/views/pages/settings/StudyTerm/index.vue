@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       headers: [
-        { text: "№", value: "index", sortable: false },
+        { text: "№", value: "index", sortable: false, width: '20px' },
         { text: "Опис", value: "title", sortable: false },
         { text: "Місяців", value: "month", sortable: false },
         { text: "Курсів", value: "course", sortable: false },

@@ -22,7 +22,7 @@ export default {
   data() {
     return {
       headers: [
-        { text: "№", value: "index", sortable: false },
+        { text: "№", value: "index", sortable: false, width: '20px' },
         { text: "Форма організації навчання", value: "title", sortable: false },
       ],
       items: [],
