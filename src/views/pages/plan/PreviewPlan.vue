@@ -214,18 +214,20 @@
 
         <table ref="exportablePlan" class="table table-plan mt-5" v-if="plan" width="100%">
 
-          <template v-if="plan.form_organization_id === FORM_ORGANIZATIONS.modular_cyclic">
-            <ModularCyclicHeaderTable :plan="plan"/>
-          </template>
-          <template v-else-if="plan.form_organization_id === FORM_ORGANIZATIONS.semester">
-            <SemesterHeaderTable :plan="plan"/>
-          </template>
+            <ModularCyclicHeaderTable
+              v-if="plan.form_organization_id === FORM_ORGANIZATIONS.modular_cyclic"
+              :plan="plan"
+            />
+            <SemesterHeaderTable
+              v-if="plan.form_organization_id === FORM_ORGANIZATIONS.semester"
+              :plan="plan"
+            />
 
           <tbody>
             <template v-for="(cycle, index) in cycles">
               <tr v-if="cycle.cycle_id === null" class="table-subtitle" :key="index">
                 <td class="border-table"
-                    :colspan="14 + plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
+                    :colspan="14 + plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id] * 2"
                 >
                   {{cycle.title}}
                 </td>
@@ -243,6 +245,16 @@
                 <td class="border-table">{{ cycle.practices }}</td><!--практичні, семінарські-->
                 <td class="border-table">{{ cycle.laboratories }}</td><!--лабораторні-->
                 <td class="border-table">{{ cycle.individual_work }}</td><!--самостійна робота-->
+
+                <td
+                  v-for="semester in plan.study_term.semesters"
+                  class="border-table no-print"
+                  :key="'semester_noprint_' + semester"
+                >
+                  <template v-if="cycle.semesters_credits">
+                    {{cycle.semesters_credits[semester]}}
+                  </template>
+                </td>
 
                 <td
                   v-for="(hour, idx) in cycle.hours_modules.length > 0 ?
@@ -277,6 +289,16 @@
                 <td class="border-table">{{cycle.individual_work}}</td><!--самостійна робота-->
 
                 <td
+                  v-for="semester in plan.study_term.semesters"
+                  class="border-table no-print"
+                  :key="'semester_noprint_' + semester"
+                >
+                  <template v-if="cycle.semesters_credits">
+                    {{cycle.semesters_credits[semester]}}
+                  </template>
+                </td>
+
+                <td
                   v-for="(hour, idx) in cycle.hours_modules.length > 0 ?
                    cycle.hours_modules :
                    plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
@@ -291,7 +313,7 @@
               </tr>
 
               <tr v-if="cycle.cycle_id !== null && cycle.asu_id === undefined && !cycle.total" :key="'cycle_' + index" >
-                <td :colspan="14 + plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
+                <td :colspan="14 + plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id] * 2"
                     class="table-bold border-table"
                 >
                   {{cycle.title}}
@@ -311,6 +333,15 @@
               <td class="border-table">{{ totalPlan.laboratories }}</td><!--лабораторні-->
               <td class="border-table">{{ totalPlan.individual_work }}</td><!--самостійна робота-->
               <td
+                v-for="semester in plan.study_term.semesters"
+                class="border-table no-print"
+                :key="'semester_noprint_' + semester"
+              >
+                <template v-if="totalPlan.semesters_credits">
+                  {{totalPlan.semesters_credits[semester]}}
+                </template>
+              </td>
+              <td
                 v-for="(hour, idx) in totalPlan.hours_modules.length > 0 ?
                    totalPlan.hours_modules :
                    plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
@@ -325,6 +356,11 @@
               <td class="border-table"></td>
               <td colspan="11" class="text-left border-table">Кількість годин на тиждень</td>
               <td
+                v-for="semester in plan.study_term.semesters"
+                class="border-table no-print"
+                :key="'semester_noprint_' + semester"
+              ></td>
+              <td
                 v-for="(hour, idx) in totalPlan.hours_modules.length > 0 ?
                    totalPlan.hours_modules :
                    plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
@@ -338,16 +374,31 @@
             <tr class="table-bold">
               <td class="border-table"></td>
               <td colspan="11" class="text-left border-table">Кількість екзаменів</td>
+              <td
+                v-for="semester in plan.study_term.semesters"
+                class="border-table no-print"
+                :key="'semester_noprint_' + semester"
+              ></td>
               <td class="border-table" v-for="td in this.fullColspanPlan - 12" :key="td"></td>
             </tr>
             <tr class="table-bold">
               <td class="border-table"></td>
               <td colspan="11" class="text-left border-table">Кількість заліків</td>
+              <td
+                v-for="semester in plan.study_term.semesters"
+                class="border-table no-print"
+                :key="'semester_noprint_' + semester"
+              ></td>
               <td class="border-table" v-for="td in this.fullColspanPlan - 12" :key="td"></td>
             </tr>
             <tr class="table-bold">
               <td class="border-table"></td>
               <td colspan="11" class="text-left border-table">Кількість курсових робіт</td>
+              <td
+                v-for="semester in plan.study_term.semesters"
+                class="border-table no-print"
+                :key="'semester_noprint_' + semester"
+              ></td>
               <td class="border-table" v-for="td in this.fullColspanPlan - 12" :key="td"></td>
             </tr>
             <tr>
@@ -525,7 +576,7 @@ export default {
         {wch: 2},
         {wch: 40},
         ...[ ...Array(10).keys() ].map(() => { return {wch: 10} }),
-        ...[ ...Array(this.plan.study_term.semesters * 2).keys() ].map(() => { return {wch: 2} }),
+        ...[ ...Array(this.plan.study_term.semesters * 2).keys() ].map(() => { return {wch: 4} }),
         ...[ ...Array(2).keys() ].map(() => { return {wch: 10} }),
       ];
 
@@ -554,7 +605,8 @@ export default {
             laboratories: this.GlobalSumPropertyInArray(total, 'laboratories'),
             total_classroom: this.GlobalSumPropertyInArray(total, 'total_classroom'),
             individual_work: this.GlobalSumPropertyInArray(total, 'individual_work'),
-            hours_modules: this.getHoursModulesTotal(total)
+            hours_modules: this.getHoursModulesTotal(total),
+            semesters_credits: this.getSumSemestersCredits(total)
           }
 
           cycle = {...cycle, ...data }
@@ -571,7 +623,8 @@ export default {
         laboratories: this.GlobalSumPropertyInArray(total_cycles, 'laboratories'),
         total_classroom: this.GlobalSumPropertyInArray(total_cycles, 'total_classroom'),
         individual_work: this.GlobalSumPropertyInArray(total_cycles, 'individual_work'),
-        hours_modules: this.getHoursModulesTotal(total_cycles)
+        hours_modules: this.getHoursModulesTotal(total_cycles),
+        semesters_credits: this.getSumSemestersCredits(total_cycles)
       }
     },
 
@@ -606,7 +659,8 @@ export default {
             laboratories: this.GlobalSumPropertyInArray(cycle.subjects, 'laboratories'),
             total_classroom: this.GlobalSumPropertyInArray(cycle.subjects, 'total_classroom'),
             individual_work: this.GlobalSumPropertyInArray(cycle.subjects, 'individual_work'),
-            hours_modules:  this.getHoursModulesTotal(cycle.subjects, true)
+            hours_modules: this.getHoursModulesTotal(cycle.subjects, true),
+            semesters_credits: this.getSumSemestersCredits(cycle.subjects)
           }
           _cycles.push(total);
         }
@@ -658,6 +712,21 @@ export default {
         }
       })
       return hours_modules_total;
+    },
+    getSumSemestersCredits(subjects) {
+      let semestersCredits = {};
+
+      subjects.map((subject) => {
+        if (Object.keys(subject.semesters_credits).length > 0) {
+          Object.assign([], subject.semesters_credits).map((semesterCredit, key) => {
+            semestersCredits[key] ?
+              semestersCredits[key] += semesterCredit :
+              semestersCredits[key] = semesterCredit
+          })
+        }
+      })
+
+      return semestersCredits;
     }
   }
 }
