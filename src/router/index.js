@@ -13,6 +13,7 @@ import SettingUsers from '@/views/pages/settings/Users/Users';
 import SelectiveDisciplines from '@/views/pages/settings/SelectiveDisciplines/SelectiveDisciplines';
 import Position from '@/views/pages/settings/Position';
 import Note from '@/views/pages/settings/Note';
+import ListCycle from '@/views/pages/settings/ListCycle';
 import NotFoundPage from '@/views/NotFoundPage';
 import Forbidden from '@/views/Forbidden';
 import Unauthorized from '@/views/Unauthorized';
@@ -25,7 +26,7 @@ const BREADCRUMBS = {
     { text: 'Робота з планами', to: { name: 'ListPlans' } },
     { text: 'Налаштування', to: { name: 'Settings'} },
   ]
-}
+};
 
 const routes = [
   {
@@ -86,7 +87,7 @@ const routes = [
             return [
               { text: 'Робота з планами', to: { name: 'ListPlans' } },
               { text: paramToPageB}
-            ]
+            ];
           }
         },
       },
@@ -102,7 +103,7 @@ const routes = [
             return [
               { text: 'Робота з планами', to: { name: 'ListPlans' } },
               { text: paramToPageB}
-            ]
+            ];
           }
         },
       },
@@ -248,6 +249,19 @@ const routes = [
           breadCrumb: [
             ...BREADCRUMBS.SETTINGS,
             { text: 'Примітки' }
+          ]
+        },
+      },
+      {
+        path: 'list-cycles',
+        name: 'ListCycle',
+        component: ListCycle,
+        meta: {
+          requiresAuth: true,
+          header: 'Цикли',
+          breadCrumb: [
+            ...BREADCRUMBS.SETTINGS,
+            { text: 'Цикли' }
           ]
         },
       },

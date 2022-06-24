@@ -28,6 +28,7 @@ export default {
         { title: 'Вибіркові дисципліни', to: 'SelectiveDisciplines' },
         { title: 'Посади', to: 'Position' },
         { title: 'Примітки', to: 'Note' },
+        { title: 'Цикли', to: 'ListCycle' },
       ],
     };
   },
