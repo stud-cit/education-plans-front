@@ -81,7 +81,7 @@ export default {
     return {
       headers: [
         { text: '№', value: 'index', sortable: false, width: '20px' },
-        { text: 'Абревіатура', value: 'abbreviation', sortable: false },
+        { text: 'Абревіатура', value: 'abbreviation', sortable: false, width: '110px' },
         { text: 'Опис', value: 'explanation', sortable: false },
         { text: 'Дії', value: 'actions', width: '80px', sortable: false },
       ],
