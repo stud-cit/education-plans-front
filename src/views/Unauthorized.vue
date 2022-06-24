@@ -10,6 +10,12 @@
         :to="{ name: 'ListPlans' }" >
         Повернутись на головну
       </v-btn>
+      <v-img
+        class="align-self-center image"
+        src="../../public/rocket-launch.png"
+        alt="rocket lunch"
+        >
+      </v-img>
     </div>
   </div>
 </template>
