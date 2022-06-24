@@ -13,10 +13,10 @@
       </template>
 
       <template v-slot:item.agreed="{ item }">
-        <v-simple-checkbox
+        <v-checkbox
           v-model="item.agreed"
           @click="edit(item)"
-        ></v-simple-checkbox>
+        ></v-checkbox>
       </template>
 
       <template v-slot:item.position="{ item }">

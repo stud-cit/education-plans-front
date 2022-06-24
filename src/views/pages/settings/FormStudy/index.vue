@@ -23,7 +23,7 @@ export default {
     return {
       loader: false,
       headers: [
-        { text: "№", value: "index", sortable: false },
+        { text: "№", value: "index", sortable: false, width: '20px' },
         { text: "Форма навчання", value: "title", sortable: false },
       ],
       items: [],

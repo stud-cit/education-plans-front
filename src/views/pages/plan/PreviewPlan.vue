@@ -85,10 +85,10 @@
                 І . ГРАФІК НАВЧАЛЬНОГО ПРОЦЕСУ, тижні
               </td>
             </tr>
-            <template v-if="this.plan.schedule_education_process && this.plan.schedule_education_process.length !== 0">
-              <ScheduleEducationalProcessMonth :items="this.plan.schedule_education_process.header"/>
-              <ScheduleEducationalProcessWeeks :items="this.plan.schedule_education_process.weeks"/>
-              <tr v-for="(k, cursIndex) in this.plan.schedule_education_process.courses"
+            <template v-if="plan.schedule_education_process && plan.schedule_education_process.length !== 0">
+              <ScheduleEducationalProcessMonth :items="plan.schedule_education_process.header"/>
+              <ScheduleEducationalProcessWeeks :items="plan.schedule_education_process.weeks"/>
+              <tr v-for="(k, cursIndex) in plan.schedule_education_process.courses"
                   :key="cursIndex"
                   class="table-month text-center"
               >
@@ -214,18 +214,20 @@
 
         <table ref="exportablePlan" class="table table-plan mt-5" v-if="plan" width="100%">
 
-          <template v-if="plan.form_organization_id === FORM_ORGANIZATIONS.modular_cyclic">
-            <ModularCyclicHeaderTable :plan="plan"/>
-          </template>
-          <template v-else-if="plan.form_organization_id === FORM_ORGANIZATIONS.semester">
-            <SemesterHeaderTable :plan="plan"/>
-          </template>
+            <ModularCyclicHeaderTable
+              v-if="plan.form_organization_id === FORM_ORGANIZATIONS.modular_cyclic"
+              :plan="plan"
+            />
+            <SemesterHeaderTable
+              v-if="plan.form_organization_id === FORM_ORGANIZATIONS.semester"
+              :plan="plan"
+            />
 
           <tbody>
             <template v-for="(cycle, index) in cycles">
               <tr v-if="cycle.cycle_id === null" class="table-subtitle" :key="index">
                 <td class="border-table"
-                    :colspan="14 + plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
+                    :colspan="14 + plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id] * 2"
                 >
                   {{cycle.title}}
                 </td>
@@ -243,6 +245,16 @@
                 <td class="border-table">{{ cycle.practices }}</td><!--практичні, семінарські-->
                 <td class="border-table">{{ cycle.laboratories }}</td><!--лабораторні-->
                 <td class="border-table">{{ cycle.individual_work }}</td><!--самостійна робота-->
+
+                <td
+                  v-for="semester in plan.study_term.semesters"
+                  class="border-table no-print"
+                  :key="'semester_noprint_' + semester"
+                >
+                  <template v-if="cycle.semesters_credits">
+                    {{cycle.semesters_credits[semester]}}
+                  </template>
+                </td>
 
                 <td
                   v-for="(hour, idx) in cycle.hours_modules.length > 0 ?
@@ -277,6 +289,16 @@
                 <td class="border-table">{{cycle.individual_work}}</td><!--самостійна робота-->
 
                 <td
+                  v-for="semester in plan.study_term.semesters"
+                  class="border-table no-print"
+                  :key="'semester_noprint_' + semester"
+                >
+                  <template v-if="cycle.semesters_credits">
+                    {{cycle.semesters_credits[semester]}}
+                  </template>
+                </td>
+
+                <td
                   v-for="(hour, idx) in cycle.hours_modules.length > 0 ?
                    cycle.hours_modules :
                    plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
@@ -291,7 +313,7 @@
               </tr>
 
               <tr v-if="cycle.cycle_id !== null && cycle.asu_id === undefined && !cycle.total" :key="'cycle_' + index" >
-                <td :colspan="14 + plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
+                <td :colspan="14 + plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id] * 2"
                     class="table-bold border-table"
                 >
                   {{cycle.title}}
@@ -311,6 +333,15 @@
               <td class="border-table">{{ totalPlan.laboratories }}</td><!--лабораторні-->
               <td class="border-table">{{ totalPlan.individual_work }}</td><!--самостійна робота-->
               <td
+                v-for="semester in plan.study_term.semesters"
+                class="border-table no-print"
+                :key="'semester_noprint_' + semester"
+              >
+                <template v-if="totalPlan.semesters_credits">
+                  {{totalPlan.semesters_credits[semester]}}
+                </template>
+              </td>
+              <td
                 v-for="(hour, idx) in totalPlan.hours_modules.length > 0 ?
                    totalPlan.hours_modules :
                    plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
@@ -325,6 +356,11 @@
               <td class="border-table"></td>
               <td colspan="11" class="text-left border-table">Кількість годин на тиждень</td>
               <td
+                v-for="semester in plan.study_term.semesters"
+                class="border-table no-print"
+                :key="'semester_noprint_' + semester"
+              ></td>
+              <td
                 v-for="(hour, idx) in totalPlan.hours_modules.length > 0 ?
                    totalPlan.hours_modules :
                    plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
@@ -338,22 +374,71 @@
             <tr class="table-bold">
               <td class="border-table"></td>
               <td colspan="11" class="text-left border-table">Кількість екзаменів</td>
-              <td class="border-table" v-for="td in this.fullColspanPlan - 12" :key="td"></td>
+              <td
+                v-for="semester in plan.study_term.semesters"
+                class="border-table no-print"
+                :key="'semester_noprint_' + semester"
+              ></td>
+              <td class="border-table" v-for="td in fullColspanPlan - 12" :key="td"></td>
             </tr>
             <tr class="table-bold">
               <td class="border-table"></td>
               <td colspan="11" class="text-left border-table">Кількість заліків</td>
-              <td class="border-table" v-for="td in this.fullColspanPlan - 12" :key="td"></td>
+              <td
+                v-for="semester in plan.study_term.semesters"
+                class="border-table no-print"
+                :key="'semester_noprint_' + semester"
+              ></td>
+              <td class="border-table" v-for="td in fullColspanPlan - 12" :key="td"></td>
             </tr>
             <tr class="table-bold">
               <td class="border-table"></td>
               <td colspan="11" class="text-left border-table">Кількість курсових робіт</td>
-              <td class="border-table" v-for="td in this.fullColspanPlan - 12" :key="td"></td>
+              <td
+                v-for="semester in plan.study_term.semesters"
+                class="border-table no-print"
+                :key="'semester_noprint_' + semester"
+              ></td>
+              <td class="border-table" v-for="td in fullColspanPlan - 12" :key="td"></td>
             </tr>
             <tr>
               <td colspan="11" class="text-left">* у кожному семестрі з каталога обирається 1 навчальна дисципліна обсягом 5 кредитів ЄКТС</td>
-              <td v-for="td in this.fullColspanPlan - 13" :key="td"></td>
+              <td v-for="td in fullColspanPlan - 13" :key="td"></td>
             </tr>
+
+            <tr v-for="tr in 2" :key="'tr_1_' + tr"></tr>
+
+            <template v-for="signature in plan.signatures">
+              <tr class="text-left signature-position" v-if="signature.agreed" :key="'signature_agreed_' + signature.id">
+                <td colspan="5">ПОГОДЖЕНО:</td>
+              </tr>
+
+              <tr :key="'signature_1_' + signature.id">
+                <td colspan="7" rowspan="3" class="text-left signature-position">
+                  {{signature.position}}
+                </td>
+                <td rowspan="3"></td>
+                <td rowspan="3"></td>
+              </tr>
+              <tr :key="'signature_2_' + signature.id">
+                <td class="signature">
+                  ________________
+                </td>
+                <td></td>
+                <td colspan="7" class="signature-position name">{{signature.name}} {{signature.surname}}</td>
+              </tr>
+
+              <tr :key="'signature_3_' + signature.id">
+                <td class="text-center">
+                  (підпис)
+                </td>
+                <td></td>
+                <td colspan="7" class="text-center">(ім'я та прізвище)</td>
+              </tr>
+              <tr :key="'signature_tr_' + signature.id"></tr>
+            </template>
+
+
           </tbody>
         </table>
       </div>
@@ -525,7 +610,7 @@ export default {
         {wch: 2},
         {wch: 40},
         ...[ ...Array(10).keys() ].map(() => { return {wch: 10} }),
-        ...[ ...Array(this.plan.study_term.semesters * 2).keys() ].map(() => { return {wch: 2} }),
+        ...[ ...Array(this.plan.study_term.semesters * 2).keys() ].map(() => { return {wch: 4} }),
         ...[ ...Array(2).keys() ].map(() => { return {wch: 10} }),
       ];
 
@@ -554,7 +639,8 @@ export default {
             laboratories: this.GlobalSumPropertyInArray(total, 'laboratories'),
             total_classroom: this.GlobalSumPropertyInArray(total, 'total_classroom'),
             individual_work: this.GlobalSumPropertyInArray(total, 'individual_work'),
-            hours_modules: this.getHoursModulesTotal(total)
+            hours_modules: this.getHoursModulesTotal(total),
+            semesters_credits: this.getSumSemestersCredits(total)
           }
 
           cycle = {...cycle, ...data }
@@ -571,7 +657,8 @@ export default {
         laboratories: this.GlobalSumPropertyInArray(total_cycles, 'laboratories'),
         total_classroom: this.GlobalSumPropertyInArray(total_cycles, 'total_classroom'),
         individual_work: this.GlobalSumPropertyInArray(total_cycles, 'individual_work'),
-        hours_modules: this.getHoursModulesTotal(total_cycles)
+        hours_modules: this.getHoursModulesTotal(total_cycles),
+        semesters_credits: this.getSumSemestersCredits(total_cycles)
       }
     },
 
@@ -606,7 +693,8 @@ export default {
             laboratories: this.GlobalSumPropertyInArray(cycle.subjects, 'laboratories'),
             total_classroom: this.GlobalSumPropertyInArray(cycle.subjects, 'total_classroom'),
             individual_work: this.GlobalSumPropertyInArray(cycle.subjects, 'individual_work'),
-            hours_modules:  this.getHoursModulesTotal(cycle.subjects, true)
+            hours_modules: this.getHoursModulesTotal(cycle.subjects, true),
+            semesters_credits: this.getSumSemestersCredits(cycle.subjects)
           }
           _cycles.push(total);
         }
@@ -658,6 +746,21 @@ export default {
         }
       })
       return hours_modules_total;
+    },
+    getSumSemestersCredits(subjects) {
+      let semestersCredits = {};
+
+      subjects.map((subject) => {
+        if (Object.keys(subject.semesters_credits).length > 0) {
+          Object.assign([], subject.semesters_credits).map((semesterCredit, key) => {
+            semestersCredits[key] ?
+              semestersCredits[key] += semesterCredit :
+              semestersCredits[key] = semesterCredit
+          })
+        }
+      })
+
+      return semestersCredits;
     }
   }
 }
@@ -726,9 +829,17 @@ export default {
     text-align: center;
     vertical-align: middle;
   }
-  table tfoot .foot-title {
-    text-align: left;
-    font-size: 8pt;
+  table .signature {
+    text-align: center;
+    vertical-align: bottom;
+  }
+  table .signature-position {
+    font-size: 12pt;
+    vertical-align: top;
+  }
+  table .signature-position.name {
+    vertical-align: bottom;
+    border-bottom: 1px solid;
   }
   table tfoot {
     border: 2px solid black;

@@ -1,7 +1,7 @@
 <template>
   <thead>
-    <tr class="table-subtitle">
-      <td class="border-table" :colspan="14 + plan.study_term.semesters * 2">
+    <tr class="table-subtitle" >
+      <td class="border-table" :colspan="14 + plan.study_term.semesters * 2 * 2">
         V. ПЛАН НАВЧАЛЬНОГО ПРОЦЕСУ
       </td>
     </tr>
@@ -11,6 +11,9 @@
       <td class="border-table" rowspan="1" colspan="3" width="200">Розподіл контрольних заходів за семестрами</td>
       <td class="border-table" rowspan="8" width="50">Кількість кредитів ЄКТС</td>
       <td class="border-table" rowspan="1" colspan="6">Кількість годин</td>
+      <td class="border-table no-print" rowspan="1" :colspan="plan.study_term.semesters">
+        Розподіл кредитів за курсами, семестрами і модульними атестаційними циклами
+      </td>
       <td class="border-table" rowspan="1" :colspan="plan.study_term.semesters * 2">
         Розподіл годин на тиждень за курсами, семестрами і модульними атестаційними циклами
       </td>
@@ -25,7 +28,11 @@
       <td class="border-table" rowspan="7">загальний обсяг</td>
       <td class="border-table" rowspan="1" colspan="4">аудиторних</td>
       <td class="border-table" rowspan="7">самостійна робота</td>
-
+      <td class="border-table no-print" v-for="course in plan.study_term.course"
+          :colspan="plan.study_term.semesters % plan.study_term.course > 0 && course ===  plan.study_term.course ? 1 : 2"
+          :key="'course_noprint_' + course">
+        {{course}} курс
+      </td>
       <td class="border-table" v-for="course in plan.study_term.course"
           :colspan="plan.study_term.semesters % plan.study_term.course > 0 && course ===  plan.study_term.course ? 2 : 4"
           :key="'course_' + course">
@@ -35,6 +42,7 @@
     <tr>
       <td class="border-table" rowspan="6">всього</td>
       <td class="border-table" rowspan="1" colspan="3">у тому числі:</td>
+      <td class="border-table no-print" rowspan="5" :colspan="plan.study_term.semesters">Семестри</td>
       <td class="border-table" rowspan="1" :colspan="plan.study_term.semesters * 2">Семестри</td>
     </tr>
     <tr>
@@ -66,6 +74,9 @@
       <td class="border-table" rowspan="1" :colspan="plan.study_term.semesters * 2">Кількість тижнів у модульному атестаційному циклі</td>
     </tr>
     <tr>
+      <td class="border-table no-print" v-for="semester in plan.study_term.semesters" colspan="1" :key="'semester_' + semester">
+        {{semester}}
+      </td>
       <template v-for="semester in plan.study_term.semesters">
         <td
           v-for="index in 2"
@@ -82,8 +93,12 @@
       </template>
     </tr>
     <tr>
-      <td class="border-table" v-for="item in 14 + plan.study_term.semesters * 2" :key="item">
+      <td class="border-table" v-for="item in 12" :key="'num_1_' + item">
         {{item}}
+      </td>
+      <td class="border-table no-print" v-for="item in plan.study_term.semesters" :key="item"></td>
+      <td class="border-table" v-for="item in 2 + plan.study_term.semesters * 2" :key="'num_2_' + item">
+        {{item + 12}}
       </td>
     </tr>
   </thead>

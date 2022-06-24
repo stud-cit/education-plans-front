@@ -104,7 +104,7 @@ export default {
       loader: false,
       items: [],
       headers: [
-        {text: "№", value: "index", width: '80px', sortable: false},
+        {text: "№", value: "index", width: '20px', sortable: false},
         {text: "Назва", value: "title", sortable: false},
         {text: "Дії", value: "actions", width: '80px', sortable: false},
       ],
