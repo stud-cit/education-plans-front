@@ -85,10 +85,10 @@
                 І . ГРАФІК НАВЧАЛЬНОГО ПРОЦЕСУ, тижні
               </td>
             </tr>
-            <template v-if="this.plan.schedule_education_process && this.plan.schedule_education_process.length !== 0">
-              <ScheduleEducationalProcessMonth :items="this.plan.schedule_education_process.header"/>
-              <ScheduleEducationalProcessWeeks :items="this.plan.schedule_education_process.weeks"/>
-              <tr v-for="(k, cursIndex) in this.plan.schedule_education_process.courses"
+            <template v-if="plan.schedule_education_process && plan.schedule_education_process.length !== 0">
+              <ScheduleEducationalProcessMonth :items="plan.schedule_education_process.header"/>
+              <ScheduleEducationalProcessWeeks :items="plan.schedule_education_process.weeks"/>
+              <tr v-for="(k, cursIndex) in plan.schedule_education_process.courses"
                   :key="cursIndex"
                   class="table-month text-center"
               >
@@ -379,7 +379,7 @@
                 class="border-table no-print"
                 :key="'semester_noprint_' + semester"
               ></td>
-              <td class="border-table" v-for="td in this.fullColspanPlan - 12" :key="td"></td>
+              <td class="border-table" v-for="td in fullColspanPlan - 12" :key="td"></td>
             </tr>
             <tr class="table-bold">
               <td class="border-table"></td>
@@ -389,7 +389,7 @@
                 class="border-table no-print"
                 :key="'semester_noprint_' + semester"
               ></td>
-              <td class="border-table" v-for="td in this.fullColspanPlan - 12" :key="td"></td>
+              <td class="border-table" v-for="td in fullColspanPlan - 12" :key="td"></td>
             </tr>
             <tr class="table-bold">
               <td class="border-table"></td>
@@ -399,12 +399,46 @@
                 class="border-table no-print"
                 :key="'semester_noprint_' + semester"
               ></td>
-              <td class="border-table" v-for="td in this.fullColspanPlan - 12" :key="td"></td>
+              <td class="border-table" v-for="td in fullColspanPlan - 12" :key="td"></td>
             </tr>
             <tr>
               <td colspan="11" class="text-left">* у кожному семестрі з каталога обирається 1 навчальна дисципліна обсягом 5 кредитів ЄКТС</td>
-              <td v-for="td in this.fullColspanPlan - 13" :key="td"></td>
+              <td v-for="td in fullColspanPlan - 13" :key="td"></td>
             </tr>
+
+            <tr v-for="tr in 2" :key="'tr_1_' + tr"></tr>
+
+            <template v-for="signature in plan.signatures">
+              <tr class="text-left signature-position" v-if="signature.agreed" :key="'signature_agreed_' + signature.id">
+                <td colspan="5">ПОГОДЖЕНО:</td>
+              </tr>
+
+              <tr :key="'signature_1_' + signature.id">
+                <td colspan="7" rowspan="3" class="text-left signature-position">
+                  {{signature.position}}
+                </td>
+                <td rowspan="3"></td>
+                <td rowspan="3"></td>
+              </tr>
+              <tr :key="'signature_2_' + signature.id">
+                <td class="signature">
+                  ________________
+                </td>
+                <td></td>
+                <td colspan="7" class="signature-position name">{{signature.name}} {{signature.surname}}</td>
+              </tr>
+
+              <tr :key="'signature_3_' + signature.id">
+                <td class="text-center">
+                  (підпис)
+                </td>
+                <td></td>
+                <td colspan="7" class="text-center">(ім'я та прізвище)</td>
+              </tr>
+              <tr :key="'signature_tr_' + signature.id"></tr>
+            </template>
+
+
           </tbody>
         </table>
       </div>
@@ -795,9 +829,17 @@ export default {
     text-align: center;
     vertical-align: middle;
   }
-  table tfoot .foot-title {
-    text-align: left;
-    font-size: 8pt;
+  table .signature {
+    text-align: center;
+    vertical-align: bottom;
+  }
+  table .signature-position {
+    font-size: 12pt;
+    vertical-align: top;
+  }
+  table .signature-position.name {
+    vertical-align: bottom;
+    border-bottom: 1px solid;
   }
   table tfoot {
     border: 2px solid black;
