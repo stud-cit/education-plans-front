@@ -1,12 +1,34 @@
 <template>
   <div>
     <v-row :class="['cycle-subject', 'cycle', cycleIndexError == item.id ? 'error' : '', 'ma-0', 'mb-1']">
-      <v-col cols="10" class="pa-0">
-        <input type="text" :disabled="cycleIndex != item.id" v-model="item.title">
+      <v-col cols="9" class="pa-0">
+        <select :disabled="cycleIndex != item.id" v-model="item.list_cycle_id">
+          <option 
+            style="color: black" 
+            :value="cycle.id" 
+            v-for="cycle in listCycles" 
+            :key="cycle.id"
+          >{{ cycle.title }}</option>
+        </select>
       </v-col>
-      <v-col class="pa-0">
+      <v-col cols="1" class="pa-0">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <input 
+              type="checkbox" 
+              v-bind="attrs"
+              v-on="on"
+              :disabled="cycleIndex != item.id" 
+              v-model="item.has_discipline"
+            >
+          </template>
+          <span>Цикл з навчальними дисциплінами</span>
+        </v-tooltip>
+      </v-col>
+      <v-col cols="1" class="pa-0">
         <input 
-          type="text" 
+          type="number" 
+          min="0"
           class="credits"
           :disabled="cycleIndex != item.id" 
           v-model="item.credit"
@@ -14,12 +36,14 @@
         >
       </v-col>
       <v-col class="pa-0 text-right">
-        <v-btn small icon @click="cycleIndex = item.id" v-if="cycleIndex != item.id">
-          <v-icon>mdi-pencil</v-icon>
-        </v-btn>
-        <v-btn :disabled="item.credit == '' || item.title == ''" small icon @click="saveCycle(item)" v-else>
-          <v-icon>mdi-floppy</v-icon>
-        </v-btn>
+        <template v-if="!(authUser.role_id != 1 && item.credit > 0)">
+          <v-btn small icon @click="cycleIndex = item.id" v-if="cycleIndex != item.id">
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+          <v-btn :disabled="item.credit == '' || item.title == ''" small icon @click="saveCycle(item)" v-else>
+            <v-icon>mdi-floppy</v-icon>
+          </v-btn>
+        </template>
         <v-btn small icon @click="delCycle(item)">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
@@ -87,6 +111,7 @@
       v-bind:item="child"
       :index="subIndex"
       :indexComponent="indexComponent"
+      :cycles="cycles"
       v-for="(child, subIndex) in item.cycles"
       :key="'cycle_' + child.id + indexComponent"
       @addCycle="addCycle"
@@ -123,6 +148,10 @@ export default {
     data: {
       type: Object,
       required: false
+    },
+    cycles: {
+      type: Array,
+      required: true
     }
   },
   data() {
@@ -133,6 +162,20 @@ export default {
   },
   mounted() {
     this.checkCredit(this.parentItem, this.item);
+  },
+  computed: {
+    authUser() {
+      return JSON.parse(localStorage.getItem("user"));
+    },
+    listCycles() {
+      return this.cycles.filter(cycle => {
+        if(this.item.list_cycle.general) {
+          return cycle.general;
+        } else {
+          return !cycle.general;
+        }
+      })
+    }
   },
   methods: {
     checkCredit(parentItem, item) {
@@ -204,10 +247,16 @@ export default {
     display: flex;
     align-items: center;
   }
-  .cycle-subject.error, .cycle-subject.error input, .cycle-subject.error i {
+  .cycle-subject.error, .cycle-subject.error input, .cycle-subject.error select, .cycle-subject.error i {
     color: #fff !important;
   }
-  .cycle-subject input {
+  .cycle-subject select:disabled {
+    color: #000 !important;
+  }
+  .cycle-subject.error select:disabled {
+    color: #fff !important;
+  }
+  .cycle-subject input, .cycle-subject select {
     width: 90%;
     text-align: center;
   }
@@ -217,5 +266,8 @@ export default {
   }
   .cycle-subject.cycle {
     background: #f8f8f8;
+  }
+  input.credits {
+    padding-left: 14px;
   }
 </style>

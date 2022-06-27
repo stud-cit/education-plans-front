@@ -4,7 +4,7 @@ module.exports = {
   pages: {
     index: {
       entry: 'src/main.js',
-      title: 'Навчальні плани',
+      title: 'Каталог навчальних планів',
     },
   },
   transpileDependencies: [

@@ -95,6 +95,26 @@
                   v-model.number="subjectForm.laboratories"
                 ></v-text-field>
               </v-col>
+              <v-col cols="6" class="py-0">
+                <v-autocomplete
+                  v-model="subjectForm.faculty_id"
+                  :items="faculties"
+                  :loading="facultiesLoading"
+                  item-text="name"
+                  item-value="id"
+                  label="Факультет"
+                ></v-autocomplete>
+              </v-col>
+              <v-col cols="6" class="py-0">
+                <v-autocomplete
+                  v-model="subjectForm.department_id"
+                  :items="departments"
+                  :loading="departmentsLoading"
+                  item-text="name"
+                  item-value="id"
+                  label="Кафедра"
+                ></v-autocomplete>
+              </v-col>
             </v-row>
 
             <v-alert
@@ -102,7 +122,7 @@
               outlined
               type="error"
               class="mb-2"
-              v-if="checkCountHoursSemester.length > 0"
+              v-if="cycleForm.has_discipline && checkCountHoursSemester.length > 0"
             >
               Не вірно розподілені кредити за семестрами.
             </v-alert>
@@ -112,7 +132,7 @@
               outlined
               type="error"
               class="mb-2"
-              v-if="checkCountHours"
+              v-if="cycleForm.has_discipline && checkCountHours"
             >
               Не вірно розподілено аудиторне навантаження на дисципліну.
             </v-alert>
@@ -122,7 +142,7 @@
               outlined
               type="error"
               class="mb-2"
-              v-if="checkCountHoursModules"
+              v-if="cycleForm.has_discipline && checkCountHoursModules"
             >
               Перевищено загальну кількість годин. Кількість розподілених годин має відповідати сумі годин лекцій, практичних, лабораторних.
             </v-alert>
@@ -132,9 +152,19 @@
               outlined
               type="error"
               class="mb-2"
-              v-if="checkLastHourModule != null"
+              v-if="cycleForm.has_discipline && checkLastHourModule != null"
             >
               Необхідно вказати форму контролю в останньому модулі.
+            </v-alert>
+
+            <v-alert
+              dense
+              outlined
+              type="error"
+              class="mb-2"
+              v-if="subjectForm.verification == 0"
+            >
+              Не відповідає освітній програмі.
             </v-alert>
 
             <table class="table-modules" v-if="plan && plan.id">
@@ -158,11 +188,12 @@
                   :colspan="plan.form_organization.id == 1 ? 0 : 2"
                   v-for="(subject, index) in subjectForm.hours_modules"
                   :key="index"
-                  :class="[index === activMod ? 'activMod' : '', checkLastHourModule == index || checkCountHoursSemester.indexOf(subject.semester) != -1 ? 'error' : '']"
+                  :class="[cycleForm.has_discipline == 1 && (index === activMod ? 'activMod' : '', checkLastHourModule == index || checkCountHoursSemester.indexOf(subject.semester) != -1) ? 'error' : '']"
                 >
                   <v-text-field
                     type="number"
-                    :dark="checkLastHourModule == index || checkCountHoursSemester.indexOf(subject.semester) != -1"
+                    min="0"
+                    :dark="cycleForm.has_discipline == 1 && (checkLastHourModule == index || checkCountHoursSemester.indexOf(subject.semester) != -1)"
                     v-model.number="subject.hour"
                     @click="activMod = index; moduleNumber = subject"
                     dense
@@ -205,11 +236,12 @@
                   colspan="2" 
                   v-for="(item, index) in subjectForm.semesters_credits" 
                   :key="index"
-                  :class="[checkCountHoursSemester.indexOf(item.semester) != -1 ? 'error' : '']"
+                  :class="[cycleForm.has_discipline == 1 && checkCountHoursSemester.indexOf(item.semester) != -1 ? 'error' : '']"
                 >
                   <v-text-field 
                     type="number"
-                    :dark="checkCountHoursSemester.indexOf(item.semester) != -1"
+                    min="0"
+                    :dark="cycleForm.has_discipline == 1 && checkCountHoursSemester.indexOf(item.semester) != -1"
                     v-model.number="item.credit"
                     dense
                     hide-details
@@ -229,45 +261,71 @@
       persistent
       max-width="500px"
     >
-      <v-card class="pb-0">
-        <v-card-text class="pb-0">
-          <v-container>
-            <v-text-field
-              label="Назва циклу"
-              v-model="cycleForm.title"
-              :rules="[v => !!v || 'Поле обов\'язкове для заповнення']"
-              required
-            ></v-text-field>
+      <validation-observer
+        ref="observer"
+        v-slot="{ invalid }"
+      >
+        <form @submit.prevent="saveCycle" @keyup.enter="saveCycle">
+          <v-card class="pb-0">
+            <v-card-text class="pb-0">
+              <v-container>
 
-            <v-text-field
-              label="Кредитів"
-              v-model="cycleForm.credit"
-              type="number"
-              min="0"
-              :rules="[v => (+v + cycleForm.sumCyclesCredits) <= cycleForm.parrentCycleCredit || 'Перевищена кількість кредитів']"
-              dense
-              hide-details
-            ></v-text-field>
-          </v-container>
-        </v-card-text>
-        <v-card-actions class="pt-0">
-          <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="cycleDialog = false"
-          >
-            Закрити
-          </v-btn>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="saveCycle()"
-          >
-            Зберегти
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+               <validation-provider
+                  v-slot="{ errors }"
+                  name="цикл"
+                  rules="required"
+                >
+                  <v-autocomplete
+                    :items="listCycles"
+                    v-model="cycleForm.list_cycle_id"
+                    :error-messages="errors"
+                    item-text="title"
+                    item-value="id"
+                    label="Цикл"
+                    class="mb-4"
+                    required
+                  ></v-autocomplete>
+                </validation-provider>
+
+                <v-text-field
+                  label="Кредитів"
+                  v-model="cycleForm.credit"
+                  type="number"
+                  min="0"
+                  :rules="[v => (+v + cycleForm.sumCyclesCredits) <= cycleForm.parrentCycleCredit || 'Перевищена кількість кредитів']"
+                  dense
+                  hide-details
+                  class="mb-4"
+                ></v-text-field>
+
+                <v-checkbox
+                  class="ma-0"
+                  v-model="cycleForm.has_discipline"
+                  label="Цикл з навчальними дисциплінами"
+                ></v-checkbox>
+              </v-container>
+            </v-card-text>
+            <v-card-actions class="pt-0">
+              <v-spacer></v-spacer>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="cycleDialog = false"
+              >
+                Закрити
+              </v-btn>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="saveCycle()"
+                :disabled="invalid"
+              >
+                Зберегти
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </form>
+      </validation-observer>
     </v-dialog>
 
     <v-alert
@@ -338,6 +396,7 @@
       :key="'cycle' + item.id + indexComponent"
       :indexComponent="indexComponent"
       :data="plan"
+      :cycles="cycles"
       @addSubject="addSubject"
       @addCycle="addCycle"
       @saveCycle="saveCycle"
@@ -351,7 +410,7 @@
             large
             v-bind="attrs"
             v-on="on"
-            @click="addCycle({})"
+            @click="addCycle({}, true)"
           >
             <v-icon>mdi-plus</v-icon>
           </v-btn>
@@ -379,6 +438,11 @@ export default {
     return {
       selectiveDiscipline: [],
       subjects: [],
+      faculties: [],
+      departments: [],
+      cycles: [],
+      departmentsLoading: false,
+      facultiesLoading: false,
       cycleDialog: false,
       subjectDialog: false,
       cycleForm: {
@@ -386,6 +450,8 @@ export default {
         credit: 0,
         plan_id: null,
         cycle_id: null,
+        has_discipline: false,
+        general: false,
         parrentCycleCredit: 0,
         sumCyclesCredits: 0
       },
@@ -394,19 +460,31 @@ export default {
         sumSubjectsCredits: 0,
         selectiveDiscipline: false,
         selective_discipline_id: null,
-        title: "",
         asu_id: null,
         credits: 0,
         hours: 0,
         practices: 0,
         laboratories: 0,
         hours_modules: [],
-        semesters_credits: []
+        semesters_credits: [],
+        verification: 1,
+        faculty_id: null,
+        department_id: null
       },
       moduleNumber: null,
       activMod: null,
       individualTasks: [],
       formControls: [],
+    }
+  },
+  watch: {
+    'subjectForm.faculty_id': {
+      handler(newValue, oldValue) {
+        if(newValue != oldValue) {
+          newValue !== null ? this.apiGetDepartments(newValue) : this.departments = [];
+        }
+      },
+      deep: true
     }
   },
   computed: {
@@ -420,6 +498,15 @@ export default {
         }
       }
       return value;
+    },
+    listCycles() {
+      return this.cycles.filter(cycle => {
+        if(this.cycleForm.general) {
+          return cycle.general;
+        } else {
+          return !cycle.general;
+        }
+      })
     },
     countModules() {
       return this.plan.study_term.module;
@@ -490,11 +577,13 @@ export default {
     }),
   },
   mounted() {
-    this.apiGetSelectiveDiscipline();
     if(this.$route.name === 'EditPlan') {
       this.apiGetIndividualTasks();
       this.apiGetFormControls();
       this.apiGetSubjects();
+      this.apiGetCycles();
+      this.apiGetSelectiveDiscipline();
+      this.apiGetFaculty();
     } else {
       this.$store.dispatch('plans/clear');
     }
@@ -512,16 +601,20 @@ export default {
       this.cycleForm = item;
       this.subjectForm = {
         sumSubjectsCredits: this.sumArray(item.subjects, 'credits'),
+        id: null,
         cycle_id: item.id,
         selectiveDiscipline: false,
         selective_discipline_id: null,
-        title: "",
+        asu_id: null,
         credits: 0,
         hours: 0,
         practices: 0,
         laboratories: 0,
         hours_modules: [],
-        semesters_credits: []
+        semesters_credits: [],
+        verification: 1,
+        faculty_id: null,
+        department_id: null
       };
       var semesters = this.plan.study_term.semesters;
       var semesterNumber = 1;
@@ -554,15 +647,17 @@ export default {
       this.subjectDialog = true;
     },
     editSubject({subject, cycle}) {
+      this.activMod = null;
+      this.moduleNumber = null;
       this.subjectForm = Object.assign(this.subjectForm, subject);
       this.subjectForm.selectiveDiscipline = this.subjectForm.selective_discipline ? true : false;
       this.cycleForm = cycle;
       this.subjectForm.sumSubjectsCredits = this.sumArray(cycle.subjects, 'credits') - subject.credits;
-      var semesters = this.plan.study_term.semesters;
-      var index = 0;
-      var indexSemester = 0;
-      var newHoursModules = [];
-      var newSemestersCredits = [];
+      let semesters = this.plan.study_term.semesters;
+      let index = 0;
+      let indexSemester = 0;
+      let newHoursModules = [];
+      let newSemestersCredits = [];
       for (let course = 0; course < this.plan.study_term.course; course++) {
         let moduleNumber = 1;
         for (let semester = 0; semester < 2; semester++) {
@@ -621,6 +716,7 @@ export default {
     },
     saveSubject() {
       if(this.subjectForm.id) {
+        this.subjectForm.plan_id = this.$route.params.id;
         api.patch(API.SUBJECTS, this.subjectForm.id, this.subjectForm).then(() => {
           this.$emit('apiGetPlanId');
           this.subjectDialog = false;
@@ -628,6 +724,7 @@ export default {
           console.log(errors.response.data)
         });
       } else {
+        this.subjectForm.plan_id = this.$route.params.id;
         api.post(API.SUBJECTS, this.subjectForm).then(() => {
           this.$emit('apiGetPlanId');
           this.subjectDialog = false;
@@ -653,11 +750,13 @@ export default {
         });
       }
     },
-    addCycle(item) {
+    addCycle(item, general = false) {
       this.cycleForm = {
         title: "",
         credit: 0,
         cycle_id: item.id,
+        has_discipline: false,
+        general,
         parrentCycleCredit: item.credit == null ? this.plan.credits : item.credit,
         sumCyclesCredits: item.id ? this.sumArray(item.cycles, 'credit') : 0
       }
@@ -696,6 +795,12 @@ export default {
       })
     },
 
+    apiGetCycles() {
+      api.get(API.LIST_CYCLES).then(({data}) => {
+        this.cycles = data.data
+      })
+    },
+
     apiGetIndividualTasks() {
       api.get(API.INDIVIDUAL_TASKS).then(({data}) => {
         this.individualTasks = data.data
@@ -705,6 +810,22 @@ export default {
     apiGetFormControls() {
       api.get(API.FORM_CONTROLS).then(({data}) => {
         this.formControls = data.data
+      })
+    },
+
+    apiGetDepartments(id) {
+      this.departmentsLoading = true;
+      api.show(API.DEPARTMENTS, id).then(({data}) => {
+        this.departments = data.data
+        this.departmentsLoading = false;
+      })
+    },
+
+    apiGetFaculty() {
+      this.facultiesLoading = true;
+      api.get(API.FACULTIES).then(({data}) => {
+        this.faculties = data.data;
+        this.facultiesLoading = false;
       })
     },
   }

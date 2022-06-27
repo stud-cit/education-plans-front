@@ -41,7 +41,7 @@
       </tr>
       <tfoot>
         <td :colspan="year.weeks + 1" class="text-left pa-2">
-           <p class="text-bold" v-if="noteLoaded">
+           <p class="text-bold mb-0" v-if="noteLoaded">
             ПОЗНАЧЕННЯ: {{ notes }}
           </p>
           <v-skeleton-loader v-else
@@ -302,7 +302,8 @@ export default {
     box-sizing: border-box;
   }
   table tfoot {
-     font-weight: bold;
+    font-weight: bold;
+    border: 0;
   }
   .errors {
     border: solid 2px red;

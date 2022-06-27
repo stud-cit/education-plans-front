@@ -10,9 +10,7 @@
           Причина відхилення верифікації
         </v-card-title>
 
-        <v-card-text class="pb-0 body-1">
-          {{ modalVerification.comment }}
-        </v-card-text>
+        <v-card-text class="pb-0 body-1" v-html="modalVerification.comment"></v-card-text>
 
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -27,12 +25,68 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog
+      v-if="plan"
+      v-model="programsDialog"
+      persistent
+      max-width="500px"
+    >
+      <validation-observer
+        ref="observer"
+        v-slot="{ invalid }"
+      >
+        <form @submit.prevent="verificationOP" @keyup.enter="verificationOP">
+          <v-card class="pb-0">
+            <v-card-text class="pb-0">
+              <v-container>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="освітня програма"
+                  rules="required"
+                >
+                  <v-autocomplete
+                    :items="programs"
+                    :loading="programsLoading"
+                    v-model="plan.program_op_id"
+                    :error-messages="errors"
+                    item-text="education_program_name"
+                    item-value="program_id"
+                    label="Освітня програма"
+                    required
+                  ></v-autocomplete>
+                </validation-provider>
+              </v-container>
+            </v-card-text>
+            <v-card-actions class="pt-0">
+              <v-spacer></v-spacer>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="programsDialog = false"
+              >
+                Закрити
+              </v-btn>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="verificationOP()"
+                :loading="verificationOPLoading"
+                :disabled="invalid"
+              >
+                Готово
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </form>
+      </validation-observer>
+    </v-dialog>
+
     <div class="text-right" v-if="$route.name === 'EditPlan' && plan">
       <v-btn
         small
         depressed
         color="primary"
-        @click="verification({verification_statuses_id: 1, status: true})"
+        @click="openProgramDialog()"
       >
         Верифікувати з освітньою програмою
       </v-btn>
@@ -143,6 +197,10 @@ export default {
     return {
       tab: 0,
       verifications: [],
+      programsLoading: false,
+      programsDialog: false,
+      verificationOPLoading: false,
+      programs: [],
       modalVerification: {
         open: false,
         comment: ""
@@ -174,6 +232,21 @@ export default {
   },
 
   methods: {
+    verificationOP() {
+      this.verificationOPLoading = true;
+      api.patch(API.PLAN_VERIFICATION_OP, this.$route.params.id, {
+        user_id: this.authUser.id,
+        status: false,
+        program_op_id: this.plan.program_op_id
+      }).then(() => {
+        this.verificationOPLoading = false;
+        this.programsDialog = false;
+        this.apiGetPlanId();
+      }).catch(() => {
+        this.verificationOPLoading = false;
+      });
+    },
+
     verification(status) {
       status.user_id = this.authUser.id;
       if(!status.status) {
@@ -208,6 +281,11 @@ export default {
     openDialog(comment) {
       this.modalVerification.open = true;
       this.modalVerification.comment = comment;
+    },
+
+    openProgramDialog() {
+      this.apiGetPrograms();
+      this.programsDialog = true;
     },
 
     submit(data) {
@@ -252,6 +330,17 @@ export default {
           item.status = null;
           return item;
         })
+      })
+    },
+
+    apiGetPrograms() {
+      this.programsLoading = true;
+      api.get(API.PROGRAMS, {
+        year: this.plan.year,
+        degree: this.plan.education_level.title
+      }).then(({data}) => {
+        this.programs = data;
+        this.programsLoading = false;
       })
     },
 

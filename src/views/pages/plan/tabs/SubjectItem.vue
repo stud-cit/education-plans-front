@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row :class="['cycle-subject', subjectIndexError == subject.id ? 'error' : '', 'ma-0', 'mb-1']">
+    <v-row :class="['cycle-subject', (subjectIndexError == subject.id || !subject.verification) ? 'error' : '', 'ma-0', 'mb-1']">
       <v-col cols="6" class="pa-0 text-left">
         {{subject.selective_discipline_id ?  subject.selective_discipline.title : subject.title}}
       </v-col>

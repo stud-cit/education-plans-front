@@ -25,6 +25,7 @@ export const API = {
   "CYCLES": version + '/cycles',
   "SUBJECTS": version + '/subjects',
   "PLAN_VERIFICATION": version + '/plans/verification',
+  "PLAN_VERIFICATION_OP": version + '/plans/verification-op',
   "VERIFICATIONS": version + '/verifications',
   "SPECIALIZATIONS": version + '/specializations',
   "SPECIALITIES": version + '/specialities',
@@ -32,7 +33,8 @@ export const API = {
   "POSITIONS": version + '/positions',
   "SIGNATURES": version + '/signatures',
   "NOTES": version + '/notes',
-  "LIST_CYCLES": version + '/list-cycles'
+  "LIST_CYCLES": version + '/list-cycles',
+  "PROGRAMS": version + '/programs'
 };
 
 export const ALLOWED_REQUEST_PARAMETERS = {

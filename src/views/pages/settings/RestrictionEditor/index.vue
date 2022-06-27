@@ -20,15 +20,17 @@
             <validation-provider
               v-slot="{ errors }"
               name="Значення"
-              rules="required|digits|max:3"
+              rules="required|digits"
             >
               <v-text-field
                 v-model="item.value"
-                :counter="3"
                 :error-messages="errors"
-                label="Значення"
                 required
+                type="number"
+                min="0"
                 autofocus
+                dense
+                hide-details
                 @change="edit(item)"
                 @blur="closeEdit(item)"
               ></v-text-field>
@@ -98,10 +100,10 @@ export default {
       max3digits: v => v.length <= 3 || 'Максимум 3 цифри!',
       items: [],
       headers: [
-        { text: "№", value: "index", sortable: false },
+        { text: "№", value: "index", sortable: false, width: '20px' },
         { text: "Ключ", value: "key", sortable: false },
         { text: "Заголовок", value: "title", sortable: false },
-        { text: "Значення", value: "value", sortable: false },
+        { text: "Значення", value: "value", sortable: false, width: '100px' },
         { text: "Дії", value: "actions", sortable: false },
       ],
     };
