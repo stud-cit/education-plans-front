@@ -379,7 +379,9 @@
                 class="border-table no-print"
                 :key="'semester_noprint_' + semester"
               ></td>
-              <td class="border-table" v-for="td in fullColspanPlan - 12" :key="td"></td>
+              <td class="border-table" v-for="td in plan.count_exams" :key="td">{{td}}</td>
+              <td class="border-table"></td>
+              <td class="border-table"></td>
             </tr>
             <tr class="table-bold">
               <td class="border-table"></td>
@@ -389,7 +391,9 @@
                 class="border-table no-print"
                 :key="'semester_noprint_' + semester"
               ></td>
-              <td class="border-table" v-for="td in fullColspanPlan - 12" :key="td"></td>
+              <td class="border-table" v-for="td in plan.count_tests" :key="td">{{td}}</td>
+              <td class="border-table"></td>
+              <td class="border-table"></td>
             </tr>
             <tr class="table-bold">
               <td class="border-table"></td>
@@ -399,7 +403,9 @@
                 class="border-table no-print"
                 :key="'semester_noprint_' + semester"
               ></td>
-              <td class="border-table" v-for="td in fullColspanPlan - 12" :key="td"></td>
+              <td class="border-table" v-for="td in plan.count_coursework" :key="td">{{td}}</td>
+              <td class="border-table"></td>
+              <td class="border-table"></td>
             </tr>
             <tr>
               <td colspan="11" class="text-left">* у кожному семестрі з каталога обирається 1 навчальна дисципліна обсягом 5 кредитів ЄКТС</td>
