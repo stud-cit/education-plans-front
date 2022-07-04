@@ -268,7 +268,7 @@
                   </template>
                 </td><!--Todo for course-->
 
-                <td class="border-table"></td><!--Todo Кафедра викладання -->
+                <td class="border-table">{{cycle.department}}</td>
                 <td class="border-table"></td><!--Todo Потоки-->
               </tr>
 
@@ -308,7 +308,7 @@
                   {{cycle.hours_modules.length > 0 ? hour : 0}}
                 </td>
 
-                <td class="border-table"></td><!--Todo Кафедра викладання -->
+                <td class="border-table"></td>
                 <td class="border-table"></td><!--Todo Потоки-->
               </tr>
 
