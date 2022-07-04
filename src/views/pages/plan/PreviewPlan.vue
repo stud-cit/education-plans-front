@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="preview-plan">
     <div v-if="plan">
       <div class="print">
         <table ref="exportableTitle"
@@ -183,7 +183,7 @@
               <td></td>
             </tr>
 
-            <tr class="subtable">
+            <tr class="subtable" v-for="item in 3" :key="'test_' + item">
               <td colspan="1" class="border-table"></td>
               <td colspan="2" class="border-table"></td>
               <td colspan="2" class="border-table"></td>
@@ -212,7 +212,7 @@
           </tbody>
         </table>
 
-        <table ref="exportablePlan" class="table table-plan mt-5" v-if="plan" width="100%">
+        <table ref="exportablePlan" class="table table-plan mt-5 page-break-before" v-if="plan" width="100%">
 
             <ModularCyclicHeaderTable
               v-if="plan.form_organization_id === FORM_ORGANIZATIONS.modular_cyclic"
