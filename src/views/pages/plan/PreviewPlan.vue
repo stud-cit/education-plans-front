@@ -270,7 +270,7 @@
                 </template>
               </td><!--Todo for course-->
 
-              <td class="border-table"></td><!--Todo Кафедра викладання -->
+              <td class="border-table">{{cycle.department}}</td>
               <td class="border-table"></td><!--Todo Потоки-->
             </tr>
 
@@ -310,7 +310,7 @@
                 {{cycle.hours_modules.length > 0 ? hour : 0}}
               </td>
 
-              <td class="border-table"></td><!--Todo Кафедра викладання -->
+              <td class="border-table"></td>
               <td class="border-table"></td><!--Todo Потоки-->
             </tr>
 
@@ -322,91 +322,97 @@
               </td>
             </tr>
 
-          </template>
-          <tr class="table-bold">
-            <td class="border-table"></td>
-            <td colspan="1" class="text-left border-table">Загальна кількість</td>
-            <td class="border-table" v-for="td in 3" :key="'td_1_' + td"></td>
-            <td class="border-table">{{ totalPlan.credits }}</td><!--Кількість кредитів ЄКТС-->
-            <td class="border-table">{{ totalPlan.total_volume_hour }}</td><!--загальний обсяг-->
-            <td class="border-table">{{ totalPlan.total_classroom }}</td><!--всього-->
-            <td class="border-table">{{ totalPlan.hours }}</td><!--лекції-->
-            <td class="border-table">{{ totalPlan.practices }}</td><!--практичні, семінарські-->
-            <td class="border-table">{{ totalPlan.laboratories }}</td><!--лабораторні-->
-            <td class="border-table">{{ totalPlan.individual_work }}</td><!--самостійна робота-->
-            <td
-              v-for="semester in plan.study_term.semesters"
-              class="border-table no-print"
-              :key="'semester_noprint_' + semester"
-            >
-              <template v-if="totalPlan.semesters_credits">
-                {{totalPlan.semesters_credits[semester]}}
-              </template>
-            </td>
-            <td
-              v-for="(hour, idx) in totalPlan.hours_modules.length > 0 ?
-                 totalPlan.hours_modules :
-                 plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
-              :key="'total_plan_' + idx"
-              class="border-table"
-            >
-              {{totalPlan.hours_modules.length > 0 ? hour : 0}}
-            </td>
-            <td class="border-table" v-for="td in 2" :key="'td_2_' + td"></td>
-          </tr>
-          <tr class="table-bold">
-            <td class="border-table"></td>
-            <td colspan="11" class="text-left border-table">Кількість годин на тиждень</td>
-            <td
-              v-for="semester in plan.study_term.semesters"
-              class="border-table no-print"
-              :key="'semester_noprint_' + semester"
-            ></td>
-            <td
-              v-for="(hour, idx) in totalPlan.hours_modules.length > 0 ?
-                 totalPlan.hours_modules :
-                 plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
-              :key="'hour_' + idx"
-              class="border-table"
-            >
-              {{totalPlan.hours_modules.length > 0 ? hour : 0}}
-            </td>
-            <td class="border-table" v-for="td in 2" :key="td"></td>
-          </tr>
-          <tr class="table-bold">
-            <td class="border-table"></td>
-            <td colspan="11" class="text-left border-table">Кількість екзаменів</td>
-            <td
-              v-for="semester in plan.study_term.semesters"
-              class="border-table no-print"
-              :key="'semester_noprint_' + semester"
-            ></td>
-            <td class="border-table" v-for="td in fullColspanPlan - 12" :key="td"></td>
-          </tr>
-          <tr class="table-bold">
-            <td class="border-table"></td>
-            <td colspan="11" class="text-left border-table">Кількість заліків</td>
-            <td
-              v-for="semester in plan.study_term.semesters"
-              class="border-table no-print"
-              :key="'semester_noprint_' + semester"
-            ></td>
-            <td class="border-table" v-for="td in fullColspanPlan - 12" :key="td"></td>
-          </tr>
-          <tr class="table-bold">
-            <td class="border-table"></td>
-            <td colspan="11" class="text-left border-table">Кількість курсових робіт</td>
-            <td
-              v-for="semester in plan.study_term.semesters"
-              class="border-table no-print"
-              :key="'semester_noprint_' + semester"
-            ></td>
-            <td class="border-table" v-for="td in fullColspanPlan - 12" :key="td"></td>
-          </tr>
-          <tr>
-            <td colspan="11" class="text-left">* у кожному семестрі з каталога обирається 1 навчальна дисципліна обсягом 5 кредитів ЄКТС</td>
-            <td v-for="td in fullColspanPlan - 13" :key="td"></td>
-          </tr>
+            </template>
+            <tr class="table-bold">
+              <td class="border-table"></td>
+              <td colspan="1" class="text-left border-table">Загальна кількість</td>
+              <td class="border-table" v-for="td in 3" :key="'td_1_' + td"></td>
+              <td class="border-table">{{ totalPlan.credits }}</td><!--Кількість кредитів ЄКТС-->
+              <td class="border-table">{{ totalPlan.total_volume_hour }}</td><!--загальний обсяг-->
+              <td class="border-table">{{ totalPlan.total_classroom }}</td><!--всього-->
+              <td class="border-table">{{ totalPlan.hours }}</td><!--лекції-->
+              <td class="border-table">{{ totalPlan.practices }}</td><!--практичні, семінарські-->
+              <td class="border-table">{{ totalPlan.laboratories }}</td><!--лабораторні-->
+              <td class="border-table">{{ totalPlan.individual_work }}</td><!--самостійна робота-->
+              <td
+                v-for="semester in plan.study_term.semesters"
+                class="border-table no-print"
+                :key="'semester_noprint_' + semester"
+              >
+                <template v-if="totalPlan.semesters_credits">
+                  {{totalPlan.semesters_credits[semester]}}
+                </template>
+              </td>
+              <td
+                v-for="(hour, idx) in totalPlan.hours_modules.length > 0 ?
+                   totalPlan.hours_modules :
+                   plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
+                :key="'total_plan_' + idx"
+                class="border-table"
+              >
+                {{totalPlan.hours_modules.length > 0 ? hour : 0}}
+              </td>
+              <td class="border-table" v-for="td in 2" :key="'td_2_' + td"></td>
+            </tr>
+            <tr class="table-bold">
+              <td class="border-table"></td>
+              <td colspan="11" class="text-left border-table">Кількість годин на тиждень</td>
+              <td
+                v-for="semester in plan.study_term.semesters"
+                class="border-table no-print"
+                :key="'semester_noprint_' + semester"
+              ></td>
+              <td
+                v-for="(hour, idx) in totalPlan.hours_modules.length > 0 ?
+                   totalPlan.hours_modules :
+                   plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
+                :key="'hour_' + idx"
+                class="border-table"
+              >
+                {{totalPlan.hours_modules.length > 0 ? hour : 0}}
+              </td>
+              <td class="border-table" v-for="td in 2" :key="td"></td>
+            </tr>
+            <tr class="table-bold">
+              <td class="border-table"></td>
+              <td colspan="11" class="text-left border-table">Кількість екзаменів</td>
+              <td
+                v-for="semester in plan.study_term.semesters"
+                class="border-table no-print"
+                :key="'semester_noprint_' + semester"
+              ></td>
+              <td class="border-table" v-for="td in plan.count_exams" :key="td">{{td}}</td>
+              <td class="border-table"></td>
+              <td class="border-table"></td>
+            </tr>
+            <tr class="table-bold">
+              <td class="border-table"></td>
+              <td colspan="11" class="text-left border-table">Кількість заліків</td>
+              <td
+                v-for="semester in plan.study_term.semesters"
+                class="border-table no-print"
+                :key="'semester_noprint_' + semester"
+              ></td>
+              <td class="border-table" v-for="td in plan.count_tests" :key="td">{{td}}</td>
+              <td class="border-table"></td>
+              <td class="border-table"></td>
+            </tr>
+            <tr class="table-bold">
+              <td class="border-table"></td>
+              <td colspan="11" class="text-left border-table">Кількість курсових робіт</td>
+              <td
+                v-for="semester in plan.study_term.semesters"
+                class="border-table no-print"
+                :key="'semester_noprint_' + semester"
+              ></td>
+              <td class="border-table" v-for="td in plan.count_coursework" :key="td">{{td}}</td>
+              <td class="border-table"></td>
+              <td class="border-table"></td>
+            </tr>
+            <tr>
+              <td colspan="11" class="text-left">* у кожному семестрі з каталога обирається 1 навчальна дисципліна обсягом 5 кредитів ЄКТС</td>
+              <td v-for="td in fullColspanPlan - 13" :key="td"></td>
+            </tr>
 
           <tr v-for="tr in 2" :key="'tr_1_' + tr"></tr>
 
@@ -767,6 +773,7 @@ export default {
   }
 }
 </script>
+
 <style>
   .table {
     font-family: "Times New Roman";
@@ -863,16 +870,6 @@ export default {
     .by-created-pdf {
       display: block;
     }
-    @page {
-      size: A4 landscape;
-      @bottom-center {
-        content: element(footer);
-      }
-    }
-    @page {
-      @bottom-left {
-        content: counter(page) "/ss" counter(pages);
-      }
-    }
+    @page { size: A4 landscape; }
   }
 </style>
