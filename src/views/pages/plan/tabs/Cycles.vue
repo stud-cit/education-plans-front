@@ -27,6 +27,7 @@
               dark
               text
               @click="saveSubject()"
+              :disabled="!subjectForm.selective_discipline_id && !subjectForm.asu_id"
             >
               Зберегти
             </v-btn>
