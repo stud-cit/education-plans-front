@@ -34,7 +34,8 @@ export const API = {
   "SIGNATURES": version + '/signatures',
   "NOTES": version + '/notes',
   "LIST_CYCLES": version + '/list-cycles',
-  "PROGRAMS": version + '/programs'
+  "PROGRAMS": version + '/programs',
+  "ERR": version + '/err'
 };
 
 export const ALLOWED_REQUEST_PARAMETERS = {

@@ -4,55 +4,63 @@ import router from '@/router';
 import jsonToQuery from 'json-to-query-string'
 
 const api = axios.create({
-    baseURL: process.env.VUE_APP_BASE_URL + 'api/',
-    withCredentials: true,
-    headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-    }
+  baseURL: process.env.VUE_APP_BASE_URL + 'api/',
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  }
 });
 
 api.interceptors.response.use(
-    response => {
-        if (response.config.showLoader) {
-            vuexStore.dispatch('loader/hide');
-        }
-
-        return response;
-    },
-
-    error => {
-        let response = error.response;
-
-        if (response.config.showLoader) {
-            vuexStore.dispatch('loader/hide');
-        }
-
-        if (error.response.status === 400) {
-            console.error(error.response.statusText);
-        } else if (error.response.status === 403) {
-            router.push({ name: 'Forbidden'});
-        } else if (error.response.status === 422) {
-            console.log('this error', error.response)
-          vuexStore.commit("setErrors", error.response.data.errors); //TODO: this error preview
-        } else if (error.response.status === 401) {
-            vuexStore.commit("auth/setUserData", null);
-            localStorage.removeItem("authToken");
-            router.push({ name: "Unauthorized" });
-        } else if (error.response.status === 404) {
-            router.push({ name: "NotFoundPage" });
-        } else if(error.response.status === 500) {
-            vuexStore.commit("setErrors", { error: error.response.data.message });
-            console.error(error.response.data.message);
-        } else {
-            return Promise.reject(error);
-        }
-        return Promise.reject(error); //default error
+  response => {
+    if (response.config.showLoader) {
+      vuexStore.dispatch('loader/hide');
     }
+
+    return response;
+  },
+
+  error => {
+    let response = error.response;
+
+    if (response.config.showLoader) {
+        vuexStore.dispatch('loader/hide');
+    }
+
+      if (error.response.status === 400) {
+          console.error(error.response.statusText);
+      } else if (error.response.status === 403) {
+          router.push({ name: 'Forbidden'});
+      } else if (error.response.status === 422) {
+          console.log('this error', error.response)
+        vuexStore.commit("setErrors", error.response.data.errors); //TODO: this error preview
+      } else if (error.response.status === 401) {
+        localStorage.removeItem("cabinetToken");
+
+        window.location.replace(
+          process.env.VUE_APP_CABINET_APP_URL +
+          process.env.VUE_APP_CABINET_APP_SERVICE +
+          process.env.VUE_APP_CABINET_APP_TOKEN
+        );
+        //vuexStore.commit("auth/setUserData", null);
+        //localStorage.removeItem("authToken");
+          //router.push({ name: "Unauthorized" });
+      } else if (error.response.status === 404) {
+          router.push({ name: "NotFoundPage" });
+      } else if(error.response.status === 500) {
+          vuexStore.commit("setErrors", { error: error.response.data.message });
+          console.error(error.response.data.message);
+      } else {
+          return Promise.reject(error);
+      }
+      return Promise.reject(error); //default error
+  }
 );
 api.interceptors.request.use(function(config) {
         config.headers.common = {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            // Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            Authorization: localStorage.getItem("cabinetToken"),
             "Content-Type": "application/json",
             Accept: "application/json"
         };

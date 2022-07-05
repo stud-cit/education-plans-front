@@ -36,9 +36,12 @@ export default {
   methods: {
     ...mapActions("auth", ["getUserData"]),
     authUserForTest() {
-      if (localStorage.getItem("authToken")) {
+      // if (localStorage.getItem("authToken")) {
+      //   this.getUserData();
+      // }
+       //if (localStorage.getItem("cabinetToken")) {
         this.getUserData();
-      }
+      //}
     },
 
     authUser() {

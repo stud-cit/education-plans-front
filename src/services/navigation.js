@@ -51,10 +51,10 @@ export default {
         let rows = [];
         if (user) {
             // rows.push(MyProfile);
-
+            console.log('user_id', user.role_id);
             switch (user.role_id) {
-
                 case ROLES.ID.admin:
+                  console.log('ys');
                     rows.push(
                         ListPlans,
                         Settings
@@ -62,6 +62,7 @@ export default {
                     break;
             }
         }
+        console.log('rows', rows);
         return rows;
     }
 }

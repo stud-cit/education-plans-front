@@ -19,6 +19,7 @@ import Forbidden from '@/views/Forbidden';
 import Unauthorized from '@/views/Unauthorized';
 import PreviewPlan from "@/views/pages/plan/PreviewPlan";
 import Login from '@/views/pages/LoginLayout';
+import Err from '@/views/Err';
 
 Vue.use(VueRouter);
 const BREADCRUMBS = {
@@ -32,8 +33,14 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    meta: { guest: true },
+    meta: { guest: false },
     component: Login
+  },
+  {
+    path: '/err',
+    name: 'err',
+    meta: { guest: false },
+    component: Err
   },
   {
     path: '/',
@@ -294,28 +301,50 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (localStorage.getItem("authToken")) {
-      next();
-      return;
-    }
-    next("/login");
-  } else {
+  console.log('to', to.query, Object.prototype.hasOwnProperty.call(to.query, 'key'));
+ // this.$store.dispatch('auth/getUserData');
+  if (localStorage.getItem('cabinetToken')) {
     next();
+  } else if ('key' in to.query && to.query.key != null) {
+    localStorage.setItem("cabinetToken", to.query.key);
+    next();
+  } else {
+    window.location.replace(
+      process.env.VUE_APP_CABINET_APP_URL +
+      process.env.VUE_APP_CABINET_APP_SERVICE +
+      process.env.VUE_APP_CABINET_APP_TOKEN
+    );
   }
+
+  console.log('from', from);
+  console.log('next', next);
+  next();
 });
 
-router.beforeEach((to, from, next) => {
-  if (to.matched.some((record) => record.meta.guest)) {
-    if (localStorage.getItem("authToken")) {
-      next("/");
-      return;
-    }
-    next();
-  } else {
-    next();
-  }
-});
+// router.beforeEach((to, from, next) => {
+//   if (to.matched.some((record) => record.meta.requiresAuth)) {
+//     if (localStorage.getItem("authToken")) {
+//       next();
+//       return;
+//     }
+//     next("/login");
+//   } else {
+//     next();
+//   }
+// });
+
+
+// router.beforeEach((to, from, next) => {
+//   if (to.matched.some((record) => record.meta.guest)) {
+//     if (localStorage.getItem("authToken")) {
+//       next("/");
+//       return;
+//     }
+//     next();
+//   } else {
+//     next();
+//   }
+// });
 
 // router.beforeEach((to, from, next) => {
 //   if (!userLoggedIn) {

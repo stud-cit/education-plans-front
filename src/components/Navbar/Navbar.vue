@@ -23,7 +23,7 @@
 
 <script>
 import navigation from "@/services/navigation";
-import {mapActions} from "vuex";
+import { mapActions } from "vuex";
 
 export default {
   name: "Navbar",
@@ -33,17 +33,37 @@ export default {
       name: process.env.VUE_APP_NAME_APP
     }
   },
+  computed: {
+    user() {
+      let user = this.$store.getters['auth/user'];
+      if (user !== null) {
+        this.getMenu();
+        return user;
+      }
+      return null;
+    }
+  },
+  // watch: {
+  //   menu() {
+  //     console.log('watch', this.menu);
+  //     this.menu = this.getMenu();
+  //     console.log('watch_after', this.menu);
+  //   }
+  // },
   mounted() {
     this.getMenu();
   },
   methods: {
     getMenu() {
       const user = JSON.parse(localStorage.getItem('user'));
+      console.log('user', user);
       this.menu = navigation.getItems(user)
     },
     ...mapActions("auth", ["sendLogoutRequest"]),
     logout() {
-      this.sendLogoutRequest().then(() => this.$router.push({name: "Login"}));
+      this.sendLogoutRequest().then(() => {
+        window.location.replace(process.env.VUE_APP_CABINET_APP_URL);
+    });
     }
   },
 }
