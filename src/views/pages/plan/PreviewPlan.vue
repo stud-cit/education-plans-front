@@ -1,448 +1,450 @@
 <template>
-  <v-container class="preview-plan">
-    <div v-if="plan">
-      <div class="print">
-        <table ref="exportableTitle"
-               width="100%"
-               class="table plan-title-table"
-        >
-          <tbody >
-            <tr class="table-title">
-              <td :colspan="fullColspanTitle" align="center">
-                СУМСЬКИЙ ДЕРЖАВНИЙ УНІВЕРСИТЕТ
-              </td>
-            </tr>
-            <tr class="table-faculty">
-              <td :colspan="fullColspanTitle">
-                {{plan.faculty}}
-              </td>
-            </tr>
-            <tr class="table-text">
-              <td colspan="13">
-                Затверджено рішенням вченої ради.
-              </td>
-            </tr>
-            <tr class="table-text">
-              <td colspan="13">
-                Протокол від ____._____________._____р.№____
-              </td>
-            </tr>
-            <tr class="table-text">
-              <td colspan="13">
-                Голова ради ________________ А.В.Васильєв
-              </td>
-            </tr>
-            <tr class="table-text">
-              <td colspan="7" style="text-align: right">
-                (підпис)
-              </td>
-            </tr>
-            <tr class="table-text">
-              <td colspan="13">
-                ______ ________________________ ________ р.
-              </td>
-            </tr>
-            <tr class="table-text">
-              <td colspan="7" style="text-align: right">
-                М.П.
-              </td>
-            </tr>
-            <tr></tr>
-            <tr class="table-title">
-              <td :colspan="fullColspanTitle" align="center">
-                {{plan.title}}
-              </td>
-            </tr>
-            <tr></tr>
-            <tr v-for="(td, index) in professions" :key="'tr_' + index">
-              <td v-for="(item, i) in td"
-                  :colspan="item.hasOwnProperty('colspan') ? item.colspan :
-                            item.hasOwnProperty('acolspan') ? ( fullColspanTitle - item.acolspan * 2 ) / 2 : ''"
-                  :class="[
-                          {'table-profession-title': item.hasOwnProperty('title')},
-                          {'table-profession-text': item.hasOwnProperty('key')}
-                          ]"
-                  :key="index + '_' + i"
-              >
-                <template v-if="item.hasOwnProperty('title')">
-                  {{ item.title}}
-                </template >
-                <template v-else-if="item.hasOwnProperty('key')" >
-                  <template v-if="parseKey(item.key, plan)">
-                    {{ parseKey(item.key, plan) }}
-                  </template>
-                  <template v-else>
-                    <div style="border-bottom: 1px solid black; height: 10pt"></div>
-                  </template>
+  <v-container class="preview-plan" v-if="plan">
+    <div class="print">
+      <div class="by-created-pdf">
+        {{byCreatedPDF}}
+      </div>
+      <table ref="exportableTitle"
+             width="100%"
+             class="table plan-title-table"
+      >
+        <tbody >
+          <tr class="table-title">
+            <td :colspan="fullColspanTitle" align="center">
+              СУМСЬКИЙ ДЕРЖАВНИЙ УНІВЕРСИТЕТ
+            </td>
+          </tr>
+          <tr class="table-faculty">
+            <td :colspan="fullColspanTitle">
+              {{plan.faculty}}
+            </td>
+          </tr>
+          <tr class="table-text">
+            <td colspan="13">
+              Затверджено рішенням вченої ради.
+            </td>
+          </tr>
+          <tr class="table-text">
+            <td colspan="13">
+              Протокол від ____._____________._____р.№____
+            </td>
+          </tr>
+          <tr class="table-text">
+            <td colspan="13">
+              Голова ради ________________ А.В.Васильєв
+            </td>
+          </tr>
+          <tr class="table-text">
+            <td colspan="7" style="text-align: right">
+              (підпис)
+            </td>
+          </tr>
+          <tr class="table-text">
+            <td colspan="13">
+              ______ ________________________ ________ р.
+            </td>
+          </tr>
+          <tr class="table-text">
+            <td colspan="7" style="text-align: right">
+              М.П.
+            </td>
+          </tr>
+          <tr></tr>
+          <tr class="table-title">
+            <td :colspan="fullColspanTitle" align="center">
+              {{plan.title}}
+            </td>
+          </tr>
+          <tr></tr>
+          <tr v-for="(td, index) in professions" :key="'tr_' + index">
+            <td v-for="(item, i) in td"
+                :colspan="item.hasOwnProperty('colspan') ? item.colspan :
+                          item.hasOwnProperty('acolspan') ? ( fullColspanTitle - item.acolspan * 2 ) / 2 : ''"
+                :class="[
+                        {'table-profession-title': item.hasOwnProperty('title')},
+                        {'table-profession-text': item.hasOwnProperty('key')}
+                        ]"
+                :key="index + '_' + i"
+            >
+              <template v-if="item.hasOwnProperty('title')">
+                {{ item.title}}
+              </template >
+              <template v-else-if="item.hasOwnProperty('key')" >
+                <template v-if="parseKey(item.key, plan)">
+                  {{ parseKey(item.key, plan) }}
                 </template>
+                <template v-else>
+                  <div style="border-bottom: 1px solid black; height: 10pt"></div>
+                </template>
+              </template>
+            </td>
+          </tr>
+
+          <tr></tr>
+
+          <tr class="table-subtitle">
+            <td :colspan="fullColspanTitle">
+              І . ГРАФІК НАВЧАЛЬНОГО ПРОЦЕСУ, тижні
+            </td>
+          </tr>
+          <template v-if="plan.schedule_education_process && plan.schedule_education_process.length !== 0">
+            <ScheduleEducationalProcessMonth :items="plan.schedule_education_process.header"/>
+            <ScheduleEducationalProcessWeeks :items="plan.schedule_education_process.weeks"/>
+            <tr v-for="(k, cursIndex) in plan.schedule_education_process.courses"
+                :key="cursIndex"
+                class="table-month text-center"
+            >
+              <td class="border-table">
+                {{ cursIndex + 1 }}
+              </td>
+              <td v-for="(week, i) in k" :key="i" class="table-week border-table">
+                {{week.val}}
               </td>
             </tr>
-
-            <tr></tr>
-
-            <tr class="table-subtitle">
-              <td :colspan="fullColspanTitle">
-                І . ГРАФІК НАВЧАЛЬНОГО ПРОЦЕСУ, тижні
+          </template>
+          <template v-else>
+            <tr class="text-center">
+              <td rowspan="2" class="border-table">
+                Курс
+              </td>
+              <td class="border-table"
+                v-for="(month, index) in year.header" :key="index" :colspan="month.countWeek">
+                {{ month.monthTitle }}
               </td>
             </tr>
-            <template v-if="plan.schedule_education_process && plan.schedule_education_process.length !== 0">
-              <ScheduleEducationalProcessMonth :items="plan.schedule_education_process.header"/>
-              <ScheduleEducationalProcessWeeks :items="plan.schedule_education_process.weeks"/>
-              <tr v-for="(k, cursIndex) in plan.schedule_education_process.courses"
-                  :key="cursIndex"
-                  class="table-month text-center"
-              >
-                <td class="border-table">
-                  {{ cursIndex + 1 }}
-                </td>
-                <td v-for="(week, i) in k" :key="i" class="table-week border-table">
-                  {{week.val}}
-                </td>
-              </tr>
-            </template>
-            <template v-else>
-              <tr class="text-center">
-                <td rowspan="2" class="border-table">
-                  Курс
-                </td>
-                <td class="border-table"
-                  v-for="(month, index) in year.header" :key="index" :colspan="month.countWeek">
-                  {{ month.monthTitle }}
-                </td>
-              </tr>
-              <tr>
-                <td class="border-table" v-for="(week, i) in year.weeks" :key="i">
-                  {{i + 1}}
-                </td>
-              </tr>
-              <tr v-for="(k, cursIndex) in year.courses" :key="cursIndex">
-                <td class="border-table">
-                  {{ cursIndex + 1 }}
-                </td>
-                <td v-for="(week, i) in k" :key="i" class="border-table"></td>
-              </tr>
-            </template>
-
             <tr>
-              <td :colspan="fullColspanTitle" class="table-sing">
-                ПОЗНАЧЕННЯ: Т – теоретична підготовка;
-                Т* – атестаційний тиждень,проводиться в межах теоретичної підготовки;
-                С – семестровий контроль (екзаменаційна сесія);
-                П – практична підготовка; К – канікули; А – атестація;
-                Д – підготовка кваліфікаційної роботи.
+              <td class="border-table" v-for="(week, i) in year.weeks" :key="i">
+                {{i + 1}}
               </td>
             </tr>
-            <tr></tr>
-
-            <tr class="table-subtitle">
-              <td colspan="20" class="border-table">
-                ІІ. ЗВЕДЕНІ ДАНІ ПРО БЮДЖЕТ ЧАСУ, тижні
+            <tr v-for="(k, cursIndex) in year.courses" :key="cursIndex">
+              <td class="border-table">
+                {{ cursIndex + 1 }}
               </td>
-              <td></td>
-              <td></td>
-              <td colspan="17" class="border-table">
-                ІІІ. ПРАКТИЧНА ПІДГОТОВКА
+              <td v-for="(week, i) in k" :key="i" class="border-table"></td>
+            </tr>
+          </template>
+
+          <tr>
+            <td :colspan="fullColspanTitle" class="table-sing">
+              ПОЗНАЧЕННЯ: Т – теоретична підготовка;
+              Т* – атестаційний тиждень,проводиться в межах теоретичної підготовки;
+              С – семестровий контроль (екзаменаційна сесія);
+              П – практична підготовка; К – канікули; А – атестація;
+              Д – підготовка кваліфікаційної роботи.
+            </td>
+          </tr>
+          <tr></tr>
+
+          <tr class="table-subtitle">
+            <td colspan="20" class="border-table">
+              ІІ. ЗВЕДЕНІ ДАНІ ПРО БЮДЖЕТ ЧАСУ, тижні
+            </td>
+            <td></td>
+            <td></td>
+            <td colspan="17" class="border-table">
+              ІІІ. ПРАКТИЧНА ПІДГОТОВКА
+            </td>
+            <td></td>
+            <td></td>
+            <td colspan="13" class="border-table">
+              ІV. АТЕСТАЦІЯ
+            </td>
+          </tr>
+          <tr class="subtable">
+            <td rowspan="2" colspan="1" class="border-table">Курс</td>
+            <td rowspan="2" colspan="2" class="border-table">Теоретична підготовка</td>
+            <td rowspan="2" colspan="2" class="border-table">Екзаменаційна сесія</td>
+            <td rowspan="2" colspan="2" class="border-table">Практична підготовка</td>
+            <td colspan="9" class="border-table">Атестація</td>
+            <td rowspan="2" colspan="2" class="border-table">Канікули</td>
+            <td rowspan="2" colspan="2" class="border-table">Усього</td>
+
+            <td></td>
+            <td></td>
+
+            <td colspan="1" rowspan="2" class="border-table">№</td>
+            <td colspan="5" rowspan="2" class="border-table">Назва</td>
+            <td colspan="4" rowspan="2" class="border-table">Семестр</td>
+            <td colspan="3" rowspan="2" class="border-table">Число тижнів</td>
+            <td colspan="4" rowspan="2" class="border-table">Число кредитів</td>
+
+            <td></td>
+            <td></td>
+
+            <td colspan="1" rowspan="2" class="border-table">№</td>
+            <td colspan="8" rowspan="2" class="border-table">Форма</td>
+            <td colspan="3" rowspan="2" class="border-table">Семестр</td>
+          </tr>
+          <tr class="subtable">
+            <td colspan="5" class="border-table">Кваліфікаційна робота бакалавра</td>
+            <td colspan="4" class="border-table">Кваліфікаційні (атестаційні) іспити</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+
+          <tr class="subtable" v-for="item in 3" :key="'test_' + item">
+            <td colspan="1" class="border-table"></td>
+            <td colspan="2" class="border-table"></td>
+            <td colspan="2" class="border-table"></td>
+            <td colspan="2" class="border-table"></td>
+            <td colspan="5" class="border-table"></td>
+            <td colspan="4" class="border-table"></td>
+            <td colspan="2" class="border-table"></td>
+            <td colspan="2" class="border-table"></td>
+
+            <td></td>
+            <td></td>
+
+            <td colspan="1" class="border-table"></td>
+            <td colspan="5" class="border-table"></td>
+            <td colspan="4" class="border-table"></td>
+            <td colspan="3" class="border-table"></td>
+            <td colspan="4" class="border-table"></td>
+
+            <td></td>
+            <td></td>
+
+            <td colspan="1" class="border-table"></td>
+            <td colspan="8" class="border-table"></td>
+            <td colspan="3" class="border-table"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table ref="exportablePlan" class="table table-plan mt-5 page-break-before" v-if="plan" width="100%">
+
+          <ModularCyclicHeaderTable
+            v-if="plan.form_organization_id === FORM_ORGANIZATIONS.modular_cyclic"
+            :plan="plan"
+          />
+          <SemesterHeaderTable
+            v-if="plan.form_organization_id === FORM_ORGANIZATIONS.semester"
+            :plan="plan"
+          />
+
+        <tbody>
+          <template v-for="(cycle, index) in cycles">
+            <tr v-if="cycle.cycle_id === null" class="table-subtitle" :key="index">
+              <td class="border-table"
+                  :colspan="14 + plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id] * 2"
+              >
+                {{cycle.title}}
               </td>
-              <td></td>
-              <td></td>
-              <td colspan="13" class="border-table">
-                ІV. АТЕСТАЦІЯ
-              </td>
             </tr>
-            <tr class="subtable">
-              <td rowspan="2" colspan="1" class="border-table">Курс</td>
-              <td rowspan="2" colspan="2" class="border-table">Теоретична підготовка</td>
-              <td rowspan="2" colspan="2" class="border-table">Екзаменаційна сесія</td>
-              <td rowspan="2" colspan="2" class="border-table">Практична підготовка</td>
-              <td colspan="9" class="border-table">Атестація</td>
-              <td rowspan="2" colspan="2" class="border-table">Канікули</td>
-              <td rowspan="2" colspan="2" class="border-table">Усього</td>
+            <tr v-if="cycle.asu_id || cycle.selective_discipline_id" :key="'subject_' + index">
+              <td class="border-table">{{cycle.index}}</td>
+              <td class="border-table">{{ cycle.asu_id ? cycle.title : cycle.selective_discipline.title}}</td>
+              <td class="border-table">{{ cycle.exams }}</td><!--Екзамени-->
+              <td class="border-table">{{ cycle.test }}</td><!--Заліки-->
+              <td class="border-table">{{ cycle.individual_tasks }}</td><!--Індивідуальні завдання-->
+              <td class="border-table">{{ cycle.credits }}</td><!--Кількість кредитів ЄКТС-->
+              <td class="border-table">{{ cycle.total_volume_hour }}</td><!--загальний обсяг-->
+              <td class="border-table">{{ cycle.total_classroom }}</td><!--всього-->
+              <td class="border-table">{{ cycle.hours }}</td><!--лекції-->
+              <td class="border-table">{{ cycle.practices }}</td><!--практичні, семінарські-->
+              <td class="border-table">{{ cycle.laboratories }}</td><!--лабораторні-->
+              <td class="border-table">{{ cycle.individual_work }}</td><!--самостійна робота-->
 
-              <td></td>
-              <td></td>
-
-              <td colspan="1" rowspan="2" class="border-table">№</td>
-              <td colspan="5" rowspan="2" class="border-table">Назва</td>
-              <td colspan="4" rowspan="2" class="border-table">Семестр</td>
-              <td colspan="3" rowspan="2" class="border-table">Число тижнів</td>
-              <td colspan="4" rowspan="2" class="border-table">Число кредитів</td>
-
-              <td></td>
-              <td></td>
-
-              <td colspan="1" rowspan="2" class="border-table">№</td>
-              <td colspan="8" rowspan="2" class="border-table">Форма</td>
-              <td colspan="3" rowspan="2" class="border-table">Семестр</td>
-            </tr>
-            <tr class="subtable">
-              <td colspan="5" class="border-table">Кваліфікаційна робота бакалавра</td>
-              <td colspan="4" class="border-table">Кваліфікаційні (атестаційні) іспити</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-
-            <tr class="subtable" v-for="item in 3" :key="'test_' + item">
-              <td colspan="1" class="border-table"></td>
-              <td colspan="2" class="border-table"></td>
-              <td colspan="2" class="border-table"></td>
-              <td colspan="2" class="border-table"></td>
-              <td colspan="5" class="border-table"></td>
-              <td colspan="4" class="border-table"></td>
-              <td colspan="2" class="border-table"></td>
-              <td colspan="2" class="border-table"></td>
-
-              <td></td>
-              <td></td>
-
-              <td colspan="1" class="border-table"></td>
-              <td colspan="5" class="border-table"></td>
-              <td colspan="4" class="border-table"></td>
-              <td colspan="3" class="border-table"></td>
-              <td colspan="4" class="border-table"></td>
-
-              <td></td>
-              <td></td>
-
-              <td colspan="1" class="border-table"></td>
-              <td colspan="8" class="border-table"></td>
-              <td colspan="3" class="border-table"></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <table ref="exportablePlan" class="table table-plan mt-5 page-break-before" v-if="plan" width="100%">
-
-            <ModularCyclicHeaderTable
-              v-if="plan.form_organization_id === FORM_ORGANIZATIONS.modular_cyclic"
-              :plan="plan"
-            />
-            <SemesterHeaderTable
-              v-if="plan.form_organization_id === FORM_ORGANIZATIONS.semester"
-              :plan="plan"
-            />
-
-          <tbody>
-            <template v-for="(cycle, index) in cycles">
-              <tr v-if="cycle.cycle_id === null" class="table-subtitle" :key="index">
-                <td class="border-table"
-                    :colspan="14 + plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id] * 2"
-                >
-                  {{cycle.title}}
-                </td>
-              </tr>
-              <tr v-if="cycle.asu_id || cycle.selective_discipline_id" :key="'subject_' + index">
-                <td class="border-table">{{cycle.index}}</td>
-                <td class="border-table">{{ cycle.asu_id ? cycle.title : cycle.selective_discipline.title}}</td>
-                <td class="border-table">{{ cycle.exams }}</td><!--Екзамени-->
-                <td class="border-table">{{ cycle.test }}</td><!--Заліки-->
-                <td class="border-table">{{ cycle.individual_tasks }}</td><!--Індивідуальні завдання-->
-                <td class="border-table">{{ cycle.credits }}</td><!--Кількість кредитів ЄКТС-->
-                <td class="border-table">{{ cycle.total_volume_hour }}</td><!--загальний обсяг-->
-                <td class="border-table">{{ cycle.total_classroom }}</td><!--всього-->
-                <td class="border-table">{{ cycle.hours }}</td><!--лекції-->
-                <td class="border-table">{{ cycle.practices }}</td><!--практичні, семінарські-->
-                <td class="border-table">{{ cycle.laboratories }}</td><!--лабораторні-->
-                <td class="border-table">{{ cycle.individual_work }}</td><!--самостійна робота-->
-
-                <td
-                  v-for="semester in plan.study_term.semesters"
-                  class="border-table no-print"
-                  :key="'semester_noprint_' + semester"
-                >
-                  <template v-if="cycle.semesters_credits">
-                    {{cycle.semesters_credits[semester]}}
-                  </template>
-                </td>
-
-                <td
-                  v-for="(hour, idx) in cycle.hours_modules.length > 0 ?
-                    cycle.hours_modules :
-                    plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
-                  :key="'hour_' + idx"
-                  class="border-table"
-                >
-                  <template v-if="hour.hasOwnProperty('hour')">
-                    {{hour.hour}}
-                  </template>
-                </td><!--Todo for course-->
-
-                <td class="border-table"></td><!--Todo Кафедра викладання -->
-                <td class="border-table"></td><!--Todo Потоки-->
-              </tr>
-
-              <tr v-if="cycle.total" :key="'total_' + index" class="table-bold">
-                <td class="border-table">{{cycle.index}}</td>
-                <td class="border-table">{{cycle.title}}</td>
-                <td class="border-table"></td><!--Екзамени-->
-                <td class="border-table"></td><!--Заліки-->
-                <td class="border-table"></td><!--Індивідуальні завдання-->
-                <td class="border-table">{{cycle.credits}}</td><!--Кількість кредитів ЄКТС-->
-                <td class="border-table">{{ cycle.total_volume_hour }}</td><!--загальний обсяг-->
-                <td class="border-table">
-                  {{ cycle.total_classroom }}
-                </td><!--Todo всього-->
-                <td class="border-table">{{ cycle.hours }}</td><!--лекції-->
-                <td class="border-table">{{ cycle.practices }}</td><!--практичні, семінарські-->
-                <td class="border-table">{{ cycle.laboratories }}</td><!--лабораторні-->
-                <td class="border-table">{{cycle.individual_work}}</td><!--самостійна робота-->
-
-                <td
-                  v-for="semester in plan.study_term.semesters"
-                  class="border-table no-print"
-                  :key="'semester_noprint_' + semester"
-                >
-                  <template v-if="cycle.semesters_credits">
-                    {{cycle.semesters_credits[semester]}}
-                  </template>
-                </td>
-
-                <td
-                  v-for="(hour, idx) in cycle.hours_modules.length > 0 ?
-                   cycle.hours_modules :
-                   plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
-                  :key="'hour_' + idx"
-                  class="border-table"
-                >
-                  {{cycle.hours_modules.length > 0 ? hour : 0}}
-                </td>
-
-                <td class="border-table"></td><!--Todo Кафедра викладання -->
-                <td class="border-table"></td><!--Todo Потоки-->
-              </tr>
-
-              <tr v-if="cycle.cycle_id !== null && cycle.asu_id === undefined && !cycle.total" :key="'cycle_' + index" >
-                <td :colspan="14 + plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id] * 2"
-                    class="table-bold border-table"
-                >
-                  {{cycle.title}}
-                </td>
-              </tr>
-
-            </template>
-            <tr class="table-bold">
-              <td class="border-table"></td>
-              <td colspan="1" class="text-left border-table">Загальна кількість</td>
-              <td class="border-table" v-for="td in 3" :key="'td_1_' + td"></td>
-              <td class="border-table">{{ totalPlan.credits }}</td><!--Кількість кредитів ЄКТС-->
-              <td class="border-table">{{ totalPlan.total_volume_hour }}</td><!--загальний обсяг-->
-              <td class="border-table">{{ totalPlan.total_classroom }}</td><!--всього-->
-              <td class="border-table">{{ totalPlan.hours }}</td><!--лекції-->
-              <td class="border-table">{{ totalPlan.practices }}</td><!--практичні, семінарські-->
-              <td class="border-table">{{ totalPlan.laboratories }}</td><!--лабораторні-->
-              <td class="border-table">{{ totalPlan.individual_work }}</td><!--самостійна робота-->
               <td
                 v-for="semester in plan.study_term.semesters"
                 class="border-table no-print"
                 :key="'semester_noprint_' + semester"
               >
-                <template v-if="totalPlan.semesters_credits">
-                  {{totalPlan.semesters_credits[semester]}}
+                <template v-if="cycle.semesters_credits">
+                  {{cycle.semesters_credits[semester]}}
                 </template>
               </td>
+
               <td
-                v-for="(hour, idx) in totalPlan.hours_modules.length > 0 ?
-                   totalPlan.hours_modules :
-                   plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
-                :key="'total_plan_' + idx"
-                class="border-table"
-              >
-                {{totalPlan.hours_modules.length > 0 ? hour : 0}}
-              </td>
-              <td class="border-table" v-for="td in 2" :key="'td_2_' + td"></td>
-            </tr>
-            <tr class="table-bold">
-              <td class="border-table"></td>
-              <td colspan="11" class="text-left border-table">Кількість годин на тиждень</td>
-              <td
-                v-for="semester in plan.study_term.semesters"
-                class="border-table no-print"
-                :key="'semester_noprint_' + semester"
-              ></td>
-              <td
-                v-for="(hour, idx) in totalPlan.hours_modules.length > 0 ?
-                   totalPlan.hours_modules :
-                   plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
+                v-for="(hour, idx) in cycle.hours_modules.length > 0 ?
+                  cycle.hours_modules :
+                  plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
                 :key="'hour_' + idx"
                 class="border-table"
               >
-                {{totalPlan.hours_modules.length > 0 ? hour : 0}}
+                <template v-if="hour.hasOwnProperty('hour')">
+                  {{hour.hour}}
+                </template>
+              </td><!--Todo for course-->
+
+              <td class="border-table"></td><!--Todo Кафедра викладання -->
+              <td class="border-table"></td><!--Todo Потоки-->
+            </tr>
+
+            <tr v-if="cycle.total" :key="'total_' + index" class="table-bold">
+              <td class="border-table">{{cycle.index}}</td>
+              <td class="border-table">{{cycle.title}}</td>
+              <td class="border-table"></td><!--Екзамени-->
+              <td class="border-table"></td><!--Заліки-->
+              <td class="border-table"></td><!--Індивідуальні завдання-->
+              <td class="border-table">{{cycle.credits}}</td><!--Кількість кредитів ЄКТС-->
+              <td class="border-table">{{ cycle.total_volume_hour }}</td><!--загальний обсяг-->
+              <td class="border-table">
+                {{ cycle.total_classroom }}
+              </td><!--Todo всього-->
+              <td class="border-table">{{ cycle.hours }}</td><!--лекції-->
+              <td class="border-table">{{ cycle.practices }}</td><!--практичні, семінарські-->
+              <td class="border-table">{{ cycle.laboratories }}</td><!--лабораторні-->
+              <td class="border-table">{{cycle.individual_work}}</td><!--самостійна робота-->
+
+              <td
+                v-for="semester in plan.study_term.semesters"
+                class="border-table no-print"
+                :key="'semester_noprint_' + semester"
+              >
+                <template v-if="cycle.semesters_credits">
+                  {{cycle.semesters_credits[semester]}}
+                </template>
               </td>
-              <td class="border-table" v-for="td in 2" :key="td"></td>
-            </tr>
-            <tr class="table-bold">
-              <td class="border-table"></td>
-              <td colspan="11" class="text-left border-table">Кількість екзаменів</td>
+
               <td
-                v-for="semester in plan.study_term.semesters"
-                class="border-table no-print"
-                :key="'semester_noprint_' + semester"
-              ></td>
-              <td class="border-table" v-for="td in fullColspanPlan - 12" :key="td"></td>
-            </tr>
-            <tr class="table-bold">
-              <td class="border-table"></td>
-              <td colspan="11" class="text-left border-table">Кількість заліків</td>
-              <td
-                v-for="semester in plan.study_term.semesters"
-                class="border-table no-print"
-                :key="'semester_noprint_' + semester"
-              ></td>
-              <td class="border-table" v-for="td in fullColspanPlan - 12" :key="td"></td>
-            </tr>
-            <tr class="table-bold">
-              <td class="border-table"></td>
-              <td colspan="11" class="text-left border-table">Кількість курсових робіт</td>
-              <td
-                v-for="semester in plan.study_term.semesters"
-                class="border-table no-print"
-                :key="'semester_noprint_' + semester"
-              ></td>
-              <td class="border-table" v-for="td in fullColspanPlan - 12" :key="td"></td>
-            </tr>
-            <tr>
-              <td colspan="11" class="text-left">* у кожному семестрі з каталога обирається 1 навчальна дисципліна обсягом 5 кредитів ЄКТС</td>
-              <td v-for="td in fullColspanPlan - 13" :key="td"></td>
+                v-for="(hour, idx) in cycle.hours_modules.length > 0 ?
+                 cycle.hours_modules :
+                 plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
+                :key="'hour_' + idx"
+                class="border-table"
+              >
+                {{cycle.hours_modules.length > 0 ? hour : 0}}
+              </td>
+
+              <td class="border-table"></td><!--Todo Кафедра викладання -->
+              <td class="border-table"></td><!--Todo Потоки-->
             </tr>
 
-            <tr v-for="tr in 2" :key="'tr_1_' + tr"></tr>
+            <tr v-if="cycle.cycle_id !== null && cycle.asu_id === undefined && !cycle.total" :key="'cycle_' + index" >
+              <td :colspan="14 + plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id] * 2"
+                  class="table-bold border-table"
+              >
+                {{cycle.title}}
+              </td>
+            </tr>
 
-            <template v-for="signature in plan.signatures">
-              <tr class="text-left signature-position" v-if="signature.agreed" :key="'signature_agreed_' + signature.id">
-                <td colspan="5">ПОГОДЖЕНО:</td>
-              </tr>
+          </template>
+          <tr class="table-bold">
+            <td class="border-table"></td>
+            <td colspan="1" class="text-left border-table">Загальна кількість</td>
+            <td class="border-table" v-for="td in 3" :key="'td_1_' + td"></td>
+            <td class="border-table">{{ totalPlan.credits }}</td><!--Кількість кредитів ЄКТС-->
+            <td class="border-table">{{ totalPlan.total_volume_hour }}</td><!--загальний обсяг-->
+            <td class="border-table">{{ totalPlan.total_classroom }}</td><!--всього-->
+            <td class="border-table">{{ totalPlan.hours }}</td><!--лекції-->
+            <td class="border-table">{{ totalPlan.practices }}</td><!--практичні, семінарські-->
+            <td class="border-table">{{ totalPlan.laboratories }}</td><!--лабораторні-->
+            <td class="border-table">{{ totalPlan.individual_work }}</td><!--самостійна робота-->
+            <td
+              v-for="semester in plan.study_term.semesters"
+              class="border-table no-print"
+              :key="'semester_noprint_' + semester"
+            >
+              <template v-if="totalPlan.semesters_credits">
+                {{totalPlan.semesters_credits[semester]}}
+              </template>
+            </td>
+            <td
+              v-for="(hour, idx) in totalPlan.hours_modules.length > 0 ?
+                 totalPlan.hours_modules :
+                 plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
+              :key="'total_plan_' + idx"
+              class="border-table"
+            >
+              {{totalPlan.hours_modules.length > 0 ? hour : 0}}
+            </td>
+            <td class="border-table" v-for="td in 2" :key="'td_2_' + td"></td>
+          </tr>
+          <tr class="table-bold">
+            <td class="border-table"></td>
+            <td colspan="11" class="text-left border-table">Кількість годин на тиждень</td>
+            <td
+              v-for="semester in plan.study_term.semesters"
+              class="border-table no-print"
+              :key="'semester_noprint_' + semester"
+            ></td>
+            <td
+              v-for="(hour, idx) in totalPlan.hours_modules.length > 0 ?
+                 totalPlan.hours_modules :
+                 plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
+              :key="'hour_' + idx"
+              class="border-table"
+            >
+              {{totalPlan.hours_modules.length > 0 ? hour : 0}}
+            </td>
+            <td class="border-table" v-for="td in 2" :key="td"></td>
+          </tr>
+          <tr class="table-bold">
+            <td class="border-table"></td>
+            <td colspan="11" class="text-left border-table">Кількість екзаменів</td>
+            <td
+              v-for="semester in plan.study_term.semesters"
+              class="border-table no-print"
+              :key="'semester_noprint_' + semester"
+            ></td>
+            <td class="border-table" v-for="td in fullColspanPlan - 12" :key="td"></td>
+          </tr>
+          <tr class="table-bold">
+            <td class="border-table"></td>
+            <td colspan="11" class="text-left border-table">Кількість заліків</td>
+            <td
+              v-for="semester in plan.study_term.semesters"
+              class="border-table no-print"
+              :key="'semester_noprint_' + semester"
+            ></td>
+            <td class="border-table" v-for="td in fullColspanPlan - 12" :key="td"></td>
+          </tr>
+          <tr class="table-bold">
+            <td class="border-table"></td>
+            <td colspan="11" class="text-left border-table">Кількість курсових робіт</td>
+            <td
+              v-for="semester in plan.study_term.semesters"
+              class="border-table no-print"
+              :key="'semester_noprint_' + semester"
+            ></td>
+            <td class="border-table" v-for="td in fullColspanPlan - 12" :key="td"></td>
+          </tr>
+          <tr>
+            <td colspan="11" class="text-left">* у кожному семестрі з каталога обирається 1 навчальна дисципліна обсягом 5 кредитів ЄКТС</td>
+            <td v-for="td in fullColspanPlan - 13" :key="td"></td>
+          </tr>
 
-              <tr :key="'signature_1_' + signature.id">
-                <td colspan="7" rowspan="3" class="text-left signature-position">
-                  {{signature.position}}
-                </td>
-                <td rowspan="3"></td>
-                <td rowspan="3"></td>
-              </tr>
-              <tr :key="'signature_2_' + signature.id">
-                <td class="signature">
-                  ________________
-                </td>
-                <td></td>
-                <td colspan="7" class="signature-position name">{{signature.name}} {{signature.surname}}</td>
-              </tr>
+          <tr v-for="tr in 2" :key="'tr_1_' + tr"></tr>
 
-              <tr :key="'signature_3_' + signature.id">
-                <td class="text-center">
-                  (підпис)
-                </td>
-                <td></td>
-                <td colspan="7" class="text-center">(ім'я та прізвище)</td>
-              </tr>
-              <tr :key="'signature_tr_' + signature.id"></tr>
-            </template>
+          <template v-for="signature in plan.signatures">
+            <tr class="text-left signature-position" v-if="signature.agreed" :key="'signature_agreed_' + signature.id">
+              <td colspan="5">ПОГОДЖЕНО:</td>
+            </tr>
+
+            <tr :key="'signature_1_' + signature.id">
+              <td colspan="7" rowspan="3" class="text-left signature-position">
+                {{signature.position}}
+              </td>
+              <td rowspan="3"></td>
+              <td rowspan="3"></td>
+            </tr>
+            <tr :key="'signature_2_' + signature.id">
+              <td class="signature">
+                ________________
+              </td>
+              <td></td>
+              <td colspan="7" class="signature-position name">{{signature.name}} {{signature.surname}}</td>
+            </tr>
+
+            <tr :key="'signature_3_' + signature.id">
+              <td class="text-center">
+                (підпис)
+              </td>
+              <td></td>
+              <td colspan="7" class="text-center">(ім'я та прізвище)</td>
+            </tr>
+            <tr :key="'signature_tr_' + signature.id"></tr>
+          </template>
 
 
-          </tbody>
-        </table>
-      </div>
-      <v-speed-dial
+        </tbody>
+      </table>
+    </div>
+    <v-speed-dial
         v-model="exports"
         bottom
         right
@@ -486,7 +488,6 @@
           </v-icon>
         </v-btn>
       </v-speed-dial>
-    </div>
   </v-container>
 </template>
 
@@ -516,6 +517,7 @@ export default {
   },
   data() {
     return {
+      byCreatedPDF: process.env.VUE_APP_BY_CREATED_PDF,
       cycles: [],
       exports: false,
       plan: null,
@@ -765,7 +767,6 @@ export default {
   }
 }
 </script>
-
 <style>
   .table {
     font-family: "Times New Roman";
@@ -850,9 +851,28 @@ export default {
   .border-table {
     border: 1px solid black;
   }
+  .by-created-pdf {
+    display: none;
+    text-align: right;
+    opacity: .6;
+    font-size: 8pt;
+  }
 </style>
 <style scoped>
   @media print {
-    @page {size: A4 landscape}
+    .by-created-pdf {
+      display: block;
+    }
+    @page {
+      size: A4 landscape;
+      @bottom-center {
+        content: element(footer);
+      }
+    }
+    @page {
+      @bottom-left {
+        content: counter(page) "/ss" counter(pages);
+      }
+    }
   }
 </style>
