@@ -23,7 +23,7 @@
 
 <script>
 import navigation from "@/services/navigation";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "Navbar",
@@ -33,23 +33,20 @@ export default {
       name: process.env.VUE_APP_NAME_APP
     }
   },
-  computed: {
-    user() {
-      let user = this.$store.getters['auth/user'];
-      if (user !== null) {
+  watch: {
+    user(v) {
+      if (v !== null) {
         this.getMenu();
-        return user;
+        return v;
       }
       return null;
-    }
+    },
   },
-  // watch: {
-  //   menu() {
-  //     console.log('watch', this.menu);
-  //     this.menu = this.getMenu();
-  //     console.log('watch_after', this.menu);
-  //   }
-  // },
+  computed: {
+    ...mapGetters({
+      user: 'auth/user'
+    }),
+  },
   mounted() {
     this.getMenu();
   },
