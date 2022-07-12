@@ -39,6 +39,16 @@ export default {
       type: Boolean,
       default: false
     }
+  },
+  watch: {
+    show: (v) => {
+      const html = document.getElementsByTagName('html')[0];
+      if (v) {
+        html.style.overflow = 'hidden'
+      } else {
+        html.style.overflow = 'unset'
+      }
+    }
   }
 }
 </script>
@@ -51,7 +61,7 @@ export default {
   left: 0;
   right: 0;
   background: url("https://sumdu.edu.ua/images/brand/logo-sumdu.svg?v=2"),
-              linear-gradient(0deg, rgba(255, 255, 255, 1) 87%, rgba(255, 255, 255, 0.7) 88%);
+              linear-gradient(0deg, rgba(255, 255, 255, 1) 92%, rgba(255, 255, 255, 0.7) 92%);
   background-repeat: no-repeat;
   background-position: center;
   text-align: center;
