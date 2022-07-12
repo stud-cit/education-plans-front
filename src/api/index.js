@@ -79,7 +79,7 @@ api.interceptors.request.use(function(config) {
     }
 );
 
-const get = async (resource, data = false, configs = null) => data ? await api.get(`${resource}?${jsonToQuery(data)}`, configs) : await api.get(resource);
+const get = async (resource, data = false, configs = null) => data ? await api.get(`${resource}?${jsonToQuery(data)}`, configs) : await api.get(resource, configs);
 const post = async (resource, data) => await api.post(resource, data);
 const show = async (resource, id, configs = null) => await api.get(`${resource}/${id}`, configs);
 const edit = async (resource, id, configs = null) => await api.get(`${resource}/${id}/edit`, configs);
