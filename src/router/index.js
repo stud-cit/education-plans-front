@@ -337,10 +337,11 @@ router.beforeEach(async (to, from, next) => {
 
   if (!guest) {
     if (localStorage.getItem('cabinetToken')) {
+      await getUserRoleId();
       next();
     } else if ('key' in to.query && to.query.key != null) {
       localStorage.setItem("cabinetToken", to.query.key);
-
+      await getUserRoleId();
       next();
     } else {
       window.location.replace(
@@ -349,7 +350,6 @@ router.beforeEach(async (to, from, next) => {
         process.env.VUE_APP_CABINET_APP_TOKEN
       );
     }
-    await getUserRoleId();
   }
 
   next();
