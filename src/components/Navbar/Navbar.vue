@@ -53,7 +53,7 @@ export default {
   methods: {
     getMenu() {
       const user = JSON.parse(localStorage.getItem('user'));
-      console.log('user', user);
+
       this.menu = navigation.getItems(user)
     },
     ...mapActions("auth", ["sendLogoutRequest"]),
