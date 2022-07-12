@@ -15,26 +15,24 @@ export default {
     mutations: {
       setUserData(state, user) {
         const newUser = JSON.stringify(user);
-
-        if(localStorage.getItem('user') !== newUser) {
+        // if(localStorage.getItem('user') !== newUser) {
           localStorage.setItem('user', newUser);
           state.userData = user;
-        }
+        // }
       }
     },
 
     actions: {
-      getUserData({ commit }) {
-        api
-          .get(API.USER)
-          .then(response => {
-            commit("setUserData", response.data);
-          })
+      async getUserData({ commit }) {
+        const {data, status} = await api.get(API.USER, false , {showLoader: true})
           .catch(() => {
             localStorage.removeItem("user");
             localStorage.removeItem("authToken");
             localStorage.removeItem("cabinetToken");
           });
+        if (status === 200) {
+          commit("setUserData", data);
+        }
       },
         sendLoginRequest({ commit }, data) {
             commit("setErrors", {}, { root: true });
