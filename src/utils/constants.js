@@ -1,7 +1,12 @@
 export const ROLES = {
   ID: {
       'admin': 1,
-      'administrator': 2,
+      'training_department': 2,
+      'practice_department': 3,
+      'educational_department': 4,
+      'faculty_institute': 5,
+      'department': 6,
+      'root': 7,
   },
 }
 export const FORM_ORGANIZATIONS = {
