@@ -79,6 +79,7 @@ export default {
         title: `Ви хочете видалити план ?`,
         text: `${title}`,
         showDenyButton: true,
+        focusDeny: true,
         confirmButtonText: 'Так',
         denyButtonText: `Ні`,
       }).then((result) => {
