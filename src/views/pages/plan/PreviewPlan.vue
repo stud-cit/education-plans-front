@@ -850,6 +850,9 @@ export default {
   .border-table {
     border: 1px solid black;
   }
+  .table-plan thead {
+    display: table-row-group;
+  }
 </style>
 <style scoped>
   @media print {
