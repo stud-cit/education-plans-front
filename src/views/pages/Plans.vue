@@ -67,6 +67,7 @@ export default {
     },
 
     apiEditPlan(id, title) {
+      this.$store.dispatch('plans/clear');
       this.$router.push({name: 'EditPlan', params: { id, title }});
     },
 

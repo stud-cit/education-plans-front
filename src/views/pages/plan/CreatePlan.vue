@@ -113,8 +113,8 @@
     </div>
 
     <v-stepper elevation="1" class="my-2" v-if="$route.name === 'EditPlan' && plan">
-      <v-stepper-header>
-        <template v-for="(item, index) in checkVerification">
+      <v-stepper-header v-if="checkVerification">
+        <template  v-for="(item, index) in checkVerification">
           <v-stepper-step
             :key="`${index}-step`"
             :step="index + 1"
@@ -287,7 +287,6 @@ export default {
       this.apiGetPrograms();
       this.programsDialog = true;
     },
-
     submit(data) {
       let path = 'plans/store';
 
@@ -307,9 +306,11 @@ export default {
         });
         if (this.$route.name === 'CreatePlan') {
           this.$router.push({name: 'EditPlan', params: {id: response.data.id, title: data.title }});
+        } else {
+          this.apiGetPlanId();
+          this.apiGetOptions();
         }
-        this.apiGetPlanId();
-        this.apiGetOptions();
+
         this.apiGetVerifications();
       }).catch((errors) => {
         console.log(errors.response.data)

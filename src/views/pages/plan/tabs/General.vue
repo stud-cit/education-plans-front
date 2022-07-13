@@ -12,7 +12,7 @@
             rules="required"
           >
             <v-text-field
-              v-model="title"
+              v-model="plan.title"
               :error-messages="errors"
               label="Назва плану"
               required
@@ -28,7 +28,7 @@
             rules=""
           >
             <v-autocomplete
-              v-model.number="fieldKnowledge"
+              v-model.number="plan.field_knowledge_id"
               :items="fieldsKnowledge"
               :error-messages="errors"
               item-text="title"
@@ -46,7 +46,7 @@
             rules=""
           >
             <v-autocomplete
-              v-model.number="speciality"
+              v-model.number="plan.speciality_id"
               :items="specialities"
               :loading="specialitiesLoading"
               :disabled="specialities.length === 0"
@@ -66,7 +66,7 @@
             rules=""
           >
             <v-autocomplete
-              v-model.number="educationalProgram"
+              v-model.number="plan.education_program_id"
               :items="educationalPrograms"
               :loading="educationalProgramsLoading"
               :disabled="educationalPrograms.length === 0"
@@ -86,7 +86,7 @@
             rules=""
           >
             <v-autocomplete
-              v-model.number="specialization"
+              v-model.number="plan.specialization_id"
               :items="specializations"
               :loading="specializationsLoading"
               :error-messages="errors"
@@ -106,7 +106,7 @@
             rules="required"
           >
             <v-autocomplete
-              v-model="qualification"
+              v-model="plan.qualification_id"
               :items="qualifications"
               :error-messages="errors"
               item-text="title"
@@ -124,7 +124,7 @@
             rules="required"
           >
             <v-autocomplete
-              v-model="faculty"
+              v-model="plan.faculty_id"
               :items="faculties"
               :error-messages="errors"
               item-text="name"
@@ -140,10 +140,11 @@
             rules="required"
           >
             <v-autocomplete
-              v-model="department"
+              v-model="plan.department_id"
               :items="departments"
               :error-messages="errors"
               :loading="departmentsLoading"
+              :disabled="departmentsLoading"
               item-text="name"
               item-value="id"
               label="Кафедра"
@@ -159,7 +160,7 @@
             rules="required"
           >
             <v-autocomplete
-              v-model="formOrganizationStudy"
+              v-model="plan.form_organization_id"
               :items="formsOrganizationStudy"
               :error-messages="errors"
               item-text="title"
@@ -177,7 +178,7 @@
             rules="required"
           >
             <v-autocomplete
-              v-model="formStudy"
+              v-model="plan.form_study_id"
               :items="formsStudy"
               :error-messages="errors"
               item-text="title"
@@ -195,12 +196,13 @@
             rules="required"
           >
             <v-autocomplete
-              v-model="studyTerm"
+              v-model="plan.study_term"
               :items="termsStudy"
               :error-messages="errors"
               item-text="title"
               label="Термін навчання"
               return-object
+              item-value="id"
               :disabled="edit"
             ></v-autocomplete>
           </validation-provider>
@@ -229,7 +231,7 @@
             rules="required"
           >
             <v-autocomplete
-              v-model="educationLevel"
+              v-model="plan.education_level_id"
               :items="educationsLevel"
               :error-messages="errors"
               item-text="title"
@@ -245,7 +247,7 @@
             rules="required|numeric|min:1|max:3|min_value:1"
           >
             <v-text-field
-              v-model="credits"
+              v-model="plan.credits"
               :error-messages="errors"
               label="Обсяг плану в кредитах"
               required
@@ -264,7 +266,7 @@
             rules="required|numeric|digits:4"
           >
             <v-autocomplete
-              v-model="year"
+              v-model="plan.year"
               :items="years"
               :error-messages="errors"
               label="Рік прийому"
@@ -273,7 +275,7 @@
         </v-col>
         <v-col cols="12" lg="6" class="py-0">
           <v-checkbox
-            v-model="published"
+            v-model="plan.published"
             label="Відкрити спільний доступ"
           ></v-checkbox>
         </v-col>
@@ -355,6 +357,7 @@
             class="mr-4"
             type="submit"
             color="primary"
+            :loading="plan.submitLoading"
             :disabled="invalid"
           >
             Зберегти
@@ -374,48 +377,31 @@ export default {
   name: "General",
   data() {
     return {
-      title: null,
-      faculty: null,
+      submitLoading: false,
       faculties: [],
-      department: null,
       departments: [],
       departmentsLoading: false,
-      educationLevel: null,
       educationsLevel: [],
-      formStudy: null,
       formsStudy: [],
       studyTerm: null,
       termsStudy: [],
-      year: new Date().getFullYear(),
       years: this.fakerYears(),
       numberSemesters: null,
-      speciality: null,
       specialities: [],
       specialitiesLoading: false,
-      specialization: null,
       specializations: [],
       specializationsLoading: false,
-      educationalProgram: null,
       educationalPrograms: [],
       educationalProgramsLoading: false,
-      qualification: null,
       qualifications: [],
-      fieldKnowledge: null,
       fieldsKnowledge: [],
-      formOrganizationStudy: null,
       formsOrganizationStudy: [],
-      credits: null,
       objHoursWeeks: [],
-      published: false
     }
   },
   props: {
     plan: {
       type: Object,
-      default(){
-        return null;
-      },
-      required: false
     },
     edit: {
       type: Boolean
@@ -425,47 +411,29 @@ export default {
     this.apiGetFields();
   },
   watch: {
-    plan(v) {
-      if (v !== null) {
-        this.title = this.plan.title;
-        this.faculty = this.plan.faculty_id;
-        this.department = this.plan.department_id;
-        this.educationLevel = this.plan.education_level_id;
-        this.formStudy = this.plan.form_study_id;
-        setTimeout(() => { this.studyTerm = this.termsStudy.find((el => el.id === this.plan.study_term_id))},0);
-        this.year = this.plan.year;
-        this.speciality = this.plan.speciality_id;
-        this.specialization = this.plan.specialization_id;
-        this.educationalProgram = this.plan.education_program_id;
-        this.qualification = this.plan.qualification_id;
-        this.fieldKnowledge = this.plan.field_knowledge_id;
-        this.formOrganizationStudy = this.plan.form_organization_id;
-        this.credits = this.plan.credits;
-        this.published = this.plan.published;
-      }
-    },
-    faculty(v) {
+    'plan.faculty_id'(v) {
       v !== null ? this.apiGetDepartments(v) : this.departments = [];
     },
-    studyTerm(v) {
-      this.buildObjHoursWeeks();
+    'plan.study_term'(v) {
       if (v !== null) {
         this.numberSemesters = v.semesters;
+        this.studyTerm = v;
+        this.buildObjHoursWeeks();
       }
     },
-    formOrganizationStudy() {
+    'plan.form_organization_id'() {
       this.buildObjHoursWeeks();
     },
-    fieldKnowledge(v) {
-      if (this.plan && v !== this.plan.field_knowledge_id) {
-        this.speciality = null;
+    'plan.field_knowledge_id'(v, old) {
+      if (old !== null && v === old) {
+        this.plan.speciality_id = null;
       }
       v !== null ? this.apiGetSpecialities(v) : this.specialities = [];
     },
-    speciality(v) {
-      if (this.plan && v !== this.plan.speciality_id) {
-        this.specialization = null;
-        this.educationalProgram = null;
+    'plan.speciality_id'(v, old) {
+      if (old !== null && v === old) {
+        this.plan.specialization_id = null;
+        this.plan.education_program_id = null;
       }
       v !== null ? this.apiGetSpecializations(v) : this.specializations = [];
       v !== null ? this.apiGetEducationPrograms(v) : this.educationalPrograms = [];
@@ -530,7 +498,7 @@ export default {
     buildObjHoursWeeks() {
       const result = [];
       const studyTerm = this.studyTerm;
-      const formOrganization = this.formOrganizationStudy;
+      const formOrganization = this.plan.form_organization_id;
 
       if (studyTerm !== null && formOrganization !== null ) {
 
@@ -574,25 +542,13 @@ export default {
       this.$refs.observer.validate().then((validated) => {
         if (validated) {
           const data = {
-            title: this.title,
-            faculty_id: this.faculty,
-            department_id: this.department,
-            education_level_id: this.educationLevel,
-            form_study_id: this.formStudy,
-            study_term_id: this.studyTerm.id,
-            year: this.year,
+            ...this.plan,
+            study_term_id: this.plan.study_term.id,
+          //   year: this.year,
             number_semesters: this.numberSemesters,
-            speciality_id: this.speciality,
-            specialization_id: this.specialization,
-            education_program_id: this.educationalProgram,
-            qualification_id: this.qualification,
-            field_knowledge_id: this.fieldKnowledge,
-            form_organization_id: this.formOrganizationStudy,
-            credits: this.credits,
             hours_weeks_semesters: JSON.stringify(this.objHoursWeeks),
-            published: this.published,
           };
-
+          this.plan.submitLoading = true;
           this.$emit('submit', data)
         }
       });

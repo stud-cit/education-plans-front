@@ -3,6 +3,7 @@ export const items = (state) => {
 }
 
 export const plan = (state) => {
+  console.log('state.plan', state.plan)
   return state.plan
 }
 
