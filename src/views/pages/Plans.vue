@@ -8,7 +8,7 @@
                  @preview="apiPreviewPlan"
                  @delete="apiDeletePlan"
     />
-    <v-tooltip left color="info">
+    <v-tooltip left color="info" v-if="allowedRoles([ROLES.ID.admin])">
       <template v-slot:activator="{ on, attrs }">
         <v-fab-transition>
           <v-btn
@@ -32,13 +32,19 @@
 </template>
 <script>
 import PlansTable from "@c/Tables/PlansTable";
+import RolesMixin from "@/mixins/RolesMixin";
+import {ROLES} from "@/utils/constants";
 
 export default {
   name: 'Plans',
   components: {PlansTable},
   data() {
-    return {}
+    return {
+      ROLES,
+    }
   },
+
+  mixins: [RolesMixin],
   computed: {
     items() {
       return this.$store.getters["plans/items"];
