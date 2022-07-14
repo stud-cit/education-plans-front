@@ -3,7 +3,6 @@
     <v-data-table
       :headers="headers"
       :items="items"
-      :loading="loader"
       class="elevation-1"
       hide-default-footer
     >
@@ -21,7 +20,6 @@ export default {
   name: "FormStudy",
   data() {
     return {
-      loader: false,
       headers: [
         { text: "№", value: "index", sortable: false, width: '20px' },
         { text: "Форма навчання", value: "title", sortable: false },
@@ -39,12 +37,10 @@ export default {
       this.apiFromStudies().then( (response) => {
         const { data } = response;
         this.items = data.data;
-        this.loader = false;
       });
     },
     apiFromStudies() {
-      this.loader = true;
-      return api.get(API.FORM_STUDIES);
+      return api.get(API.FORM_STUDIES, null, {showLoader: true});
     }
   },
 };
