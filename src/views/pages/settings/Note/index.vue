@@ -3,8 +3,6 @@
     <v-data-table
       :headers="headers"
       :items="items"
-      :loading="loader"
-      loading-text="Завантаження... Будь ласка зачекайте"
       class="elevation-1"
       hide-default-footer
     >
@@ -87,7 +85,6 @@ export default {
       ],
       items: [],
       item: {},
-      loader: true,
       showCreate: false,
       showEdit: false,
     }
@@ -100,11 +97,10 @@ export default {
       this.apiPNotes().then( (response)  => {
         const { data } = response;
         this.items = data.data;
-        this.loader = false;
       });
     },
     apiPNotes() {
-      return api.get(API.NOTES);
+      return api.get(API.NOTES, null, {showLoader: true});
     },
     openEdit(item) {
       const { id, abbreviation, explanation} = item;
