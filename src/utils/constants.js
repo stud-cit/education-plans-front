@@ -3,10 +3,11 @@ export const ROLES = {
       'admin': 1,
       'training_department': 2,
       'practice_department': 3,
-      'educational_department': 4,
-      'faculty_institute': 5,
-      'department': 6,
-      'root': 7,
+      'educational-department-deputy': 4,
+      'educational-department-chief': 5,
+      'faculty_institute': 6,
+      'department': 7,
+      'root': 8,
   },
 }
 export const FORM_ORGANIZATIONS = {
