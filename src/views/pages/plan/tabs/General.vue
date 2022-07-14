@@ -137,7 +137,7 @@
           <validation-provider
             v-slot="{ errors }"
             name="Кафедра"
-            rules="required"
+            rules=""
           >
             <v-autocomplete
               v-model="plan.department_id"
