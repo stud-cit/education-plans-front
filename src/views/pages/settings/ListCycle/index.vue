@@ -3,8 +3,6 @@
     <v-data-table
       :headers="headers"
       :items="items"
-      :loading="loader"
-      loading-text="Завантаження... Будь ласка зачекайте"
       class="elevation-1"
       hide-default-footer
     >
@@ -31,7 +29,6 @@ export default {
         { text: 'Назва', value: 'title', sortable: false},
       ],
       items: [],
-      loader: true,
     }
   },
   mounted() {
@@ -42,11 +39,10 @@ export default {
       this.apiListCycles().then( (response)  => {
         const { data } = response;
         this.items = data.data;
-        this.loader = false;
       });
     },
     apiListCycles() {
-      return api.get(API.LIST_CYCLES);
+      return api.get(API.LIST_CYCLES, null, {showLoader: true});
     },
   }
 }
