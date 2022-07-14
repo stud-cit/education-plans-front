@@ -365,9 +365,9 @@
       outlined
       type="error"
       class="mb-2"
-      v-if="plan.count_coursework > options['coursework']"
+      v-if="getErrorsSemestersExams"
     >
-      Перевищена кількість курсових робіт.
+      Перевищена кількість екзаменів у {{ getErrorsSemestersExams }} семестрі.
     </v-alert>
 
     <v-alert
@@ -375,9 +375,9 @@
       outlined
       type="error"
       class="mb-2"
-      v-if="plan.count_coursework > options['exam']"
+      v-if="getErrorsCourseWorks"
     >
-      Перевищена кількість екзаменів.
+      Перевищена кількість курсових робіт у {{ getErrorsCourseWorks }} семестрі.
     </v-alert>
 
     <v-alert
@@ -566,6 +566,24 @@ export default {
       let result = [];
       this.plan.sum_semesters_hours.forEach((item, index) => {
         if(item > this.sumArray(this.plan.hours_weeks_semesters.filter(i => i.semester == index+1), 'hour')) {
+          result.push(index+1);
+        }
+      });
+      return result.join(', ');
+    },
+    getErrorsSemestersExams() {
+      let result = [];
+      this.plan.count_exams.forEach((item, index) => {
+        if(item > this.options['exam']) {
+          result.push(index+1);
+        }
+      });
+      return result.join(', ');
+    },
+    getErrorsCourseWorks() {
+      let result = [];
+      this.plan.count_coursework.forEach((item, index) => {
+        if(item > this.options['coursework']) {
           result.push(index+1);
         }
       });
