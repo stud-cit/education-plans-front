@@ -8,6 +8,9 @@
 
     <v-spacer></v-spacer>
 
+    <v-btn v-if="devtool" text color="warning" :input-value="panelOpen" @click="toggle()">
+      Панель розробника
+    </v-btn>
     <template v-for="item in menu">
       <v-btn :to="{name: item.route}" text :key="item.route" exact>
         {{ item.title }}
@@ -29,8 +32,10 @@ export default {
   name: "Navbar",
   data() {
     return {
+      check: 1,
       menu: null,
-      name: process.env.VUE_APP_NAME_APP
+      name: process.env.VUE_APP_NAME_APP,
+      devtool: process.env.VUE_APP_DEBUG === 'true'
     }
   },
   watch: {
@@ -44,7 +49,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      user: 'auth/user'
+      user: 'auth/user',
+      panelOpen: 'developmentSettings/panelOpen'
     }),
   },
   mounted() {
@@ -56,7 +62,12 @@ export default {
 
       this.menu = navigation.getItems(user)
     },
-    ...mapActions("auth", ["sendLogoutRequest"]),
+    ...mapActions(
+      {
+        toggle: 'developmentSettings/toggle',
+        sendLogoutRequest: 'auth/sendLogoutRequest'
+      }
+    ),
     logout() {
       this.sendLogoutRequest().then(() => {
         window.location.replace(process.env.VUE_APP_CABINET_APP_URL);

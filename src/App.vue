@@ -1,17 +1,24 @@
 <template>
   <v-app>
     <router-view/>
+    <DevelopmentSettings v-if="devtool"/>
   </v-app>
 </template>
 
 <script>
 import {mapGetters} from "vuex";
+import DevelopmentSettings from "@c/Navbar/DevelopmentSettings";
 
 export default {
   name: 'App',
-  data: () => ({}),
+  data: () => ({
+    devtool: process.env.VUE_APP_DEBUG === 'true'
+  }),
   computed: {
     ...mapGetters(["errors"]),
+  },
+  components: {
+    DevelopmentSettings
   },
   watch: {
     errors() {
