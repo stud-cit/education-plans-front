@@ -86,6 +86,15 @@
         small
         depressed
         color="primary"
+        @click="$router.push({name: 'PreviewPlan', params: { id: plan.id, title: plan.title }})"
+      >
+        Переглянути
+      </v-btn>
+      <v-btn
+        small
+        depressed
+        color="primary"
+        class="ml-2"
         @click="openProgramDialog()"
       >
         Верифікувати з освітньою програмою
@@ -95,7 +104,7 @@
         depressed
         color="primary"
         class="ml-2"
-        v-show="[2, 3, 4].indexOf(authUser.role_id) != -1"
+        v-show="[2, 3, 4, 5].indexOf(authUser.role_id) != -1"
         @click="verification({verification_statuses_id: authUser.role_id, status: true})"
       >
         Верифікувати
@@ -105,7 +114,7 @@
         depressed
         color="error"
         class="ml-2"
-        v-show="[2, 3, 4].indexOf(authUser.role_id) != -1"
+        v-show="[2, 3, 4, 5].indexOf(authUser.role_id) != -1"
         @click="verification({verification_statuses_id: authUser.role_id, status: false})"
       >
         Відхилити верифікацію

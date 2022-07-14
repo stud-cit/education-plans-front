@@ -50,7 +50,7 @@
             <tr></tr>
             <tr class="table-title">
               <td :colspan="fullColspanTitle" align="center">
-                {{plan.title}}
+                НАВЧАЛЬНИЙ ПЛАН
               </td>
             </tr>
             <tr></tr>
