@@ -3,8 +3,6 @@
     <v-data-table
       :headers="headers"
       :items="items"
-      :loading="loader"
-      loading-text="Loading... Please wait"
       class="elevation-1"
       hide-default-footer
     >
@@ -82,7 +80,6 @@ export default {
   components: {EditUserModal, CreateUserModal},
   data() {
     return {
-      loader: false,
       items: [],
       roles: [],
       headers: [
@@ -106,12 +103,9 @@ export default {
   },
   methods: {
     apiUsers() {
-      this.loader = true;
-
       api.get(API.USERS).then((response) => {
         const { data } = response;
         this.items = data.data;
-        this.loader = false;
       });
     },
     apiWorkers() {
@@ -121,7 +115,7 @@ export default {
       });
     },
     async apiGetRoles() {
-      const {data} = await api.get(API.ROLES)
+      const {data} = await api.get(API.ROLES, null, {showLoader: true})
       this.roles = data.data
     },
     closeEdit() {
