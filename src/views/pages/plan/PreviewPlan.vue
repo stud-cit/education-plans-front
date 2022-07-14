@@ -433,7 +433,7 @@
                   (підпис)
                 </td>
                 <td></td>
-                <td colspan="7" class="text-center">(ім'я та прізвище)</td>
+                <td></td>
               </tr>
               <tr :key="'signature_tr_' + signature.id"></tr>
             </template>
@@ -493,13 +493,10 @@
 <script>
 import api from "@/api";
 import {API} from "@/api/constants-api";
-// import * as XLSX from 'xlsx/xlsx.mjs';
-// import { writeFileXLSX as XLSX } from "xlsx";
 import ModularCyclicHeaderTable from '@c/Tables/PreviewTablePlan/ModularCyclicHeaderTable'
 import SemesterHeaderTable from "@c/Tables/PreviewTablePlan/SemesterHeaderTable";
 import {FORM_ORGANIZATIONS, FORM_ORGANIZATIONS_TABLE} from '@/utils/constants'
 import * as XLSX from 'xlsx/xlsx.mjs';
-// import XLSX from 'xlsx'
 import ScheduleEducationalProcessWeeks
   from "@c/Tables/PreviewTablePlan/ScheduleEducationalProcess/ScheduleEducationalProcessWeeks";
 import ScheduleEducationalProcessMonth
@@ -839,7 +836,6 @@ export default {
   }
   table .signature-position.name {
     vertical-align: bottom;
-    border-bottom: 1px solid;
   }
   table tfoot {
     border: 2px solid black;
