@@ -3,8 +3,6 @@
     <v-data-table
       :headers="headers"
       :items="items"
-      :loading="loader"
-      loading-text="Завантаження... Будь ласка зачекайте"
       class="elevation-1"
       hide-default-footer
     >
@@ -31,7 +29,6 @@ export default {
         { text: "Семестрів", value: "semesters", sortable: false },
       ],
       items: [],
-      loader: false,
     };
   },
   created() {
@@ -42,12 +39,10 @@ export default {
       this.apiStudyTerms().then( (response) => {
         const { data } = response;
         this.items = data.data;
-        this.loader = false;
       });
     },
     apiStudyTerms() {
-      this.loader = true;
-      return api.get(API.STUDY_TERMS);
+      return api.get(API.STUDY_TERMS, null, {showLoader: true});
     }
   }
 };
