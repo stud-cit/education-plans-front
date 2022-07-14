@@ -1,7 +1,7 @@
 <template>
   <v-container class="preview-plan" v-if="plan">
     <div class="print">
-      <div class="by-created-pdf">
+      <div class="by-created-pdf" v-if="statusPlanSuccess === plan.status">
         {{byCreatedPDF}}
       </div>
       <table ref="exportableTitle"
@@ -504,7 +504,7 @@ import {API} from "@/api/constants-api";
 // import { writeFileXLSX as XLSX } from "xlsx";
 import ModularCyclicHeaderTable from '@c/Tables/PreviewTablePlan/ModularCyclicHeaderTable'
 import SemesterHeaderTable from "@c/Tables/PreviewTablePlan/SemesterHeaderTable";
-import {FORM_ORGANIZATIONS, FORM_ORGANIZATIONS_TABLE} from '@/utils/constants'
+import {FORM_ORGANIZATIONS, FORM_ORGANIZATIONS_TABLE, VERIFICATION_STATUS} from '@/utils/constants'
 import * as XLSX from 'xlsx/xlsx.mjs';
 // import XLSX from 'xlsx'
 import ScheduleEducationalProcessWeeks
@@ -523,6 +523,7 @@ export default {
   },
   data() {
     return {
+      statusPlanSuccess: VERIFICATION_STATUS.success,
       byCreatedPDF: process.env.VUE_APP_BY_CREATED_PDF,
       cycles: [],
       exports: false,

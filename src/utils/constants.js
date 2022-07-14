@@ -13,3 +13,9 @@ export const FORM_ORGANIZATIONS_TABLE = {
   [FORM_ORGANIZATIONS.modular_cyclic]: 2, //modular_cyclic
   [FORM_ORGANIZATIONS.semester]: 1 //semester
 }
+
+export const VERIFICATION_STATUS = {
+  success: 'success',
+  warning: 'warning',
+  error: 'error',
+}
