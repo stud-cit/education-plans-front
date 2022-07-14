@@ -3,8 +3,6 @@
     <v-data-table
       :headers="headers"
       :items="items"
-      :loading="loader"
-      loading-text="Loading... Please wait"
       class="elevation-1"
       hide-default-footer
     >
@@ -25,7 +23,6 @@
                 v-model="item.title"
                 :counter="150"
                 :error-messages="errors"
-                label="Назва"
                 required
                 autofocus
                 @change="edit(item)"
@@ -40,16 +37,12 @@
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <template v-if="item.edit">
-          <v-icon small class="mr-2" color="success" @click="edit(item)">
-            mdi-check
-          </v-icon>
-        </template>
-        <template v-else>
-          <v-icon small class="mr-2" color="primary" @click="item.edit = true">
-            mdi-square-edit-outline
-          </v-icon>
-        </template>
+        <v-icon v-if="item.edit" small class="mr-2" color="success" @click="edit(item)">
+          mdi-check
+        </v-icon>
+        <v-icon v-if="!item.edit" small class="mr-2" color="primary" @click="item.edit = true">
+          mdi-square-edit-outline
+        </v-icon>
 
         <v-icon
           small
@@ -101,7 +94,6 @@ export default {
   components: {CreateSelectiveDisciplineModal},
   data() {
     return {
-      loader: false,
       items: [],
       headers: [
         {text: "№", value: "index", width: '20px', sortable: false},
@@ -116,12 +108,9 @@ export default {
   },
   methods: {
     apiSelectiveDisciplines() {
-      this.loader = true;
-
-      api.get(API.SELECTIVE_DISCIPLINES).then((response) => {
+      api.get(API.SELECTIVE_DISCIPLINES, null, {showLoader: true}).then((response) => {
         const { data } = response;
         this.items = data.data;
-        this.loader = false;
       });
     },
     closeCreate() {
