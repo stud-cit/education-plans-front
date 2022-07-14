@@ -13,7 +13,7 @@ export const API = {
   "FORM_ORGANIZATIONS": version + '/form-organizations',
   "FORM_CONTROLS": version + '/form-controls',
   "INDIVIDUAL_TASKS": version + '/individual-tasks',
-  "PLAN_CREATE": version + '/plans/create',
+  "PLAN_CREATE": version + '/plans/additional-data',
   "PLANS": version + '/plans',
   "DEPARTMENTS": version + '/departments',
   "USERS": version + '/users',
