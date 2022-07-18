@@ -215,17 +215,11 @@ export default {
       })
     },
     itemRowBackground (item) {
-      return item.status
+      return item.status + ' lighten-5'
     }
   },
 }
 </script>
 
 <style>
- .plans-table .error, .plans-table .error .v-icon {
-   color: #fff !important;
- }
-  .plans-table .success, .plans-table .success .v-icon {
-   color: #fff !important;
- }
 </style>
