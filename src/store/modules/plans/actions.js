@@ -43,7 +43,7 @@ export const show = (context, id) => {
   context.commit('SET_LOADING', true);
   return api.edit(API.PLANS, id, {showLoader: true}).then((response) => {
     context.commit('CLEAR_ERRORS_PLAN');
-    context.commit('SET_PLAN', response.data.data);
+    context.commit('SET_PLAN', {...response.data.data, submitLoader: false});
     context.commit('SET_INDEX_COMPONENT');
     context.commit('SET_LOADING', false);
     return  response;
@@ -73,6 +73,6 @@ export const clearErrorsPlan = (context) => {
   context.commit('CLEAR_ERRORS_PLAN');
 }
 
-export const clear = (context) => {
-  context.commit('SET_PLAN', null)
+export const clear = ({ commit, state }) => {
+  commit('SET_PLAN', state.default)
 }

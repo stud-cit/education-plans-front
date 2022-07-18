@@ -3,7 +3,6 @@
     <v-data-table
       :headers="headers"
       :items="items"
-      :loading="loader"
       class="elevation-1"
       hide-default-footer
     >
@@ -26,7 +25,6 @@ export default {
         { text: "Форма організації навчання", value: "title", sortable: false },
       ],
       items: [],
-      loader: false,
     };
   },
   created() {
@@ -37,12 +35,10 @@ export default {
       this.apiFormOrganization().then( (response) => {
         const { data } = response;
         this.items = data.data;
-        this.loader = false;
       });
     },
     apiFormOrganization() {
-      this.loader = true;
-      return api.get(API.FORM_ORGANIZATIONS);
+      return api.get(API.FORM_ORGANIZATIONS, null, {showLoader: true});
     }
   }
 };

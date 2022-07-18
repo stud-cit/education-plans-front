@@ -436,15 +436,15 @@
               <td colspan="7" class="signature-position name">{{signature.name}} {{signature.surname}}</td>
             </tr>
 
-            <tr :key="'signature_3_' + signature.id">
-              <td class="text-center">
-                (підпис)
-              </td>
-              <td></td>
-              <td colspan="7" class="text-center">(ім'я та прізвище)</td>
-            </tr>
-            <tr :key="'signature_tr_' + signature.id"></tr>
-          </template>
+              <tr :key="'signature_3_' + signature.id">
+                <td class="text-center">
+                  (підпис)
+                </td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr :key="'signature_tr_' + signature.id"></tr>
+            </template>
 
 
         </tbody>
@@ -500,13 +500,10 @@
 <script>
 import api from "@/api";
 import {API} from "@/api/constants-api";
-// import * as XLSX from 'xlsx/xlsx.mjs';
-// import { writeFileXLSX as XLSX } from "xlsx";
 import ModularCyclicHeaderTable from '@c/Tables/PreviewTablePlan/ModularCyclicHeaderTable'
 import SemesterHeaderTable from "@c/Tables/PreviewTablePlan/SemesterHeaderTable";
 import {FORM_ORGANIZATIONS, FORM_ORGANIZATIONS_TABLE, VERIFICATION_STATUS} from '@/utils/constants'
 import * as XLSX from 'xlsx/xlsx.mjs';
-// import XLSX from 'xlsx'
 import ScheduleEducationalProcessWeeks
   from "@c/Tables/PreviewTablePlan/ScheduleEducationalProcess/ScheduleEducationalProcessWeeks";
 import ScheduleEducationalProcessMonth
@@ -848,7 +845,6 @@ export default {
   }
   table .signature-position.name {
     vertical-align: bottom;
-    border-bottom: 1px solid;
   }
   table tfoot {
     border: 2px solid black;
@@ -864,6 +860,9 @@ export default {
     text-align: right;
     opacity: .6;
     font-size: 8pt;
+  }
+  .table-plan thead {
+    display: table-row-group;
   }
 </style>
 <style scoped>

@@ -13,23 +13,27 @@ export default {
     },
 
     mutations: {
-        setUserData(state, user) {
-            state.userData = user;
-        }
+      setUserData(state, user) {
+        const newUser = JSON.stringify(user);
+        // if(localStorage.getItem('user') !== newUser) {
+          localStorage.setItem('user', newUser);
+          state.userData = user;
+        // }
+      }
     },
 
     actions: {
-        getUserData({ commit }) {
-            api
-                .get(API.USER)
-                .then(response => {
-                    commit("setUserData", response.data);
-                })
-                .catch(() => {
-                    localStorage.removeItem("user");
-                    localStorage.removeItem("authToken");
-                });
-        },
+      async getUserData({ commit }) {
+        const {data, status} = await api.get(API.USER, false , {showLoader: true})
+          .catch(() => {
+            localStorage.removeItem("user");
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("cabinetToken");
+          });
+        if (status === 200) {
+          commit("setUserData", data);
+        }
+      },
         sendLoginRequest({ commit }, data) {
             commit("setErrors", {}, { root: true });
             return api.post(API.LOGIN, data)
@@ -59,6 +63,7 @@ export default {
                         commit("setUserData", null);
                         localStorage.removeItem("user");
                         localStorage.removeItem("authToken");
+                        localStorage.removeItem("cabinetToken");
                     }
                 })
         },

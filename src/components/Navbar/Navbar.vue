@@ -8,6 +8,9 @@
 
     <v-spacer></v-spacer>
 
+    <v-btn v-if="devtool" text color="warning" :input-value="panelOpen" @click="toggle()">
+      Панель розробника
+    </v-btn>
     <template v-for="item in menu">
       <v-btn :to="{name: item.route}" text :key="item.route" exact>
         {{ item.title }}
@@ -23,15 +26,32 @@
 
 <script>
 import navigation from "@/services/navigation";
-import {mapActions} from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "Navbar",
   data() {
     return {
+      check: 1,
       menu: null,
-      name: process.env.VUE_APP_NAME_APP
+      name: process.env.VUE_APP_NAME_APP,
+      devtool: process.env.VUE_APP_DEBUG === 'true'
     }
+  },
+  watch: {
+    user(v) {
+      if (v !== null) {
+        this.getMenu();
+        return v;
+      }
+      return null;
+    },
+  },
+  computed: {
+    ...mapGetters({
+      user: 'auth/user',
+      panelOpen: 'developmentSettings/panelOpen'
+    }),
   },
   mounted() {
     this.getMenu();
@@ -39,11 +59,19 @@ export default {
   methods: {
     getMenu() {
       const user = JSON.parse(localStorage.getItem('user'));
+
       this.menu = navigation.getItems(user)
     },
-    ...mapActions("auth", ["sendLogoutRequest"]),
+    ...mapActions(
+      {
+        toggle: 'developmentSettings/toggle',
+        sendLogoutRequest: 'auth/sendLogoutRequest'
+      }
+    ),
     logout() {
-      this.sendLogoutRequest().then(() => this.$router.push({name: "Login"}));
+      this.sendLogoutRequest().then(() => {
+        window.location.replace(process.env.VUE_APP_CABINET_APP_URL);
+    });
     }
   },
 }

@@ -87,7 +87,7 @@
           <template
             v-if="getMaxHour(semester, index, plan.hours_weeks_semesters )"
           >
-            {{getMaxHour(semester, index, plan.hours_weeks_semesters ).hour}}
+            {{getMaxHour(semester, index, plan.hours_weeks_semesters ).week}}
           </template>
         </td>
       </template>

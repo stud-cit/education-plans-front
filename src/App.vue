@@ -1,32 +1,24 @@
-<template >
- <div v-if="auth">
+<template>
   <v-app>
-      <router-view  />
+    <router-view/>
+    <DevelopmentSettings v-if="devtool"/>
   </v-app>
-  </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
-// import axios from 'axios';
-import api from "@/api";
-import { API } from '@/api/constants-api';
-
+import {mapGetters} from "vuex";
+import DevelopmentSettings from "@c/Navbar/DevelopmentSettings";
 
 export default {
-    name: 'App',
-    data: () => ({
-      auth: true,
-      // auth: false,
-      cabinet_api: "https://cabinet.sumdu.edu.ua/api/",
-    //
+  name: 'App',
+  data: () => ({
+    devtool: process.env.VUE_APP_DEBUG === 'true'
   }),
   computed: {
     ...mapGetters(["errors"]),
   },
-  created() {
-    // this.authUser();
-    this.authUserForTest();
+  components: {
+    DevelopmentSettings
   },
   watch: {
     errors() {
@@ -34,47 +26,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions("auth", ["getUserData"]),
-    authUserForTest() {
-      if (localStorage.getItem("authToken")) {
-        this.getUserData();
-      }
-    },
-
-    authUser() {
-
-      const userData = this.$store.getters["auth/user"];
-
-      if(!userData) {
-
-        const key = this.$route.query.key;
-
-        if(!key) {
-          window.location.href = '/?key='+process.env.VUE_APP_SERVICE_KEY;
-          // window.location.href = "http://cabinet.sumdu.edu.ua/index/service/"+process.env.VUE_APP_SERVICE_KEY;
-        }
-
-        api.get(API.AUTH, {key: key}).then(({data}) => {
-        console.log(data)
-
-        if(data) {
-
-          this.$store.commit("auth/setUserData", data);
-          this.auth = true;
-        }
-
-        // else {
-
-        // }
-        });
-      }
-    },
     showAlert() {
       if (Object.keys(this.errors).length !== 0) {
         let errors = '';
 
-        for(const messages of Object.values(this.errors)) {
-          // console.log('messages',messages);
+        for (const messages of Object.values(this.errors)) {
           if (typeof messages !== "string") {
             for (const error of messages) {
               errors += `${error} </br>`

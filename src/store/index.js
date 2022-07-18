@@ -5,6 +5,7 @@ Vue.use(Vuex)
 import plans from "./modules/plans";
 import loader from "@/store/modules/loader";
 import auth from './modules/auth'
+import developmentSettings from "@/store/modules/development-settings";
 
 export default new Vuex.Store({
   state: {
@@ -18,11 +19,11 @@ export default new Vuex.Store({
       state.errors = errors;
     }
   },
-  actions: {
-  },
+  actions: {},
   modules: {
-      auth,
-      plans,
-      loader
+    auth,
+    plans,
+    loader,
+    developmentSettings
   }
 })

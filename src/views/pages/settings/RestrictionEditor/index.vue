@@ -1,10 +1,8 @@
 <template>
   <v-container>
     <v-data-table
-      :headers="headers"
+      :headers="computedHeaders"
       :items="items"
-      :loading="loader"
-      loading-text="Loading... Please wait"
       class="elevation-1"
       hide-default-footer
     >
@@ -43,17 +41,14 @@
       </template>
 
       <template v-slot:item.actions="{ item }">
-       <template v-if="item.edit">
-          <v-icon small class="mr-2" color="success" @click="edit(item)">
-            mdi-check
-          </v-icon>
-        </template>
-        <template v-else>
-          <v-icon small class="mr-2" color="primary" @click="item.edit = true">
-            mdi-square-edit-outline
-          </v-icon>
-        </template>
+        <v-icon v-if="item.edit" small class="mr-2" color="success" @click="edit(item)">
+          mdi-check
+        </v-icon>
+        <v-icon v-if="!item.edit" small class="mr-2" color="primary" @click="item.edit = true">
+          mdi-square-edit-outline
+        </v-icon>
         <v-icon
+          v-if="allowedRoles([ROLES.ID.root])"
           small
           class="mr-2"
           color="red"
@@ -64,7 +59,7 @@
       </template>
     </v-data-table>
 
-    <v-tooltip left color="info">
+    <v-tooltip left color="info" v-if="allowedRoles([ROLES.ID.root])">
       <template v-slot:activator="{ on, attrs }">
         <v-fab-transition>
           <v-btn
@@ -90,13 +85,15 @@
 <script>
 import api from "@/api";
 import { API } from "@/api/constants-api";
+import RolesMixin from "@/mixins/RolesMixin";
+import {ROLES} from "@/utils/constants";
 
 export default {
   name: 'RestrictionEditor',
 
   data() {
     return {
-      loader: false,
+      ROLES,
       max3digits: v => v.length <= 3 || 'Максимум 3 цифри!',
       items: [],
       headers: [
@@ -104,10 +101,18 @@ export default {
         { text: "Ключ", value: "key", sortable: false },
         { text: "Заголовок", value: "title", sortable: false },
         { text: "Значення", value: "value", sortable: false, width: '100px' },
-        { text: "Дії", value: "actions", sortable: false },
+        { text: "Дії", value: "actions", sortable: false, width: '100px'},
       ],
     };
   },
+  computed: {
+    computedHeaders() {
+      return this.headers.filter((item) => {
+        return this.exceptRoles([ROLES.ID.root]) ? item.value !== 'key' : item
+      })
+    }
+  },
+  mixins: [RolesMixin],
   created() {
     this.getSettings();
   },
@@ -116,12 +121,10 @@ export default {
       this.apiSettings().then((response) => {
         const { data } = response;
         this.items = data.data;
-        this.loader = false;
       });
     },
     apiSettings() {
-      this.loader = true;
-      return api.get(API.SETTINGS);
+      return api.get(API.SETTINGS, null, {showLoader: true});
     },
     save(id, value) {
       const options = { value: value };

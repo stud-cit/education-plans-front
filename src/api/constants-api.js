@@ -13,7 +13,7 @@ export const API = {
   "FORM_ORGANIZATIONS": version + '/form-organizations',
   "FORM_CONTROLS": version + '/form-controls',
   "INDIVIDUAL_TASKS": version + '/individual-tasks',
-  "PLAN_CREATE": version + '/plans/create',
+  "PLAN_CREATE": version + '/plans/additional-data',
   "PLANS": version + '/plans',
   "DEPARTMENTS": version + '/departments',
   "USERS": version + '/users',
@@ -34,7 +34,8 @@ export const API = {
   "SIGNATURES": version + '/signatures',
   "NOTES": version + '/notes',
   "LIST_CYCLES": version + '/list-cycles',
-  "PROGRAMS": version + '/programs'
+  "PROGRAMS": version + '/programs',
+  "ERR": version + '/err'
 };
 
 export const ALLOWED_REQUEST_PARAMETERS = {

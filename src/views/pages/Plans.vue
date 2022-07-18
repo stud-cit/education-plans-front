@@ -8,7 +8,7 @@
                  @preview="apiPreviewPlan"
                  @delete="apiDeletePlan"
     />
-    <v-tooltip left color="info">
+    <v-tooltip left color="info" v-if="allowedRoles([ROLES.ID.admin, ROLES.ID.root])">
       <template v-slot:activator="{ on, attrs }">
         <v-fab-transition>
           <v-btn
@@ -32,13 +32,19 @@
 </template>
 <script>
 import PlansTable from "@c/Tables/PlansTable";
+import RolesMixin from "@/mixins/RolesMixin";
+import {ROLES} from "@/utils/constants";
 
 export default {
   name: 'Plans',
   components: {PlansTable},
   data() {
-    return {}
+    return {
+      ROLES,
+    }
   },
+
+  mixins: [RolesMixin],
   computed: {
     items() {
       return this.$store.getters["plans/items"];
@@ -67,6 +73,7 @@ export default {
     },
 
     apiEditPlan(id, title) {
+      this.$store.dispatch('plans/clear');
       this.$router.push({name: 'EditPlan', params: { id, title }});
     },
 
@@ -79,6 +86,7 @@ export default {
         title: `Ви хочете видалити план ?`,
         text: `${title}`,
         showDenyButton: true,
+        focusDeny: true,
         confirmButtonText: 'Так',
         denyButtonText: `Ні`,
       }).then((result) => {
