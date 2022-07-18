@@ -381,7 +381,7 @@
                 class="border-table no-print"
                 :key="'semester_noprint_' + semester"
               ></td>
-              <td class="border-table" v-for="td in plan.count_exams" :key="td">{{td}}</td>
+              <td class="border-table" v-for="(td, index) in plan.count_exams" :key="'count_exams_' + index">{{td}}</td>
               <td class="border-table"></td>
               <td class="border-table"></td>
             </tr>
@@ -393,7 +393,7 @@
                 class="border-table no-print"
                 :key="'semester_noprint_' + semester"
               ></td>
-              <td class="border-table" v-for="td in plan.count_tests" :key="td">{{td}}</td>
+              <td class="border-table" v-for="(td, index) in plan.count_tests" :key="'count_tests_' + index">{{td}}</td>
               <td class="border-table"></td>
               <td class="border-table"></td>
             </tr>
@@ -405,7 +405,7 @@
                 class="border-table no-print"
                 :key="'semester_noprint_' + semester"
               ></td>
-              <td class="border-table" v-for="td in plan.count_coursework" :key="td">{{td}}</td>
+              <td class="border-table" v-for="(td, index) in plan.count_coursework" :key="'count_coursework_' + index">{{td}}</td>
               <td class="border-table"></td>
               <td class="border-table"></td>
             </tr>
