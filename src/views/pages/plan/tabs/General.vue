@@ -121,7 +121,7 @@
           <validation-provider
             v-slot="{ errors }"
             name="Факультет"
-            rules="required"
+            rules=""
           >
             <v-autocomplete
               v-model="plan.faculty_id"
@@ -412,7 +412,12 @@ export default {
   },
   watch: {
     'plan.faculty_id'(v) {
-      v !== null ? this.apiGetDepartments(v) : this.departments = [];
+      if (v !== null) {
+        this.apiGetDepartments(v)
+      } else {
+        this.plan.department_id = null;
+        this.departments = [];
+      }
     },
     'plan.study_term'(v) {
       if (v !== null) {
