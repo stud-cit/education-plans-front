@@ -163,7 +163,16 @@ export default {
         denyButtonText: `Ні`,
       }).then((result) => {
         if (result.isConfirmed) {
-          return api.destroy(API.SETTINGS + id);
+          return api.destroy(API.SETTINGS, id).then( (response) => {
+            const { message } = response.data;
+            this.$swal.fire({
+              position: "center",
+              icon: "success",
+              title: message,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }).then(() => this.getSettings());
         }
       })
     },
