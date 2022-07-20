@@ -11,7 +11,8 @@ export default {
 
   getters: {
     panelOpen: state => state.panelOpen,
-    roles: state => state.roles
+    roles: state => state.roles,
+    role: (state) => (id) => state.roles.find((item) => item.id === id)
   },
 
   mutations: {
@@ -43,6 +44,6 @@ export default {
           commit('setRoles', data.data)
         });
       }
-    }
+    },
   }
 };
