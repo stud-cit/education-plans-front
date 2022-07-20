@@ -7,7 +7,7 @@
     <v-toolbar-title class="ml-2">{{ $route.meta.header }}</v-toolbar-title>
 
     <v-spacer></v-spacer>
-    <v-toolbar-item v-if="devtool" class="ml-2 warning--text">{{ $store.getters["developmentSettings/role"](user.role_id).label }}</v-toolbar-item>
+    <span v-if="devtool" class="ml-2 warning--text">{{ $store.getters["developmentSettings/role"](user.role_id).label }}</span>
     <v-spacer v-if="devtool"></v-spacer>
 
     <v-btn v-if="devtool" text color="warning" :input-value="panelOpen" @click="toggle()">
