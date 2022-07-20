@@ -129,6 +129,7 @@ export default {
       searchTitle: '',
       headers: [
         {text: '№', value: 'index', sortable: false},
+        {text: 'Тип', value: 'is_template', sortable: false},
         {text: 'Назва', value: 'title'},
         {text: 'Факультет', value: 'faculty', sortable: false},
         {text: 'Кафедра', value: 'department', sortable: false},
@@ -162,7 +163,6 @@ export default {
       get: function () {
         return this.$store.state.plans.options
       },
-      // сеттер:
       set: function (newValue) {
         this.$store.dispatch('plans/setOptions', newValue)
         this.update()
