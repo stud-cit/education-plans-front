@@ -273,7 +273,7 @@
             ></v-autocomplete>
           </validation-provider>
         </v-col>
-        <v-col cols="12" lg="6" class="py-0">
+        <v-col cols="12" lg="6" class="py-0" v-if="allowedRoles([ROLES.ID.admin, ROLES.ID.root])">
           <v-checkbox
             v-model="plan.published"
             label="Відкрити спільний доступ"
@@ -371,12 +371,14 @@
 <script>
 import api from "@/api";
 import {API} from "@/api/constants-api";
-import { FORM_ORGANIZATIONS_TABLE } from "@/utils/constants"
+import { FORM_ORGANIZATIONS_TABLE, ROLES } from "@/utils/constants"
+import RolesMixin from "@/mixins/RolesMixin";
 
 export default {
   name: "General",
   data() {
     return {
+      ROLES,
       submitLoading: false,
       faculties: [],
       departments: [],
@@ -410,6 +412,7 @@ export default {
   mounted() {
     this.apiGetFields();
   },
+  mixins: [RolesMixin],
   watch: {
     'plan.faculty_id'(v) {
       if (v !== null) {
