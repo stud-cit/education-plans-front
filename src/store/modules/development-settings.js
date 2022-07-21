@@ -12,7 +12,7 @@ export default {
   getters: {
     panelOpen: state => state.panelOpen,
     roles: state => state.roles,
-    role: (state) => (id) => {if (id) return state.roles.find((item) => item.id === id)}
+    role: (state) => (id) => {if (id !== null && state.roles !== null) return state.roles.find((item) => item.id === id)}
   },
 
   mutations: {
