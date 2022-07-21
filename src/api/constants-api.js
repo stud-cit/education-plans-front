@@ -26,6 +26,7 @@ export const API = {
   "SUBJECTS": version + '/subjects',
   "PLAN_VERIFICATION": version + '/plans/verification',
   "PLAN_VERIFICATION_OP": version + '/plans/verification-op',
+  "PLAN_FILTERS": version + '/plans/filters',
   "VERIFICATIONS": version + '/verifications',
   "SPECIALIZATIONS": version + '/specializations',
   "SPECIALITIES": version + '/specialities',
@@ -46,6 +47,7 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     sortBy: 'sort_by',
     sortDesc: 'sort_desc',
     faculty: 'faculty',
-    department: 'department'
+    department: 'department',
+    divisionWithStatus: 'divisionWithStatus',
   }
 };
