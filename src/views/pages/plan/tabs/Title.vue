@@ -139,11 +139,20 @@
               Семестр
             </td>
           </tr>
-          <tr v-for="i in 4" :key="i">
-            <td>{{i}}</td>
-            <td></td>
-            <td></td>
-          </tr>
+          <template v-if="plan.exams_table.length">
+            <tr v-for="(item, index) in plan.exams_table" :key="'subject_' + index">
+              <td>{{ ++index }}</td>
+              <td>{{ item.title }}</td>
+              <td>{{ item.semester }}</td>
+            </tr>
+          </template>
+          <template v-else>
+            <tr v-for="i in Math.ceil(plan.number_semesters / 2)" :key="i">
+              <td>{{i}}</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </template>
         </table>
       </v-col>
     </v-row>
@@ -162,6 +171,7 @@
 <script>
 import api from '@/api';
 import { API } from '@/api/constants-api';
+import {mapGetters} from "vuex";
 
 export default {
   name: "Title",
@@ -190,6 +200,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      plan: "plans/plan"
+    })
   },
   mounted() {
     this.getRules();

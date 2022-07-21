@@ -181,8 +181,12 @@
             <td></td>
           </tr>
 
-          <tr class="subtable" v-for="item in 3" :key="'test_' + item">
-            <td colspan="1" class="border-table"></td>
+          <tr class="subtable"
+            v-for="(item, index) in Math.max(plan.exams_table.length, Math.ceil(plan.number_semesters / 2))"
+            :key="'test_' + item"
+          >
+
+            <td colspan="1" class="border-table">{{ index + 1 }}</td>
             <td colspan="2" class="border-table"></td>
             <td colspan="2" class="border-table"></td>
             <td colspan="2" class="border-table"></td>
@@ -194,7 +198,7 @@
             <td></td>
             <td></td>
 
-            <td colspan="1" class="border-table"></td>
+            <td colspan="1" class="border-table">{{ index + 1 }}</td>
             <td colspan="5" class="border-table"></td>
             <td colspan="4" class="border-table"></td>
             <td colspan="3" class="border-table"></td>
@@ -203,9 +207,20 @@
             <td></td>
             <td></td>
 
-            <td colspan="1" class="border-table"></td>
-            <td colspan="8" class="border-table"></td>
-            <td colspan="3" class="border-table"></td>
+            <template v-if="plan.exams_table.length">
+              <td colspan="1" class="border-table">{{ plan.exams_table[index] ? index + 1 : '' }}</td>
+              <td colspan="8" class="border-table">
+                {{ plan.exams_table[index] ? plan.exams_table[index].title : '' }}
+              </td>
+              <td colspan="3" class="border-table">
+                {{ plan.exams_table[index] ? plan.exams_table[index].semester : '' }}
+              </td>
+            </template>
+            <template v-else>
+              <td colspan="1" class="border-table"></td>
+              <td colspan="8" class="border-table"></td>
+              <td colspan="3" class="border-table"></td>
+            </template>
           </tr>
         </tbody>
       </table>
