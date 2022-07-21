@@ -107,6 +107,7 @@
 
     <template v-slot:item.actions="{ item }">
       <v-icon
+        v-if="item.actions.preview"
         small
         class="mr-1"
         color="primary"
@@ -115,6 +116,7 @@
         mdi-eye-outline
       </v-icon>
       <v-icon
+          v-if="item.actions.copy"
           small
           class="mr-1"
           color="primary"
@@ -123,6 +125,7 @@
         mdi-content-copy
       </v-icon>
       <v-icon
+          v-if="item.actions.edit"
           small
           class="mr-1"
           color="primary"
@@ -131,6 +134,7 @@
         mdi-pencil-outline
       </v-icon>
       <v-icon
+          v-if="item.actions.delete"
           small
           color="red"
           @click="$emit('delete', item.id, item.title)"
