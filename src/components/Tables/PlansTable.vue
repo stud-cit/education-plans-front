@@ -51,25 +51,51 @@
         </v-col>
       </v-row>
 
-      <v-row v-show="filterToggle" class="px-4">
-        <v-col cols="12" lg="6">
+      <v-row v-show="filterToggle" class="px-4 pb-4">
+        <v-col cols="12" lg="6" v-if="exceptRoles([ROLES.ID.department])">
           <v-autocomplete
             v-model="faculty"
             :items="faculties"
             item-text="name"
             item-value="id"
             label="Факультет"
+            hide-details
+            :readonly="!exceptRoles([ROLES.ID.department, ROLES.ID.faculty_institute])"
           ></v-autocomplete>
         </v-col>
-        <v-col cols="12" lg="6">
+        <v-col cols="12" lg="6" v-if="exceptRoles([ROLES.ID.department])">
           <v-autocomplete
             v-model="department"
             :items="departments"
             item-text="name"
             item-value="id"
             label="Кафедра"
+            hide-details
             :loading="departmentsLoading"
+            :readonly="!exceptRoles([ROLES.ID.department])"
           ></v-autocomplete>
+        </v-col>
+        <v-col cols="12" lg="6">
+          <v-autocomplete
+            v-model="division"
+            :items="divisions"
+            item-text="title"
+            item-value="id"
+            hide-details
+            label="Представник відділу"
+          ></v-autocomplete>
+        </v-col>
+        <v-col cols="12" lg="6">
+          <v-select
+            v-model="verificationDivisionStatus"
+            :items="verificationsDivisionsStatus"
+            :disabled="division === null"
+            item-text="title"
+            item-value="id"
+            select
+            hide-details
+            label="Статус верифікації"
+          ></v-select>
         </v-col>
       </v-row>
 
@@ -120,15 +146,20 @@
 <script>
 import api from "@/api";
 import {API} from "@/api/constants-api";
+import RolesMixin from "@/mixins/RolesMixin";
+import {ROLES} from "@/utils/constants";
+import {mapGetters} from "vuex";
 
 export default {
   name: "PlansTable",
   data() {
     return {
+      ROLES,
       filterToggle: false,
       searchTitle: '',
       headers: [
         {text: '№', value: 'index', sortable: false},
+        {text: 'Id', value: 'id', sortable: false},
         {text: 'Тип', value: 'is_template', sortable: false},
         {text: 'Назва', value: 'title'},
         {text: 'Факультет', value: 'faculty', sortable: false},
@@ -141,7 +172,11 @@ export default {
       faculties: [],
       department: null,
       departments: [],
-      departmentsLoading: false
+      departmentsLoading: false,
+      division: null,
+      divisions: [],
+      verificationDivisionStatus: 1,
+      verificationsDivisionsStatus: [],
     }
   },
   props: {
@@ -156,6 +191,9 @@ export default {
     },
   },
   computed: {
+    ...mapGetters({
+      user: 'auth/user'
+    }),
     loading() {
       return this.$store.state.plans.loading
     },
@@ -169,13 +207,30 @@ export default {
       }
     }
   },
+  mixins: [RolesMixin],
   watch: {
     faculty(v) {
       v !== null ? this.apiGetDepartments(v) : this.departments = [];
     },
+    division(v) {
+      if (v === null) {
+        this.options.divisionWithStatus = null
+      }
+    },
+    faculties(v) {
+      if (v.length === 1 && this.allowedRoles([ROLES.ID.faculty_institute, ROLES.ID.department])) {
+        this.faculty = v[0].id;
+      }
+    },
+    departments(v) {
+      if (v.length && this.allowedRoles([ROLES.ID.department])) {
+        const department = v.find((i) => i.id === this.user.department_id)
+        this.department = department ? department.id : null;
+      }
+    }
   },
   mounted() {
-    this.apiGetFaculties();
+    this.apiGetDivisions();
   },
   methods: {
     update() {
@@ -183,8 +238,15 @@ export default {
     },
     search() {
       this.options.searchTitle = this.searchTitle;
-      this.options.faculty = this.faculty;
-      this.options.department = this.department;
+
+      if (this.exceptRoles([ROLES.ID.department])) {
+        this.options.faculty = this.faculty;
+        this.options.department = this.department;
+      }
+
+      if (this.division !== null) {
+        this.options.divisionWithStatus = [this.division, this.verificationDivisionStatus];
+      }
       this.resetPage();
     },
     resetPage() {
@@ -197,13 +259,25 @@ export default {
     },
     clear() {
       this.searchTitle = this.options.searchTitle = '';
-      this.faculty = this.options.faculty = null;
-      this.department = this.options.department = null;
+
+      if (this.exceptRoles([ROLES.ID.department])) {
+        this.department = null;
+      }
+
+      if (this.exceptRoles([ROLES.ID.faculty_institute,ROLES.ID.department])) {
+        this.faculty = null;
+      }
+
+      this.options.faculty = null;
+      this.options.department = null;
+      this.division = this.options.divisionWithStatus = null;
       this.resetPage();
     },
-    apiGetFaculties() {
-      api.get(API.FACULTIES).then(({data}) => {
-        this.faculties = data.data
+    apiGetDivisions() {
+      api.get(API.PLAN_FILTERS).then(({data}) => {
+        this.divisions = data.divisions
+        this.verificationsDivisionsStatus = data.verificationsStatus
+        this.faculties = data.faculties
       })
     },
     apiGetDepartments(id) {
