@@ -49,7 +49,7 @@
                     :loading="programsLoading"
                     v-model="plan.program_op_id"
                     :error-messages="errors"
-                    item-text="education_program_name"
+                    :item-text="getItemText"
                     item-value="program_id"
                     label="Освітня програма"
                     required
@@ -241,6 +241,9 @@ export default {
   },
 
   methods: {
+    getItemText(item) {
+      return `${item.education_program_name}, ${item.year}, ${item.educational_degree}`;
+    },
     verificationOP() {
       this.verificationOPLoading = true;
       api.patch(API.PLAN_VERIFICATION_OP, this.$route.params.id, {
