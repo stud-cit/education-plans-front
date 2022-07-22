@@ -26,3 +26,11 @@ export const errorsPlan = (state) => {
   return state.errorsPlan
 }
 
+export const id = (state) => {
+  return state.plan.id;
+};
+
+export const signatures = (state) => {
+  return state.plan.signatures;
+};
+

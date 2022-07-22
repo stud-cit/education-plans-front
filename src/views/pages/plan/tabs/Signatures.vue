@@ -1,16 +1,12 @@
 <template>
   <div>
-    <validation-observer
-      ref="observer"
-      v-slot="{ invalid }"
-    >
-    <v-form @submit.prevent="save" @keyup.enter="save">
     <v-container>
-      <v-row v-for="(item, index) in signatures" :key="index">
-        <v-col
-          cols="12"
-          md="7"
-        >
+      <validation-observer :ref="'observer' + index" v-slot="{ invalid }" v-for="(item, index) in signatures"
+        :key="'signature_' + index" >
+        <form @submit.prevent="save(item)">
+
+      <v-row>
+        <v-col cols="12" md="2">
           <validation-provider
             v-slot="{ errors }"
             name="Посада"
@@ -29,7 +25,26 @@
           </validation-provider>
         </v-col>
 
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="5">
+          <validation-provider
+            v-slot="{ errors }"
+            name="Посада"
+            rules="required"
+          >
+            <v-text-field
+              v-model="item.manual_position"
+              :items="positions"
+              :error-messages="errors"
+              label="Посада"
+              data-vv-name="Посада"
+              item-text="manual_position"
+              item-value="manual_position"
+              required
+            ></v-text-field>
+          </validation-provider>
+        </v-col>
+
+        <v-col cols="12" md="3">
           <validation-provider
             v-slot="{ errors }"
             name="Посадова особа"
@@ -49,32 +64,75 @@
           </validation-provider>
         </v-col>
 
-        <v-col cols="12" md="1">
+        <v-col cols="12" md="2">
           <div class="text-center pt-3">
-            <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                v-on="on"
-                outlined
-                fab
-                small
-                color="red"
-                @click="remove(index, item)"
-              >
-                <v-icon aria-hidden="false">
-                  mdi-trash-can-outline
-                </v-icon>
-              </v-btn>
-            </template>
-            <span>Видалити</span>
-          </v-tooltip>
-          </div>
+            <v-tooltip bottom v-if="item.id">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  class="mr-3"
+                  v-bind="attrs"
+                  v-on="on"
+                  outlined
+                  fab
+                  small
+                  color="blue"
+                  @click="edit(index, item)"
+                >
+                  <v-icon aria-hidden="false">
+                    mdi-pencil
+                  </v-icon>
+                </v-btn>
+              </template>
+              <span>Редагувати</span>
+            </v-tooltip>
 
+            <v-tooltip bottom v-if="item.id === null">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  class="mr-3"
+                  v-bind="attrs"
+                  v-on="on"
+                  outlined
+                  fab
+                  small
+                  color="blue"
+                  :disabled="invalid"
+                  type="submit"
+                >
+                  <v-icon aria-hidden="false">
+                    mdi-content-save
+                  </v-icon>
+                </v-btn>
+              </template>
+              <span>Зберегти</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  v-bind="attrs"
+                  v-on="on"
+                  outlined
+                  fab
+                  small
+                  color="red"
+                  @click="remove(index, item)"
+                >
+                  <v-icon aria-hidden="false">
+                    mdi-trash-can-outline
+                  </v-icon>
+                </v-btn>
+              </template>
+              <span>Видалити</span>
+            </v-tooltip>
+          </div>
         </v-col>
       </v-row>
+      </form>
+    </validation-observer>
     </v-container>
-    <div class="text-center mt-4">
+
+
+<div class="text-center mt-4">
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -91,35 +149,18 @@
       </v-tooltip>
     </div>
 
-    <v-btn
-      class="mt-4"
-      color="primary"
-      :disabled="invalid"
-      type="submit"
-    >
-      Зберегти
-    </v-btn>
-  </v-form>
-  </validation-observer>
-
   </div>
 </template>
 <script>
 import api from "@/api";
 import { API } from "@/api/constants-api";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "Signatures",
-  props: {
-    data: {
-      type: Object,
-      required: true
-    },
-  },
   data() {
     return {
-      signatures: [],
+      // signatures: [],
       positions: [],
       positionLoader: true,
       workers: [],
@@ -128,19 +169,24 @@ export default {
   },
   computed: {
      ...mapGetters({
-      plan: "plans/plan",
+      plan_id: 'plans/id',
+      signatures: 'plans/signatures'
     })
   },
   mounted() {
-    this.getSignatures();
+    //this.getSignatures();
     this.getPositions();
     this.apiWorkers();
   },
   methods: {
+    ...mapActions({
+      addItem: 'plans/addSignature',
+    }),
     getPositions() {
       this.apiPositions().then( (response)  => {
         const { data } = response;
         this.positions = data.data;
+         this.positionLoader = false;
       });
     },
     apiPositions() {
@@ -153,22 +199,14 @@ export default {
         this.workerLoader = false;
       });
     },
-    addItem() {
-      const plan_id = this.data.id;
-      const item = { id: null, plan_id, position_id: null, asu_id: null };
-      this.signatures.push(item);
-    },
-    save() {
-       this.$refs.observer.validate().then((response) => {
-         if (response) {
-          api.post(API.SIGNATURES, this.signatures).then( (response) => {
-            console.log(response.data)
-            const { message, data } = response.data;
-            console.log(data);
+    save(item) {
+      this.$refs['observer' + item.index][0].validate().then((response) => {
+        if (response) {
+          this.$store.dispatch('plans/saveSignature', item).then( () => {
             this.$swal.fire({
               position: "center",
               icon: "success",
-              title: message,
+              title: 'Дані збережено',
               showConfirmButton: false,
               timer: 1500,
             });
@@ -186,7 +224,8 @@ export default {
         if (result.isConfirmed) {
           const { id } = item;
           if (id) {
-            api.destroy(API.SIGNATURES,id).then( (response) => {
+            // api.destroy(API.SIGNATURES,id).then( (response) => {
+            this.$store.dispatch('plans/removeSignature', { ...item, index}).then( (response) => {
               const { message } = response.data;
               this.$swal.fire({
                 position: "center",
@@ -196,24 +235,22 @@ export default {
                 timer: 1500,
               });
             });
+          } else {
+            this.signatures.splice(index, 1);
           }
+
         }
-        this.signatures.splice(index, 1);
+
       })
 
     },
-    getSignatures() {
-      if (this.plan.signatures) {
-        this.signatures = this.plan.signatures;
-      }
-    }
+    // getSignatures() {
+    //   if (this.plan.signatures) {
+    //     this.signatures = this.plan.signatures;
+    //   }
+    // }
   }
 }
 </script>
 <style lang="css" scoped>
-.content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
 </style>

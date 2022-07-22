@@ -76,3 +76,21 @@ export const clearErrorsPlan = (context) => {
 export const clear = ({ commit, state }) => {
   commit('SET_PLAN', state.default)
 }
+
+export const addSignature = ({ commit }) => {
+  commit('ADD_SIGNATURE');
+};
+
+export const saveSignature = (context, payload) => {
+  return api.post(API.SIGNATURES, payload).then((response) => {
+    context.commit('SAVE_SIGNATURE', { ...payload, ...response.data });
+    return response;
+  });
+};
+
+export const removeSignature = (context, payload) => {
+  return api.destroy(API.SIGNATURES, payload.id).then( (response) => {
+    context.commit('REMOVE_SIGNATURE',  payload);
+    return response;
+  });
+};

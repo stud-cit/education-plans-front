@@ -16,6 +16,7 @@ const planDefault = {
   published: false,
   verification: [],
   submitLoader: false,
+  signatures: []
 }
 
 export default {

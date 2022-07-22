@@ -29,3 +29,21 @@ export const CLEAR_ERRORS_PLAN = (state) => {
 export const SET_INDEX_COMPONENT = (state) => {
   state.indexComponent += 1;
 }
+
+export const ADD_SIGNATURE = (state) => {
+  const item = { index: state.plan.signatures.length, id: null, plan_id: state.plan.id, position_id: null, manual_position: '', asu_id: null };
+  state.plan.signatures.push(item);
+};
+
+export const SAVE_SIGNATURE = (state, payload) => {
+  state.plan.signatures.map((item) => {
+    if (item.index === payload.index) {
+      item.id = payload.id;
+    }
+    return item;
+  });
+};
+
+export const REMOVE_SIGNATURE = (state, payload) => {
+  state.plan.signatures.splice(payload.index, 1);
+};

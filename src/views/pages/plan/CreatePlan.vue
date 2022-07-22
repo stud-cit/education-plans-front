@@ -177,9 +177,7 @@
         ></Title>
       </v-tab-item>
       <v-tab-item>
-        <Signatures
-          :data="plan"
-        ></Signatures>
+        <Signatures/>
       </v-tab-item>
     </v-tabs-items>
   </v-container>
