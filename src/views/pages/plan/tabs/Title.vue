@@ -68,35 +68,7 @@
     <br>
     <v-row>
       <v-col>
-        <table>
-          <tr>
-            <th colspan="5">ІІІ. ПРАКТИЧНА ПІДГОТОВКА</th>
-          </tr>
-          <tr>
-            <td>
-              №
-            </td>
-            <td>
-              Назва
-            </td>
-            <td>
-              Семестр
-            </td>
-            <td>
-              Число тижнів
-            </td>
-            <td>
-              Число кредитів
-            </td>
-          </tr>
-          <tr v-for="i in 2" :key="i">
-            <td>{{ i }}</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-        </table>
+        <PracticalTraining  ref="practical_training" :items="plan.practical_training"/>
       </v-col>
       <v-col>
         <table>
@@ -123,13 +95,6 @@
               <td>{{ item.semester }}</td>
             </tr>
           </template>
-          <template v-else>
-            <tr v-for="i in Math.ceil(plan.number_semesters / 2)" :key="i">
-              <td>{{i}}</td>
-              <td></td>
-              <td></td>
-            </tr>
-          </template>
         </table>
       </v-col>
     </v-row>
@@ -150,10 +115,11 @@ import api from '@/api';
 import { API } from '@/api/constants-api';
 import {mapGetters} from "vuex";
 import SummaryDataBudgetTime from "@c/Tables/TitleTablePlan/SummaryDataBudgetTime";
+import PracticalTraining from "@c/Tables/TitleTablePlan/PracticalTraining";
 
 export default {
   name: "Title",
-  components: {SummaryDataBudgetTime},
+  components: {PracticalTraining, SummaryDataBudgetTime},
   props: {
     data: {
       type: Object,
@@ -190,13 +156,13 @@ export default {
   methods: {
     save() {
       this.$refs.observer.validate().then((response) => {
-        console.log('res', JSON.stringify(this.$refs.summary_data_budget_time.result))
         if (response) {
           const data = {
             ...this.data,
             'hours_weeks_semesters': JSON.stringify(this.data.hours_weeks_semesters),
             'schedule_education_process' : JSON.stringify(this.year),
             'summary_data_budget_time' : JSON.stringify(this.$refs.summary_data_budget_time.result),
+            'practical_training' : JSON.stringify(this.$refs.practical_training.result),
           };
           this.$emit('submit', data);
         }
