@@ -115,10 +115,11 @@ const routes = [
           accessIsAllowed: allRoles(),
           header: "Попередній перегляд плану",
           breadCrumb() {
-            const paramToPageB = this.$route.params.title;
+            const params = this.$route.params
             return [
               { text: 'Робота з планами', to: { name: 'ListPlans' } },
-              { text: paramToPageB}
+              { text: params.title, to: { name: 'EditPlan', params } },
+              { text: 'Попередній перегляд'}
             ];
           }
         },
