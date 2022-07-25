@@ -60,34 +60,11 @@
       Ви ввели недопустиме значення, зверніть увагу на розкладку клавіатури допускається тільки українська!
     </v-alert>
 
-    <table>
-      <tr>
-        <th colspan="8">ІІ. ЗВЕДЕНІ ДАНІ ПРО БЮДЖЕТ ЧАСУ, тижні</th>
-      </tr>
-      <tr>
-        <td rowspan="2">Курс</td>
-        <td rowspan="2">Теоретична підготовка</td>
-        <td rowspan="2">Екзаменаційна сесія</td>
-        <td rowspan="2">Практична підготовка</td>
-        <td colspan="2">Атестація</td>
-        <td rowspan="2">Канікули</td>
-        <td rowspan="2">Усього</td>
-      </tr>
-      <tr>
-        <td>Кваліфікаційна робота бакалавра</td>
-        <td>Кваліфікаційні (атестаційні) іспити</td>
-      </tr>
-      <tr v-for="i in data.study_term.course" :key="i">
-        <td>{{ i }}</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-    </table>
+    <SummaryDataBudgetTime
+      :items="data.summary_data_budget_time"
+      :course="data.study_term.course"
+      ref="summary_data_budget_time"
+    />
     <br>
     <v-row>
       <v-col>
@@ -172,9 +149,11 @@
 import api from '@/api';
 import { API } from '@/api/constants-api';
 import {mapGetters} from "vuex";
+import SummaryDataBudgetTime from "@c/Tables/TitleTablePlan/SummaryDataBudgetTime";
 
 export default {
   name: "Title",
+  components: {SummaryDataBudgetTime},
   props: {
     data: {
       type: Object,
@@ -211,11 +190,13 @@ export default {
   methods: {
     save() {
       this.$refs.observer.validate().then((response) => {
+        console.log('res', JSON.stringify(this.$refs.summary_data_budget_time.result))
         if (response) {
           const data = {
             ...this.data,
             'hours_weeks_semesters': JSON.stringify(this.data.hours_weeks_semesters),
             'schedule_education_process' : JSON.stringify(this.year),
+            'summary_data_budget_time' : JSON.stringify(this.$refs.summary_data_budget_time.result),
           };
           this.$emit('submit', data);
         }
