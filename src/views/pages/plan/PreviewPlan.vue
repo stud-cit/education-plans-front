@@ -182,32 +182,60 @@
           </tr>
 
           <tr class="subtable"
-            v-for="(item, index) in Math.max(plan.exams_table.length, Math.ceil(plan.number_semesters / 2))"
+            v-for="(item, index) in Math.max(
+              plan.exams_table.length,
+              plan.summary_data_budget_time.length,
+              plan.practical_training.length,
+              Math.ceil(plan.number_semesters / 2)
+            )"
             :key="'test_' + item"
           >
+            <template v-if="plan.summary_data_budget_time[index]">
+              <td colspan="1" class="border-table">{{plan.summary_data_budget_time[index].course}}</td>
+              <td colspan="2" class="border-table">{{plan.summary_data_budget_time[index].theoretical_training}}</td>
+              <td colspan="2" class="border-table">{{plan.summary_data_budget_time[index].exam_session}}</td>
+              <td colspan="2" class="border-table">{{plan.summary_data_budget_time[index].practical_training}}</td>
+              <td colspan="5" class="border-table">{{plan.summary_data_budget_time[index].bachelor_qualifying_work}}</td>
+              <td colspan="4" class="border-table">{{plan.summary_data_budget_time[index].attestation_qualifying_exams}}</td>
+              <td colspan="2" class="border-table">{{plan.summary_data_budget_time[index].vacation}}</td>
+              <td colspan="2" class="border-table">{{plan.summary_data_budget_time[index].all}}</td>
+            </template>
+            <template v-else>
+              <td colspan="1" :class="{'border-table': plan.study_term.course > index }">
+                {{ plan.study_term.course > index ? index + 1 : ''}}
+              </td>
+              <td colspan="2" :class="{'border-table': plan.study_term.course > index}"></td>
+              <td colspan="2" :class="{'border-table': plan.study_term.course > index}"></td>
+              <td colspan="2" :class="{'border-table': plan.study_term.course > index}"></td>
+              <td colspan="5" :class="{'border-table': plan.study_term.course > index}"></td>
+              <td colspan="4" :class="{'border-table': plan.study_term.course > index}"></td>
+              <td colspan="2" :class="{'border-table': plan.study_term.course > index}"></td>
+              <td colspan="2" :class="{'border-table': plan.study_term.course > index}"></td>
+            </template>
 
-            <td colspan="1" class="border-table">{{ index + 1 }}</td>
-            <td colspan="2" class="border-table"></td>
-            <td colspan="2" class="border-table"></td>
-            <td colspan="2" class="border-table"></td>
-            <td colspan="5" class="border-table"></td>
-            <td colspan="4" class="border-table"></td>
-            <td colspan="2" class="border-table"></td>
-            <td colspan="2" class="border-table"></td>
+            <td></td>
+            <td></td>
+            <template v-if="plan.practical_training[index]">
+              <td colspan="1" class="border-table">{{ index + 1 }}</td>
+              <td colspan="5" class="border-table">{{plan.practical_training[index].name}}</td>
+              <td colspan="4" class="border-table">{{plan.practical_training[index].semester}}</td>
+              <td colspan="3" class="border-table">{{plan.practical_training[index].week}}</td>
+              <td colspan="4" class="border-table">{{plan.practical_training[index].credit}}</td>
+            </template>
+            <template v-else>
+              <td colspan="1"></td>
+              <td colspan="5"></td>
+              <td colspan="4"></td>
+              <td colspan="3"></td>
+              <td colspan="4"></td>
+            </template>
+
+
 
             <td></td>
             <td></td>
 
-            <td colspan="1" class="border-table">{{ index + 1 }}</td>
-            <td colspan="5" class="border-table"></td>
-            <td colspan="4" class="border-table"></td>
-            <td colspan="3" class="border-table"></td>
-            <td colspan="4" class="border-table"></td>
-
-            <td></td>
-            <td></td>
-
-            <template v-if="plan.exams_table.length">
+            <template v-if="plan.exams_table[index]">
               <td colspan="1" class="border-table">{{ plan.exams_table[index] ? index + 1 : '' }}</td>
               <td colspan="8" class="border-table">
                 {{ plan.exams_table[index] ? plan.exams_table[index].title : '' }}
@@ -217,9 +245,9 @@
               </td>
             </template>
             <template v-else>
-              <td colspan="1" class="border-table"></td>
-              <td colspan="8" class="border-table"></td>
-              <td colspan="3" class="border-table"></td>
+              <td colspan="1"></td>
+              <td colspan="8"></td>
+              <td colspan="3"></td>
             </template>
           </tr>
         </tbody>
