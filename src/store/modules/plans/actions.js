@@ -89,8 +89,24 @@ export const saveSignature = (context, payload) => {
 };
 
 export const removeSignature = (context, payload) => {
+  if (payload.id === null) {
+    context.commit('REMOVE_SIGNATURE', payload);
+    return new Promise();
+  }
   return api.destroy(API.SIGNATURES, payload.id).then( (response) => {
-    context.commit('REMOVE_SIGNATURE',  payload);
+    context.commit('REMOVE_SIGNATURE', payload);
+    return response;
+  });
+};
+
+export const toggleSignature = (context, payload) => {
+  context.commit('TOGGLE_SIGNATURE', payload);
+};
+
+export const updateSignature = (context, payload) => {
+  return api.patch(API.SIGNATURES, payload.id,  payload).then((response) => {
+    context.commit('TOGGLE_SIGNATURE', payload);
+    context.commit('UPDATE_SIGNATURE', response.data );
     return response;
   });
 };

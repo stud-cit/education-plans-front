@@ -31,7 +31,10 @@ export const SET_INDEX_COMPONENT = (state) => {
 }
 
 export const ADD_SIGNATURE = (state) => {
-  const item = { index: state.plan.signatures.length, id: null, plan_id: state.plan.id, position_id: null, manual_position: '', asu_id: null };
+  const ids = state.plan.signatures.map(function(o) { return o.id; });
+  let index = ids.length ? Math.max.apply(Math, ids) + 1 : 1;
+
+  const item = { id: index, plan_id: state.plan.id, position_id: null, manual_position: '', asu_id: null, edit: null };
   state.plan.signatures.push(item);
 };
 
@@ -46,4 +49,22 @@ export const SAVE_SIGNATURE = (state, payload) => {
 
 export const REMOVE_SIGNATURE = (state, payload) => {
   state.plan.signatures.splice(payload.index, 1);
+};
+
+export const TOGGLE_SIGNATURE = (state, payload) => {
+  state.plan.signatures.map( item => {
+    if (item.id === payload.id) {
+      item.edit = !item.edit;
+    }
+    return item;
+  });
+};
+
+export const UPDATE_SIGNATURE = (state, payload) => {
+  state.plan.signatures.map( item => {
+    if (item.id === payload.id) {
+      item = payload;
+    }
+    return item;
+  });
 };
