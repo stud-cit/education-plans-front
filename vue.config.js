@@ -10,6 +10,14 @@ module.exports = {
   transpileDependencies: [
     'vuetify'
   ],
+  lintOnSave: false,
+
+  chainWebpack: config => {
+    config.performance
+      .maxEntrypointSize(10000000)
+      .maxAssetSize(10000000)
+  },
+
   configureWebpack: {
     resolve: {
       alias: {
