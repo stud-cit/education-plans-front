@@ -163,7 +163,6 @@ export default {
       searchTitle: '',
       headers: [
         {text: '№', value: 'index', sortable: false},
-        {text: 'Id', value: 'id', sortable: false},
         {text: 'Тип', value: 'is_template', sortable: false},
         {text: 'Назва', value: 'title'},
         {text: 'Факультет', value: 'faculty', sortable: false},
