@@ -556,6 +556,11 @@ export default {
             number_semesters: this.numberSemesters,
             hours_weeks_semesters: JSON.stringify(this.objHoursWeeks),
           };
+
+          delete data.schedule_education_process
+          delete data.summary_data_budget_time
+          delete data.practical_training
+
           this.plan.submitLoading = true;
           this.$emit('submit', data)
         }
