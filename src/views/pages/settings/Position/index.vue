@@ -109,7 +109,7 @@ export default {
       headers: [
         { text: '№', value: 'index', sortable: false, width: '20px' },
         { text: 'Посада', value: 'position', sortable: false },
-        { text: 'Погоджено', value: 'agreed', sortable: false },
+        { text: 'Погоджено', value: 'agreed', sortable: false, width: '20px' },
         { text: 'Дії', value: 'actions', width: '80px', sortable: false },
       ],
       items: [],
