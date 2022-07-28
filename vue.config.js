@@ -17,9 +17,6 @@ module.exports = {
       .maxEntrypointSize(10000000)
       .maxAssetSize(10000000)
   },
-  publicPath: process.env.NODE_ENV === 'production'
-    ? ''
-    : '/',
 
   configureWebpack: {
     resolve: {
