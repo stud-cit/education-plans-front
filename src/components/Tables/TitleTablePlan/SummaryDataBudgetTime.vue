@@ -52,7 +52,7 @@ export default {
     }
   },
   mounted() {
-    this.result = !this.items ? this.generatorFields(this.course) : this.items
+    this.result = this.items.length === 0 ? this.generatorFields(this.course) : this.items
   },
   props: ['items', 'course'],
   methods: {
