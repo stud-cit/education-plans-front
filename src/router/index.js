@@ -135,7 +135,7 @@ const routes = [
         name: 'Settings',
         component: Settings,
         meta: {
-          accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
+          accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root, ROLES.ID.faculty_institute],
           header: 'Налаштування',
           breadCrumb: [
             { text: 'Робота з планами', to: { name: 'ListPlans' } },
@@ -149,7 +149,7 @@ const routes = [
         component: SettingUsers,
         meta: {
           requiresAuth: true,
-          accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
+          accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root, ROLES.ID.faculty_institute],
           header: 'Налаштування користувачів',
           breadCrumb: [
             ...BREADCRUMBS.SETTINGS,

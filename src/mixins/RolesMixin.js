@@ -1,12 +1,8 @@
 import {mapGetters} from "vuex";
-
-
 export default {
   components: {},
   data() {
-    return {
-
-    }
+    return {}
   },
   computed: {
     ...mapGetters({
@@ -22,11 +18,9 @@ export default {
     },
   }
 }
-
 function checkRoles(ids, user) {
-  if (user === null || !user.role_id) {
+  if (user === null || user === undefined || !user.role_id) {
     return false;
   }
-
   return ids.includes(user.role_id);
 }

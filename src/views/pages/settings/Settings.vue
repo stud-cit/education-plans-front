@@ -1,37 +1,53 @@
 <template>
   <v-container>
       <div class="settings">
-        <v-card class="d-flex flex-column justify-space-between" v-for="item in items" :key="item.title" elevation="2">
-          <v-card-text>
-            <p class="text-h6 text--primary text-center">{{ item.title }}</p>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn depressed block :to="{ name: item.to }">
-              Налаштувати
-            </v-btn>
-          </v-card-actions>
-        </v-card>
+        <template v-for="item in items">
+          <v-card v-if="item.allowed" class="d-flex flex-column justify-space-between"  :key="item.title" elevation="2">
+            <v-card-text>
+              <p class="text-h6 text--primary text-center">{{ item.title }}</p>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn depressed block :to="{ name: item.to }">
+                Налаштувати
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </template>
       </div>
   </v-container>
 </template>
 <script>
+import RolesMixin from "@/mixins/RolesMixin";
+
 export default {
   name: 'Settings',
   data() {
     return {
-      items: [
-        { title: 'Редактор обмежень', to: 'RestrictionEditor' },
-        { title: 'Термін навчання', to: 'StudyTerm' },
-        { title: 'Форми навчання', to: 'FormStudy' },
-        { title: 'Форма організації навчання', to: 'FormOrganization' },
-        { title: 'Користувачі', to: 'SettingUsers' },
-        { title: 'Вибіркові дисципліни', to: 'SelectiveDisciplines' },
-        { title: 'Посади', to: 'Position' },
-        { title: 'Примітки', to: 'Note' },
-        { title: 'Цикли', to: 'ListCycle' },
-      ],
+      items: [],
+      nameRoutes: [
+        'RestrictionEditor',
+        'StudyTerm',
+        'FormStudy',
+        'FormOrganization',
+        'SettingUsers',
+        'SelectiveDisciplines',
+        'Position',
+        'Note',
+        'ListCycle',
+      ]
     };
   },
+  mixins: [RolesMixin],
+  mounted() {
+    this.items = this.getItems();
+  },
+  methods: {
+    getItems() {
+      return this.$router.getRoutes().filter(item => this.nameRoutes.includes(item.name)).map(item =>{
+        return { title: item.meta.header, to: item.name, allowed: this.allowedRoles(item.meta.accessIsAllowed)}
+      })
+    }
+  }
 };
 </script>
 
