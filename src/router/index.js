@@ -18,10 +18,11 @@ import ListCycle from '@/views/pages/settings/ListCycle';
 import NotFoundPage from '@/views/NotFoundPage';
 import Forbidden from '@/views/Forbidden';
 import Unauthorized from '@/views/Unauthorized';
-import PreviewPlan from "@/views/pages/plan/PreviewPlan";
+import PreviewPlan from '@/views/pages/plan/PreviewPlan';
 import Login from '@/views/pages/LoginLayout';
 import Err from '@/views/Err';
-import {ROLES} from "@/utils/constants";
+import Logs from '@/views/pages/settings/Logs';
+import { ROLES } from '@/utils/constants';
 
 const allRoles = () => Object.values(ROLES.ID);
 // const allRolesExcept = (...exceptRoles) => Object.values(ROLES.ID).filter(role => exceptRoles.indexOf(role) === -1);
@@ -30,8 +31,8 @@ Vue.use(VueRouter);
 const BREADCRUMBS = {
   SETTINGS: [
     { text: 'Робота з планами', to: { name: 'ListPlans' } },
-    { text: 'Налаштування', to: { name: 'Settings'} },
-  ]
+    { text: 'Налаштування', to: { name: 'Settings' } },
+  ],
 };
 
 const routes = [
@@ -39,13 +40,13 @@ const routes = [
     path: '/login',
     name: 'Login',
     meta: { guest: true },
-    component: Login
+    component: Login,
   },
   {
     path: '/err',
     name: 'err',
     meta: { guest: true },
-    component: Err
+    component: Err,
   },
   {
     path: '/',
@@ -59,9 +60,7 @@ const routes = [
           requiresAuth: true,
           header: 'Робота з планами',
           accessIsAllowed: allRoles(),
-          breadCrumb: [
-            { text: 'Робота з планами' }
-          ]
+          breadCrumb: [{ text: 'Робота з планами' }],
         },
       },
     ],
@@ -81,47 +80,47 @@ const routes = [
           breadCrumb: [
             {
               text: 'Робота з планами',
-              to: { name: 'ListPlans' }
+              to: { name: 'ListPlans' },
             },
             {
               text: 'Створення нового плану',
-            }
-          ]
+            },
+          ],
         },
       },
       {
-        path: "edit/:id:title",
-        name: "EditPlan",
+        path: 'edit/:id:title',
+        name: 'EditPlan',
         component: CreatePlan,
         meta: {
           requiresAuth: true,
           accessIsAllowed: allRoles(),
-          header: "Редагування плану",
+          header: 'Редагування плану',
           breadCrumb() {
             const paramToPageB = this.$route.params.title;
             return [
               { text: 'Робота з планами', to: { name: 'ListPlans' } },
-              { text: paramToPageB}
+              { text: paramToPageB },
             ];
-          }
+          },
         },
       },
       {
-        path: "preview/:id:title",
-        name: "PreviewPlan",
+        path: 'preview/:id:title',
+        name: 'PreviewPlan',
         component: PreviewPlan,
         meta: {
           requiresAuth: true,
           accessIsAllowed: allRoles(),
-          header: "Попередній перегляд плану",
+          header: 'Попередній перегляд плану',
           breadCrumb() {
-            const params = this.$route.params
+            const params = this.$route.params;
             return [
               { text: 'Робота з планами', to: { name: 'ListPlans' } },
               { text: params.title, to: { name: 'EditPlan', params } },
-              { text: 'Попередній перегляд'}
+              { text: 'Попередній перегляд' },
             ];
-          }
+          },
         },
       },
     ],
@@ -139,8 +138,8 @@ const routes = [
           header: 'Налаштування',
           breadCrumb: [
             { text: 'Робота з планами', to: { name: 'ListPlans' } },
-            { text: 'Налаштування' }
-          ]
+            { text: 'Налаштування' },
+          ],
         },
       },
       {
@@ -153,8 +152,8 @@ const routes = [
           header: 'Налаштування користувачів',
           breadCrumb: [
             ...BREADCRUMBS.SETTINGS,
-            { text: 'Налаштування користувачів' }
-          ]
+            { text: 'Налаштування користувачів' },
+          ],
         },
       },
       {
@@ -165,10 +164,7 @@ const routes = [
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
           header: 'Форма навчання',
-          breadCrumb: [
-            ...BREADCRUMBS.SETTINGS,
-            { text: 'Форма навчання' }
-          ]
+          breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Форма навчання' }],
         },
       },
       {
@@ -181,8 +177,8 @@ const routes = [
           header: 'Форма організації навчання',
           breadCrumb: [
             ...BREADCRUMBS.SETTINGS,
-            { text: 'Форма організації навчання' }
-          ]
+            { text: 'Форма організації навчання' },
+          ],
         },
       },
       {
@@ -199,8 +195,8 @@ const routes = [
               header: 'Редактор обмежень',
               breadCrumb: [
                 ...BREADCRUMBS.SETTINGS,
-                { text: 'Редактор обмежень' }
-              ]
+                { text: 'Редактор обмежень' },
+              ],
             },
           },
           {
@@ -213,9 +209,12 @@ const routes = [
               header: 'Додавання налаштувань',
               breadCrumb: [
                 ...BREADCRUMBS.SETTINGS,
-                { text: 'Редактор обмежень', to: { name: 'RestrictionEditor'} },
-                { text: 'Додавання налаштувань' }
-              ]
+                {
+                  text: 'Редактор обмежень',
+                  to: { name: 'RestrictionEditor' },
+                },
+                { text: 'Додавання налаштувань' },
+              ],
             },
           },
         ],
@@ -229,10 +228,7 @@ const routes = [
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
           header: 'Термін навчання',
-          breadCrumb: [
-            ...BREADCRUMBS.SETTINGS,
-            { text: 'Термін навчання' }
-          ]
+          breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Термін навчання' }],
         },
       },
       {
@@ -245,8 +241,8 @@ const routes = [
           header: 'Вибіркові дисципліни',
           breadCrumb: [
             ...BREADCRUMBS.SETTINGS,
-            { text: 'Вибіркові дисципліни' }
-          ]
+            { text: 'Вибіркові дисципліни' },
+          ],
         },
       },
       {
@@ -257,10 +253,7 @@ const routes = [
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
           header: 'Посади',
-          breadCrumb: [
-            ...BREADCRUMBS.SETTINGS,
-            { text: 'Посади' }
-          ]
+          breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Посади' }],
         },
       },
       {
@@ -271,10 +264,7 @@ const routes = [
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
           header: 'Примітки',
-          breadCrumb: [
-            ...BREADCRUMBS.SETTINGS,
-            { text: 'Примітки' }
-          ]
+          breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Примітки' }],
         },
       },
       {
@@ -285,10 +275,18 @@ const routes = [
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
           header: 'Цикли',
-          breadCrumb: [
-            ...BREADCRUMBS.SETTINGS,
-            { text: 'Цикли' }
-          ]
+          breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Цикли' }],
+        },
+      },
+      {
+        path: 'logs',
+        name: 'Logs',
+        component: Logs,
+        meta: {
+          requiresAuth: true,
+          accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
+          header: 'Активності',
+          breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Активності' }],
         },
       },
     ],
@@ -313,7 +311,7 @@ const routes = [
     name: 'Unauthorized',
     component: Unauthorized,
     meta: { guest: true },
-  }
+  },
 ];
 
 const router = new VueRouter({
@@ -326,11 +324,11 @@ const getUserRoleId = async () => {
   let userRoleId = store.getters['auth/user'];
 
   // if (userRoleId === null) {
-    await store.dispatch('auth/getUserData');
-    userRoleId = store.getters['auth/user'];
+  await store.dispatch('auth/getUserData');
+  userRoleId = store.getters['auth/user'];
   // }
   return userRoleId.role_id;
-}
+};
 
 // this method on to get cabinet token
 router.beforeEach(async (to, from, next) => {
@@ -341,14 +339,14 @@ router.beforeEach(async (to, from, next) => {
       await getUserRoleId();
       next();
     } else if ('key' in to.query && to.query.key != null) {
-      localStorage.setItem("cabinetToken", to.query.key);
+      localStorage.setItem('cabinetToken', to.query.key);
       await getUserRoleId();
       next();
     } else {
       window.location.replace(
         process.env.VUE_APP_CABINET_APP_URL +
-        process.env.VUE_APP_CABINET_APP_SERVICE +
-        process.env.VUE_APP_CABINET_APP_TOKEN
+          process.env.VUE_APP_CABINET_APP_SERVICE +
+          process.env.VUE_APP_CABINET_APP_TOKEN,
       );
     }
   }
@@ -361,7 +359,6 @@ router.beforeEach(async (to, from, next) => {
   const guest = to.matched.some((record) => record.meta.guest);
 
   if (!guest) {
-
     const accessIsAllowed = to.meta.accessIsAllowed;
     const userRoleId = store.getters['auth/user'].role_id;
 
@@ -369,16 +366,16 @@ router.beforeEach(async (to, from, next) => {
       if (accessIsAllowed.includes(userRoleId)) {
         next();
       } else {
-        next({name: 'Forbidden'});
+        next({ name: 'Forbidden' });
       }
     } else {
       if (!guest) {
-        next({name: 'Forbidden'});
+        next({ name: 'Forbidden' });
       }
       next();
     }
   }
   next();
-})
+});
 
 export default router;
