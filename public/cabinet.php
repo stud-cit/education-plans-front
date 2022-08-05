@@ -12,9 +12,6 @@
   $mode = !empty($_GET['mode']) ? $_GET['mode'] : 0;
 
   switch($mode) {
-    case 0:
-      header("Location: https://cabinet.sumdu.edu.ua/");
-      break;
     case 2:
       header('Content-Type: image/png');
       readfile($icon);

@@ -1,6 +1,7 @@
 <template>
   <v-app-bar
     color="primary"
+    class="header"
     dark
   >
     <v-toolbar-title class="indigo--text text--lighten-4"> {{ name }} |</v-toolbar-title>
@@ -90,5 +91,7 @@ export default {
 </script>
 
 <style scoped>
-
+  .header {
+    z-index: 1;
+  }
 </style>
