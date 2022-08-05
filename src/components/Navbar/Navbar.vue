@@ -26,6 +26,8 @@
       Вихід
     </v-btn>
 
+    <div id="cabinet_service"></div>
+
   </v-app-bar>
 </template>
 
@@ -60,6 +62,11 @@ export default {
   },
   mounted() {
     this.getMenu();
+    var scriptTag = document.createElement("script");
+    scriptTag.src = "https://cabinet.sumdu.edu.ua/public/js/cabinet.menu-services.min.js";
+    scriptTag.setAttribute('data-services-id', 'cabinet_service');
+    scriptTag.setAttribute('data-services-options', '{"align":"right", "color":"white"}');
+    document.getElementsByTagName('head')[0].appendChild(scriptTag);
   },
   methods: {
     getMenu() {
