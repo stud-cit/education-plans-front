@@ -7,7 +7,7 @@
         text
         color="primary"
         class="align-self-center ma-10"
-        :to="{ name: 'ListPlans' }" >
+        href="https://cabinet.sumdu.edu.ua/" >
         Повернутись на головну
       </v-btn>
     </div>

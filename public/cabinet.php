@@ -1,17 +1,19 @@
 <?php
 
-  $info = 'Каталог навчальних планів';
+  $info = 'Інформаційний сервіс «Каталог навчальних планів» дозволить Вам зручно створювати нові навчальні плани.';
   $icon = "service.png";
   $mask = 13;
 
-  if($_GET['key']) {
+  $mode = !empty($_GET['mode']) ? $_GET['mode'] : 0;
+
+  if($_GET['key'] && $mode == 0) {
     header("Location: https://ep.sumdu.edu.ua/?key=".$_GET['key']);
     exit();
   }
 
-  $mode = !empty($_GET['mode']) ? $_GET['mode'] : 0;
-
   switch($mode) {
+    case 0:
+      break;
     case 2:
       header('Content-Type: image/png');
       readfile($icon);
@@ -22,6 +24,5 @@
     case 100;
       header('X-Cabinet-Support: ' . $mask);
     default:
-      header("Location: https://cabinet.sumdu.edu.ua/");
       exit;
   }
