@@ -103,7 +103,7 @@
           <validation-provider
             v-slot="{ errors }"
             name="Кваліфікація"
-            rules="required"
+            rules=""
           >
             <v-autocomplete
               v-model="plan.qualification_id"
@@ -564,6 +564,8 @@ export default {
           this.plan.submitLoading = true;
           this.$emit('submit', data)
         }
+      }).catch(() => {
+        this.plan.submitLoading = false;
       });
     },
   }
