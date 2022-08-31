@@ -8,15 +8,15 @@
           <v-col cols="12" md="2">
             <validation-provider
               v-slot="{ errors }"
-              name="Посада"
+              name="Префікс"
               rules="required"
             >
               <v-autocomplete
                 v-model="item.position_id"
                 :items="positions"
                 :error-messages="errors"
-                label="Посада"
-                data-vv-name="Посада"
+                label="Префікс"
+                data-vv-name="Префікс"
                 item-text="position"
                 item-value="id"
                 required
