@@ -8,15 +8,15 @@
           <v-col cols="12" md="2">
             <validation-provider
               v-slot="{ errors }"
-              name="Префікс"
+              name="Посада"
               rules="required"
             >
               <v-autocomplete
                 v-model="item.position_id"
                 :items="positions"
                 :error-messages="errors"
-                label="Префікс"
-                data-vv-name="Префікс"
+                label="Посада"
+                data-vv-name="Посада"
                 item-text="position"
                 item-value="id"
                 required
@@ -28,15 +28,15 @@
           <v-col cols="12" md="5">
             <validation-provider
               v-slot="{ errors }"
-              name="Посада"
+              name="Підрозділ"
               rules="required"
             >
               <v-text-field
                 v-model="item.manual_position"
                 :items="positions"
                 :error-messages="errors"
-                label="Посада"
-                data-vv-name="Посада"
+                label="Підрозділ"
+                data-vv-name="Підрозділ"
                 item-text="manual_position"
                 item-value="manual_position"
                 required
