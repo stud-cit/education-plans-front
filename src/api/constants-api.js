@@ -55,4 +55,8 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     itemsPerPage: 'items_per_page',
     page: 'page',
   },
+  GET_USERS: {
+    itemsPerPage: 'items_per_page',
+    page: 'page',
+  },
 };

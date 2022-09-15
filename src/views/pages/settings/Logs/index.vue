@@ -5,7 +5,7 @@
       :items="items"
       :options.sync="options"
       :server-items-length="meta.total"
-      :footer-props="{ 'items-per-page-options' : [15,25,50] }"
+      :footer-props="{ 'items-per-page-options': [15, 25, 50] }"
       class="elevation-1"
     >
       <template v-slot:item.index="{ index }">
@@ -15,7 +15,6 @@
   </v-container>
 </template>
 <script>
-
 import api from '@/api';
 import { API, ALLOWED_REQUEST_PARAMETERS } from '@/api/constants-api';
 
@@ -34,23 +33,21 @@ export default {
         { text: 'data', value: 'data', sortable: false },
       ],
       items: [],
-      options: {
-      },
+      options: {},
       meta: {},
-      total: 0
-    }
+    };
   },
   watch: {
-      options: {
-        handler (value) {
-          this.getLogs();
-        },
-        deep: true,
+    options: {
+      handler() {
+        this.getLogs();
       },
+      deep: true,
     },
+  },
   methods: {
     getLogs() {
-      this.apiLogs().then( (response)  => {
+      this.apiLogs().then((response) => {
         const { data, meta } = response.data;
         this.items = data;
         this.meta = meta;
@@ -60,6 +57,6 @@ export default {
       const options = this.GlobalHandlingRequestParameters(ALLOWED_REQUEST_PARAMETERS.GET_LOGS, this.options);
       return api.get(API.USER_ACTIVITY, options, { showLoader: true });
     },
-  }
-}
+  },
+};
 </script>
