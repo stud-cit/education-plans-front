@@ -1,53 +1,37 @@
 <template>
   <v-data-table
-      :headers="headers"
-      :items="items"
-      :server-items-length="meta.total"
-      :options.sync="options"
-      :footer-props="{ 'items-per-page-options' : [15,25,50] }"
-      class="elevation-1 plans-table"
-      :item-class="itemRowBackground"
+    :headers="headers"
+    :items="items"
+    :server-items-length="meta.total"
+    :options.sync="options"
+    :footer-props="{ 'items-per-page-options': [15, 25, 50] }"
+    class="elevation-1 plans-table"
+    :item-class="itemRowBackground"
   >
     <template v-slot:top>
       <v-row>
         <v-col cols="12" md="6">
           <v-text-field
-              v-model="searchTitle"
-              append-icon="mdi-magnify"
-              label="Пошук за назвою"
-              single-line
-              hide-details
-              class="mx-4"
+            v-model="searchTitle"
+            append-icon="mdi-magnify"
+            label="Пошук за назвою"
+            single-line
+            hide-details
+            class="mx-4"
           ></v-text-field>
         </v-col>
         <v-col align-self="center">
-          <v-btn
-              color="primary"
-              outlined
-              class="ml-2"
-              @click="search"
-          >
-            Пошук
-          </v-btn>
-          <v-btn
-              color="primary"
-              class="ml-2"
-              outlined
-              :input-value="filterToggle"
-              @click="filterToggle = !filterToggle"
-          >
-            <v-icon>
-              mdi-filter
-            </v-icon>
-          </v-btn>
+          <v-btn color="primary" outlined class="ml-2" @click="search"> Пошук </v-btn>
           <v-btn
             color="primary"
             class="ml-2"
             outlined
-            @click="clear"
+            :input-value="filterToggle"
+            @click="filterToggle = !filterToggle"
           >
-            Очистити
+            <v-icon> mdi-filter </v-icon>
           </v-btn>
+          <v-btn color="primary" class="ml-2" outlined @click="clear"> Очистити </v-btn>
         </v-col>
       </v-row>
 
@@ -98,11 +82,22 @@
           ></v-select>
         </v-col>
       </v-row>
-
     </template>
 
     <template v-slot:item.index="{ index }">
       {{ (meta.current_page - 1) * meta.per_page + (index + 1) }}
+    </template>
+
+    <template v-slot:item.is_template="{ item }">
+      <v-tooltip top color="primary">
+        <template v-slot:activator="{ on, attrs }">
+          <span v-bind="attrs" v-on="on" class="cursor-pointer">
+            <v-badge dot :color="getColor(item.published)" label="published" inline left></v-badge>
+            {{ item.is_template }}
+          </span>
+        </template>
+        <span>{{ item.published ? 'Опубліковано' : 'Не опубліковано' }}</span>
+      </v-tooltip>
     </template>
 
     <template v-slot:item.actions="{ item }">
@@ -115,61 +110,42 @@
       >
         mdi-eye-outline
       </v-icon>
-      <v-icon
-          v-if="item.actions.copy"
-          small
-          class="mr-1"
-          color="primary"
-          @click="$emit('copy', item.id, item.title)"
-      >
+      <v-icon v-if="item.actions.copy" small class="mr-1" color="primary" @click="$emit('copy', item.id, item.title)">
         mdi-content-copy
       </v-icon>
-      <v-icon
-          v-if="item.actions.edit"
-          small
-          class="mr-1"
-          color="primary"
-          @click="$emit('edit', item.id, item.title)"
-      >
+      <v-icon v-if="item.actions.edit" small class="mr-1" color="primary" @click="$emit('edit', item.id, item.title)">
         mdi-pencil-outline
       </v-icon>
-      <v-icon
-          v-if="item.actions.delete"
-          small
-          color="red"
-          @click="$emit('delete', item.id, item.title)"
-      >
+      <v-icon v-if="item.actions.delete" small color="red" @click="$emit('delete', item.id, item.title)">
         mdi-trash-can-outline
       </v-icon>
     </template>
-
-
   </v-data-table>
 </template>
 
 <script>
-import api from "@/api";
-import {API} from "@/api/constants-api";
-import RolesMixin from "@/mixins/RolesMixin";
-import {ROLES} from "@/utils/constants";
-import {mapGetters} from "vuex";
+import api from '@/api';
+import { API } from '@/api/constants-api';
+import RolesMixin from '@/mixins/RolesMixin';
+import { ROLES } from '@/utils/constants';
+import { mapGetters } from 'vuex';
 
 export default {
-  name: "PlansTable",
+  name: 'PlansTable',
   data() {
     return {
       ROLES,
       filterToggle: false,
       searchTitle: '',
       headers: [
-        {text: '№', value: 'index', sortable: false},
-        {text: 'Тип', value: 'is_template', sortable: false},
-        {text: 'Назва', value: 'title'},
-        {text: 'Факультет', value: 'faculty', sortable: false},
-        {text: 'Кафедра', value: 'department', sortable: false},
-        {text: 'Рік', value: 'year', width: '80px'},
-        {text: 'Дата створення', value: 'created_at', width: '150px'},
-        {text: 'Дії', value: 'actions', width: '120px', sortable: false},
+        { text: '№', value: 'index', sortable: false },
+        { text: 'Тип', value: 'is_template', sortable: false },
+        { text: 'Назва', value: 'title' },
+        { text: 'Факультет', value: 'faculty', sortable: false },
+        { text: 'Кафедра', value: 'department', sortable: false },
+        { text: 'Рік', value: 'year', width: '80px' },
+        { text: 'Дата створення', value: 'created_at', width: '150px' },
+        { text: 'Дії', value: 'actions', width: '120px', sortable: false },
       ],
       faculty: null,
       faculties: [],
@@ -180,44 +156,43 @@ export default {
       divisions: [],
       verificationDivisionStatus: 1,
       verificationsDivisionsStatus: [],
-    }
+    };
   },
   props: {
     items: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     meta: {
       type: Object,
-      default: () => {
-      }
+      default: () => {},
     },
   },
   computed: {
     ...mapGetters({
-      user: 'auth/user'
+      user: 'auth/user',
     }),
     loading() {
-      return this.$store.state.plans.loading
+      return this.$store.state.plans.loading;
     },
     options: {
       get: function () {
-        return this.$store.state.plans.options
+        return this.$store.state.plans.options;
       },
       set: function (newValue) {
-        this.$store.dispatch('plans/setOptions', newValue)
-        this.update()
-      }
-    }
+        this.$store.dispatch('plans/setOptions', newValue);
+        this.update();
+      },
+    },
   },
   mixins: [RolesMixin],
   watch: {
     faculty(v) {
-      v !== null ? this.apiGetDepartments(v) : this.departments = [];
+      v !== null ? this.apiGetDepartments(v) : (this.departments = []);
     },
     division(v) {
       if (v === null) {
-        this.options.divisionWithStatus = null
+        this.options.divisionWithStatus = null;
       }
     },
     faculties(v) {
@@ -227,17 +202,21 @@ export default {
     },
     departments(v) {
       if (v.length && this.allowedRoles([ROLES.ID.department])) {
-        const department = v.find((i) => i.id === this.user.department_id)
+        const department = v.find((i) => i.id === this.user.department_id);
         this.department = department ? department.id : null;
       }
-    }
+    },
   },
   mounted() {
     this.apiGetDivisions();
   },
   methods: {
+    getColor(published) {
+      if (published) return 'green';
+      return 'grey';
+    },
     update() {
-      this.$emit('update', this.options)
+      this.$emit('update', this.options);
     },
     search() {
       this.options.searchTitle = this.searchTitle;
@@ -255,7 +234,6 @@ export default {
     resetPage() {
       if (this.options.page == 1) {
         this.update();
-
       } else {
         this.options.page = 1;
       }
@@ -267,7 +245,7 @@ export default {
         this.department = null;
       }
 
-      if (this.exceptRoles([ROLES.ID.faculty_institute,ROLES.ID.department])) {
+      if (this.exceptRoles([ROLES.ID.faculty_institute, ROLES.ID.department])) {
         this.faculty = null;
       }
 
@@ -277,26 +255,25 @@ export default {
       this.resetPage();
     },
     apiGetDivisions() {
-      api.get(API.PLAN_FILTERS).then(({data}) => {
-        this.divisions = data.divisions
-        this.verificationsDivisionsStatus = data.verificationsStatus
-        this.faculties = data.faculties
-      })
+      api.get(API.PLAN_FILTERS).then(({ data }) => {
+        this.divisions = data.divisions;
+        this.verificationsDivisionsStatus = data.verificationsStatus;
+        this.faculties = data.faculties;
+      });
     },
     apiGetDepartments(id) {
       this.departmentsLoading = true;
 
-      api.show(API.DEPARTMENTS, id).then(({data}) => {
-        this.departments = data.data
+      api.show(API.DEPARTMENTS, id).then(({ data }) => {
+        this.departments = data.data;
         this.departmentsLoading = false;
-      })
+      });
     },
-    itemRowBackground (item) {
-      return item.status + ' lighten-5'
-    }
+    itemRowBackground(item) {
+      return item.status + ' lighten-5';
+    },
   },
-}
+};
 </script>
 
-<style>
-</style>
+<style></style>

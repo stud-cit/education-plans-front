@@ -1,17 +1,22 @@
 body {
-    font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
+}
+.cursor-pointer {
+  cursor: pointer;
 }
 @media print {
-    /*@page {size: A4 landscape}*/
-    .print {
-        display: block;
-    }
+  /*@page {size: A4 landscape}*/
+  .print {
+    display: block;
+  }
 
-    .preview-plan tr{
-        line-height: 1.1;
-    }
-    .page-break-before {page-break-before: always;}
-    .no-print {
-        display: none;
-    }
+  .preview-plan tr {
+    line-height: 1.1;
+  }
+  .page-break-before {
+    page-break-before: always;
+  }
+  .no-print {
+    display: none;
+  }
 }
