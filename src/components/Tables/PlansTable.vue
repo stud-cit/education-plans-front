@@ -45,6 +45,7 @@
             label="Факультет"
             hide-details
             :readonly="!exceptRoles([ROLES.ID.department, ROLES.ID.faculty_institute])"
+            clearable
           ></v-autocomplete>
         </v-col>
         <v-col cols="12" lg="6" v-if="exceptRoles([ROLES.ID.department])">
@@ -57,6 +58,7 @@
             hide-details
             :loading="departmentsLoading"
             :readonly="!exceptRoles([ROLES.ID.department])"
+            clearable
           ></v-autocomplete>
         </v-col>
         <v-col cols="12" lg="6">
@@ -67,6 +69,7 @@
             item-value="id"
             hide-details
             label="Представник відділу"
+            clearable
           ></v-autocomplete>
         </v-col>
         <v-col cols="12" lg="6">
@@ -79,6 +82,7 @@
             select
             hide-details
             label="Статус верифікації"
+            clearable
           ></v-select>
         </v-col>
       </v-row>
