@@ -357,7 +357,7 @@
             class="mr-4"
             type="submit"
             color="primary"
-            :loading="plan.submitLoading"
+            :loading="submitLoading"
             :disabled="invalid"
           >
             Зберегти
@@ -373,13 +373,13 @@ import api from "@/api";
 import {API} from "@/api/constants-api";
 import { FORM_ORGANIZATIONS_TABLE, ROLES } from "@/utils/constants"
 import RolesMixin from "@/mixins/RolesMixin";
+import {mapState} from "vuex";
 
 export default {
   name: "General",
   data() {
     return {
       ROLES,
-      submitLoading: false,
       faculties: [],
       departments: [],
       departmentsLoading: false,
@@ -408,6 +408,9 @@ export default {
     edit: {
       type: Boolean
     },
+  },
+  computed: {
+    ...mapState('plans', ['submitLoading'])
   },
   mounted() {
     this.apiGetFields();
@@ -561,11 +564,11 @@ export default {
           delete data.summary_data_budget_time
           delete data.practical_training
 
-          this.plan.submitLoading = true;
+          this.$store.dispatch('plans/setSubmitLoading', true);
           this.$emit('submit', data)
         }
       }).catch(() => {
-        this.plan.submitLoading = false;
+        this.$store.dispatch('plans/setSubmitLoading', false);
       });
     },
   }

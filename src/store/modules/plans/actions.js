@@ -110,3 +110,7 @@ export const updateSignature = (context, payload) => {
     return response;
   });
 };
+
+export const setSubmitLoading = (context, payload) => {
+  context.commit('SET_SUBMIT_LOADING', payload);
+};

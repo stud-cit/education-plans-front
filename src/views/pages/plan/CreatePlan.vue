@@ -322,8 +322,8 @@ export default {
         }
 
         this.apiGetVerifications();
-      }).catch((errors) => {
-        console.log(errors.response.data)
+      }).catch(() => {
+        this.$store.dispatch('plans/setSubmitLoading', false);
       });
     },
 

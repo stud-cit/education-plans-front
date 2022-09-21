@@ -29,5 +29,6 @@ export default {
   },
   options: {},
   loading: true,
+  submitLoading: false,
   default: planDefault
 }

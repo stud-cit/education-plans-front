@@ -9,6 +9,9 @@ export const plan = (state) => {
 export const loader = (state) => {
     return state.plans.loader
 }
+export const getSubmitLoading = (state) => {
+  return state.submitLoading;
+}
 
 export const meta = (state) => {
     return state.plans.meta
