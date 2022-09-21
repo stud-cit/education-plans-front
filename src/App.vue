@@ -1,13 +1,16 @@
 <template>
   <v-app>
     <router-view/>
+    <loader :show="loading" class="no-print"/>
     <DevelopmentSettings v-if="devtool"/>
   </v-app>
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import {mapGetters, mapState} from "vuex";
 import DevelopmentSettings from "@c/Navbar/DevelopmentSettings";
+import vuexStore from "@/store";
+import Loader from "@c/Loader";
 
 export default {
   name: 'App',
@@ -16,14 +19,20 @@ export default {
   }),
   computed: {
     ...mapGetters(["errors"]),
+    ...mapState('loader', ['loading'])
   },
+
   components: {
-    DevelopmentSettings
+    DevelopmentSettings, Loader
   },
   watch: {
     errors() {
       this.showAlert();
     }
+  },
+  beforeCreate() {
+    console.log('beforeCreate')
+    vuexStore.dispatch('loader/show');
   },
   methods: {
     showAlert() {

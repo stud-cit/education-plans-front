@@ -56,14 +56,13 @@ export default {
 <style scoped>
 .loader {
   position: fixed;
-  top: 0;
+  top: 85px;
   bottom: 0;
   left: 0;
   right: 0;
-  background: url("https://sumdu.edu.ua/images/brand/logo-sumdu.svg?v=2"),
-              linear-gradient(0deg, rgba(255, 255, 255, 1) 92%, rgba(255, 255, 255, 0.7) 92%);
+  background: url("https://sumdu.edu.ua/images/brand/logo-sumdu.svg?v=2"), rgba(255, 255, 255, 1);
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: 50% 45%;
   text-align: center;
   z-index: 1000;
   display: flex;
@@ -76,7 +75,7 @@ svg {
   margin: 20px;
   display: inline-block;
   position: relative;
-  top: 70px;
+  top: 25px;
 }
 svg circle {
   fill: #001f5a;
