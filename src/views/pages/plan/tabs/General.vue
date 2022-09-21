@@ -433,7 +433,7 @@ export default {
       this.buildObjHoursWeeks();
     },
     'plan.field_knowledge_id'(v, old) {
-      if (old !== null && v === old) {
+      if (old !== null && v !== old) {
         this.plan.speciality_id = null;
       }
       v !== null ? this.apiGetSpecialities(v) : this.specialities = [];
