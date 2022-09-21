@@ -30,6 +30,10 @@ export default {
       this.showAlert();
     }
   },
+  beforeCreate() {
+    console.log('beforeCreate')
+    vuexStore.dispatch('loader/show');
+  },
   methods: {
     showAlert() {
       if (Object.keys(this.errors).length !== 0) {
