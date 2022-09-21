@@ -9,7 +9,6 @@
 <script>
 import {mapGetters, mapState} from "vuex";
 import DevelopmentSettings from "@c/Navbar/DevelopmentSettings";
-import vuexStore from "@/store";
 import Loader from "@c/Loader";
 
 export default {
