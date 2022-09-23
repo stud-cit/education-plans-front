@@ -11,7 +11,7 @@ import StudyTerm from '@/views/pages/settings/StudyTerm';
 import FormStudy from '@/views/pages/settings/FormStudy';
 import FormOrganization from '@/views/pages/settings/FormOrganization';
 import SettingUsers from '@/views/pages/settings/Users/Users';
-import SelectiveDisciplines from '@/views/pages/settings/SelectiveDisciplines/SelectiveDisciplines';
+import SelectiveDisciplines from '@/views/pages/SelectiveDisciplines/SelectiveDisciplines';
 import Position from '@/views/pages/settings/Position';
 import Note from '@/views/pages/settings/Note';
 import ListCycle from '@/views/pages/settings/ListCycle';

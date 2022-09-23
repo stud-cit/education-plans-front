@@ -1,23 +1,21 @@
 <template>
   <v-container>
-      <div class="settings">
-        <template v-for="item in items">
-          <v-card v-if="item.allowed" class="d-flex flex-column justify-space-between"  :key="item.title" elevation="2">
-            <v-card-text>
-              <p class="text-h6 text--primary text-center">{{ item.title }}</p>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn depressed block :to="{ name: item.to }">
-                Налаштувати
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </template>
-      </div>
+    <div class="settings">
+      <template v-for="item in items">
+        <v-card v-if="item.allowed" class="d-flex flex-column justify-space-between" :key="item.title" elevation="2">
+          <v-card-text>
+            <p class="text-h6 text--primary text-center">{{ item.title }}</p>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn depressed block :to="{ name: item.to }"> Налаштувати </v-btn>
+          </v-card-actions>
+        </v-card>
+      </template>
+    </div>
   </v-container>
 </template>
 <script>
-import RolesMixin from "@/mixins/RolesMixin";
+import RolesMixin from '@/mixins/RolesMixin';
 
 export default {
   name: 'Settings',
@@ -30,12 +28,11 @@ export default {
         'FormStudy',
         'FormOrganization',
         'SettingUsers',
-        'SelectiveDisciplines',
         'Position',
         'Note',
         'ListCycle',
-        'Logs'
-      ]
+        'Logs',
+      ],
     };
   },
   mixins: [RolesMixin],
@@ -44,11 +41,14 @@ export default {
   },
   methods: {
     getItems() {
-      return this.$router.getRoutes().filter(item => this.nameRoutes.includes(item.name)).map(item =>{
-        return { title: item.meta.header, to: item.name, allowed: this.allowedRoles(item.meta.accessIsAllowed)}
-      })
-    }
-  }
+      return this.$router
+        .getRoutes()
+        .filter((item) => this.nameRoutes.includes(item.name))
+        .map((item) => {
+          return { title: item.meta.header, to: item.name, allowed: this.allowedRoles(item.meta.accessIsAllowed) };
+        });
+    },
+  },
 };
 </script>
 
