@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-data-table :headers="headers" :items="items" class="elevation-1" hide-default-footer>
+    <v-data-table :headers="computedHeaders" :items="items" class="elevation-1" hide-default-footer>
       <template v-slot:item.index="{ index }">
         {{ index + 1 }}
       </template>
@@ -38,9 +38,12 @@
 <script>
 import api from '@/api';
 import { API } from '@/api/constants-api';
+import { ROLES } from '@/utils/constants';
+import RolesMixin from '@/mixins/RolesMixin';
 
 export default {
   name: 'SelectiveDisciplines',
+  mixins: [RolesMixin],
   data() {
     return {
       items: [],
@@ -50,6 +53,13 @@ export default {
         { text: 'Дії', value: 'actions', width: '80px', sortable: false },
       ],
     };
+  },
+  computed: {
+    computedHeaders() {
+      return this.headers.filter((item) => {
+        return this.exceptRoles([ROLES.ID.root, ROLES.ID.admin]) ? item.value !== 'actions' : item;
+      });
+    },
   },
   mounted() {
     this.apiSelectiveDisciplines();
