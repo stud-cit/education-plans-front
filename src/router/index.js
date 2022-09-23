@@ -63,6 +63,17 @@ const routes = [
           breadCrumb: [{ text: 'Робота з планами' }],
         },
       },
+      {
+        path: 'selective-disciplines',
+        name: 'SelectiveDisciplines',
+        component: SelectiveDisciplines,
+        meta: {
+          requiresAuth: true,
+          accessIsAllowed: allRoles(),
+          header: 'Вибіркові дисципліни',
+          breadCrumb: [{ text: 'Вибіркові дисципліни' }],
+        },
+      },
     ],
   },
   {
@@ -98,10 +109,7 @@ const routes = [
           header: 'Редагування плану',
           breadCrumb() {
             const paramToPageB = this.$route.params.title;
-            return [
-              { text: 'Робота з планами', to: { name: 'ListPlans' } },
-              { text: paramToPageB },
-            ];
+            return [{ text: 'Робота з планами', to: { name: 'ListPlans' } }, { text: paramToPageB }];
           },
         },
       },
@@ -136,10 +144,7 @@ const routes = [
         meta: {
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root, ROLES.ID.faculty_institute],
           header: 'Налаштування',
-          breadCrumb: [
-            { text: 'Робота з планами', to: { name: 'ListPlans' } },
-            { text: 'Налаштування' },
-          ],
+          breadCrumb: [{ text: 'Робота з планами', to: { name: 'ListPlans' } }, { text: 'Налаштування' }],
         },
       },
       {
@@ -150,10 +155,7 @@ const routes = [
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root, ROLES.ID.faculty_institute],
           header: 'Налаштування користувачів',
-          breadCrumb: [
-            ...BREADCRUMBS.SETTINGS,
-            { text: 'Налаштування користувачів' },
-          ],
+          breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Налаштування користувачів' }],
         },
       },
       {
@@ -175,10 +177,7 @@ const routes = [
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
           header: 'Форма організації навчання',
-          breadCrumb: [
-            ...BREADCRUMBS.SETTINGS,
-            { text: 'Форма організації навчання' },
-          ],
+          breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Форма організації навчання' }],
         },
       },
       {
@@ -193,10 +192,7 @@ const routes = [
               requiresAuth: true,
               accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
               header: 'Редактор обмежень',
-              breadCrumb: [
-                ...BREADCRUMBS.SETTINGS,
-                { text: 'Редактор обмежень' },
-              ],
+              breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Редактор обмежень' }],
             },
           },
           {
@@ -231,7 +227,7 @@ const routes = [
           breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Термін навчання' }],
         },
       },
-      {
+      /* {
         path: 'selective-disciplines',
         name: 'SelectiveDisciplines',
         component: SelectiveDisciplines,
@@ -244,7 +240,7 @@ const routes = [
             { text: 'Вибіркові дисципліни' },
           ],
         },
-      },
+      }, */
       {
         path: 'position',
         name: 'Position',

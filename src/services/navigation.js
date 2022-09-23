@@ -1,13 +1,16 @@
-import {ROLES} from '@/utils/constants';
+import { ROLES } from '@/utils/constants';
 
 export default {
   getItems(user) {
-
     // item
     const ListPlans = {
       title: 'Плани',
       icon: 'mdi-account-circle',
       route: 'ListPlans',
+    };
+    const SelectiveDisciplines = {
+      title: 'Вибіркові дисципліни',
+      route: 'SelectiveDisciplines',
     };
     const Settings = {
       title: 'Налаштування',
@@ -21,23 +24,18 @@ export default {
         case ROLES.ID.admin:
         case ROLES.ID.root:
         case ROLES.ID.faculty_institute:
-          rows.push(
-            ListPlans,
-            Settings
-          );
+          rows.push(ListPlans, SelectiveDisciplines, Settings);
           break;
         case ROLES.ID.training_department:
         case ROLES.ID.practice_department:
         case ROLES.ID.educational_department_deputy:
         case ROLES.ID.educational_department_chief:
         case ROLES.ID.department:
-          rows.push(
-            ListPlans,
-          );
+          rows.push(ListPlans, SelectiveDisciplines);
           break;
       }
     }
 
     return rows;
-  }
-}
+  },
+};
