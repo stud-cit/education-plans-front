@@ -23,6 +23,7 @@ import Login from '@/views/pages/LoginLayout';
 import Err from '@/views/Err';
 import Logs from '@/views/pages/settings/Logs';
 import { ROLES } from '@/utils/constants';
+import CatalogHelpers from "@/views/pages/settings/Helpers/CatalogHelpers";
 
 const allRoles = () => Object.values(ROLES.ID);
 // const allRolesExcept = (...exceptRoles) => Object.values(ROLES.ID).filter(role => exceptRoles.indexOf(role) === -1);
@@ -272,6 +273,17 @@ const routes = [
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
           header: 'Цикли',
           breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Цикли' }],
+        },
+      },
+      {
+        path: 'catalog-helpers',
+        name: 'CatalogHelpers',
+        component: CatalogHelpers,
+        meta: {
+          requiresAuth: true,
+          accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
+          header: 'Підсказки для каталогів',
+          breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Підсказки для каталогів' }],
         },
       },
       {

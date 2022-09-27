@@ -31,6 +31,7 @@ export default {
         'Position',
         'Note',
         'ListCycle',
+        'CatalogHelpers',
         'Logs',
       ],
     };
