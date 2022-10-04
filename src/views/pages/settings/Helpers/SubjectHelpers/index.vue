@@ -5,6 +5,7 @@
       :items="items"
       :server-items-length="meta.total"
       :options.sync="options"
+      :footer-props="{ 'items-per-page-options': [15, 25, 50] }"
       class="elevation-1"
     >
       <template v-slot:top>
@@ -43,19 +44,36 @@
       <template v-slot:item.index="{ index }">
         {{ (meta.current_page - 1) * meta.per_page + (index + 1) }}
       </template>
-
+      <template v-slot:item.actions="{ item }">
+        <v-icon small class="mr-2" color="primary" @click="openEdit(item)">
+          mdi-square-edit-outline
+        </v-icon>
+        <v-icon small class="mr-2" color="red" @click="deleted(item.id, item)">
+          mdi-trash-can-outline
+        </v-icon>
+      </template>
     </v-data-table>
 
     <v-tooltip left color="info">
       <template v-slot:activator="{ on, attrs }">
         <v-fab-transition>
-          <v-btn color="primary" dark fixed bottom right fab v-bind="attrs" v-on="on" @click="create">
+          <v-btn color="primary" dark fixed bottom right fab v-bind="attrs" v-on="on" @click="dialog = true">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-fab-transition>
       </template>
       <span>Додати підсказку</span>
     </v-tooltip>
+
+    <CreateOrUpdateModalSubjectHelpers
+      :types="types"
+      :dialog="dialog"
+      :item="editItem"
+      @submit="create"
+      @update="update"
+      @close="closeDialog"
+      ref="createEditModal"
+    />
 
   </v-container>
 </template>
@@ -64,11 +82,13 @@
 import api from "@/api";
 import {ALLOWED_REQUEST_PARAMETERS, API} from '@/api/constants-api';
 import GlobalMixin from "@/mixins/GlobalMixin";
+import CreateOrUpdateModalSubjectHelpers from '@/views/pages/settings/Helpers/SubjectHelpers/modal'
 
 export default {
   name: "CatalogHelpers",
   data() {
     return {
+      dialog: false,
       searchTitle: '',
       types: [],
       type: '',
@@ -76,14 +96,19 @@ export default {
         { text: '№', value: 'index', sortable: false, width: '20px' },
         { text: 'Назва', value: 'title', sortable: false},
         { text: 'Тип', value: 'type', sortable: false},
+        { text: 'Дії', value: 'actions', width: '80px', sortable: false},
       ],
       meta: [],
       items: [],
       options: null,
+      editItem: null,
     }
   },
+  components: {
+    CreateOrUpdateModalSubjectHelpers
+  },
   watch: {
-    options(v) {
+    options() {
       this.apiGetItems();
     }
   },
@@ -105,8 +130,64 @@ export default {
         this.types = data.data;
       })
     },
-    create() {
-      console.log('create')
+    create(item) {
+      api.post(API.SUBJECT_HELPERS, item).then((response) => {
+        this.dialog = false;
+        const { message } = response.data;
+        this.$swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+
+        this.apiGetItems();
+      }).catch((errors) => {
+        this.$refs.createEditModal.setErrors(errors.response.data.errors);
+      });
+    },
+    update(item) {
+      api.put(API.SUBJECT_HELPERS + '/' + item.id, item).then((response) => {
+        this.dialog = false;
+        const { message } = response.data;
+        this.$swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        this.apiGetItems();
+      }).catch((errors) => {
+        this.$refs.createEditModal.setErrors(errors.response.data.errors);
+      });
+    },
+    deleted(id, item) {
+      const text = '<h4> Тип - ' + item.type + '</h4>' + '<br><span class="help-title">'+ item.title +'</span>'
+      this.$swal
+        .fire({
+          title: `Ви хочете видалити підсказку ?`,
+          html: `${text}`,
+          showDenyButton: true,
+          confirmButtonText: 'Так',
+          denyButtonText: `Ні`,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            api.destroy(API.SUBJECT_HELPERS, id).then((response) => {
+              const { message } = response.data;
+              this.$swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: message,
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              this.apiGetItems();
+            });
+          }
+        });
     },
     clear() {
       this.options.searchTitle = '';
@@ -117,6 +198,17 @@ export default {
       this.options.searchTitle = this.searchTitle;
       this.options.type = this.type;
       this.apiGetItems();
+    },
+    openEdit(item) {
+      this.editItem = {
+        ...item,
+        type: this.types.find(el => { if(el.title === item.type) return el.id })
+      };
+      this.dialog = true
+    },
+    closeDialog() {
+      this.editItem = null;
+      this.dialog = false
     }
   }
 }

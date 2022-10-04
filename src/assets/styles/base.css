@@ -5,6 +5,10 @@ body {
   cursor: pointer;
   white-space: nowrap;
 }
+.swal2-html-container .help-title {
+  text-align: justify;
+  display: block;
+}
 @media print {
   /*@page {size: A4 landscape}*/
   .print {

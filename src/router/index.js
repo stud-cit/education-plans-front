@@ -23,7 +23,7 @@ import Login from '@/views/pages/LoginLayout';
 import Err from '@/views/Err';
 import Logs from '@/views/pages/settings/Logs';
 import { ROLES } from '@/utils/constants';
-import CatalogHelpers from "@/views/pages/settings/Helpers/CatalogHelpers";
+import CatalogHelpers from "@/views/pages/settings/Helpers/SubjectHelpers";
 
 const allRoles = () => Object.values(ROLES.ID);
 // const allRolesExcept = (...exceptRoles) => Object.values(ROLES.ID).filter(role => exceptRoles.indexOf(role) === -1);
