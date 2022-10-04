@@ -37,6 +37,8 @@ export const API = {
   LIST_CYCLES: version + '/list-cycles',
   PROGRAMS: version + '/programs',
   USER_ACTIVITY: version + '/user-activity',
+  SUBJECT_HELPERS: version + '/subject-helpers',
+  CATALOG_HELPER_TYPES: version + '/catalog-helper-types',
   ERR: version + '/err',
 };
 
@@ -59,4 +61,10 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     itemsPerPage: 'items_per_page',
     page: 'page',
   },
+  GET_SUBJECT_HELPERS: {
+    itemsPerPage: 'items_per_page',
+    page: 'page',
+    searchTitle: 'title',
+    type: 'type',
+  }
 };

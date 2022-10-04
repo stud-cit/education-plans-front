@@ -3,12 +3,13 @@
     <v-data-table
       :headers="headers"
       :items="items"
+      :server-items-length="meta.total"
+      :options.sync="options"
       class="elevation-1"
-      hide-default-footer
     >
       <template v-slot:top>
         <v-row>
-          <v-col cols="12" md="8">
+          <v-col cols="12" md="9">
             <v-text-field
               v-model="searchTitle"
               append-icon="mdi-magnify"
@@ -20,15 +21,6 @@
           </v-col>
           <v-col align-self="center">
             <v-btn color="primary" outlined class="ml-2" @click="search"> Пошук </v-btn>
-            <v-btn
-              color="primary"
-              class="ml-2"
-              outlined
-              :input-value="filterToggle"
-              @click="filterToggle = !filterToggle"
-            >
-              <v-icon> mdi-filter </v-icon>
-            </v-btn>
             <v-btn color="primary" class="ml-2" outlined @click="clear"> Очистити </v-btn>
           </v-col>
         </v-row>
@@ -38,7 +30,7 @@
             <v-autocomplete
               v-model="type"
               :items="types"
-              item-text="name"
+              item-text="title"
               item-value="id"
               label="Тип"
               hide-details
@@ -49,7 +41,7 @@
       </template>
 
       <template v-slot:item.index="{ index }">
-        {{ ++index }}
+        {{ (meta.current_page - 1) * meta.per_page + (index + 1) }}
       </template>
 
     </v-data-table>
@@ -69,6 +61,10 @@
 </template>
 
 <script>
+import api from "@/api";
+import {ALLOWED_REQUEST_PARAMETERS, API} from '@/api/constants-api';
+import GlobalMixin from "@/mixins/GlobalMixin";
+
 export default {
   name: "CatalogHelpers",
   data() {
@@ -81,18 +77,46 @@ export default {
         { text: 'Назва', value: 'title', sortable: false},
         { text: 'Тип', value: 'type', sortable: false},
       ],
+      meta: [],
       items: [],
+      options: null,
     }
   },
+  watch: {
+    options(v) {
+      this.apiGetItems();
+    }
+  },
+  mounted() {
+    this.apiGetCatalogHelperTypes();
+  },
   methods: {
+    apiGetItems() {
+      const options = GlobalMixin.methods.GlobalHandlingRequestParameters(ALLOWED_REQUEST_PARAMETERS.GET_SUBJECT_HELPERS, this.options);
+      api.get(API.SUBJECT_HELPERS, options ,{ showLoader: true }).then((response) => {
+        const { data } = response;
+        this.items = data.data;
+        this.meta = data.meta;
+      })
+    },
+    apiGetCatalogHelperTypes() {
+      api.get(API.CATALOG_HELPER_TYPES).then((response) => {
+        const { data } = response;
+        this.types = data.data;
+      })
+    },
     create() {
       console.log('create')
     },
     clear() {
-      console.log('clear')
+      this.options.searchTitle = '';
+      this.options.type = '';
+      this.apiGetItems();
     },
     search() {
-      console.log('search')
+      this.options.searchTitle = this.searchTitle;
+      this.options.type = this.type;
+      this.apiGetItems();
     }
   }
 }
