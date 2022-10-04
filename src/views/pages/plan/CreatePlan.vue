@@ -314,6 +314,7 @@ export default {
           showConfirmButton: false,
           timer: 1500,
         });
+        this.$store.dispatch('plans/setSubmitLoading', false);
         if (this.$route.name === 'CreatePlan') {
           this.$router.push({name: 'EditPlan', params: {id: response.data.id, title: data.title }});
         } else {
