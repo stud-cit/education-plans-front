@@ -39,6 +39,7 @@ export const API = {
   USER_ACTIVITY: version + '/user-activity',
   SUBJECT_HELPERS: version + '/subject-helpers',
   CATALOG_HELPER_TYPES: version + '/catalog-helper-types',
+  SUBJECT_LANGUAGES: version + '/subject-languages',
   ERR: version + '/err',
 };
 
