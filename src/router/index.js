@@ -22,8 +22,9 @@ import PreviewPlan from '@/views/pages/plan/PreviewPlan';
 import Login from '@/views/pages/LoginLayout';
 import Err from '@/views/Err';
 import Logs from '@/views/pages/settings/Logs';
+import SubjectLanguage from '@/views/pages/settings/SubjectLanguage';
 import { ROLES } from '@/utils/constants';
-import CatalogHelpers from "@/views/pages/settings/Helpers/CatalogHelpers";
+import CatalogHelpers from '@/views/pages/settings/Helpers/CatalogHelpers';
 
 const allRoles = () => Object.values(ROLES.ID);
 // const allRolesExcept = (...exceptRoles) => Object.values(ROLES.ID).filter(role => exceptRoles.indexOf(role) === -1);
@@ -228,20 +229,17 @@ const routes = [
           breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Термін навчання' }],
         },
       },
-      /* {
-        path: 'selective-disciplines',
-        name: 'SelectiveDisciplines',
-        component: SelectiveDisciplines,
+      {
+        path: 'subject-languages',
+        name: 'SubjectLanguage',
+        component: SubjectLanguage,
         meta: {
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
-          header: 'Вибіркові дисципліни',
-          breadCrumb: [
-            ...BREADCRUMBS.SETTINGS,
-            { text: 'Вибіркові дисципліни' },
-          ],
+          header: 'Мова викладання',
+          breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Мова викладання' }],
         },
-      }, */
+      },
       {
         path: 'position',
         name: 'Position',

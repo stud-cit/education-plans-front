@@ -32,6 +32,7 @@ export default {
         'Note',
         'ListCycle',
         'CatalogHelpers',
+        'SubjectLanguage',
         'Logs',
       ],
     };

@@ -37,6 +37,7 @@ export const API = {
   LIST_CYCLES: version + '/list-cycles',
   PROGRAMS: version + '/programs',
   USER_ACTIVITY: version + '/user-activity',
+  SUBJECT_LANGUAGES: version + '/subject-languages',
   ERR: version + '/err',
 };
 
