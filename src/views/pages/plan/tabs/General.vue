@@ -417,6 +417,21 @@ export default {
   },
   mixins: [RolesMixin],
   watch: {
+    'plan'(v) {
+      if (v !== null && v.faculty_id !== null) {
+        this.apiGetDepartments(v.faculty_id)
+      }
+      if (v !== null && v.study_term !== null) {
+        this.buildObjHoursWeeks();
+      }
+      if (v !== null && v.field_knowledge_id !== null) {
+        this.apiGetSpecialities(v.field_knowledge_id)
+      }
+      if (v !== null && v.speciality_id !== null) {
+        this.apiGetEducationPrograms(v.speciality_id)
+        this.apiGetSpecializations(v.speciality_id)
+      }
+    },
     'plan.faculty_id'(v) {
       if (v !== null) {
         this.apiGetDepartments(v)
