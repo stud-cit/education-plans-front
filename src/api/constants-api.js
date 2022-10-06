@@ -41,6 +41,7 @@ export const API = {
   CATALOG_HELPER_TYPES: version + '/catalog-helper-types',
   SUBJECT_LANGUAGES: version + '/subject-languages',
   CATALOG_GROUPS: version + '/catalog-groups',
+  CATALOG_GROUPS_RESTORE: version + '/catalog-groups/restore',
   ERR: version + '/err',
 };
 

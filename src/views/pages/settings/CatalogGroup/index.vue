@@ -7,6 +7,7 @@
       :server-items-length="meta.total"
       :footer-props="{ 'items-per-page-options': [15, 25, 50] }"
       class="elevation-1"
+      :item-class="itemRowBackground"
     >
       <template v-slot:item.index="{ index }">
         {{ (meta.current_page - 1) * meta.per_page + (index + 1) }}
@@ -15,7 +16,12 @@
       <template v-slot:item.actions="{ item }">
         <v-icon small class="mr-2" @click="openEdit(item)"> mdi-pencil </v-icon>
 
-        <v-icon small class="mr-2" color="red" @click="deleteItem(item.id, item.title)"> mdi-archive-outline </v-icon>
+        <v-icon v-if="!item.deleted_at" small class="mr-2" color="red" @click="deleteItem(item.id, item.title)">
+          mdi-archive-arrow-down-outline
+        </v-icon>
+        <v-icon v-else small class="mr-2" color="green" @click="restoreItem(item.id, item.title)">
+          mdi-archive-arrow-up-outline
+        </v-icon>
       </template>
     </v-data-table>
 
@@ -91,6 +97,9 @@ export default {
     },
   },
   methods: {
+    itemRowBackground(item) {
+      return item.deleted_at && 'red lighten-5';
+    },
     async getData() {
       try {
         const options = this.GlobalHandlingRequestParameters(
@@ -166,6 +175,33 @@ export default {
           if (result.isConfirmed) {
             api
               .destroy(API.CATALOG_GROUPS, id)
+              .then((response) => {
+                const { message } = response.data;
+                this.$swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: message,
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+              })
+              .then(() => this.getData());
+          }
+        });
+    },
+    restoreItem(id, title) {
+      this.$swal
+        .fire({
+          title: `Ви справді хочете відновити запис з архіву ?`,
+          text: `${title}`,
+          showDenyButton: true,
+          confirmButtonText: 'Так',
+          denyButtonText: `Ні`,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            api
+              .patch(API.CATALOG_GROUPS_RESTORE, id)
               .then((response) => {
                 const { message } = response.data;
                 this.$swal.fire({
