@@ -23,8 +23,9 @@ import Login from '@/views/pages/LoginLayout';
 import Err from '@/views/Err';
 import Logs from '@/views/pages/settings/Logs';
 import SubjectLanguage from '@/views/pages/settings/SubjectLanguage';
+import CatalogGroup from '@/views/pages/settings/CatalogGroup';
 import { ROLES } from '@/utils/constants';
-import CatalogHelpers from "@/views/pages/settings/Helpers/SubjectHelpers";
+import CatalogHelpers from '@/views/pages/settings/Helpers/SubjectHelpers';
 
 const allRoles = () => Object.values(ROLES.ID);
 // const allRolesExcept = (...exceptRoles) => Object.values(ROLES.ID).filter(role => exceptRoles.indexOf(role) === -1);
@@ -238,6 +239,17 @@ const routes = [
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
           header: 'Мова викладання',
           breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Мова викладання' }],
+        },
+      },
+      {
+        path: 'catalog-groups',
+        name: 'CatalogGroup',
+        component: CatalogGroup,
+        meta: {
+          requiresAuth: true,
+          accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
+          header: 'Група дисциплін',
+          breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Група дисциплін' }],
         },
       },
       {

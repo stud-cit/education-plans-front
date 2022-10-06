@@ -33,6 +33,7 @@ export default {
         'ListCycle',
         'CatalogHelpers',
         'SubjectLanguage',
+        'CatalogGroup',
         'Logs',
       ],
     };

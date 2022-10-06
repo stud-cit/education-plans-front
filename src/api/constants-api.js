@@ -40,6 +40,7 @@ export const API = {
   SUBJECT_HELPERS: version + '/subject-helpers',
   CATALOG_HELPER_TYPES: version + '/catalog-helper-types',
   SUBJECT_LANGUAGES: version + '/subject-languages',
+  CATALOG_GROUPS: version + '/catalog-groups',
   ERR: version + '/err',
 };
 
@@ -67,5 +68,9 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     page: 'page',
     searchTitle: 'title',
     type: 'type',
-  }
+  },
+  GET_CATALOG_GROUPS: {
+    itemsPerPage: 'items_per_page',
+    page: 'page',
+  },
 };
