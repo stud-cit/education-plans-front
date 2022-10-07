@@ -25,17 +25,7 @@
       </template>
     </v-data-table>
 
-    // TODO: move to component
-    <v-tooltip left color="info">
-      <template v-slot:activator="{ on, attrs }">
-        <v-fab-transition>
-          <v-btn color="primary" dark fixed bottom right fab v-bind="attrs" v-on="on" @click="showCreate = true">
-            <v-icon>mdi-plus</v-icon>
-          </v-btn>
-        </v-fab-transition>
-      </template>
-      <span>Додати групу дисциплін</span>
-    </v-tooltip>
+    <AddButton @show="openCreate">Додати групу дисциплін</AddButton>
 
     <CreateCatalogGroupModal
       :dialog="showCreate"
@@ -66,10 +56,12 @@ import { API, ALLOWED_REQUEST_PARAMETERS } from '@/api/constants-api';
 import vuexStore from '@/store';
 import CreateCatalogGroupModal from '@/views/pages/settings/CatalogGroup/create';
 import EditCatalogGroupModal from '@/views/pages/settings/CatalogGroup/edit';
+import AddButton from '@/components/base/AddButton';
 
 export default {
   name: 'CatalogGroup',
   components: {
+    AddButton,
     CreateCatalogGroupModal,
     EditCatalogGroupModal,
   },
@@ -113,6 +105,9 @@ export default {
         vuexStore.dispatch('loader/hide');
         vuexStore.commit('setErrors', { error: 'Server error' });
       }
+    },
+    openCreate() {
+      this.showCreate = true;
     },
     closeCreate() {
       this.showCreate = false;
