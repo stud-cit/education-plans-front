@@ -14,7 +14,7 @@
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" @click="openEdit(item)"> mdi-pencil </v-icon>
+        <v-icon v-if="!item.deleted_at" small class="mr-2" @click="openEdit(item)"> mdi-pencil </v-icon>
 
         <v-icon v-if="!item.deleted_at" small class="mr-2" color="red" @click="deleteItem(item.id, item.title)">
           mdi-archive-arrow-down-outline
