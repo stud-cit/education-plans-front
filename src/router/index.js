@@ -89,7 +89,14 @@ const routes = [
         component: CreatePlan,
         meta: {
           requiresAuth: true,
-          accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
+          accessIsAllowed: [
+            ROLES.ID.admin, 
+            ROLES.ID.root, 
+            ROLES.ID.training_department, 
+            ROLES.ID.practice_department, 
+            ROLES.ID.educational_department_deputy, 
+            ROLES.ID.educational_department_chief
+          ],
           header: 'Створення нового плану',
           breadCrumb: [
             {

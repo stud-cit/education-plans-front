@@ -273,7 +273,14 @@
             ></v-autocomplete>
           </validation-provider>
         </v-col>
-        <v-col cols="12" lg="6" class="py-0" v-if="allowedRoles([ROLES.ID.admin, ROLES.ID.root])">
+        <v-col cols="12" lg="6" class="py-0" v-if="allowedRoles([
+            ROLES.ID.admin, 
+            ROLES.ID.root, 
+            ROLES.ID.training_department, 
+            ROLES.ID.practice_department, 
+            ROLES.ID.educational_department_deputy, 
+            ROLES.ID.educational_department_chief
+          ])">
           <v-checkbox
             v-model="plan.published"
             label="Відкрити спільний доступ"

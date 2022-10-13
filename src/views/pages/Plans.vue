@@ -8,7 +8,17 @@
                  @preview="apiPreviewPlan"
                  @delete="apiDeletePlan"
     />
-    <v-tooltip left color="info" v-if="allowedRoles([ROLES.ID.admin, ROLES.ID.root])">
+    <v-tooltip left color="info" 
+    v-if="allowedRoles(
+      [
+        ROLES.ID.admin, 
+        ROLES.ID.root, 
+        ROLES.ID.training_department, 
+        ROLES.ID.practice_department, 
+        ROLES.ID.educational_department_deputy, 
+        ROLES.ID.educational_department_chief
+      ]
+    )">
       <template v-slot:activator="{ on, attrs }">
         <v-fab-transition>
           <v-btn

@@ -79,7 +79,7 @@
     </v-row>
 
     <v-row class="cycle-subject head ma-0 mb-1" v-if="item.subjects && item.subjects.length > 0">
-      <v-col cols="6" class="pa-0 text-left">
+      <v-col cols="5" class="pa-0 text-left">
         Назва предмету
       </v-col>
       <v-col class="pa-0">
@@ -96,6 +96,9 @@
       </v-col>
       <v-col class="pa-0">
         Кредитів
+      </v-col>
+      <v-col class="pa-0">
+        Екзамени в семестрах
       </v-col>
       <v-col class="pa-0"></v-col>
     </v-row>

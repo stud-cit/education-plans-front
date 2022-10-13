@@ -194,6 +194,7 @@
                     <v-col>
                       <v-autocomplete
                         :items="formControls"
+                        :disabled="!moduleNumber.hour"
                         label="Форма контролю"
                         item-text="title"
                         item-value="id"
@@ -204,6 +205,7 @@
                     <v-col>
                       <v-autocomplete
                         :items="individualTasks"
+                        :disabled="!moduleNumber.hour"
                         label="Індивідуальні завдання"
                         item-text="title"
                         item-value="id"
@@ -594,7 +596,7 @@ export default {
         for (let semester = 0; semester <= semesters; semester++) {
           if (semesters != 0) {
             this.subjectForm.semesters_credits.push({
-              credit: 0,
+              credit: 0.0,
               course: course + 1,
               semester: semesterNumber,
             });
@@ -637,7 +639,7 @@ export default {
               newSemestersCredits.push(this.subjectForm.semesters_credits[indexSemester]);
             } else {
               newSemestersCredits.push({
-                credit: 0,
+                credit: 0.0,
                 course: course + 1,
                 semester: indexSemester + 1,
               });
