@@ -20,7 +20,7 @@
         {{ subject.credits }}
       </v-col>
       <v-col class="pa-0">
-        {{ subject.exams.map(item => item.semester)[0] }}
+        {{ subject.exams ? subject.exams.map(item => item.semester)[0] : '' }}
       </v-col>
       <v-col class="pa-0 text-right">
         <v-btn small icon @click="editSubject(subject, item)">
