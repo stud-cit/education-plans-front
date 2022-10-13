@@ -20,6 +20,7 @@ export const API = {
   FACULTIES: version + '/faculties',
   ROLES: version + '/roles',
   WORKERS: version + '/workers',
+  LIST_WORKERS: version + '/list-workers',
   FACULTY_BY_WORKER: version + '/faculty-by-worker',
   SELECTIVE_DISCIPLINES: version + '/selective-discipline',
   CYCLES: version + '/cycles',
