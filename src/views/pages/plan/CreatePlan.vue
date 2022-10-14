@@ -81,7 +81,17 @@
       </validation-observer>
     </v-dialog>
 
-    <div class="text-right" v-if="$route.name === 'EditPlan' && plan">
+    <div class="text-right d-flex" v-if="$route.name === 'EditPlan' && plan">
+      <v-btn
+        small
+        depressed
+        :disabled="plan.status == 'success'"
+        :color="plan.need_verification == 1 ? '' : 'success'"
+        @click="sendToVerification()"
+      >
+      {{ plan.need_verification == 1 ? 'На верифікації' : 'Відправити на верифікацію' }}
+      </v-btn>
+      <v-spacer></v-spacer>
       <v-btn
         small
         depressed
@@ -129,8 +139,9 @@
             :step="index + 1"
             :complete="item.status"
             :rules="[() => item.status == null || item.status]"
+            :editable="authUser.role_id == 1"
           >
-            {{item.titleHead}}
+            <span @click="authUser.role_id == 1 ? verification({verification_statuses_id: item.id, status: item.status ? false : true}) : ''">{{item.titleHead}}</span>
             <v-btn
               icon
               small
@@ -140,7 +151,7 @@
             >
               <v-icon small>mdi-bell-ring</v-icon>
             </v-btn>
-            <small>{{item.title}}</small>
+            <small @click="authUser.role_id == 1 ? verification({verification_statuses_id: item.id, status: item.status ? false : true}) : ''">{{item.title}}</small>
           </v-stepper-step>
           <v-divider v-if="index != verifications.length - 1" :key="index"></v-divider>
         </template>
@@ -239,6 +250,17 @@ export default {
   },
 
   methods: {
+    sendToVerification() {
+      const data = {
+        ...this.plan,
+        'need_verification' : this.plan.need_verification == 1 ? false : true,
+        'hours_weeks_semesters': JSON.stringify(this.plan.hours_weeks_semesters),
+        'schedule_education_process' : JSON.stringify(this.plan.schedule_education_process),
+        'summary_data_budget_time' : JSON.stringify(this.plan.summary_data_budget_time),
+        'practical_training' : JSON.stringify(this.plan.practical_training),
+      };
+      this.submit(data);
+    },
     getItemText(item) {
       return `${item.education_program_name}, ${item.year}, ${item.educational_degree}`;
     },
