@@ -279,13 +279,13 @@
               <td class="border-table">{{ cycle.exams }}</td><!--Екзамени-->
               <td class="border-table">{{ cycle.test }}</td><!--Заліки-->
               <td class="border-table">{{ cycle.individual_tasks + (cycle.list_cycle_id == 10 ? plan.exams_table[cycle.index - 1].semester : '') }}</td><!--Індивідуальні завдання-->
-              <td class="border-table">{{ cycle.credits }}</td><!--Кількість кредитів ЄКТС-->
-              <td class="border-table">{{ cycle.total_volume_hour }}</td><!--загальний обсяг-->
-              <td class="border-table">{{ cycle.total_classroom }}</td><!--всього-->
-              <td class="border-table">{{ cycle.hours }}</td><!--лекції-->
-              <td class="border-table">{{ cycle.practices }}</td><!--практичні, семінарські-->
-              <td class="border-table">{{ cycle.laboratories }}</td><!--лабораторні-->
-              <td class="border-table">{{ cycle.individual_work }}</td><!--самостійна робота-->
+              <td class="border-table">{{ cycle.credits > 0 ? cycle.credits : '' }}</td><!--Кількість кредитів ЄКТС-->
+              <td class="border-table">{{ cycle.total_volume_hour > 0 ? cycle.total_volume_hour : '' }}</td><!--загальний обсяг-->
+              <td class="border-table">{{ cycle.total_classroom > 0 ? cycle.total_classroom : '' }}</td><!--всього-->
+              <td class="border-table">{{ cycle.hours > 0 ? cycle.hours : '' }}</td><!--лекції-->
+              <td class="border-table">{{ cycle.practices > 0 ? cycle.practices : '' }}</td><!--практичні, семінарські-->
+              <td class="border-table">{{ cycle.laboratories > 0 ? cycle.laboratories : '' }}</td><!--лабораторні-->
+              <td class="border-table">{{ cycle.individual_work > 0 ? cycle.individual_work : '' }}</td><!--самостійна робота-->
 
               <td
                 v-for="semester in plan.study_term.semesters"
@@ -305,7 +305,7 @@
                 class="border-table"
               >
                 <template v-if="hour.hasOwnProperty('hour')">
-                  {{hour.hour}}
+                  {{ hour.hour > 0 ? hour.hour : '' }}
                 </template>
               </td><!--Todo for course-->
 

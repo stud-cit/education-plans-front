@@ -194,7 +194,7 @@
                     <v-col>
                       <v-autocomplete
                         :items="formControls"
-                        :disabled="!moduleNumber.hour"
+                        :disabled="cycleForm.has_discipline == 1 && !moduleNumber.hour"
                         label="Форма контролю"
                         item-text="title"
                         item-value="id"
@@ -205,7 +205,7 @@
                     <v-col>
                       <v-autocomplete
                         :items="individualTasks"
-                        :disabled="!moduleNumber.hour"
+                        :disabled="cycleForm.has_discipline == 1 && !moduleNumber.hour"
                         label="Індивідуальні завдання"
                         item-text="title"
                         item-value="id"
