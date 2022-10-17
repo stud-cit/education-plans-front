@@ -11,6 +11,7 @@
             name="Назва плану"
             rules="required"
           >
+            <span class="body-2 yellow lighten-3"><b>Формат назви:</b> Код спеціальності Назва ОП Освітній рівень Рік прийому. Приклад: 122 ОПП Інформатика бакалавр 2023</span>
             <v-text-field
               v-model="plan.title"
               :error-messages="errors"

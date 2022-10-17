@@ -462,7 +462,7 @@
 
             <tr :key="'signature_1_' + signature.id">
               <td colspan="7" rowspan="3" class="text-left signature-position">
-                {{signature.position}}
+                {{signature.position}} {{signature.manual_position}}
               </td>
               <td rowspan="3"></td>
               <td rowspan="3"></td>
