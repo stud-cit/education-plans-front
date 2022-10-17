@@ -25,36 +25,28 @@
           </v-col>
 
           <v-col cols="12" md="5">
-            <validation-provider v-slot="{ errors }" name="Підрозділ" rules="required">
-              <v-text-field
-                v-model="item.manual_position"
-                :items="positions"
-                :error-messages="errors"
-                label="Підрозділ"
-                data-vv-name="Підрозділ"
-                item-text="manual_position"
-                item-value="manual_position"
-                required
-                :disabled="item.edit"
-              ></v-text-field>
-            </validation-provider>
+            <v-text-field
+              v-model="item.manual_position"
+              :items="positions"
+              label="Підрозділ"
+              data-vv-name="Підрозділ"
+              item-text="manual_position"
+              item-value="manual_position"
+              :disabled="item.edit"
+            ></v-text-field>
           </v-col>
 
           <v-col cols="12" md="3">
-            <validation-provider v-slot="{ errors }" name="Посадова особа" rules="required">
-              <v-autocomplete
-                v-model="item.asu_id"
-                :items="workers"
-                :error-messages="errors"
-                label="Посадова особа"
-                data-vv-name="Посадова особа"
-                item-text="full_name"
-                item-value="asu_id"
-                :loading="workerLoader"
-                required
-                :disabled="item.edit"
-              ></v-autocomplete>
-            </validation-provider>
+            <v-autocomplete
+              v-model="item.asu_id"
+              :items="workers"
+              label="Посадова особа"
+              data-vv-name="Посадова особа"
+              item-text="full_name"
+              item-value="asu_id"
+              :loading="workerLoader"
+              :disabled="item.edit"
+            ></v-autocomplete>
           </v-col>
 
           <v-col cols="12" md="2">

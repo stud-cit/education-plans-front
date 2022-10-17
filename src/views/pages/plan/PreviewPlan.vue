@@ -173,7 +173,7 @@
             <td colspan="3" rowspan="2" class="border-table">Семестр</td>
           </tr>
           <tr class="subtable">
-            <td colspan="5" class="border-table">Кваліфікаційна робота бакалавра</td>
+            <td colspan="5" class="border-table">Кваліфікаційна робота</td>
             <td colspan="4" class="border-table">Кваліфікаційні (атестаційні) іспити</td>
             <td></td>
             <td></td>
