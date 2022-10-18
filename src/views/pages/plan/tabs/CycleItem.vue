@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row :class="['cycle-subject', 'cycle', cycleIndexError == item.id ? 'error' : '', 'ma-0', 'mb-1']">
-      <v-col cols="9" class="pa-0">
+      <v-col cols="8" class="pa-0">
         <select :disabled="cycleIndex != item.id" v-model="item.list_cycle_id">
           <option 
             style="color: black" 
@@ -35,6 +35,7 @@
           @input="checkCredit(parentItem, item)"
         >
       </v-col>
+      <v-col cols="1" class="pa-0"></v-col>
       <v-col class="pa-0 text-right">
         <template v-if="!(authUser.role_id != 1 && item.credit > 0)">
           <v-btn small icon @click="cycleIndex = item.id" v-if="cycleIndex != item.id">
