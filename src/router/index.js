@@ -90,12 +90,12 @@ const routes = [
         meta: {
           requiresAuth: true,
           accessIsAllowed: [
-            ROLES.ID.admin, 
-            ROLES.ID.root, 
-            ROLES.ID.training_department, 
-            ROLES.ID.practice_department, 
-            ROLES.ID.educational_department_deputy, 
-            ROLES.ID.educational_department_chief
+            ROLES.ID.admin,
+            ROLES.ID.root,
+            ROLES.ID.training_department,
+            ROLES.ID.practice_department,
+            ROLES.ID.educational_department_deputy,
+            ROLES.ID.educational_department_chief,
           ],
           header: 'Створення нового плану',
           breadCrumb: [
@@ -110,7 +110,7 @@ const routes = [
         },
       },
       {
-        path: 'edit/:id:title',
+        path: 'edit/:id/:title',
         name: 'EditPlan',
         component: CreatePlan,
         meta: {
@@ -124,7 +124,7 @@ const routes = [
         },
       },
       {
-        path: 'preview/:id:title',
+        path: 'preview/:id/:title',
         name: 'PreviewPlan',
         component: PreviewPlan,
         meta: {
