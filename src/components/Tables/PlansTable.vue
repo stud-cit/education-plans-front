@@ -92,12 +92,12 @@
       {{ (meta.current_page - 1) * meta.per_page + (index + 1) }}
     </template>
 
-    <template v-slot:item.is_template="{ item }">
+    <template v-slot:item.parent_id="{ item }">
       <v-tooltip top color="primary">
         <template v-slot:activator="{ on, attrs }">
           <span v-bind="attrs" v-on="on" class="cursor-pointer">
             <v-badge dot :color="getColor(item.published)" label="published" inline left></v-badge>
-            {{ item.is_template }}
+            {{ item.parent_id }}
           </span>
         </template>
         <span>{{ item.published ? 'Опубліковано' : 'Не опубліковано' }}</span>
@@ -143,7 +143,7 @@ export default {
       searchTitle: '',
       headers: [
         { text: '№', value: 'index', sortable: false },
-        { text: 'Тип', value: 'is_template', sortable: false },
+        { text: 'Тип', value: 'parent_id', sortable: true },
         { text: 'Назва', value: 'title' },
         { text: 'Факультет', value: 'faculty', sortable: false },
         { text: 'Кафедра', value: 'department', sortable: false },
@@ -274,16 +274,25 @@ export default {
       });
     },
     itemRowBackground(item) {
-      if(this.allowedRoles([ROLES.ID.admin]) || this.allowedRoles([ROLES.ID.root])) {
+      if (this.allowedRoles([ROLES.ID.admin]) || this.allowedRoles([ROLES.ID.root])) {
         return item.status + ' lighten-5';
       } else {
-        if(item.need_verification == 1 && !item.user_verifications.find(i => i.verification_statuses_id == this.user.role_id)) {
+        if (
+          item.need_verification == 1 &&
+          !item.user_verifications.find((i) => i.verification_statuses_id == this.user.role_id)
+        ) {
           return 'warning lighten-5';
         }
-        if(item.need_verification == 1 && item.user_verifications.find(i => i.verification_statuses_id == this.user.role_id && i.status == 0)) {
+        if (
+          item.need_verification == 1 &&
+          item.user_verifications.find((i) => i.verification_statuses_id == this.user.role_id && i.status == 0)
+        ) {
           return 'error lighten-5';
         }
-        if(item.need_verification == 1 && item.user_verifications.find(i => i.verification_statuses_id == this.user.role_id && i.status == 1)) {
+        if (
+          item.need_verification == 1 &&
+          item.user_verifications.find((i) => i.verification_statuses_id == this.user.role_id && i.status == 1)
+        ) {
           return 'success lighten-5';
         }
       }
