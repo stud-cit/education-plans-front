@@ -60,10 +60,10 @@
                     </validation-provider>
                   </v-col>
                   <v-col cols="2">
-                    <validation-provider v-slot="{ errors }" name="Модуль" rules="required|max:1|max_value:8">
+                    <validation-provider v-slot="{ errors }" name="Модуль" rules="required|max:2|max_value:99">
                       <v-text-field
                         v-model="module"
-                        :counter="1"
+                        :counter="2"
                         type="number"
                         :error-messages="errors"
                         label="Модуль"
