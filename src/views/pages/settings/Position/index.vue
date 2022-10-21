@@ -7,28 +7,20 @@
       loading-text="Завантаження... Будь ласка зачекайте"
       class="elevation-1"
       hide-default-footer
+      disable-pagination
     >
       <template v-slot:item.index="{ index }">
         {{ ++index }}
       </template>
 
       <template v-slot:item.agreed="{ item }">
-        <v-checkbox
-          v-model="item.agreed"
-          @click="edit(item)"
-        ></v-checkbox>
+        <v-checkbox v-model="item.agreed" @click="edit(item)"></v-checkbox>
       </template>
 
       <template v-slot:item.position="{ item }">
         <template v-if="item.edit">
-          <validation-observer
-            ref="observer"
-          >
-            <validation-provider
-              v-slot="{ errors }"
-              name="Посада"
-              rules="required|max:255"
-            >
+          <validation-observer ref="observer">
+            <validation-provider v-slot="{ errors }" name="Посада" rules="required|max:255">
               <v-text-field
                 v-model="item.position"
                 :counter="255"
@@ -43,7 +35,7 @@
           </validation-observer>
         </template>
         <template v-else>
-          {{item.position}}
+          {{ item.position }}
         </template>
       </template>
 
@@ -55,32 +47,14 @@
           <v-icon small class="mr-2" color="primary" @click="item.edit = true"> mdi-square-edit-outline </v-icon>
         </template>
 
-        <v-icon
-          small
-          class="mr-2"
-          color="red"
-          @click="deleted(item.id, item.position)"
-        >
-          mdi-trash-can-outline
-        </v-icon>
-
+        <v-icon small class="mr-2" color="red" @click="deleted(item.id, item.position)"> mdi-trash-can-outline </v-icon>
       </template>
     </v-data-table>
 
     <v-tooltip left color="info">
       <template v-slot:activator="{ on, attrs }">
         <v-fab-transition>
-          <v-btn
-            color="primary"
-            dark
-            fixed
-            bottom
-            right
-            fab
-            v-bind="attrs"
-            v-on="on"
-            @click="showCreate = true"
-          >
+          <v-btn color="primary" dark fixed bottom right fab v-bind="attrs" v-on="on" @click="showCreate = true">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-fab-transition>
@@ -90,9 +64,13 @@
 
     <CreatePositionModal
       :dialog="showCreate"
-      @close="() => { this.showCreate = false }" @submit="create"
+      @close="
+        () => {
+          this.showCreate = false;
+        }
+      "
+      @submit="create"
     />
-
   </v-container>
 </template>
 
@@ -115,14 +93,14 @@ export default {
       items: [],
       loader: true,
       showCreate: false,
-    }
+    };
   },
   mounted() {
     this.getPositions();
   },
   methods: {
     getPositions() {
-      this.apiPositions().then( (response)  => {
+      this.apiPositions().then((response) => {
         const { data } = response;
         this.items = data.data;
         this.loader = false;
@@ -134,12 +112,12 @@ export default {
     edit(data) {
       let { id, position, agreed } = data;
       if (position === '') return;
-      api.put(`${API.POSITIONS}/${id}`, { position, agreed } ).then((response) => {
+      api.put(`${API.POSITIONS}/${id}`, { position, agreed }).then((response) => {
         data.edit = false;
         const { message } = response.data;
         this.$swal.fire({
-          position: "center",
-          icon: "success",
+          position: 'center',
+          icon: 'success',
           title: message,
           showConfirmButton: false,
           timer: 1500,
@@ -150,44 +128,52 @@ export default {
       if (item.position === '') return;
       item.edit = false;
     },
-     closeCreate() {
+    closeCreate() {
       this.showCreate = false;
     },
     create(position) {
-      api.post(API.POSITIONS, position).then((response) => {
-        this.showCreate = false;
-        const { message } = response.data;
-        this.$swal.fire({
-          position: "center",
-          icon: "success",
-          title: message,
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      }).then(() => this.getPositions());
+      api
+        .post(API.POSITIONS, position)
+        .then((response) => {
+          this.showCreate = false;
+          const { message } = response.data;
+          this.$swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        })
+        .then(() => this.getPositions());
     },
     deleted(id, position) {
-      this.$swal.fire({
-        title: `Ви хочете видалити посаду?`,
-        text: `${position}`,
-        showDenyButton: true,
-        confirmButtonText: 'Так',
-        denyButtonText: `Ні`,
-      }).then((result) => {
-        if (result.isConfirmed) {
-          api.destroy(API.POSITIONS,id).then( (response) => {
-            const { message } = response.data;
-            this.$swal.fire({
-              position: "center",
-              icon: "success",
-              title: message,
-              showConfirmButton: false,
-              timer: 1500,
-            });
-          }).then(() => this.getPositions());
-        }
-      })
+      this.$swal
+        .fire({
+          title: `Ви хочете видалити посаду?`,
+          text: `${position}`,
+          showDenyButton: true,
+          confirmButtonText: 'Так',
+          denyButtonText: `Ні`,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            api
+              .destroy(API.POSITIONS, id)
+              .then((response) => {
+                const { message } = response.data;
+                this.$swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: message,
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+              })
+              .then(() => this.getPositions());
+          }
+        });
     },
-  }
-}
+  },
+};
 </script>

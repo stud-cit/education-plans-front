@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-data-table :headers="headers" :items="items" class="elevation-1" hide-default-footer>
+    <v-data-table :headers="headers" :items="items" class="elevation-1" hide-default-footer disable-pagination>
       <template v-slot:item.index="{ index }">
         {{ ++index }}
       </template>

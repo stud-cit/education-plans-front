@@ -1,50 +1,21 @@
 <template>
   <v-container>
-    <v-data-table
-      :headers="headers"
-      :items="items"
-      class="elevation-1"
-      hide-default-footer
-    >
+    <v-data-table :headers="headers" :items="items" class="elevation-1" hide-default-footer disable-pagination>
       <template v-slot:item.index="{ index }">
         {{ ++index }}
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon
-          small
-          class="mr-2"
-          @click="openEdit(item)"
-        >
-          mdi-pencil
-        </v-icon>
+        <v-icon small class="mr-2" @click="openEdit(item)"> mdi-pencil </v-icon>
 
-        <v-icon
-          small
-          class="mr-2"
-          color="red"
-          @click="deleteItem(item.id)"
-        >
-          mdi-trash-can-outline
-        </v-icon>
-
+        <v-icon small class="mr-2" color="red" @click="deleteItem(item.id)"> mdi-trash-can-outline </v-icon>
       </template>
     </v-data-table>
 
     <v-tooltip left color="info">
       <template v-slot:activator="{ on, attrs }">
         <v-fab-transition>
-          <v-btn
-            color="primary"
-            dark
-            fixed
-            bottom
-            right
-            fab
-            v-bind="attrs"
-            v-on="on"
-            @click="showCreate = true"
-          >
+          <v-btn color="primary" dark fixed bottom right fab v-bind="attrs" v-on="on" @click="showCreate = true">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-fab-transition>
@@ -54,15 +25,24 @@
 
     <CreateNoteModal
       :dialog="showCreate"
-      @close="() => { this.showCreate = false }" @submit="create"
+      @close="
+        () => {
+          this.showCreate = false;
+        }
+      "
+      @submit="create"
     />
 
     <EditNoteModal
       :dialog="showEdit"
       :item="item"
-      @close="() => { this.showEdit = false }" @submit="edit"
+      @close="
+        () => {
+          this.showEdit = false;
+        }
+      "
+      @submit="edit"
     />
-
   </v-container>
 </template>
 
@@ -87,23 +67,23 @@ export default {
       item: {},
       showCreate: false,
       showEdit: false,
-    }
+    };
   },
   mounted() {
     this.getNotes();
   },
   methods: {
     getNotes() {
-      this.apiPNotes().then( (response)  => {
+      this.apiPNotes().then((response) => {
         const { data } = response;
         this.items = data.data;
       });
     },
     apiPNotes() {
-      return api.get(API.NOTES, null, {showLoader: true});
+      return api.get(API.NOTES, null, { showLoader: true });
     },
     openEdit(item) {
-      const { id, abbreviation, explanation} = item;
+      const { id, abbreviation, explanation } = item;
       this.showEdit = true;
       this.item = { id, abbreviation, explanation };
     },
@@ -112,17 +92,20 @@ export default {
 
       if (abbreviation === '' && explanation === '') return;
 
-      api.put(`${API.NOTES}/${id}`, { abbreviation, explanation } ).then((response) => {
-        this.showEdit = false;
-        const { message } = response.data;
-        this.$swal.fire({
-          position: "center",
-          icon: "success",
-          title: message,
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      }).then(() => this.getNotes());
+      api
+        .put(`${API.NOTES}/${id}`, { abbreviation, explanation })
+        .then((response) => {
+          this.showEdit = false;
+          const { message } = response.data;
+          this.$swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        })
+        .then(() => this.getNotes());
     },
     closeEdit(item) {
       if (item.abbreviation === '' && item.explanation === '') return;
@@ -132,39 +115,47 @@ export default {
       this.showCreate = false;
     },
     create(note) {
-      api.post(API.NOTES, note).then((response) => {
-        this.showCreate = false;
-        const { message } = response.data;
-        this.$swal.fire({
-          position: "center",
-          icon: "success",
-          title: message,
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      }).then(() => this.getNotes());
+      api
+        .post(API.NOTES, note)
+        .then((response) => {
+          this.showCreate = false;
+          const { message } = response.data;
+          this.$swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        })
+        .then(() => this.getNotes());
     },
     deleteItem(id) {
-      this.$swal.fire({
-        title: `Ви хочете видалити?`,
-        showDenyButton: true,
-        confirmButtonText: 'Так',
-        denyButtonText: `Ні`,
-      }).then((result) => {
-        if (result.isConfirmed) {
-          api.destroy(API.NOTES,id).then( (response) => {
-            const { message } = response.data;
-            this.$swal.fire({
-              position: "center",
-              icon: "success",
-              title: message,
-              showConfirmButton: false,
-              timer: 1500,
-            });
-          }).then(() => this.getNotes());
-        }
-      })
+      this.$swal
+        .fire({
+          title: `Ви хочете видалити?`,
+          showDenyButton: true,
+          confirmButtonText: 'Так',
+          denyButtonText: `Ні`,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            api
+              .destroy(API.NOTES, id)
+              .then((response) => {
+                const { message } = response.data;
+                this.$swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: message,
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+              })
+              .then(() => this.getNotes());
+          }
+        });
     },
-  }
-}
+  },
+};
 </script>

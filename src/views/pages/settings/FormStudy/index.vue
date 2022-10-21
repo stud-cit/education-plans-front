@@ -1,11 +1,6 @@
 <template>
   <v-container>
-    <v-data-table
-      :headers="headers"
-      :items="items"
-      class="elevation-1"
-      hide-default-footer
-    >
+    <v-data-table :headers="headers" :items="items" class="elevation-1" hide-default-footer disable-pagination>
       <template v-slot:item.index="{ index }">
         {{ ++index }}
       </template>
@@ -17,12 +12,12 @@ import api from '@/api';
 import { API } from '@/api/constants-api';
 
 export default {
-  name: "FormStudy",
+  name: 'FormStudy',
   data() {
     return {
       headers: [
-        { text: "№", value: "index", sortable: false, width: '20px' },
-        { text: "Форма навчання", value: "title", sortable: false },
+        { text: '№', value: 'index', sortable: false, width: '20px' },
+        { text: 'Форма навчання', value: 'title', sortable: false },
       ],
       items: [],
     };
@@ -34,14 +29,14 @@ export default {
 
   methods: {
     getFormStudies() {
-      this.apiFromStudies().then( (response) => {
+      this.apiFromStudies().then((response) => {
         const { data } = response;
         this.items = data.data;
       });
     },
     apiFromStudies() {
-      return api.get(API.FORM_STUDIES, null, {showLoader: true});
-    }
+      return api.get(API.FORM_STUDIES, null, { showLoader: true });
+    },
   },
 };
 </script>
