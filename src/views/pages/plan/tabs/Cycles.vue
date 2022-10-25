@@ -120,11 +120,10 @@
               Не вірно розподілено аудиторне навантаження на дисципліну.
             </v-alert>
 
-            <v-alert dense outlined type="error" class="mb-2" v-if="cycleForm.has_discipline && checkCountHoursModules">
-              Перевищено загальну кількість годин. Кількість розподілених годин має відповідати сумі годин лекцій,
-              практичних, лабораторних.
+            <v-alert dense outlined type="error" class="mb-2" v-if="cycleForm.has_discipline && !checkCountHoursModules">
+              Кількість розподілених годин має відповідати сумі годин лекцій, практичних, лабораторних.
             </v-alert>
-
+            
             <v-alert
               dense
               outlined
@@ -453,9 +452,15 @@ export default {
       return this.plan.study_term.module;
     },
     checkCountHoursModules() {
+      let sumHoursModules = 0;
+      const hours_modules_length = this.subjectForm.hours_modules.length
       let sumHours = +this.subjectForm.hours + +this.subjectForm.practices + +this.subjectForm.laboratories;
-      let sumHoursModules = this.sumArray(this.subjectForm.hours_modules, 'hour');
-      return sumHoursModules > sumHours;
+      if (hours_modules_length || hours_modules_length === this.plan.hours_weeks_semesters.length) {
+        this.plan.hours_weeks_semesters.forEach((element, index) => {
+          sumHoursModules += element.week * this.subjectForm.hours_modules[index].hour;
+        });
+      }
+      return sumHoursModules == sumHours;
     },
     checkCountHours() {
       let sumHours = +this.subjectForm.hours + +this.subjectForm.practices + +this.subjectForm.laboratories;
