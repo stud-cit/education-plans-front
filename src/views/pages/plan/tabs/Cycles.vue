@@ -460,7 +460,7 @@ export default {
           sumHoursModules += element.week * this.subjectForm.hours_modules[index].hour;
         });
       }
-      return sumHoursModules.round() == sumHours;
+      return Math.round(sumHoursModules) == sumHours;
     },
     checkCountHours() {
       let sumHours = +this.subjectForm.hours + +this.subjectForm.practices + +this.subjectForm.laboratories;
