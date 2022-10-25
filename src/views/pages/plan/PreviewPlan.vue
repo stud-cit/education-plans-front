@@ -721,7 +721,7 @@ export default {
           cycle.subjects.map((el,index) => el.index = ++index)
 
           cycle.subjects.map((subject) => {
-            subject.total_classroom = this.totalClassroom(subject.hours_modules)
+            subject.total_classroom = this.totalClassroom(subject)
             subject.individual_work = (subject.total_volume_hour - subject.hours - subject.practices -subject.laboratories)
           })
 
@@ -765,17 +765,15 @@ export default {
     exportPDF() {
       window.print();
     },
-    totalClassroom(hours_modules) {
-      const hours_modules_length = hours_modules.length
-      let total = 0;
-
-      if (hours_modules_length || hours_modules_length === this.plan.hours_weeks_semesters.length) {
-        this.plan.hours_weeks_semesters.forEach((element, index) => {
-          total += element.week * hours_modules[index].hour;
-        })
-      }
-
-      return total;
+    totalClassroom(subject) {
+      // const hours_modules_length = hours_modules.length
+      // let total = 0;
+      // if (hours_modules_length || hours_modules_length === this.plan.hours_weeks_semesters.length) {
+      //   this.plan.hours_weeks_semesters.forEach((element, index) => {
+      //     total += element.week * hours_modules[index].hour;
+      //   })
+      // }
+      return +subject.hours + +subject.practices + +subject.laboratories;
     },
     getHoursModulesTotal(obj, inside_hour = false ) {
       let hours_modules_total = [];

@@ -14,7 +14,7 @@
         {{ subject.laboratories }}
       </v-col>
       <v-col class="pa-0">
-        {{ sumHour(subject.hours_modules, 'hour') }}
+        {{ sumHour(subject.hours_modules, 'hour').toFixed(1) }}
       </v-col>
       <v-col class="pa-0">
         {{ subject.credits }}
