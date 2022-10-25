@@ -27,7 +27,7 @@
                     <validation-provider v-slot="{ errors }" name="Роки" rules="required|max:1|max_value:9">
                       <v-text-field
                         v-model="item.year"
-                        :counter="1"
+                        :counter="10"
                         type="number"
                         :error-messages="errors"
                         label="Роки"
