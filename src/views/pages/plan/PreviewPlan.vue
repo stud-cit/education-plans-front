@@ -771,7 +771,7 @@ export default {
 
       if (hours_modules_length || hours_modules_length === this.plan.hours_weeks_semesters.length) {
         this.plan.hours_weeks_semesters.forEach((element, index) => {
-          total += element.hour * hours_modules[index].hour;
+          total += element.week * hours_modules[index].hour;
         })
       }
 
