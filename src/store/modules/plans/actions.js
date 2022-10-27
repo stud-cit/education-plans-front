@@ -19,8 +19,8 @@ export const destroy = (context, id) => {
 }
 
 export const copy = (context, id) => {
-  api.post(API.COPY_PLAN + id).then(() => {
-    context.dispatch('getListPlans', context.state.options);
+  api.post(API.COPY_PLAN + id).then((response) => {
+    document.location.href = encodeURI("plan/edit/"+response.data.id+"/"+response.data.title);
   });
 }
 
