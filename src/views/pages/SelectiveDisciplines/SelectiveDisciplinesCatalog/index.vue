@@ -25,14 +25,13 @@
             <v-autocomplete
               v-model="group"
               :items="groups"
-              item-text="name"
+              item-text="title"
               item-value="id"
               label="Група"
               hide-details
               clearable
             ></v-autocomplete>
           </v-col>
-
         </v-row>
 
         <v-row class="px-4 pb-4">
@@ -80,29 +79,13 @@
       </template>
     </v-data-table>
 
-<!--    <AddButton @show="openDialogCreate">Додати дисципліну</AddButton>-->
+    <!--    <AddButton @show="openDialogCreate">Додати дисципліну</AddButton>-->
 
-    <v-speed-dial
-      v-model="nav"
-      bottom
-      right
-      fixed
-      direction="top"
-      transition="slide-y-reverse-transition"
-    >
+    <v-speed-dial v-model="nav" bottom right fixed direction="top" transition="slide-y-reverse-transition">
       <template v-slot:activator>
-        <v-btn
-          v-model="nav"
-          color="blue darken-2"
-          dark
-          fab
-        >
-          <v-icon v-if="nav">
-            mdi-close
-          </v-icon>
-          <v-icon v-else>
-            mdi-dots-vertical
-          </v-icon>
+        <v-btn v-model="nav" color="blue darken-2" dark fab>
+          <v-icon v-if="nav"> mdi-close </v-icon>
+          <v-icon v-else> mdi-dots-vertical </v-icon>
         </v-btn>
       </template>
       <v-tooltip left color="info">
@@ -127,7 +110,6 @@
       </v-tooltip>
     </v-speed-dial>
 
-
     <CreateSelectiveDisciplinesCatalogModal
       :dialog="createModal"
       @close="closeDialogCreate"
@@ -147,34 +129,29 @@
       @close="closeDialogPreview"
       ref="previewModal"
     />
-    <PdfSelectiveDisciplinesCatalogModal
-      :dialog="pdfModal"
-      @close="closeDialogPdf"
-      ref="pdfModal"
-    />
+    <PdfSelectiveDisciplinesCatalogModal :dialog="pdfModal" @close="closeDialogPdf" ref="pdfModal" />
   </v-container>
 </template>
 
 <script>
 import api from '@/api';
-import {ALLOWED_REQUEST_PARAMETERS, API} from '@/api/constants-api';
-import GlobalMixin from "@/mixins/GlobalMixin";
-import AddButton from "@c/base/AddButton";
-import PreviewSelectiveDisciplinesCatalogModal
-  from "@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/previewModal";
-import CreateSelectiveDisciplinesCatalogModal
-  from "@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/createModal";
-import EditSelectiveDisciplinesCatalogModal
-  from "@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/editModal";
-import PdfSelectiveDisciplinesCatalogModal
-  from "@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/pdfModal";
+import { ALLOWED_REQUEST_PARAMETERS, API } from '@/api/constants-api';
+import GlobalMixin from '@/mixins/GlobalMixin';
+import AddButton from '@c/base/AddButton';
+import PreviewSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/previewModal';
+import CreateSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/createModal';
+import EditSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/editModal';
+import PdfSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/pdfModal';
 
 export default {
-  name: "SelectiveDisciplinesCatalog",
+  name: 'SelectiveDisciplinesCatalog',
   components: {
     PdfSelectiveDisciplinesCatalogModal,
     EditSelectiveDisciplinesCatalogModal,
-    CreateSelectiveDisciplinesCatalogModal, PreviewSelectiveDisciplinesCatalogModal, AddButton},
+    CreateSelectiveDisciplinesCatalogModal,
+    PreviewSelectiveDisciplinesCatalogModal,
+    AddButton,
+  },
   data() {
     return {
       nav: false,
@@ -194,15 +171,13 @@ export default {
 
       headers: [
         { text: '№', value: 'index', sortable: false, width: '20px' },
-        { text: 'Рік', value: 'year', sortable: false},
-        { text: 'Назва дисципліни', value: 'title', sortable: false},
-        { text: 'Група', value: 'group', sortable: false},
-        { text: 'Кафедра', value: 'department', sortable: false},
-        { text: 'Дії', value: 'actions', sortable: false},
+        { text: 'Рік', value: 'year', sortable: false },
+        { text: 'Назва дисципліни', value: 'title', sortable: false },
+        { text: 'Група', value: 'group', sortable: false },
+        { text: 'Кафедра', value: 'department', sortable: false },
+        { text: 'Дії', value: 'actions', sortable: false },
       ],
-      items: [
-        {id: 1, title: 'Mathematics', year: 2022, group: 'group 1', faculty: 'Шосткинський інститут СумДУ', department: 'Кафедра економіки та управління ШІ СумДУ'}
-      ],
+      items: [],
       item: null,
       meta: [],
       options: null,
@@ -211,7 +186,7 @@ export default {
       createModal: false,
       editModal: false,
       pdfModal: false,
-    }
+    };
   },
   mounted() {
     this.apiGetGroups();
@@ -229,21 +204,22 @@ export default {
     options(v) {
       v.year = new Date().getFullYear();
       this.apiGetItems();
-    }
+    },
   },
   methods: {
-    apiGetItems() {
-      console.log('apiGetItems', this.options)
-      // TODO add query db
-      // const options = GlobalMixin.methods.GlobalHandlingRequestParameters(
-      //   ALLOWED_REQUEST_PARAMETERS.GET_SELECTIVE_DISCIPLINES_CATALOG, this.options
-      // );
-      //
-      // api.get('', options, {showLoader: true}).then(({ data }) => {
-      //   const { data } = response;
-      //   this.items = data.data;
-      //   this.meta = data.meta;
-      // });
+    async apiGetItems() {
+      const options = GlobalMixin.methods.GlobalHandlingRequestParameters(
+        ALLOWED_REQUEST_PARAMETERS.GET_CATALOG_SELECTIVE_SUBJECTS,
+        this.options,
+      );
+      try {
+        const response = await api.get(API.CATALOG_SELECTIVE_SUBJECTS, options, { showLoader: true });
+        const { data } = response;
+        this.items = data.data;
+        this.meta = data.meta;
+      } catch (e) {
+        console.error(e); // TODO: show error
+      }
     },
     apiGetFaculties() {
       api.get(API.FACULTIES).then(({ data }) => {
@@ -260,7 +236,7 @@ export default {
       });
     },
     apiGetGroups() {
-      api.get(API.CATALOG_GROUPS).then(({ data }) => {
+      api.get(API.CATALOG_GROUPS + '/list').then(({ data }) => {
         this.groups = data.data;
       });
     },
@@ -286,7 +262,7 @@ export default {
       console.log('edit', data);
     },
     deleted(id, item) {
-      const text = '<h4>' + item.title + '</h4>'
+      const text = '<h4>' + item.title + '</h4>';
       this.$swal
         .fire({
           title: `Ви хочете видалити дисципліну?`,
@@ -312,15 +288,15 @@ export default {
         });
     },
     fakerYears() {
-      let years = []
-      const limit = 10
-      const currentYear = new Date().getFullYear()
+      let years = [];
+      const limit = 10;
+      const currentYear = new Date().getFullYear();
       let i = 1;
       while (i < limit) {
-        years.push(currentYear + i, currentYear - i)
+        years.push(currentYear + i, currentYear - i);
         i++;
       }
-      years.push(currentYear)
+      years.push(currentYear);
       return years.sort();
     },
     openDialogPreview(item) {
@@ -349,11 +325,9 @@ export default {
     },
     closeDialogPdf() {
       this.pdfModal = false;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
