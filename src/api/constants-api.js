@@ -43,6 +43,7 @@ export const API = {
   SUBJECT_LANGUAGES: version + '/subject-languages',
   CATALOG_GROUPS: version + '/catalog-groups',
   CATALOG_GROUPS_RESTORE: version + '/catalog-groups/restore',
+  CATALOG_SELECTIVE_SUBJECTS: version + '/catalog-selective-subjects',
   ERR: version + '/err',
 };
 
@@ -75,12 +76,12 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     itemsPerPage: 'items_per_page',
     page: 'page',
   },
-  GET_SELECTIVE_DISCIPLINES_CATALOG: {
+  GET_CATALOG_SELECTIVE_SUBJECTS: {
     itemsPerPage: 'items_per_page',
     page: 'page',
     year: 'year',
     group: 'group',
     faculty: 'faculty',
     department: 'department',
-  }
+  },
 };
