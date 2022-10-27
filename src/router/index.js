@@ -26,6 +26,11 @@ import SubjectLanguage from '@/views/pages/settings/SubjectLanguage';
 import CatalogGroup from '@/views/pages/settings/CatalogGroup';
 import { ROLES } from '@/utils/constants';
 import CatalogHelpers from '@/views/pages/settings/Helpers/SubjectHelpers';
+import SelectiveDisciplinesCatalog from "@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog";
+import SelectiveDisciplinesSpecialtyCatalog
+  from "@/views/pages/SelectiveDisciplines/SelectiveDisciplinesSpecialtyCatalog";
+import SelectiveDisciplinesEducationalCatalog
+  from "@/views/pages/SelectiveDisciplines/SelectiveDisciplinesEducationalCatalog";
 
 const allRoles = () => Object.values(ROLES.ID);
 // const allRolesExcept = (...exceptRoles) => Object.values(ROLES.ID).filter(role => exceptRoles.indexOf(role) === -1);
@@ -75,6 +80,57 @@ const routes = [
           accessIsAllowed: allRoles(),
           header: 'Вибіркові дисципліни',
           breadCrumb: [{ text: 'Вибіркові дисципліни' }],
+        },
+      },
+      {
+        path: 'selective-disciplines-catalog',
+        name: 'SelectiveDisciplinesCatalog',
+        component: SelectiveDisciplinesCatalog,
+        meta: {
+          requiresAuth: true,
+          accessIsAllowed: allRoles(),
+          header: 'Вибіркові дисципліни (каталог)',
+          breadCrumb: [
+            {
+              text: 'Вибіркові дисципліни',
+              to: { name: 'SelectiveDisciplines' },
+            },
+            { text: 'Вибіркові дисципліни (каталог)' }
+          ],
+        },
+      },
+      {
+        path: 'selective-disciplines-specialty-catalog',
+        name: 'SelectiveDisciplinesSpecialtyCatalog',
+        component: SelectiveDisciplinesSpecialtyCatalog,
+        meta: {
+          requiresAuth: true,
+          accessIsAllowed: allRoles(),
+          header: 'Вибіркові дисципліни за спеціальністю (каталог)',
+          breadCrumb: [
+            {
+              text: 'Вибіркові дисципліни',
+              to: { name: 'SelectiveDisciplines' },
+            },
+            { text: 'Вибіркові дисципліни каталог' }
+          ],
+        },
+      },
+      {
+        path: 'selective-disciplines-educational-catalog',
+        name: 'SelectiveDisciplinesEducationalCatalog',
+        component: SelectiveDisciplinesEducationalCatalog,
+        meta: {
+          requiresAuth: true,
+          accessIsAllowed: allRoles(),
+          header: 'Вибіркові дисципліни за освітньою програмою (каталог)',
+          breadCrumb: [
+            {
+              text: 'Вибіркові дисципліни',
+              to: { name: 'SelectiveDisciplines' },
+            },
+            { text: 'Вибіркові дисципліни за освітньою програмою (каталог)' }
+          ],
         },
       },
     ],

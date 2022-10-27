@@ -26,10 +26,11 @@
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon v-if="item.edit" small class="mr-2" color="success" @click="edit(item)"> mdi-check </v-icon>
-        <v-icon v-if="!item.edit" small class="mr-2" color="primary" @click="item.edit = true">
-          mdi-square-edit-outline
-        </v-icon>
+<!--        <v-icon v-if="item.edit" small class="mr-2" color="success" @click="edit(item)"> mdi-check </v-icon>-->
+<!--        <v-icon v-if="!item.edit" small class="mr-2" color="primary" @click="item.edit = true">-->
+<!--          mdi-square-edit-outline-->
+<!--        </v-icon>-->
+        <v-icon small class="mr-2" color="primary" @click="goTo(item.id)"> mdi-pencil </v-icon>
       </template>
     </v-data-table>
   </v-container>
@@ -52,6 +53,11 @@ export default {
         { text: 'Назва', value: 'title', sortable: false },
         { text: 'Дії', value: 'actions', width: '80px', sortable: false },
       ],
+      links: {
+        1 : 'SelectiveDisciplinesCatalog',
+        2 : 'SelectiveDisciplinesSpecialtyCatalog',
+        3 : 'SelectiveDisciplinesEducationalCatalog',
+      }
     };
   },
   computed: {
@@ -89,6 +95,9 @@ export default {
         });
       });
     },
+    goTo(id) {
+      this.$router.push({ name: this.links[id] })
+    }
   },
 };
 </script>

@@ -75,4 +75,12 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     itemsPerPage: 'items_per_page',
     page: 'page',
   },
+  GET_SELECTIVE_DISCIPLINES_CATALOG: {
+    itemsPerPage: 'items_per_page',
+    page: 'page',
+    year: 'year',
+    group: 'group',
+    faculty: 'faculty',
+    department: 'department',
+  }
 };
