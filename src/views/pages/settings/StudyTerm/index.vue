@@ -95,12 +95,11 @@ export default {
     },
     edit(item) {
       let { id, title, year, month, course, module, semesters } = item;
-      const data = { title, year, month, course, module, semesters };
-
+      const data = { id, title, year, month, course, module, semesters };
+      this.closeEdit();
       api
         .put(`${API.STUDY_TERMS}/${id}`, data)
         .then((response) => {
-          this.closeEdit();
           const { message } = response.data;
           this.$swal.fire({
             position: 'center',
