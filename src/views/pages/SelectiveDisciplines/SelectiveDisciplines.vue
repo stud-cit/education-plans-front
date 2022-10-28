@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-data-table :headers="computedHeaders" :items="items" class="elevation-1" hide-default-footer>
+    <v-data-table :headers="computedHeaders" :items="items" class="elevation-1" hide-default-footer @click:row="goTo">
       <template v-slot:item.index="{ index }">
         {{ index + 1 }}
       </template>
@@ -30,7 +30,7 @@
         <!--        <v-icon v-if="!item.edit" small class="mr-2" color="primary" @click="item.edit = true">-->
         <!--          mdi-square-edit-outline-->
         <!--        </v-icon>-->
-        <v-icon small class="mr-2" color="primary" @click="goTo(item.id)"> mdi-eye </v-icon>
+        <v-icon small class="mr-2" color="primary" @click="goTo(item)"> mdi-eye </v-icon>
       </template>
     </v-data-table>
   </v-container>
@@ -95,7 +95,8 @@ export default {
         });
       });
     },
-    goTo(id) {
+    goTo(row) {
+      const { id } = row;
       this.$router.push({ name: this.links[id] });
     },
   },
