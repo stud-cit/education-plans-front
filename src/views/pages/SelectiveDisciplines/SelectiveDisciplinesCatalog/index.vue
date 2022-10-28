@@ -150,7 +150,6 @@ export default {
     EditSelectiveDisciplinesCatalogModal,
     CreateSelectiveDisciplinesCatalogModal,
     PreviewSelectiveDisciplinesCatalogModal,
-    AddButton,
   },
   data() {
     return {
