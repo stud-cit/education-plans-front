@@ -14,7 +14,7 @@
             <v-autocomplete
               v-model="year"
               :items="years"
-              item-text="name"
+              item-text="year"
               item-value="id"
               label="Рік"
               hide-details
@@ -137,7 +137,6 @@
 import api from '@/api';
 import { ALLOWED_REQUEST_PARAMETERS, API } from '@/api/constants-api';
 import GlobalMixin from '@/mixins/GlobalMixin';
-import AddButton from '@c/base/AddButton';
 import PreviewSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/previewModal';
 import CreateSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/createModal';
 import EditSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/editModal';
@@ -154,7 +153,7 @@ export default {
   data() {
     return {
       nav: false,
-      years: this.fakerYears(),
+      years: [],
       year: new Date().getFullYear(),
 
       groups: [],
@@ -188,6 +187,7 @@ export default {
     };
   },
   mounted() {
+    this.apiGetYears();
     this.apiGetGroups();
     this.apiGetFaculties();
   },
@@ -239,6 +239,11 @@ export default {
         this.groups = data.data;
       });
     },
+    async apiGetYears() {
+      const response = await api.get(API.CATALOG_SUBJECTS + '/years');
+      const { data } = response.data;
+      this.years = data;
+    },
     create(data) {
       console.log('create', data);
       this.createModal = false;
@@ -285,18 +290,6 @@ export default {
             // });
           }
         });
-    },
-    fakerYears() {
-      let years = [];
-      const limit = 10;
-      const currentYear = new Date().getFullYear();
-      let i = 1;
-      while (i < limit) {
-        years.push(currentYear + i, currentYear - i);
-        i++;
-      }
-      years.push(currentYear);
-      return years.sort();
     },
     openDialogPreview(item) {
       this.item = item;
