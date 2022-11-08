@@ -79,15 +79,30 @@
       </template>
     </v-data-table>
 
-    <!--    <AddButton @show="openDialogCreate">Додати дисципліну</AddButton>-->
-
-    <v-speed-dial v-model="nav" bottom right fixed direction="top" transition="slide-y-reverse-transition">
+    <v-speed-dial
+      v-model="nav"
+      bottom
+      right
+      fixed
+      direction="top"
+      transition="slide-y-reverse-transition"
+    >
       <template v-slot:activator>
         <v-btn v-model="nav" color="blue darken-2" dark fab>
           <v-icon v-if="nav"> mdi-close </v-icon>
           <v-icon v-else> mdi-dots-vertical </v-icon>
         </v-btn>
       </template>
+      <v-tooltip left color="info">
+        <template v-slot:activator="{ on, attrs }">
+          <v-fab-transition>
+            <v-btn color="warning" small dark fab v-bind="attrs" v-on="on" @click="openDialogCatalog">
+              <v-icon>mdi-cog-outline</v-icon>
+            </v-btn>
+          </v-fab-transition>
+        </template>
+        <span>Налаштування каталогів</span>
+      </v-tooltip>
       <v-tooltip left color="info">
         <template v-slot:activator="{ on, attrs }">
           <v-fab-transition>
@@ -129,6 +144,16 @@
       @close="closeDialogPreview"
       ref="previewModal"
     />
+    <PdfSelectiveDisciplinesCatalogModal
+      :dialog="pdfModal"
+      @close="closeDialogPdf"
+      ref="pdfModal"
+    />
+    <CatalogSelectiveDisciplinesCatalogModal
+      :dialog="catalogModal"
+      @close="closeDialogCatalog"
+      ref="catalogModal"
+    />
     <PdfSelectiveDisciplinesCatalogModal :dialog="pdfModal" @close="closeDialogPdf" ref="pdfModal" />
   </v-container>
 </template>
@@ -141,7 +166,8 @@ import PreviewSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisc
 import CreateSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/createModal';
 import EditSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/editModal';
 import PdfSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/pdfModal';
-
+import CatalogSelectiveDisciplinesCatalogModal
+  from "@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/catalogModal";
 export default {
   name: 'SelectiveDisciplinesCatalog',
   components: {
@@ -149,6 +175,7 @@ export default {
     EditSelectiveDisciplinesCatalogModal,
     CreateSelectiveDisciplinesCatalogModal,
     PreviewSelectiveDisciplinesCatalogModal,
+    CatalogSelectiveDisciplinesCatalogModal,
   },
   data() {
     return {
@@ -184,6 +211,7 @@ export default {
       createModal: false,
       editModal: false,
       pdfModal: false,
+      catalogModal: false,
     };
   },
   mounted() {
@@ -245,8 +273,23 @@ export default {
       this.years = data;
     },
     create(data) {
-      console.log('create', data);
-      this.createModal = false;
+      api.post(API.CATALOG_SELECTIVE_SUBJECTS, data).then((response) => {
+        this.createModal = false;
+
+        const { message } = response.data;
+        this.$swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+
+        this.apiGetItems();
+        this.$refs.createModal.clear();
+      }).catch((errors) => {
+        this.$refs.createModal.setErrors(errors.response.data.errors);
+      });
     },
     clear() {
       this.options.year = '';
@@ -318,8 +361,14 @@ export default {
     closeDialogPdf() {
       this.pdfModal = false;
     },
-  },
-};
+    openDialogCatalog() {
+      this.catalogModal = true;
+    },
+    closeDialogCatalog() {
+      this.catalogModal = false;
+    }
+  }
+}
 </script>
 
 <style scoped></style>

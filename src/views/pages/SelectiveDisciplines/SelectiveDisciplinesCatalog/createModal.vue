@@ -33,7 +33,6 @@
                 v-slot="{ errors }"
                 name="Оберіть каталог"
                 rules="required"
-                vid="title"
               >
                 <v-autocomplete
                   v-model="catalog"
@@ -48,7 +47,6 @@
                 v-slot="{ errors }"
                 name="Назва дисципліни"
                 rules="required"
-                vid="title"
               >
                 <v-autocomplete
                   v-model="discipline"
@@ -82,7 +80,8 @@
                   :items="languages"
                   :error-messages="errors"
                   item-text="title"
-                  item-value="id"
+                  item-value="language_id"
+                  return-object
                   label="Мова викладання"
                 ></v-autocomplete>
               </validation-provider>
@@ -106,7 +105,6 @@
                 v-slot="{ errors }"
                 name="Перелік галузей знань / спеціальностей, для яких пропонується дисципліна"
                 rules="required"
-                vid="knowledgeSpecialty"
               >
                 <v-autocomplete
                   v-model="knowledgeSpecialty"
@@ -123,8 +121,7 @@
                 v-if="knowledgeSpecialty && knowledgeSpecialty.id === 2"
                 v-slot="{ errors }"
                 name="Перелік галузей знань / спеціальностей, для яких пропонується дисципліна"
-                rules="required_if:knowledgeSpecialty.id,2"
-                vid="title"
+                :rules="knowledgeSpecialty.id === 2 ? 'required' : ''"
               >
                 <v-radio-group
                   v-model="selectListKnowledgeSpecialties"
@@ -136,7 +133,7 @@
                     v-for="radio in radioBtnListKnowledgeSpecialties"
                     :key="radio.id"
                     :label="radio.label"
-                    :value="radio.id"
+                    :value="radio"
                   ></v-radio>
                 </v-radio-group>
               </validation-provider>
@@ -144,21 +141,20 @@
               <validation-provider
                 v-if="knowledgeSpecialty && knowledgeSpecialty.id === 2"
                 v-slot="{ errors }"
-                :name="radioBtnListKnowledgeSpecialties.find((el) => el.id === selectListKnowledgeSpecialties).label"
-                rules="required_if:knowledgeSpecialty.id,2"
-                vid="title"
+                :name="radioBtnListKnowledgeSpecialties.find((el) => el.id === selectListKnowledgeSpecialties.id).label"
+                :rules="knowledgeSpecialty.id === 2 ? 'required' : ''"
               >
                 <v-autocomplete
                   v-model="listKnowledgeSpecialties"
                   :items="listsKnowledgeSpecialties"
                   :error-messages="errors"
-                  :item-text="radioBtnListKnowledgeSpecialties.find((el) => el.id === selectListKnowledgeSpecialties).itemText"
+                  :item-text="radioBtnListKnowledgeSpecialties.find((el) => el.id === selectListKnowledgeSpecialties.id).itemText"
                   hide-details
                   item-value="id"
                   return-object
                   multiple
                   class="mt-3"
-                  :label="radioBtnListKnowledgeSpecialties.find((el) => el.id === selectListKnowledgeSpecialties).label"
+                  :label="radioBtnListKnowledgeSpecialties.find((el) => el.id === selectListKnowledgeSpecialties.id).label"
                 ></v-autocomplete>
               </validation-provider>
 
@@ -166,7 +162,6 @@
                 v-slot="{ errors }"
                 name="Кафедра, що пропонує дисципліну"
                 rules="required"
-                vid="title"
               >
                 <v-autocomplete
                   v-model="department"
@@ -184,7 +179,6 @@
                 v-slot="{ errors }"
                 name="Лекції"
                 rules="required"
-                vid="full_name"
               >
                 <v-autocomplete
                   v-model="lecture"
@@ -203,7 +197,6 @@
                 v-slot="{ errors }"
                 name="Семінарські та практичні заняття, лабораторні роботи"
                 rules="required"
-                vid="full_name"
               >
                 <v-autocomplete
                   v-model="practice"
@@ -221,7 +214,6 @@
                 v-slot="{ errors }"
                 name="Загальна компетентність, на формування або розвиток якої спрямована дисципліна"
                 rules="required"
-                vid="title"
               >
                 <v-combobox
                   v-model="generalCompetence"
@@ -237,7 +229,6 @@
                 v-slot="{ errors }"
                 name="Результати навчання за навчальною дисципліною"
                 rules="required"
-                vid="title"
               >
                 <v-combobox
                   v-model="resultsOfStudy"
@@ -253,7 +244,6 @@
                 v-slot="{ errors }"
                 name="Види навчальних занять та методи викладання, що пропонуються"
                 rules="required"
-                vid="title"
               >
                 <v-combobox
                   v-model="typesTrainingSessions"
@@ -269,7 +259,6 @@
                 v-slot="{ errors }"
                 name="Кількість здобувачів, які можуть записатися на дисципліну"
                 rules="required|numeric"
-                vid="title"
               >
                 <v-text-field
                   v-model="numberAcquirers"
@@ -283,7 +272,6 @@
                 v-slot="{ errors }"
                 name="Вхідні вимоги до здобувачів, які хочуть обрати дисципліну/вимоги до матеріально-технічного забезпечення"
                 rules="required"
-                vid="title"
               >
                 <v-combobox
                   v-model="requirements"
@@ -299,7 +287,6 @@
                 v-slot="{ errors }"
                 name="Обмеження щодо семестру вивчення"
                 rules="required"
-                vid="restrictionsSemester"
               >
                 <v-radio-group
                   v-model="restrictionsSemester"
@@ -311,16 +298,16 @@
                     v-for="radio in radioRestrictionsSemester"
                     :key="radio.id"
                     :label="radio.label"
-                    :value="radio.id"
+                    :value="radio"
                   ></v-radio>
                 </v-radio-group>
               </validation-provider>
 
               <validation-provider
-                v-if="restrictionsSemester === 2"
+                v-if="restrictionsSemester.id === 2"
                 v-slot="{ errors }"
                 name="Виберіть семестр/и"
-                rules="required_if:restrictionsSemester,2"
+                :rules="restrictionsSemester.id ? 'required': ''"
               >
                 <v-select
                   v-model="semesters"
@@ -332,8 +319,20 @@
                   hide-selected
                   label="Виберіть семестр/и"
                   multiple
-                  @change="(v) => v.sort()"
+                  @change="(v) => v.sort((a,b) => a-b)"
                 ></v-select>
+              </validation-provider>
+              <validation-provider
+                v-slot="{ errors }"
+                name="Опублікувати"
+              >
+                <v-switch
+                  v-model="published"
+                  color="primary"
+                  label="Опублікувати?"
+                  :error-messages="errors"
+                ></v-switch>
+
               </validation-provider>
             </v-container>
           </v-card-text>
@@ -361,8 +360,7 @@
 
 <script>
 import api from '@/api';
-import {ALLOWED_REQUEST_PARAMETERS, API} from '@/api/constants-api';
-import GlobalMixin from "@/mixins/GlobalMixin";
+import {API} from '@/api/constants-api';
 
 export default {
   name: "CreateSelectiveDisciplinesCatalogModal",
@@ -381,16 +379,16 @@ export default {
 
       knowledgeSpecialties: [
         {id: 1, title: 'Для всіх ОП'},
-        {id: 2, title: 'Для всіх здобувачів освіти крім'}
+        {id: 2, title: 'Для всіх здобувачів освіти крім:'}
       ],
       knowledgeSpecialty: null,
       showListKnowledgeSpecialties: false,
-      selectListKnowledgeSpecialties: 1,
       radioBtnListKnowledgeSpecialties: [
-        {id: 1, label: 'Інститут/факультет', itemText: 'name'},
-        {id: 2, label: 'Спеціальність', itemText: 'title'},
-        {id: 3, label: 'Освітня програма', itemText: 'title'},
+        {id: 1, label: 'Інститут/факультет', type: 'faculty', itemText: 'name'},
+        {id: 2, label: 'Спеціальність', type: 'specialty', itemText: 'title'},
+        {id: 3, label: 'Освітня програма', type: 'education_program', itemText: 'title'},
       ],
+      selectListKnowledgeSpecialties: null,
       listsKnowledgeSpecialties: [],
       listKnowledgeSpecialties: null,
 
@@ -419,20 +417,31 @@ export default {
         {id: 1, label: 'Без обмежень'},
         {id: 2, label: 'Крім'},
       ],
-      restrictionsSemester: 1,
-      semesters: [],
+      restrictionsSemester: null,
+      semesters: null,
 
       divisions: [
         {id: 1, apiPath: API.FACULTIES, label: 'faculties'},
         {id: 2, apiPath: API.SPECIALITIES_ALL, label: 'specialities'},
         {id: 3, apiPath: API.EDUCATIONAL_PROGRAMS_ALL, label: 'educational_programs'},
       ],
+      published: false,
     }
   },
+  created() {
+    this.restrictionsSemester = this.radioRestrictionsSemester[0]
+  },
   watch: {
+    knowledgeSpecialty(v) {
+      if (v === null || v.id === 1) {
+        this.selectListKnowledgeSpecialties = null;
+      } else {
+        this.selectListKnowledgeSpecialties = this.radioBtnListKnowledgeSpecialties[0];
+      }
+    },
     selectListKnowledgeSpecialties(v) {
       if (v !== null) {
-        this.apiGetKnowledgeSpecialtiesDepartments(v)
+        this.apiGetKnowledgeSpecialtiesDepartments(v.id)
       }
     },
     dialog(v) {
@@ -486,20 +495,70 @@ export default {
       this.$emit('close');
     },
     submit() {
-      let data = [];
       this.$refs.observer.validate().then((validated) => {
+
         if (validated) {
-          this.$emit('submit', {
-            catalog_id: this.catalog,
-            discipline: this.year,
-            month: this.month,
-            course: this.course,
-            module: this.module,
+          const listFieldsKnowledge = {
+            label: this.knowledgeSpecialty.title,
+            type: this.selectListKnowledgeSpecialties ? this.selectListKnowledgeSpecialties.type : null,
+            type_name: this.selectListKnowledgeSpecialties ? this.selectListKnowledgeSpecialties.label : null,
+            list: this.listKnowledgeSpecialties
+          };
+          const limitation = {
+            label: this.restrictionsSemester.label,
             semesters: this.semesters,
+          };
+
+          this.$emit('submit', {
+            catalog_subject_id: this.catalog,
+            asu_id: this.discipline.id,
+            title: this.discipline.title,
+            title_en: this.anotherDiscipline,
+            catalog_education_level_id: this.educationLevel,
+            language: this.language,
+            lecturers: this.lecture,
+            practice: this.practice,
+            list_fields_knowledge: JSON.stringify(listFieldsKnowledge),
+            department_id: this.department.id,
+            faculty_id: this.department.faculty_id,
+            general_competence: this.generalCompetence,
+            learning_outcomes: this.resultsOfStudy,
+            types_educational_activities: this.typesTrainingSessions,
+            number_acquirers: this.numberAcquirers,
+            entry_requirements_applicants: this.requirements,
+            limitation: JSON.stringify(limitation),
+            published: this.published
           });
         }
       });
     },
+    setErrors(errors) {
+      this.$refs.observer.setErrors(
+        errors
+      );
+    },
+    clear() {
+      this.catalog = null;
+      this.discipline = null;
+      this.anotherDiscipline = null;
+      this.educationLevel = null;
+      this.language = null;
+      this.lecture = null;
+      this.practice = null;
+      this.knowledgeSpecialty = null;
+      this.selectListKnowledgeSpecialties = this.radioBtnListKnowledgeSpecialties[0];
+      this.listKnowledgeSpecialties = null;
+      this.department = null;
+      this.generalCompetence = null;
+      this.resultsOfStudy = null;
+      this.typesTrainingSessions = null;
+      this.numberAcquirers = null;
+      this.requirements = null;
+      this.restrictionsSemester = this.radioRestrictionsSemester[0]
+      this.semesters = null;
+      this.published = null;
+      this.$refs.observer.reset();
+    }
   }
 }
 </script>
