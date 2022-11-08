@@ -3,6 +3,7 @@
     v-model="dialog"
     fullscreen
     hide-overlay
+    persistent
     transition="dialog-bottom-transition"
   >
     <v-card>
@@ -525,7 +526,7 @@ export default {
             learning_outcomes: this.resultsOfStudy,
             types_educational_activities: this.typesTrainingSessions,
             number_acquirers: this.numberAcquirers,
-            entry_requirements_applicants: this.requirements,
+            // entry_requirements_applicants: this.requirements,
             limitation: JSON.stringify(limitation),
             published: this.published
           });
