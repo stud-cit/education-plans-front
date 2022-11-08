@@ -31,6 +31,21 @@
             <v-container>
               <validation-provider
                 v-slot="{ errors }"
+                name="Оберіть каталог"
+                rules="required"
+                vid="title"
+              >
+                <v-autocomplete
+                  v-model="catalog"
+                  :items="catalogs"
+                  :error-messages="errors"
+                  item-text="title"
+                  item-value="id"
+                  label="Оберіть каталог"
+                ></v-autocomplete>
+              </validation-provider>
+              <validation-provider
+                v-slot="{ errors }"
                 name="Назва дисципліни"
                 rules="required"
                 vid="title"
@@ -41,6 +56,7 @@
                   :error-messages="errors"
                   item-text="title"
                   item-value="id"
+                  return-object
                   label="Назва дисципліни"
                 ></v-autocomplete>
               </validation-provider>
@@ -136,7 +152,7 @@
                   v-model="listKnowledgeSpecialties"
                   :items="listsKnowledgeSpecialties"
                   :error-messages="errors"
-                  item-text="title"
+                  :item-text="radioBtnListKnowledgeSpecialties.find((el) => el.id === selectListKnowledgeSpecialties).itemText"
                   hide-details
                   item-value="id"
                   return-object
@@ -156,7 +172,7 @@
                   v-model="department"
                   :items="departments"
                   :error-messages="errors"
-                  item-text="title"
+                  item-text="name"
                   item-value="id"
                   return-object
                   class="mt-3"
@@ -168,14 +184,14 @@
                 v-slot="{ errors }"
                 name="Лекції"
                 rules="required"
-                vid="title"
+                vid="full_name"
               >
                 <v-autocomplete
                   v-model="lecture"
-                  :items="lectures"
+                  :items="teachers"
                   :error-messages="errors"
-                  item-text="title"
-                  item-value="id"
+                  item-text="full_name"
+                  item-value="asu_id"
                   return-object
                   class="mt-3"
                   label="Лекції"
@@ -187,14 +203,14 @@
                 v-slot="{ errors }"
                 name="Семінарські та практичні заняття, лабораторні роботи"
                 rules="required"
-                vid="title"
+                vid="full_name"
               >
                 <v-autocomplete
                   v-model="practice"
-                  :items="practices"
+                  :items="teachers"
                   :error-messages="errors"
-                  item-text="title"
-                  item-value="id"
+                  item-text="full_name"
+                  item-value="asu_id"
                   return-object
                   class="mt-3"
                   label="Семінарські та практичні заняття, лабораторні роботи"
@@ -345,31 +361,35 @@
 
 <script>
 import api from '@/api';
-import {API} from '@/api/constants-api';
+import {ALLOWED_REQUEST_PARAMETERS, API} from '@/api/constants-api';
+import GlobalMixin from "@/mixins/GlobalMixin";
 
 export default {
   name: "CreateSelectiveDisciplinesCatalogModal",
   data() {
     return {
+      catalog: null,
+      catalogs: [],
+
       disciplines: [],
       discipline: null,
       anotherDiscipline: null,
-      languages: [{id: 1,title: 'Eng'}, {id: 2,title: 'Ua'}],
+      languages: [],
       language: null,
       educationsLevel: [],
       educationLevel: null,
 
       knowledgeSpecialties: [
         {id: 1, title: 'Для всіх ОП'},
-        {id: 2, title: 'Для всіх здобувачів освіти крім '}
+        {id: 2, title: 'Для всіх здобувачів освіти крім'}
       ],
       knowledgeSpecialty: null,
       showListKnowledgeSpecialties: false,
       selectListKnowledgeSpecialties: 1,
       radioBtnListKnowledgeSpecialties: [
-        {id: 1, label: 'Інститут/факультет'},
-        {id: 2, label: 'Спеціальність'},
-        {id: 3, label: 'Освітня програма'},
+        {id: 1, label: 'Інститут/факультет', itemText: 'name'},
+        {id: 2, label: 'Спеціальність', itemText: 'title'},
+        {id: 3, label: 'Освітня програма', itemText: 'title'},
       ],
       listsKnowledgeSpecialties: [],
       listKnowledgeSpecialties: null,
@@ -377,16 +397,11 @@ export default {
       departments: [],
       department: null,
 
-      lectures: [],
+      teachers: [],
       lecture: null,
-
-      practices: [],
       practice: null,
 
-      helpersGeneralCompetence: [
-        {id: 1, title: 'first helpers'},
-        {id: 2, title: 'second helpers'}
-      ],
+      helpersGeneralCompetence: [],
       generalCompetence: null,
 
       helpersResultsOfStudy: [],
@@ -406,20 +421,32 @@ export default {
       ],
       restrictionsSemester: 1,
       semesters: [],
+
+      divisions: [
+        {id: 1, apiPath: API.FACULTIES, label: 'faculties'},
+        {id: 2, apiPath: API.SPECIALITIES_ALL, label: 'specialities'},
+        {id: 3, apiPath: API.EDUCATIONAL_PROGRAMS_ALL, label: 'educational_programs'},
+      ],
     }
   },
   watch: {
-    listKnowledgeSpecialties(v) {
-      if (v !== null && v.id === 2) {
-        this.showListKnowledgeSpecialties = true
-      }
-    },
     selectListKnowledgeSpecialties(v) {
       if (v !== null) {
         this.apiGetKnowledgeSpecialtiesDepartments(v)
       }
     },
+    dialog(v) {
+      if (v === true) {
+        this.apiGetCreate();
+      }
+    },
+    discipline(v) {
+      if (v.title_eng) {
+        this.anotherDiscipline = v.title_eng;
+      }
+    },
   },
+
   props: {
     dialog: {
       type: Boolean,
@@ -429,23 +456,49 @@ export default {
     },
   },
   methods: {
+    apiGetCreate() {
+      api.get(API.CATALOG_SELECTIVE_SUBJECTS + '/create', null , { showLoader: true }).then(({ data }) => {
+        const {
+          catalogs, subjects, languages, educationsLevel, departments, teachers,
+          helpersGeneralCompetence, helpersResultsOfStudy, helpersTypesTrainingSessions,
+          helpersRequirements, faculties
+        } = data;
+        this.catalogs = catalogs
+        this.disciplines = subjects
+        this.languages = languages
+        this.educationsLevel = educationsLevel
+        this.departments = departments
+        this.teachers = teachers
+        this.helpersGeneralCompetence = helpersGeneralCompetence
+        this.helpersResultsOfStudy = helpersResultsOfStudy
+        this.helpersTypesTrainingSessions = helpersTypesTrainingSessions
+        this.helpersRequirements = helpersRequirements
+        this.listsKnowledgeSpecialties = faculties
+      });
+    },
     apiGetKnowledgeSpecialtiesDepartments(v) {
-      const departments = [
-        {id: 1, apiPath: API.FACULTIES},
-        {id: 2, apiPath: API.SPECIALITIES},
-        {id: 3, apiPath: API.EDUCATIONAL_PROGRAMS},
-      ]
-      // api.get(departments.find((el) => el.id === v ).apiPath).then(({ data }) => {
-      //   console.log('data sss',data);
-      // }); TODO get list
-      this.listsKnowledgeSpecialties = [];
+      this.listKnowledgeSpecialties = null;
+      api.get(this.divisions.find((el) => el.id === v ).apiPath).then(({ data }) => {
+        this.listsKnowledgeSpecialties = data.data;
+      });
     },
     close() {
       this.$emit('close');
     },
     submit() {
       let data = [];
-      this.$emit('submit', data);
+      this.$refs.observer.validate().then((validated) => {
+        if (validated) {
+          this.$emit('submit', {
+            catalog_id: this.catalog,
+            discipline: this.year,
+            month: this.month,
+            course: this.course,
+            module: this.module,
+            semesters: this.semesters,
+          });
+        }
+      });
     },
   }
 }

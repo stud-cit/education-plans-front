@@ -45,6 +45,9 @@ export const API = {
   CATALOG_GROUPS_RESTORE: version + '/catalog-groups/restore',
   CATALOG_SELECTIVE_SUBJECTS: version + '/catalog-selective-subjects',
   CATALOG_SUBJECTS: version + '/catalog-subjects',
+  CATALOG_SUBJECTS_TITLES: version + '/catalog-subjects/catalog-titles',
+  EDUCATIONAL_PROGRAMS_ALL: version + '/education-programs',
+  SPECIALITIES_ALL: version + '/specialities',
 
   ERR: version + '/err',
 };
@@ -85,5 +88,11 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     group: 'group',
     faculty: 'faculty',
     department: 'department',
+  },
+  GET_CATALOG_SUBJECTS: {
+    itemsPerPage: 'items_per_page',
+    page: 'page',
+    year: 'year',
+    group: 'group',
   },
 };
