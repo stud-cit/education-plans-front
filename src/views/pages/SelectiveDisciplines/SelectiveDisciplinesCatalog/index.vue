@@ -200,7 +200,7 @@ export default {
         { text: 'Назва дисципліни', value: 'title', sortable: false },
         { text: 'Група', value: 'group', sortable: false },
         { text: 'Кафедра', value: 'department', sortable: false },
-        { text: 'Дії', value: 'actions', sortable: false },
+        { text: 'Дії', value: 'actions', sortable: false, width: '120px' },
       ],
       items: [],
       item: null,
