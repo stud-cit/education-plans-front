@@ -3,6 +3,7 @@
     v-model="dialog"
     fullscreen
     hide-overlay
+    persistent
     transition="dialog-bottom-transition"
   >
       <v-card v-if="item">
@@ -47,20 +48,23 @@
           </tr>
           </thead>
           <tbody>
-          <tr>
-            <td>{{ item.title }}</td>
-            <td>{{ item.year }}</td>
-            <td>{{ item.year }}</td>
-            <td>{{ item.year }}</td>
-            <td>{{ item.year }}</td>
-            <td>{{ item.year }}</td>
-            <td>{{ item.year }}</td>
-            <td>{{ item.year }}</td>
-            <td>{{ item.year }}</td>
-            <td>{{ item.year }}</td>
-            <td>{{ item.year }}</td>
-            <td>{{ item.year }}</td>
-            <td>{{ item.year }}</td>
+          <tr v-if="subject">
+            <td>{{ subject.title }} {{subject.title_en !== null ? '(' + subject.title_en +')' : ''}}</td>
+            <td>{{ subject.language }}</td>
+            <td>{{ subject.educationLevel }}</td>
+            <td>{{ subject.list_fields_knowledge }}</td>
+            <td>{{ subject.department }}</td>
+            <td>{{ subject.lecturers }}</td>
+            <td>{{ subject.practice }}</td>
+            <td>{{ subject.general_competence }}</td>
+            <td>{{ subject.learning_outcomes }}</td>
+            <td>{{ subject.types_educational_activities }}</td>
+            <td  class="text-center">{{ subject.number_acquirers }}</td>
+            <td>{{ subject.entry_requirements_applicants }}</td>
+            <td>{{ subject.limitation }}</td>
+          </tr>
+          <tr v-else>
+            <td colspan="13" class="text-center">Данні відсутні</td>
           </tr>
           </tbody>
         </table>
@@ -77,8 +81,16 @@
 </template>
 
 <script>
+import api from '@/api';
+import {API} from '@/api/constants-api';
+
 export default {
   name: "PreviewSelectiveDisciplinesCatalogModal",
+  data() {
+    return {
+      subject: null
+    }
+  },
   props: {
     dialog: {
       type: Boolean,
@@ -88,7 +100,22 @@ export default {
     },
     item: null,
   },
+  watch: {
+    item(v) {
+      if (v !== null && this.dialog === true) {
+        this.apiGetItem(v.id);
+      }
+    }
+  },
   methods: {
+    apiGetItem(id) {
+      api.show(API.CATALOG_SELECTIVE_SUBJECTS, id , { showLoader: true }).then(({ data }) => {
+        console.log('data', data)
+        if (data.data) {
+          this.subject = data.data;
+        }
+      });
+    },
     close() {
       this.$emit('close');
     },
