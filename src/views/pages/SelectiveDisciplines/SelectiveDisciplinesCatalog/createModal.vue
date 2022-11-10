@@ -1,19 +1,40 @@
 <template>
-  <v-dialog v-model="dialog" fullscreen hide-overlay persistent transition="dialog-bottom-transition">
+  <v-dialog
+    v-model="dialog"
+    fullscreen
+    hide-overlay
+    persistent
+    transition="dialog-bottom-transition"
+  >
     <v-card>
-      <v-toolbar dark color="primary">
+      <v-toolbar
+        dark
+        color="primary"
+      >
         <v-toolbar-title>Створити дисципліну</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn icon dark @click="close">
+        <v-btn
+          icon
+          dark
+          @click="close"
+        >
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
 
-      <validation-observer ref="observer" v-slot="{ invalid }">
+
+      <validation-observer
+        ref="observer"
+        v-slot="{ invalid }"
+      >
         <form @submit.prevent="submit" @keyup.enter="submit">
           <v-card-text>
             <v-container>
-              <validation-provider v-slot="{ errors }" name="Оберіть каталог" rules="required">
+              <validation-provider
+                v-slot="{ errors }"
+                name="Оберіть каталог"
+                rules="required"
+              >
                 <v-autocomplete
                   v-model="catalog"
                   :items="catalogs"
@@ -23,7 +44,11 @@
                   label="Оберіть каталог"
                 ></v-autocomplete>
               </validation-provider>
-              <validation-provider v-slot="{ errors }" name="Назва дисципліни" rules="required">
+              <validation-provider
+                v-slot="{ errors }"
+                name="Назва дисципліни"
+                rules="required"
+              >
                 <v-autocomplete
                   v-model="discipline"
                   :items="disciplines"
@@ -34,7 +59,10 @@
                   label="Назва дисципліни"
                 ></v-autocomplete>
               </validation-provider>
-              <validation-provider v-slot="{ errors }" name="Інша назва дисципліни">
+              <validation-provider
+                v-slot="{ errors }"
+                name="Інша назва дисципліни"
+              >
                 <v-text-field
                   label="Інша назва дисципліни"
                   v-model="anotherDiscipline"
@@ -42,7 +70,11 @@
                   :disabled="!discipline"
                 ></v-text-field>
               </validation-provider>
-              <validation-provider v-slot="{ errors }" name="Мова викладання" rules="required">
+              <validation-provider
+                v-slot="{ errors }"
+                name="Мова викладання"
+                rules="required"
+              >
                 <v-autocomplete
                   v-model="language"
                   multiple
@@ -92,7 +124,12 @@
                 name="Перелік галузей знань / спеціальностей, для яких пропонується дисципліна"
                 :rules="knowledgeSpecialty.id === 2 ? 'required' : ''"
               >
-                <v-radio-group v-model="selectListKnowledgeSpecialties" row :error-messages="errors">
+                <v-radio-group
+                  v-model="selectListKnowledgeSpecialties"
+                  row
+                  :error-messages="errors"
+                >
+
                   <v-radio
                     v-for="radio in radioBtnListKnowledgeSpecialties"
                     :key="radio.id"
@@ -112,21 +149,21 @@
                   v-model="listKnowledgeSpecialties"
                   :items="listsKnowledgeSpecialties"
                   :error-messages="errors"
-                  :item-text="
-                    radioBtnListKnowledgeSpecialties.find((el) => el.id === selectListKnowledgeSpecialties.id).itemText
-                  "
+                  :item-text="radioBtnListKnowledgeSpecialties.find((el) => el.id === selectListKnowledgeSpecialties.id).itemText"
                   hide-details
                   item-value="id"
                   return-object
                   multiple
                   class="mt-3"
-                  :label="
-                    radioBtnListKnowledgeSpecialties.find((el) => el.id === selectListKnowledgeSpecialties.id).label
-                  "
+                  :label="radioBtnListKnowledgeSpecialties.find((el) => el.id === selectListKnowledgeSpecialties.id).label"
                 ></v-autocomplete>
               </validation-provider>
 
-              <validation-provider v-slot="{ errors }" name="Кафедра, що пропонує дисципліну" rules="required">
+              <validation-provider
+                v-slot="{ errors }"
+                name="Кафедра, що пропонує дисципліну"
+                rules="required"
+              >
                 <v-autocomplete
                   v-model="department"
                   :items="departments"
@@ -139,7 +176,11 @@
                 ></v-autocomplete>
               </validation-provider>
 
-              <validation-provider v-slot="{ errors }" name="Лекції" rules="required">
+              <validation-provider
+                v-slot="{ errors }"
+                name="Лекції"
+                rules="required"
+              >
                 <v-autocomplete
                   v-model="lecture"
                   :items="teachers"
@@ -243,8 +284,17 @@
                 ></v-combobox>
               </validation-provider>
 
-              <validation-provider v-slot="{ errors }" name="Обмеження щодо семестру вивчення" rules="required">
-                <v-radio-group v-model="restrictionsSemester" row :error-messages="errors">
+              <validation-provider
+                v-slot="{ errors }"
+                name="Обмеження щодо семестру вивчення"
+                rules="required"
+              >
+                <v-radio-group
+                  v-model="restrictionsSemester"
+                  row
+                  :error-messages="errors"
+                >
+
                   <v-radio
                     v-for="radio in radioRestrictionsSemester"
                     :key="radio.id"
@@ -258,11 +308,11 @@
                 v-if="restrictionsSemester.id === 2"
                 v-slot="{ errors }"
                 name="Виберіть семестр/и"
-                :rules="restrictionsSemester.id ? 'required' : ''"
+                :rules="restrictionsSemester.id ? 'required': ''"
               >
                 <v-select
                   v-model="semesters"
-                  :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
+                  :items="[1,2,3,4,5,6,7,8,9,10,11,12]"
                   :error-messages="errors"
                   disable-lookup
                   chips
@@ -270,18 +320,38 @@
                   hide-selected
                   label="Виберіть семестр/и"
                   multiple
-                  @change="(v) => v.sort((a, b) => a - b)"
+                  @change="(v) => v.sort((a,b) => a-b)"
                 ></v-select>
               </validation-provider>
-              <validation-provider v-slot="{ errors }" name="Опублікувати">
-                <v-switch v-model="published" color="primary" label="Опублікувати?" :error-messages="errors"></v-switch>
+              <validation-provider
+                v-slot="{ errors }"
+                name="Опублікувати"
+              >
+                <v-switch
+                  v-model="published"
+                  color="primary"
+                  label="Опублікувати?"
+                  :error-messages="errors"
+                ></v-switch>
+
               </validation-provider>
             </v-container>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="secondary" @click="close"> Закрити </v-btn>
-            <v-btn color="primary" @click="submit" :disabled="invalid"> Зберегти </v-btn>
+            <v-btn
+              color="secondary"
+              @click="close"
+            >
+              Закрити
+            </v-btn>
+            <v-btn
+              color="primary"
+              @click="submit"
+              :disabled="invalid"
+            >
+              Зберегти
+            </v-btn>
           </v-card-actions>
         </form>
       </validation-observer>
@@ -291,7 +361,7 @@
 
 <script>
 import api from '@/api';
-import { API } from '@/api/constants-api';
+import {API} from '@/api/constants-api';
 
 export default {
   name: 'CreateSelectiveDisciplinesCatalogModal',
@@ -309,15 +379,15 @@ export default {
       educationLevel: null,
 
       knowledgeSpecialties: [
-        { id: 1, title: 'Для всіх ОП' },
-        { id: 2, title: 'Для всіх здобувачів освіти крім:' },
+        {id: 1, title: 'Для всіх ОП'},
+        {id: 2, title: 'Для всіх здобувачів освіти крім:'}
       ],
       knowledgeSpecialty: null,
       showListKnowledgeSpecialties: false,
       radioBtnListKnowledgeSpecialties: [
-        { id: 1, label: 'Інститут/факультет', type: 'faculty', itemText: 'name' },
-        { id: 2, label: 'Спеціальність', type: 'specialty', itemText: 'title' },
-        { id: 3, label: 'Освітня програма', type: 'education_program', itemText: 'title' },
+        {id: 1, label: 'Інститут/факультет', type: 'faculty', itemText: 'name'},
+        {id: 2, label: 'Спеціальностей', type: 'specialty', itemText: 'title'},
+        {id: 3, label: 'Освітні програми', type: 'education_program', itemText: 'title'},
       ],
       selectListKnowledgeSpecialties: null,
       listsKnowledgeSpecialties: [],
@@ -345,8 +415,8 @@ export default {
       requirements: null,
 
       radioRestrictionsSemester: [
-        { id: 1, label: 'Без обмежень' },
-        { id: 2, label: 'Крім' },
+        {id: 1, label: 'Без обмежень'},
+        {id: 2, label: 'Крім:'},
       ],
       restrictionsSemester: null,
       semesters: null,
@@ -399,17 +469,9 @@ export default {
     apiGetCreate() {
       api.get(API.CATALOG_SELECTIVE_SUBJECTS + '/create', null, { showLoader: true }).then(({ data }) => {
         const {
-          catalogs,
-          subjects,
-          languages,
-          educationsLevel,
-          departments,
-          teachers,
-          helpersGeneralCompetence,
-          helpersResultsOfStudy,
-          helpersTypesTrainingSessions,
-          helpersRequirements,
-          faculties,
+          catalogs, subjects, languages, educationsLevel, departments, teachers,
+          helpersGeneralCompetence, helpersResultsOfStudy, helpersTypesTrainingSessions,
+          helpersRequirements, faculties
         } = data;
         this.catalogs = catalogs;
         this.disciplines = subjects;
@@ -426,7 +488,7 @@ export default {
     },
     apiGetKnowledgeSpecialtiesDepartments(v) {
       this.listKnowledgeSpecialties = null;
-      api.get(this.divisions.find((el) => el.id === v).apiPath).then(({ data }) => {
+      api.get(this.divisions.find((el) => el.id === v ).apiPath).then(({ data }) => {
         this.listsKnowledgeSpecialties = data.data;
       });
     },
