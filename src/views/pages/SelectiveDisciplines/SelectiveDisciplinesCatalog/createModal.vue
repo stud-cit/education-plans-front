@@ -451,8 +451,8 @@ export default {
       }
     },
     discipline(v) {
-      if (v.title_eng) {
-        this.anotherDiscipline = v.title_eng;
+      if (v.title_en) {
+        this.anotherDiscipline = v.title_en;
       }
     },
   },
