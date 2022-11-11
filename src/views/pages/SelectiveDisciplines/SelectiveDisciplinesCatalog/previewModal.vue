@@ -49,9 +49,9 @@
           </thead>
           <tbody>
           <tr v-if="subject">
-            <td>{{ subject.title }} {{subject.title_en !== null ? '(' + subject.title_en +')' : ''}}</td>
+            <td>{{ subject.subject_name }}</td>
             <td>{{ subject.language }}</td>
-            <td>{{ subject.educationLevel }}</td>
+            <td>{{ subject.education_level }}</td>
             <td>{{ subject.list_fields_knowledge }}</td>
             <td>{{ subject.department }}</td>
             <td>{{ subject.lecturers }}</td>
