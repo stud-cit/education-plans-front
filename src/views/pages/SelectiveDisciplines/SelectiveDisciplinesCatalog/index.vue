@@ -306,7 +306,22 @@ export default {
       this.apiGetItems();
     },
     edit(data) {
-      console.log('edit', data);
+      api.patch(API.CATALOG_SELECTIVE_SUBJECTS, data.id, data).then((response) => {
+        this.editModal = false;
+
+        const { message } = response.data;
+        this.$swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        this.apiGetItems();
+        this.$refs.editModal.clear();
+      }).catch((errors) => {
+        this.$refs.editModal.setErrors(errors.response.data.errors);
+      });
     },
     deleted(id, item) {
       const text = '<h4>' + item.title + '</h4>';
