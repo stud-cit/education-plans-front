@@ -320,17 +320,17 @@ export default {
         })
         .then((result) => {
           if (result.isConfirmed) {
-            //TODO api.destroy('', id).then((response) => {
-            //   const { message } = response.data;
-            //   this.$swal.fire({
-            //     position: 'center',
-            //     icon: 'success',
-            //     title: message,
-            //     showConfirmButton: false,
-            //     timer: 1500,
-            //   });
-            //   this.apiGetItems();
-            // });
+            api.destroy(API.CATALOG_SELECTIVE_SUBJECTS, id).then((response) => {
+              const { message } = response.data;
+              this.$swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: message,
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              this.apiGetItems();
+            });
           }
         });
     },
