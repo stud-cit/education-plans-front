@@ -29,6 +29,7 @@ export const API = {
   PLAN_VERIFICATION_OP: version + '/plans/verification-op',
   PLAN_FILTERS: version + '/plans/filters',
   VERIFICATIONS: version + '/verifications',
+  VERIFICATION_SUBJECT_STATUSES: version + '/verification-subject-statuses',
   SPECIALIZATIONS: version + '/specializations',
   SPECIALITIES: version + '/specialities',
   EDUCATIONAL_PROGRAMS: version + '/education-programs',
