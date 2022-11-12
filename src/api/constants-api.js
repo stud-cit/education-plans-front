@@ -49,6 +49,7 @@ export const API = {
   CATALOG_SUBJECTS_TITLES: version + '/catalog-subjects/catalog-titles',
   EDUCATIONAL_PROGRAMS_ALL: version + '/education-programs',
   SPECIALITIES_ALL: version + '/specialities',
+  CATALOG_SUBJECTS_GENERATE_PDF: version + '/catalog-subjects/generate-pdf',
 
   ERR: version + '/err',
 };
@@ -87,6 +88,12 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     page: 'page',
     year: 'year',
     group: 'group',
+    faculty: 'faculty',
+    department: 'department',
+  },
+  GET_CATALOG_SELECTIVE_SUBJECTS_PDF: {
+    year: 'year',
+    group: 'group_id',
     faculty: 'faculty',
     department: 'department',
   },

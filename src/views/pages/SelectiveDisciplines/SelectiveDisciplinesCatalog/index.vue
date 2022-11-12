@@ -147,6 +147,7 @@
     <PdfSelectiveDisciplinesCatalogModal
       :dialog="pdfModal"
       @close="closeDialogPdf"
+      :options="options"
       ref="pdfModal"
     />
     <CatalogSelectiveDisciplinesCatalogModal
@@ -154,7 +155,6 @@
       @close="closeDialogCatalog"
       ref="catalogModal"
     />
-    <PdfSelectiveDisciplinesCatalogModal :dialog="pdfModal" @close="closeDialogPdf" ref="pdfModal" />
   </v-container>
 </template>
 
@@ -227,6 +227,9 @@ export default {
       if (v.length === 1) {
         this.faculty = v[0].id;
       }
+    },
+    year(v) {
+      this.options.year = v;
     },
     options(v) {
       v.year = new Date().getFullYear();
