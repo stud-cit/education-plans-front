@@ -10,6 +10,7 @@
         <v-toolbar
           dark
           color="primary"
+          class="mb-12"
         >
           <v-toolbar-title>PDF</v-toolbar-title>
           <v-spacer></v-spacer>
@@ -21,17 +22,20 @@
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-toolbar>
-        <v-card-text>
-          <p class="pt-12 px-3 text-center">
+        <v-card-text id="printMe" class="pdf">
+          <p class="pdf_title">
             СУМСЬКИЙ ДЕРЖАВНИЙ УНІВЕРСИТЕТ
           </p>
-          <div class="faculty-line">
+          <div class="pdf_faculty">
             (назва навчально-наукового інституту/факультету)
           </div>
-          <p class="text-center" v-if="item && 'year' in item">
+          <div class="pdf_faculty-line">
+            (назва навчально-наукового інституту/факультету)
+          </div>
+          <p class="pdf_subtitle" v-if="item && 'year' in item">
             ПРОПОЗИЦІЇ ДО КАТАЛОГУ ВИБІРКОВИХ НАВЧАЛЬНИХ ДИСЦИПЛІН ЦИКЛУ ЗАГАЛЬНОЇ ПІДГОТОВКИ на {{item.year}} &mdash; {{item.year + 1}} н. р.
           </p>
-          <table class="table mt-7">
+          <table class="table pdf_table">
             <thead>
             <tr>
               <th class="text-center" rowspan="2">Назва дисципліни</th>
@@ -43,7 +47,7 @@
               <th class="text-center" rowspan="2">Загальна компетентність, на формування або розвиток якої спрямована дисципліна</th>
               <th class="text-center" rowspan="2">Результати навчання за навчальною дисципліною</th>
               <th class="text-center" rowspan="2">Види навчальних занять та методи викладання, що пропонуються</th>
-              <th class="text-center" rowspan="2">Кількість здобувачів, які можуть записатися на дисципліну</th>
+<!--              <th class="text-center" rowspan="2">Кількість здобувачів, які можуть записатися на дисципліну</th>-->
               <th class="text-center" rowspan="2">Вхідні вимоги до здобувачів, які хочуть обрати дисципліну / вимоги до матеріально-технічного забезпечення</th>
               <th class="text-center" rowspan="2">Обмеження щодо семестру вивчення</th>
             </tr>
@@ -53,8 +57,13 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <td class="text-center" v-for="number in 13" :key="number">{{number}}</td>
+<!--            <tr>-->
+<!--              <td class="text-center" v-for="number in 12" :key="number">{{number}}</td>-->
+<!--            </tr>-->
+            <tr v-if="item && 'group_name' in item">
+              <td class="pdf_table-group" colspan="12">
+                {{item.group_name}}
+              </td>
             </tr>
             <template v-if="item && 'subjects' in item && item.subjects.length > 0">
               <tr v-for="subject in item.subjects" :key="subject.asu_id">
@@ -68,27 +77,25 @@
                 <td>{{ subject.general_competence }}</td>
                 <td>{{ subject.learning_outcomes }}</td>
                 <td>{{ subject.types_educational_activities }}</td>
-                <td  class="text-center">{{ subject.number_acquirers }}</td>
+<!--                <td  class="text-center">{{ subject.number_acquirers }}</td>-->
                 <td>{{ subject.entry_requirements_applicants }}</td>
                 <td>{{ subject.limitation }}</td>
               </tr>
             </template>
             <template v-else>
               <tr>
-                <td colspan="13" class="text-center">Данні відсутні</td>
+                <td colspan="12" class="pdf_table-noresult text-center">Данні відсутні</td>
               </tr>
             </template>
             </tbody>
           </table>
-          <p class="pb-12">За всіма  вказаними навчальними дисциплінами розроблені повні комплекси навчально-методичного забезпечення.</p>
-
           <v-btn
-            class="btn-center"
+            class="btn-center no-print"
             color="primary"
             dark
             fixed
             bottom
-            @click="close"
+            v-print="'#printMe'"
           >Завантажити</v-btn>
         </v-card-text>
       </v-card>
@@ -99,9 +106,15 @@
 import GlobalMixin from "@/mixins/GlobalMixin";
 import {ALLOWED_REQUEST_PARAMETERS, API} from "@/api/constants-api";
 import api from "@/api";
+import print from 'vue-print-nb'
+import '@/assets/styles/print.css'
+
 
 export default {
   name: "PdfSelectiveDisciplinesCatalogModal",
+  directives: {
+    print
+  },
   data() {
     return {
       item: null,
@@ -131,8 +144,7 @@ export default {
       );
       api.get(API.CATALOG_SUBJECTS_GENERATE_PDF, options, { showLoader: true }).then( ({data}) => {
         this.item = data.data;
-        console.log('this.item', this.item)
-      });
+      }).catch(() => this.$emit('close'));
     },
     close() {
       this.$emit('close');
@@ -155,14 +167,5 @@ export default {
   .btn-center {
     left: 50%;
     transform: translateX(-50%);
-  }
-  .faculty-line {
-    text-align: center;
-    font-size: 7pt;
-    padding: 0 50px;
-    border-top: 1px solid;
-    margin: 20px auto;
-    width: fit-content;
-    width: -moz-fit-content;
   }
 </style>

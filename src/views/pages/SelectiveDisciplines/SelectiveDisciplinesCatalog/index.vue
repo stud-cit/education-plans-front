@@ -103,7 +103,7 @@
         </template>
         <span>Налаштування каталогів</span>
       </v-tooltip>
-      <v-tooltip left color="info">
+      <v-tooltip left color="info" v-if="options && options.year && options.group">
         <template v-slot:activator="{ on, attrs }">
           <v-fab-transition>
             <v-btn fab dark small color="red accent-4" v-bind="attrs" v-on="on" @click="openDialogPdf">
@@ -299,6 +299,9 @@ export default {
       this.options.group = '';
       this.options.faculty = '';
       this.options.department = '';
+      this.group = null;
+      this.faculty = null;
+      this.department = null;
       this.apiGetItems();
     },
     search() {
