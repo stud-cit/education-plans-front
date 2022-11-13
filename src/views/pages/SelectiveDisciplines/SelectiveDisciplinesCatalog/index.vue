@@ -103,7 +103,7 @@
         </template>
         <span>Налаштування каталогів</span>
       </v-tooltip>
-      <v-tooltip left color="info">
+      <v-tooltip left color="info" v-if="options && options.year && options.group">
         <template v-slot:activator="{ on, attrs }">
           <v-fab-transition>
             <v-btn fab dark small color="red accent-4" v-bind="attrs" v-on="on" @click="openDialogPdf">
@@ -147,6 +147,7 @@
     <PdfSelectiveDisciplinesCatalogModal
       :dialog="pdfModal"
       @close="closeDialogPdf"
+      :options="options"
       ref="pdfModal"
     />
     <CatalogSelectiveDisciplinesCatalogModal
@@ -154,7 +155,6 @@
       @close="closeDialogCatalog"
       ref="catalogModal"
     />
-    <PdfSelectiveDisciplinesCatalogModal :dialog="pdfModal" @close="closeDialogPdf" ref="pdfModal" />
   </v-container>
 </template>
 
@@ -228,6 +228,9 @@ export default {
         this.faculty = v[0].id;
       }
     },
+    year(v) {
+      this.options.year = v;
+    },
     options(v) {
       v.year = new Date().getFullYear();
       this.apiGetItems();
@@ -296,6 +299,9 @@ export default {
       this.options.group = '';
       this.options.faculty = '';
       this.options.department = '';
+      this.group = null;
+      this.faculty = null;
+      this.department = null;
       this.apiGetItems();
     },
     search() {
