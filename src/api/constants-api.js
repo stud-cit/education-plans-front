@@ -65,6 +65,10 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     page: 'page',
   },
   GET_USERS: {
+    worker: 'fullName',
+    role: 'role',
+    faculty: 'faculty',
+    department: 'department',
     itemsPerPage: 'items_per_page',
     page: 'page',
   },

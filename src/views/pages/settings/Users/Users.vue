@@ -8,6 +8,58 @@
       :footer-props="{ 'items-per-page-options': [15, 25, 50] }"
       class="elevation-1"
     >
+      <template v-slot:top>
+        <v-row class="px-4">
+          <v-col cols="12" md="6">
+            <v-text-field v-model="worker" label="Пошук по ПІБ"></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-autocomplete
+              v-model="role"
+              :items="roles"
+              item-text="label"
+              item-value="id"
+              label="Роль"
+              hide-details
+              clearable
+            ></v-autocomplete>
+          </v-col>
+        </v-row>
+
+        <v-row class="px-4 pb-4">
+          <v-col cols="12" lg="6">
+            <v-autocomplete
+              v-model="faculty"
+              :items="faculties"
+              item-text="name"
+              item-value="id"
+              label="Факультет"
+              :loading="facultiesLoading"
+              hide-details
+              clearable
+            ></v-autocomplete>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-autocomplete
+              v-model="department"
+              :items="departments"
+              item-text="name"
+              item-value="id"
+              label="Кафедра"
+              hide-details
+              :loading="departmentsLoading"
+              clearable
+            ></v-autocomplete>
+          </v-col>
+        </v-row>
+        <v-row class="px-4 pb-4">
+          <v-col align-self="center" class="d-flex">
+            <v-spacer></v-spacer>
+            <v-btn color="primary" outlined @click="search"> Пошук </v-btn>
+            <v-btn color="primary" class="ml-2" outlined @click="clear"> Очистити </v-btn>
+          </v-col>
+        </v-row>
+      </template>
       <template v-slot:item.index="{ index }">
         {{ (meta.current_page - 1) * meta.per_page + (index + 1) }}
       </template>
@@ -41,6 +93,7 @@
       :workers="workers"
       :item="user"
       :roles="roles"
+      :faculties="faculties"
       @close="closeDialog"
       @store="create"
       @update="update"
@@ -74,17 +127,29 @@ export default {
       workers: [],
       meta: {},
       options: {},
+      worker: null,
+      role: null,
+      faculty: null,
+      faculties: [],
+      department: null,
+      departments: [],
+      departmentsLoading: false,
+      facultiesLoading: true,
     };
   },
   mounted() {
     this.apiGetRoles();
     this.apiWorkers();
+    this.apiGetFaculties();
   },
   watch: {
     options: {
       handler() {
         this.apiUsers();
       },
+    },
+    'faculty'(v) {
+      v ? this.apiGetDepartments(v) : (this.departments = []);
     },
   },
   methods: {
@@ -101,6 +166,20 @@ export default {
         const { data } = response;
         this.workers = data;
       });
+    },
+    apiGetFaculties() {
+      api.get(API.FACULTIES).then(({ data }) => {
+        this.faculties = data.data;
+        this.facultiesLoading = false;
+      });
+    },
+    apiGetDepartments(id) {
+      this.departmentsLoading = true;
+
+      api.show(API.DEPARTMENTS, id).then(({data}) => {
+        this.departments = data.data
+        this.departmentsLoading = false;
+      })
     },
     async apiGetRoles() {
       const { data } = await api.get(API.ROLES, null, { showLoader: true });
@@ -179,6 +258,20 @@ export default {
             });
           }
         });
+    },
+    clear() {
+      this.options.worker = '';
+      this.options.role = '';
+      this.options.faculty = '';
+      this.options.department = '';
+      this.apiUsers();
+    },
+    search() {
+      this.options.worker = this.worker;
+      this.options.role = this.role;
+      this.options.faculty = this.faculty;
+      this.options.department = this.department;
+      this.apiUsers();
     },
   },
 };

@@ -46,8 +46,6 @@
                     item-text="name"
                     item-value="id"
                     label="Факультет"
-                    :loading="facultiesLoading"
-                    :disabled="facultiesLoading"
                   ></v-autocomplete>
                 </validation-provider>
                 <validation-provider
@@ -114,11 +112,9 @@ export default {
     facultyLoader: false,
     user: {},
     faculty: null,
-    faculties: [],
     department: null,
     departments: [],
     departmentsLoading: false,
-    facultiesLoading: true,
   }),
   props: {
     workers: {
@@ -139,7 +135,8 @@ export default {
         return false;
       }
     },
-    item: null
+    item: null,
+    faculties: [],
   },
   watch: {
     'user.faculty_id'(v) {
@@ -151,16 +148,7 @@ export default {
       }
     }
   },
-  mounted() {
-    this.apiGetFaculties();
-  },
   methods: {
-    apiGetFaculties() {
-      api.get(API.FACULTIES).then(({ data }) => {
-        this.faculties = data.data;
-        this.facultiesLoading = false;
-      });
-    },
     apiGetDepartments(id) {
       this.departmentsLoading = true;
 
