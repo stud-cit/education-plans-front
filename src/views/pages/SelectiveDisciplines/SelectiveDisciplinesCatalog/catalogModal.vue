@@ -267,6 +267,18 @@ export default {
       v.year = new Date().getFullYear();
       this.apiGetItems();
     },
+    tab(v) {
+      switch (v) {
+        case 0:
+          this.apiGetYears();
+          break;
+        case 1:
+          this.years = this.fakerYears();
+          break;
+        default:
+          this.apiGetYears();
+      }
+    }
   },
   props: {
     dialog: {
