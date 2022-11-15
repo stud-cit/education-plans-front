@@ -12,7 +12,8 @@
         >
           <form @submit.prevent="submit" @keyup.enter="submit">
             <v-card-title>
-              <span class="text-h5">Створити користувача</span>
+              <span class="text-h5" v-if="item === null">Створити користувача</span>
+              <span class="text-h5" v-else>Редагувати користувача</span>
             </v-card-title>
             <v-card-text>
               <v-container>
@@ -26,49 +27,44 @@
                     v-model="user"
                     :items="workers"
                     :error-messages="errors"
-                    :item-text="(item) => `${item.full_name}${item.department_id}`"
+                    item-text="full_name"
                     item-disabled="disabled"
                     return-object
                     label="ПІБ"
-                    :filter="filterObject"
-                    @change="setFaculty"
-                  >
-                    <template v-slot:selection="data">
-                      {{ data.item.full_name }}
-                    </template>
-
-                    <template v-slot:item="{parent, item}">
-                      <v-list-item-content>
-                        <v-list-item-title v-html="parent.genFilteredText(item.full_name)"></v-list-item-title>
-                        <v-list-item-subtitle v-html="parent.genFilteredText(item.department)"></v-list-item-subtitle>
-                      </v-list-item-content>
-                    </template>
-                  </v-autocomplete>
+                    :disabled="item !== null"
+                  ></v-autocomplete>
                 </validation-provider>
                 <validation-provider
                   v-slot="{ errors }"
                   name="Факультет"
                   vid="faculty_id"
                 >
-                  <v-text-field
-                    :value="user.faculty"
-                    :loading="facultyLoader"
+                  <v-autocomplete
+                    v-model="user.faculty_id"
+                    :items="faculties"
                     :error-messages="errors"
+                    item-text="name"
+                    item-value="id"
                     label="Факультет"
-                    disabled
-                  ></v-text-field>
+                    :loading="facultiesLoading"
+                    :disabled="facultiesLoading"
+                  ></v-autocomplete>
                 </validation-provider>
                 <validation-provider
                   v-slot="{ errors }"
                   name="Кафедра"
                   rules="required"
                 >
-                  <v-text-field
-                    :value="user.department"
+                  <v-autocomplete
+                    v-model="user.department_id"
+                    :items="departments"
                     :error-messages="errors"
+                    :loading="departmentsLoading"
+                    :disabled="departmentsLoading"
+                    item-text="name"
+                    item-value="id"
                     label="Кафедра"
-                    disabled
-                  ></v-text-field>
+                  ></v-autocomplete>
                 </validation-provider>
                 <validation-provider
                   v-slot="{ errors }"
@@ -113,10 +109,16 @@ import api from "@/api";
 import {API} from "@/api/constants-api";
 
 export default {
-  name: 'CreateUserModal',
+  name: 'CreateOrUpdateUserModal',
   data: () => ({
     facultyLoader: false,
     user: {},
+    faculty: null,
+    faculties: [],
+    department: null,
+    departments: [],
+    departmentsLoading: false,
+    facultiesLoading: true,
   }),
   props: {
     workers: {
@@ -137,35 +139,45 @@ export default {
         return false;
       }
     },
+    item: null
+  },
+  watch: {
+    'user.faculty_id'(v) {
+      v ? this.apiGetDepartments(v) : (this.departments = []);
+    },
+    item(v) {
+      if (v !== null) {
+        this.user = v;
+      }
+    }
+  },
+  mounted() {
+    this.apiGetFaculties();
   },
   methods: {
-    apiGetFacultyByWorker(worker) {
-      this.facultyLoader = true;
+    apiGetFaculties() {
+      api.get(API.FACULTIES).then(({ data }) => {
+        this.faculties = data.data;
+        this.facultiesLoading = false;
+      });
+    },
+    apiGetDepartments(id) {
+      this.departmentsLoading = true;
 
-      api.get(API.FACULTY_BY_WORKER, {department_id: worker.department_id}).then(({data}) => {
-        this.user.faculty = data.name
-        this.user.faculty_id = data.id
-        this.facultyLoader = false;
+      api.show(API.DEPARTMENTS, id).then(({data}) => {
+        this.departments = data.data
+        this.departmentsLoading = false;
       })
     },
-    filterObject(item, queryText) {
-      return (
-        item.full_name.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) >
-        -1 ||
-        item.department.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1
-      );
-    },
-    setFaculty(worker) {
-      if (worker !== null) {
-        this.apiGetFacultyByWorker(worker);
-      } else {
-        this.clear();
-      }
+    apiGetFacultyByWorker() {
+      api.get(API.LIST_WORKERS).then(({data}) => {
+        this.user = data.data
+      })
     },
     submit() {
       this.$refs.observer.validate().then((validated) => {
         if (validated) {
-          this.$emit('submit', this.user);
+          this.$emit(this.item === null ? 'store' : 'update', this.user);
           this.clear();
         }
       })

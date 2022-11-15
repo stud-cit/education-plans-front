@@ -28,7 +28,7 @@
     <v-tooltip left color="info">
       <template v-slot:activator="{ on, attrs }">
         <v-fab-transition>
-          <v-btn color="primary" dark fixed bottom right fab v-bind="attrs" v-on="on" @click="showCreate = true">
+          <v-btn color="primary" dark fixed bottom right fab v-bind="attrs" v-on="on" @click="showCreateOrEditDialog = true">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-fab-transition>
@@ -36,28 +36,27 @@
       <span>Додати користувача</span>
     </v-tooltip>
 
-    <CreateUserModal
-      :dialog="showCreate"
+    <CreateOrUpdateUserModal
+      :dialog="showCreateOrEditDialog"
       :workers="workers"
+      :item="user"
       :roles="roles"
-      @close="() => (this.showCreate = false)"
-      @submit="create"
-      ref="createUserModal"
+      @close="closeDialog"
+      @store="create"
+      @update="update"
+      ref="createOrUpdateDialog"
     />
-
-    <EditUserModal :dialog="showEdit" :roles="roles" :user="user" @close="closeEdit" @submit="edit" />
   </v-container>
 </template>
 
 <script>
 import api from '@/api';
 import { API, ALLOWED_REQUEST_PARAMETERS } from '@/api/constants-api';
-import CreateUserModal from '@/views/pages/settings/Users/Modals/Create';
-import EditUserModal from '@/views/pages/settings/Users/Modals/Edit';
+import CreateOrUpdateUserModal from '@/views/pages/settings/Users/Modals/CreateOrUpdate';
 
 export default {
   name: 'Users',
-  components: { EditUserModal, CreateUserModal },
+  components: { CreateOrUpdateUserModal },
   data() {
     return {
       items: [],
@@ -70,9 +69,8 @@ export default {
         { text: 'Роль', value: 'role', width: '200px', sortable: false },
         { text: 'Дії', value: 'actions', width: '80px', sortable: false },
       ],
-      showEdit: false,
-      showCreate: false,
-      user: {},
+      showCreateOrEditDialog: false,
+      user: null,
       workers: [],
       meta: {},
       options: {},
@@ -108,19 +106,20 @@ export default {
       const { data } = await api.get(API.ROLES, null, { showLoader: true });
       this.roles = data.data;
     },
-    closeEdit() {
-      this.user = {};
-      this.showEdit = false;
+    closeDialog() {
+      this.user = null;
+      this.showCreateOrEditDialog = false;
+      this.$refs.createOrUpdateDialog.clear();
     },
     openEdit(item) {
-      this.showEdit = true;
       this.user = item;
+      this.showCreateOrEditDialog = true;
     },
     create(data) {
       api
         .post(API.USERS, data)
         .then((response) => {
-          this.showCreate = false;
+          this.closeDialog();
           const { message } = response.data;
           this.$swal.fire({
             position: 'center',
@@ -129,18 +128,17 @@ export default {
             showConfirmButton: false,
             timer: 1500,
           });
-          this.$refs.createUserModal.clear();
 
           this.apiUsers();
           this.apiWorkers();
         })
         .catch((errors) => {
-          this.$refs.createUserModal.setErrors(errors.response.data.errors);
+          this.$refs.createOrUpdateDialog.setErrors(errors.response.data.errors);
         });
     },
-    edit(data) {
-      api.put(API.USERS + '/' + data.id, { role_id: data.role_id }).then((response) => {
-        this.showEdit = false;
+    update(data) {
+      api.put(API.USERS + '/' + data.id, { ...data }).then((response) => {
+        this.closeDialog();
 
         const { message } = response.data;
         this.$swal.fire({
@@ -150,6 +148,9 @@ export default {
           showConfirmButton: false,
           timer: 1500,
         });
+
+        this.apiUsers();
+        this.apiWorkers();
       });
     },
     deleted(id, full_name) {
