@@ -27,13 +27,26 @@
                     v-model="user"
                     :items="workers"
                     :error-messages="errors"
-                    item-text="full_name"
+                    :item-text="(el) => `${item === null ? el.full_name + el.department_id : el.full_name}`"
                     item-disabled="disabled"
                     return-object
                     label="ПІБ"
+                    :filter="filterObject"
                     :disabled="item !== null"
-                  ></v-autocomplete>
+                  >
+                    <template v-slot:selection="data">
+                      {{ data.item.full_name }}
+                    </template>
+
+                    <template v-slot:item="{parent, item}">
+                      <v-list-item-content>
+                        <v-list-item-title v-html="parent.genFilteredText(item.full_name)"></v-list-item-title>
+                        <v-list-item-subtitle v-html="parent.genFilteredText(item.department)"></v-list-item-subtitle>
+                      </v-list-item-content>
+                    </template>
+                  </v-autocomplete>
                 </validation-provider>
+
                 <validation-provider
                   v-slot="{ errors }"
                   name="Факультет"
@@ -162,9 +175,17 @@ export default {
         this.user = data.data
       })
     },
+    filterObject(item, queryText) {
+      return (
+        item.full_name.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) >
+        -1 ||
+        item.department.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1
+      );
+    },
     submit() {
       this.$refs.observer.validate().then((validated) => {
         if (validated) {
+          this.user.name = this.user.full_name;
           this.$emit(this.item === null ? 'store' : 'update', this.user);
           this.clear();
         }

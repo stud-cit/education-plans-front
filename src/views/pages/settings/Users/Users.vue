@@ -7,6 +7,7 @@
       :server-items-length="meta.total"
       :footer-props="{ 'items-per-page-options': [15, 25, 50] }"
       class="elevation-1"
+      :loading="!items.length"
     >
       <template v-slot:top>
         <v-row class="px-4">
