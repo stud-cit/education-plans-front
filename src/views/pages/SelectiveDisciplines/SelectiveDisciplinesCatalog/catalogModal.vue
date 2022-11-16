@@ -320,6 +320,9 @@ export default {
     },
 
     close() {
+      this.year = null;
+      this.group = null;
+      this.tab = 0;
       this.$emit('close');
     },
     create() {

@@ -386,6 +386,7 @@ export default {
       this.catalogModal = true;
     },
     closeDialogCatalog() {
+      this.apiGetYears();
       this.catalogModal = false;
     }
   }
