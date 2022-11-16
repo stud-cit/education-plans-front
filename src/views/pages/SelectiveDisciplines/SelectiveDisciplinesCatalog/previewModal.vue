@@ -9,17 +9,14 @@
         </v-btn>
       </v-toolbar>
       <!-- cancel verification -->
-      <v-dialog v-model="dialogModalVerification" max-width="400">
-        <v-card>
-          <template v-if="modalVerification.status">
-            <v-card-title class="text-h6"> Введіть причину відхилення верифікації </v-card-title>
-          </template>
-          <template v-else>
-            <v-card-title class="text-h6"> Причина відхилення верифікації </v-card-title>
-          </template>
-          <v-card-text>
+      <v-dialog v-model="dialogModalVerification" max-width="500">
+        <v-card >
+          <v-toolbar dark color="primary">
+            <v-toolbar-title v-if="modalVerification.status" class="text-h7"> Введіть причину відхилення верифікації </v-toolbar-title>
+            <v-toolbar-title v-else class="text-h6"> Причина відхилення верифікації </v-toolbar-title>
+          </v-toolbar>
+          <v-card-text class="pt-5">
             <v-textarea
-              filled
               name="input-6-4"
               :disabled="modalVerification.status === false"
               label="Коментар"
@@ -27,18 +24,16 @@
             ></v-textarea>
           </v-card-text>
           <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="gray" @click="dialogModalVerification = false"> Закрити </v-btn>
             <v-btn
               v-if="modalVerification.status !== null"
               color="primary"
-              depressed
               dark
-              text
               @click="authUser.role_id === ROLES.ID.admin ? verification(modalVerification) : ''"
             >
               Надіслати
             </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn color="blue-grey" text @click="dialogModalVerification = false"> Закрити </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
