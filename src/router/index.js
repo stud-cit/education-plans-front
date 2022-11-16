@@ -26,11 +26,9 @@ import SubjectLanguage from '@/views/pages/settings/SubjectLanguage';
 import CatalogGroup from '@/views/pages/settings/CatalogGroup';
 import { ROLES } from '@/utils/constants';
 import CatalogHelpers from '@/views/pages/settings/Helpers/SubjectHelpers';
-import SelectiveDisciplinesCatalog from "@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog";
-import SelectiveDisciplinesSpecialtyCatalog
-  from "@/views/pages/SelectiveDisciplines/SelectiveDisciplinesSpecialtyCatalog";
-import SelectiveDisciplinesEducationalCatalog
-  from "@/views/pages/SelectiveDisciplines/SelectiveDisciplinesEducationalCatalog";
+import SelectiveDisciplinesCatalog from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog';
+import SelectiveDisciplinesSpecialtyCatalog from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesSpecialtyCatalog';
+import SelectiveDisciplinesEducationalCatalog from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesEducationalCatalog';
 
 const allRoles = () => Object.values(ROLES.ID);
 // const allRolesExcept = (...exceptRoles) => Object.values(ROLES.ID).filter(role => exceptRoles.indexOf(role) === -1);
@@ -95,7 +93,7 @@ const routes = [
               text: 'Вибіркові дисципліни',
               to: { name: 'SelectiveDisciplines' },
             },
-            { text: 'Вибіркові дисципліни (каталог)' }
+            { text: 'Вибіркові дисципліни (каталог)' },
           ],
         },
       },
@@ -112,7 +110,7 @@ const routes = [
               text: 'Вибіркові дисципліни',
               to: { name: 'SelectiveDisciplines' },
             },
-            { text: 'Вибіркові дисципліни каталог' }
+            { text: 'Вибіркові дисципліни каталог' },
           ],
         },
       },
@@ -129,7 +127,7 @@ const routes = [
               text: 'Вибіркові дисципліни',
               to: { name: 'SelectiveDisciplines' },
             },
-            { text: 'Вибіркові дисципліни за освітньою програмою (каталог)' }
+            { text: 'Вибіркові дисципліни за освітньою програмою (каталог)' },
           ],
         },
       },
@@ -355,8 +353,8 @@ const routes = [
         meta: {
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
-          header: 'Підсказки для каталогів',
-          breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Підсказки для каталогів' }],
+          header: 'Підказки для каталогів',
+          breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Підказки для каталогів' }],
         },
       },
       {
