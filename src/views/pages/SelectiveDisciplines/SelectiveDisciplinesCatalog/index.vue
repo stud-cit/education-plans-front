@@ -72,6 +72,9 @@
       <template v-slot:item.index="{ index }">
         {{ ++index }}
       </template>
+      <template v-slot:item.title="{ item }">
+        <PublishedBadge :published="item.published" /> {{ item.title }}
+      </template>
       <template v-slot:item.actions="{ item }">
         <v-icon small class="mr-2" color="primary" @click="openDialogPreview(item)">mdi-eye</v-icon>
         <v-icon small class="mr-2" color="primary" @click="openDialogEdit(item)">mdi-pencil</v-icon>
@@ -79,14 +82,7 @@
       </template>
     </v-data-table>
 
-    <v-speed-dial
-      v-model="nav"
-      bottom
-      right
-      fixed
-      direction="top"
-      transition="slide-y-reverse-transition"
-    >
+    <v-speed-dial v-model="nav" bottom right fixed direction="top" transition="slide-y-reverse-transition">
       <template v-slot:activator>
         <v-btn v-model="nav" color="blue darken-2" dark fab>
           <v-icon v-if="nav"> mdi-close </v-icon>
@@ -144,17 +140,8 @@
       @close="closeDialogPreview"
       ref="previewModal"
     />
-    <PdfSelectiveDisciplinesCatalogModal
-      :dialog="pdfModal"
-      @close="closeDialogPdf"
-      :options="options"
-      ref="pdfModal"
-    />
-    <CatalogSelectiveDisciplinesCatalogModal
-      :dialog="catalogModal"
-      @close="closeDialogCatalog"
-      ref="catalogModal"
-    />
+    <PdfSelectiveDisciplinesCatalogModal :dialog="pdfModal" @close="closeDialogPdf" :options="options" ref="pdfModal" />
+    <CatalogSelectiveDisciplinesCatalogModal :dialog="catalogModal" @close="closeDialogCatalog" ref="catalogModal" />
   </v-container>
 </template>
 
@@ -166,8 +153,8 @@ import PreviewSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisc
 import CreateSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/createModal';
 import EditSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/editModal';
 import PdfSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/pdfModal';
-import CatalogSelectiveDisciplinesCatalogModal
-  from "@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/catalogModal";
+import CatalogSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/catalogModal';
+import PublishedBadge from '@/components/base/PublishedBadge';
 export default {
   name: 'SelectiveDisciplinesCatalog',
   components: {
@@ -176,6 +163,7 @@ export default {
     CreateSelectiveDisciplinesCatalogModal,
     PreviewSelectiveDisciplinesCatalogModal,
     CatalogSelectiveDisciplinesCatalogModal,
+    PublishedBadge,
   },
   data() {
     return {
@@ -276,23 +264,26 @@ export default {
       this.years = data;
     },
     create(data) {
-      api.post(API.CATALOG_SELECTIVE_SUBJECTS, data).then((response) => {
-        this.createModal = false;
+      api
+        .post(API.CATALOG_SELECTIVE_SUBJECTS, data)
+        .then((response) => {
+          this.createModal = false;
 
-        const { message } = response.data;
-        this.$swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: message,
-          showConfirmButton: false,
-          timer: 1500,
+          const { message } = response.data;
+          this.$swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+
+          this.apiGetItems();
+          this.$refs.createModal.clear();
+        })
+        .catch((errors) => {
+          this.$refs.createModal.setErrors(errors.response.data.errors);
         });
-
-        this.apiGetItems();
-        this.$refs.createModal.clear();
-      }).catch((errors) => {
-        this.$refs.createModal.setErrors(errors.response.data.errors);
-      });
     },
     clear() {
       this.options.year = '';
@@ -312,22 +303,25 @@ export default {
       this.apiGetItems();
     },
     edit(data) {
-      api.patch(API.CATALOG_SELECTIVE_SUBJECTS, data.id, data).then((response) => {
-        this.editModal = false;
+      api
+        .patch(API.CATALOG_SELECTIVE_SUBJECTS, data.id, data)
+        .then((response) => {
+          this.editModal = false;
 
-        const { message } = response.data;
-        this.$swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: message,
-          showConfirmButton: false,
-          timer: 1500,
+          const { message } = response.data;
+          this.$swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          this.apiGetItems();
+          this.$refs.editModal.clear();
+        })
+        .catch((errors) => {
+          this.$refs.editModal.setErrors(errors.response.data.errors);
         });
-        this.apiGetItems();
-        this.$refs.editModal.clear();
-      }).catch((errors) => {
-        this.$refs.editModal.setErrors(errors.response.data.errors);
-      });
     },
     deleted(id, item) {
       const text = '<h4>' + item.title + '</h4>';
@@ -388,9 +382,9 @@ export default {
     closeDialogCatalog() {
       this.apiGetYears();
       this.catalogModal = false;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped></style>
