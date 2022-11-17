@@ -59,6 +59,30 @@
               clearable
             ></v-autocomplete>
           </v-col>
+          <v-col cols="12" lg="6">
+            <v-autocomplete
+              v-model="division"
+              :items="divisions"
+              item-text="title"
+              item-value="id"
+              hide-details
+              label="Представник відділу"
+              clearable
+            ></v-autocomplete>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-select
+              v-model="verificationDivisionStatus"
+              :items="verificationsDivisionsStatus"
+              :disabled="division === null"
+              item-text="title"
+              item-value="id"
+              select
+              hide-details
+              label="Статус верифікації"
+              clearable
+            ></v-select>
+          </v-col>
         </v-row>
         <v-row class="px-4 pb-4">
           <v-col align-self="center" class="d-flex">
@@ -194,6 +218,10 @@ export default {
       item: null,
       meta: [],
       options: null,
+      divisions: [],
+      division: null,
+      verificationsDivisionsStatus: [],
+      verificationDivisionStatus: 1,
 
       previewModal: false,
       createModal: false,
@@ -204,6 +232,7 @@ export default {
   },
   mounted() {
     this.apiGetYears();
+    this.apiGetDivisions();
     this.apiGetGroups();
     this.apiGetFaculties();
   },
@@ -285,14 +314,19 @@ export default {
           this.$refs.createModal.setErrors(errors.response.data.errors);
         });
     },
+    apiGetDivisions() {
+      api.get(API.PLAN_FILTERS).then(({ data }) => {
+        this.divisions = data.divisions;
+        this.verificationsDivisionsStatus = data.verificationsStatus;
+        this.faculties = data.faculties;
+      });
+    },
     clear() {
-      this.options.year = '';
-      this.options.group = '';
-      this.options.faculty = '';
-      this.options.department = '';
-      this.group = null;
-      this.faculty = null;
-      this.department = null;
+      this.options.year = null;
+      this.group = this.options.group = null;
+      this.faculty = this.options.faculty = null;
+      this.department = this.options.department = null;
+      this.division = this.options.divisionWithStatus = null;
       this.apiGetItems();
     },
     search() {
@@ -300,6 +334,9 @@ export default {
       this.options.group = this.group;
       this.options.faculty = this.faculty;
       this.options.department = this.department;
+      if (this.division !== null) {
+        this.options.divisionWithStatus = [this.division, this.verificationDivisionStatus];
+      }
       this.apiGetItems();
     },
     edit(data) {

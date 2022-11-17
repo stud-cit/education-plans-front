@@ -90,6 +90,7 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     group: 'group',
     faculty: 'faculty',
     department: 'department',
+    divisionWithStatus: 'divisionWithStatus',
   },
   GET_CATALOG_SELECTIVE_SUBJECTS_PDF: {
     year: 'year',
