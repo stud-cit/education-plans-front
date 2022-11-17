@@ -38,44 +38,53 @@
         </v-card>
       </v-dialog>
       <!-- end cancel verification -->
-
+      <v-card-text class="pdf">
       <!-- stepper -->
-      <v-container>
-        <v-stepper elevation="1" class="my-2" v-if="checkVerification">
-          <v-stepper-header>
-            <template v-for="(item, index) in checkVerification">
-              <!--
-                  authUser.role_id === ROLES.ID.admin
-                    ? verification({ verification_status_id: item.id, status: item.status ? false : true })
-                    : '' -->
-              <v-stepper-step
-                @click="authUser.role_id === ROLES.ID.admin ? openDialog(item) : ''"
-                :key="`${index}-step`"
-                :step="index + 1"
-                :complete="item.status"
-                :rules="[() => item.status == null || item.status]"
-                :editable="authUser.role_id === ROLES.ID.admin"
-              >
-                <span>{{ item.titleHead }}</span>
+        <v-container class="mt-6 mb-10" >
+          <v-stepper elevation="1" v-if="checkVerification">
+            <v-skeleton-loader
+              type="list-item-three-line"
+              v-if="checkVerification.length <= 0"
+            ></v-skeleton-loader>
+            <v-stepper-header v-else class="stepper-header">
+              <template v-for="(item, index) in checkVerification">
+                <!--
+                    authUser.role_id === ROLES.ID.admin
+                      ? verification({ verification_status_id: item.id, status: item.status ? false : true })
+                      : '' -->
+                <v-stepper-step
+                  @click="authUser.role_id === ROLES.ID.admin ? openDialog(item) : ''"
+                  :key="`${index}-step`"
+                  :step="index + 1"
+                  :complete="item.status"
+                  :rules="[() => item.status == null || item.status]"
+                  :editable="authUser.role_id === ROLES.ID.admin"
+                >
+                  <span>{{ item.titleHead }}</span>
 
-                <v-btn icon small v-if="item.comment" @click="openDialog(item)" color="error">
-                  <v-icon small>mdi-bell-ring</v-icon>
-                </v-btn>
+                  <v-btn icon small v-if="item.comment" @click="openDialog(item)" color="error">
+                    <v-icon small>mdi-bell-ring</v-icon>
+                  </v-btn>
 
-                <small>{{ item.title }}</small>
-              </v-stepper-step>
-              <v-divider v-if="index != verifications.length - 1" :key="index"></v-divider>
-            </template>
-          </v-stepper-header>
-        </v-stepper>
-      </v-container>
+                  <small>{{ item.title }}</small>
+                </v-stepper-step>
+                <v-divider v-if="index != verifications.length - 1" :key="index"></v-divider>
+              </template>
+            </v-stepper-header>
+          </v-stepper>
+        </v-container>
       <!-- end stepper -->
-      <p class="pt-7 px-3 text-center">СУМСЬКИЙ ДЕРЖАВНИЙ УНІВЕРСИТЕТ</p>
-      <p class="px-3 text-center">{{ item.faculty }}</p>
-      <p class="px-3 text-center">
-        ДИСЦИПЛІНА ЦИКЛУ ЗАГАЛЬНОЇ ПІДГОТОВКИ на {{ item.year }} – {{ item.year + 1 }}н. р.
-      </p>
-      <table class="table">
+        <p class="pdf_title">
+          СУМСЬКИЙ ДЕРЖАВНИЙ УНІВЕРСИТЕТ
+        </p>
+        <div class="pdf_faculty">
+          {{ item.faculty }}
+        </div>
+
+        <p class="pdf_subtitle" v-if="item && 'year' in item">
+          ДИСЦИПЛІНА ЦИКЛУ ЗАГАЛЬНОЇ ПІДГОТОВКИ на {{ item.year }} – {{ item.year + 1 }}н. р.
+        </p>
+        <table class="table">
         <thead>
           <tr>
             <th class="text-center" rowspan="2">Назва дисципліни</th>
@@ -127,7 +136,8 @@
           </tr>
         </tbody>
       </table>
-      <v-btn class="btn-center" color="primary" dark fixed bottom @click="close">Закрити</v-btn>
+        <v-btn class="btn-center" color="primary" dark fixed bottom @click="close">Закрити</v-btn>
+      </v-card-text>
     </v-card>
   </v-dialog>
 </template>
@@ -273,5 +283,8 @@ export default {
 .btn-center {
   left: 50%;
   transform: translateX(-50%);
+}
+.stepper-header {
+  height: auto;
 }
 </style>
