@@ -93,15 +93,7 @@
     </template>
 
     <template v-slot:item.parent_id="{ item }">
-      <v-tooltip top color="primary">
-        <template v-slot:activator="{ on, attrs }">
-          <span v-bind="attrs" v-on="on" class="cursor-pointer">
-            <v-badge dot :color="getColor(item.published)" label="published" inline left></v-badge>
-            {{ item.parent_id }}
-          </span>
-        </template>
-        <span>{{ item.published ? 'Опубліковано' : 'Не опубліковано' }}</span>
-      </v-tooltip>
+      <PublishedBadge :published="item.published" /> {{ item.parent_id }}
     </template>
 
     <template v-slot:item.actions="{ item }">
@@ -133,6 +125,7 @@ import { API } from '@/api/constants-api';
 import RolesMixin from '@/mixins/RolesMixin';
 import { ROLES } from '@/utils/constants';
 import { mapGetters } from 'vuex';
+import PublishedBadge from '@/components/base/PublishedBadge';
 
 export default {
   name: 'PlansTable',
@@ -161,6 +154,9 @@ export default {
       verificationDivisionStatus: 1,
       verificationsDivisionsStatus: [],
     };
+  },
+  components: {
+    PublishedBadge,
   },
   props: {
     items: {
@@ -215,10 +211,6 @@ export default {
     this.apiGetDivisions();
   },
   methods: {
-    getColor(published) {
-      if (published) return 'green';
-      return 'grey';
-    },
     update() {
       this.$emit('update', this.options);
     },
