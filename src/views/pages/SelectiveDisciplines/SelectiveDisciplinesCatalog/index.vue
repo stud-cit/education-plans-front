@@ -100,9 +100,15 @@
         <PublishedBadge :published="item.published" /> {{ item.title }}
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" color="primary" @click="openDialogPreview(item)">mdi-eye</v-icon>
-        <v-icon small class="mr-2" color="primary" @click="openDialogEdit(item)">mdi-pencil</v-icon>
-        <v-icon small class="mr-2" color="red" @click="deleted(item.id, item)">mdi-trash-can-outline</v-icon>
+        <v-icon v-if="item.actions.preview" small class="mr-2" color="primary" @click="openDialogPreview(item)"
+          >mdi-eye</v-icon
+        >
+        <v-icon v-if="item.actions.edit" small class="mr-2" color="primary" @click="openDialogEdit(item)"
+          >mdi-pencil</v-icon
+        >
+        <v-icon v-if="item.actions.delete" small class="mr-2" color="red" @click="deleted(item.id, item)"
+          >mdi-trash-can-outline</v-icon
+        >
       </template>
     </v-data-table>
 
