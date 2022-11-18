@@ -6,7 +6,7 @@
     :options.sync="options"
     :footer-props="{ 'items-per-page-options': [15, 25, 50] }"
     class="elevation-1 plans-table"
-    :item-class="itemRowBackground"
+    :item-class="this.itemRowBackground"
   >
     <template v-slot:top>
       <v-row>
@@ -123,6 +123,7 @@
 import api from '@/api';
 import { API } from '@/api/constants-api';
 import RolesMixin from '@/mixins/RolesMixin';
+import BackgroundRowMixin from '@/mixins/BackgroundRowMixin';
 import { ROLES } from '@/utils/constants';
 import { mapGetters } from 'vuex';
 import PublishedBadge from '@/components/base/PublishedBadge';
@@ -185,7 +186,7 @@ export default {
       },
     },
   },
-  mixins: [RolesMixin],
+  mixins: [RolesMixin, BackgroundRowMixin],
   watch: {
     faculty(v) {
       v !== null ? this.apiGetDepartments(v) : (this.departments = []);

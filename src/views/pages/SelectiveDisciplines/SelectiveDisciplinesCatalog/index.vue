@@ -4,6 +4,7 @@
       :headers="headers"
       :items="items"
       class="elevation-1"
+      :item-class="this.itemRowBackground"
       :server-items-length="meta.total"
       :options.sync="options"
       :footer-props="{ 'items-per-page-options': [15, 25, 50] }"
@@ -179,12 +180,16 @@
 import api from '@/api';
 import { ALLOWED_REQUEST_PARAMETERS, API } from '@/api/constants-api';
 import GlobalMixin from '@/mixins/GlobalMixin';
+import RolesMixin from '@/mixins/RolesMixin';
+import BackgroundRowMixin from '@/mixins/BackgroundRowMixin';
 import PreviewSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/previewModal';
 import CreateSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/createModal';
 import EditSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/editModal';
 import PdfSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/pdfModal';
 import CatalogSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/catalogModal';
 import PublishedBadge from '@/components/base/PublishedBadge';
+import { mapGetters } from 'vuex';
+import { ROLES } from '@/utils/constants';
 export default {
   name: 'SelectiveDisciplinesCatalog',
   components: {
@@ -242,6 +247,12 @@ export default {
     this.apiGetGroups();
     this.apiGetFaculties();
   },
+  computed: {
+    ...mapGetters({
+      user: 'auth/user',
+    }),
+  },
+  mixins: [RolesMixin, BackgroundRowMixin],
   watch: {
     faculty(v) {
       v !== null ? this.apiGetDepartments(v) : (this.departments = []);
@@ -392,6 +403,30 @@ export default {
           }
         });
     },
+    // itemRowBackground(item) {
+    //   if (this.allowedRoles([ROLES.ID.admin]) || this.allowedRoles([ROLES.ID.root])) {
+    //     return item.status + ' lighten-5';
+    //   } else {
+    //     if (
+    //       item.need_verification == 1 &&
+    //       !item.user_verifications.find((i) => i.verification_statuses_id == this.user.role_id)
+    //     ) {
+    //       return 'warning lighten-5';
+    //     }
+    //     if (
+    //       item.need_verification == 1 &&
+    //       item.user_verifications.find((i) => i.verification_statuses_id == this.user.role_id && i.status == 0)
+    //     ) {
+    //       return 'error lighten-5';
+    //     }
+    //     if (
+    //       item.need_verification == 1 &&
+    //       item.user_verifications.find((i) => i.verification_statuses_id == this.user.role_id && i.status == 1)
+    //     ) {
+    //       return 'success lighten-5';
+    //     }
+    //   }
+    // },
     openDialogPreview(item) {
       this.item = item;
       this.previewModal = true;
