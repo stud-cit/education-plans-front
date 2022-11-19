@@ -392,7 +392,7 @@ export default {
       }
     },
     item(v) {
-      if (v !== null) {
+      if (v !== null && this.dialog === true) {
         this.apiGetItem(v.id);
       }
     },
