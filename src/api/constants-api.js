@@ -45,6 +45,7 @@ export const API = {
   CATALOG_GROUPS: version + '/catalog-groups',
   CATALOG_GROUPS_RESTORE: version + '/catalog-groups/restore',
   CATALOG_SELECTIVE_SUBJECTS: version + '/catalog-selective-subjects',
+  CATALOG_SELECTIVE_SUBJECTS_FILTERS: version + '/catalog-selective-subjects/filters',
   CATALOG_SUBJECTS: version + '/catalog-subjects',
   CATALOG_SUBJECTS_TITLES: version + '/catalog-subjects/catalog-titles',
   EDUCATIONAL_PROGRAMS_ALL: version + '/education-programs',

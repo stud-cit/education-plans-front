@@ -332,7 +332,7 @@ export default {
         });
     },
     apiGetDivisions() {
-      api.get(API.PLAN_FILTERS).then(({ data }) => {
+      api.get(API.CATALOG_SELECTIVE_SUBJECTS_FILTERS).then(({ data }) => {
         this.divisions = data.divisions;
         this.verificationsDivisionsStatus = data.verificationsStatus;
         this.faculties = data.faculties;
