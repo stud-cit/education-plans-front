@@ -38,7 +38,7 @@
                   : setVerification(false, modalVerification.comment)
               "
             >
-              Надіслати {{ modalVerification }}
+              Надіслати
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -56,14 +56,13 @@
           {{ subject.need_verification ? 'На верифікації' : 'Відправити на верифікацію' }}
         </v-btn>
         <v-spacer></v-spacer>
-        <!-- v-if="!subject.verifications.find((item) => item.user_id === authUser.id)" -->
         <v-btn
           v-if="showVerificationBtn === null"
+          v-show="exceptRoles([ROLES.ID.department, ROLES.ID.practice_department, ROLES.ID.admin, ROLES.ID.root])"
           small
           depressed
           color="primary"
           class="ml-2"
-          v-show="exceptRoles([ROLES.ID.department, ROLES.ID.practice_department]) && subject.need_verification"
           @click="setVerification()"
         >
           Верифікувати
@@ -74,7 +73,7 @@
           depressed
           color="error"
           class="ml-2"
-          v-show="exceptRoles([ROLES.ID.department, ROLES.ID.practice_department]) && subject.need_verification"
+          v-show="exceptRoles([ROLES.ID.department, ROLES.ID.practice_department, ROLES.ID.admin, ROLES.ID.root])"
           @click="cancelVerification()"
         >
           Відхилити верифікацію
@@ -106,9 +105,6 @@
           </v-stepper-header>
         </v-stepper>
       </v-card-text>
-      <!-- stepper -->
-
-      <!-- end stepper -->
       <v-card-text class="pdf">
         <p class="pdf_title">СУМСЬКИЙ ДЕРЖАВНИЙ УНІВЕРСИТЕТ</p>
         <div class="pdf_faculty">
@@ -261,8 +257,12 @@ export default {
 
       if (this.authUser?.role_id && this.subject !== null) {
         const status = this.subject.verifications.find((item) => item.verification_status_id === this.authUser.role_id);
-
+        // console.log(status);
+        // if (status === undefined) {
+        //   allow = true;
+        // } else {
         allow = status?.status ? status.status : null;
+        // }
       }
       this.showVerificationBtn = allow;
     },
@@ -323,6 +323,7 @@ export default {
         .patch(API.CATALOG_SELECTIVE_SUBJECTS + '/verification', this.subject.id, status)
         .then(() => {
           this.apiGetItem(this.subject.id);
+          this.$emit('init');
           this.dialogModalVerification = false;
         })
         .catch((errors) => {
@@ -341,7 +342,7 @@ export default {
         .then(({ data }) => {
           if (data.data) {
             this.subject = data.data;
-            this.getShowVerificationBtn(data.data);
+            this.getShowVerificationBtn();
           }
         })
         .then(() => this.apiGetVerifications());

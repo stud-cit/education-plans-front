@@ -169,6 +169,7 @@
       :dialog="previewModal"
       :item="item"
       @close="closeDialogPreview"
+      @init="apiGetItems"
       ref="previewModal"
     />
     <PdfSelectiveDisciplinesCatalogModal :dialog="pdfModal" @close="closeDialogPdf" :options="options" ref="pdfModal" />
