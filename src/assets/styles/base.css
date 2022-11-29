@@ -9,6 +9,9 @@ body {
   text-align: justify;
   display: block;
 }
+a {
+  text-decoration: none;
+}
 @media print {
   /*@page {size: A4 landscape}*/
   .print {
