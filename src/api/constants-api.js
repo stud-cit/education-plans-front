@@ -51,6 +51,7 @@ export const API = {
   EDUCATIONAL_PROGRAMS_ALL: version + '/education-programs',
   SPECIALITIES_ALL: version + '/specialities',
   CATALOG_SUBJECTS_GENERATE_PDF: version + '/catalog-subjects/generate-pdf',
+  CATALOG_SPECIALTIES: version + '/catalog-specialties',
 
   ERR: version + '/err',
 };
@@ -104,5 +105,14 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     page: 'page',
     year: 'year',
     group: 'group',
+  },
+  GET_CATALOG_CATALOG_SPECIALTIES: {
+    itemsPerPage: 'items_per_page',
+    page: 'page',
+    year: 'year',
+    specialty: 'specialty',
+    faculty: 'faculty',
+    department: 'department',
+    divisionWithStatus: 'divisionWithStatus',
   },
 };
