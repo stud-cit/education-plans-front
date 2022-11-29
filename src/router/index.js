@@ -27,8 +27,9 @@ import CatalogGroup from '@/views/pages/settings/CatalogGroup';
 import { ROLES } from '@/utils/constants';
 import CatalogHelpers from '@/views/pages/settings/Helpers/SubjectHelpers';
 import SelectiveDisciplinesCatalog from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog';
-import SelectiveDisciplinesSpecialtyCatalog from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesSpecialtyCatalog';
-import SelectiveDisciplinesEducationalCatalog from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesEducationalCatalog';
+import CatalogSpecialties from '@/views/pages/SelectiveDisciplines/CatalogSpecialties';
+import CatalogEducationalPrograms from '@/views/pages/SelectiveDisciplines/CatalogEducationalPrograms';
+import CatalogSpecialty from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/catalog'
 
 const allRoles = () => Object.values(ROLES.ID);
 // const allRolesExcept = (...exceptRoles) => Object.values(ROLES.ID).filter(role => exceptRoles.indexOf(role) === -1);
@@ -104,7 +105,7 @@ const routes = [
           {
             path: '',
             name: 'CatalogSpecialties',
-            component: SelectiveDisciplinesSpecialtyCatalog,
+            component: CatalogSpecialties,
             meta: {
               requiresAuth: true,
               accessIsAllowed: allRoles(),
@@ -121,7 +122,7 @@ const routes = [
           {
             path: ':id',
             name: 'CatalogSpecialty',
-            component: SelectiveDisciplinesCatalog,
+            component: CatalogSpecialty,
             meta: {
               requiresAuth: true,
               header: 'Каталог',
@@ -148,7 +149,7 @@ const routes = [
           {
             path: '',
             name: 'CatalogEducationalPrograms',
-            component: SelectiveDisciplinesEducationalCatalog,
+            component: CatalogEducationalPrograms,
             meta: {
               requiresAuth: true,
               accessIsAllowed: allRoles(),
