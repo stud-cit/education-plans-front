@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: "SelectiveDisciplinesEducationalCatalog"
+  name: "CatalogEducationalPrograms"
 }
 </script>
 
