@@ -98,38 +98,92 @@ const routes = [
         },
       },
       {
-        path: 'selective-disciplines-specialty-catalog',
-        name: 'SelectiveDisciplinesSpecialtyCatalog',
-        component: SelectiveDisciplinesSpecialtyCatalog,
-        meta: {
-          requiresAuth: true,
-          accessIsAllowed: allRoles(),
-          header: 'Вибіркові дисципліни за спеціальністю (каталог)',
-          breadCrumb: [
-            {
-              text: 'Вибіркові дисципліни',
-              to: { name: 'SelectiveDisciplines' },
+        path: 'catalog-specialties',
+        component: () => import('@/views/SimpleLayout'),
+        children: [
+          {
+            path: '',
+            name: 'CatalogSpecialties',
+            component: SelectiveDisciplinesSpecialtyCatalog,
+            meta: {
+              requiresAuth: true,
+              accessIsAllowed: allRoles(),
+              header: 'Вибіркові дисципліни за спеціальністю (каталог)',
+              breadCrumb: [
+                {
+                  text: 'Вибіркові дисципліни',
+                  to: { name: 'SelectiveDisciplines' },
+                },
+                { text: 'Каталоги вибіркових дисциплін за спеціальністю' },
+              ],
             },
-            { text: 'Вибіркові дисципліни каталог' },
-          ],
-        },
+          },
+          {
+            path: ':id',
+            name: 'CatalogSpecialty',
+            component: SelectiveDisciplinesCatalog,
+            meta: {
+              requiresAuth: true,
+              header: 'Каталог',
+              accessIsAllowed: allRoles(),
+              breadCrumb: [
+                {
+                  text: 'Вибіркові дисципліни',
+                  to: { name: 'SelectiveDisciplines' },
+                },
+                {
+                  text: 'Каталоги вибіркових дисциплін за спеціальністю',
+                  to: { name: 'CatalogSpecialties' },
+                },
+                { text: 'Каталог' },
+              ],
+            },
+          },
+        ]
       },
       {
-        path: 'selective-disciplines-educational-catalog',
-        name: 'SelectiveDisciplinesEducationalCatalog',
-        component: SelectiveDisciplinesEducationalCatalog,
-        meta: {
-          requiresAuth: true,
-          accessIsAllowed: allRoles(),
-          header: 'Вибіркові дисципліни за освітньою програмою (каталог)',
-          breadCrumb: [
-            {
-              text: 'Вибіркові дисципліни',
-              to: { name: 'SelectiveDisciplines' },
+        path: 'catalog-education-program',
+        component: () => import('@/views/SimpleLayout'),
+        children: [
+          {
+            path: '',
+            name: 'CatalogEducationalPrograms',
+            component: SelectiveDisciplinesEducationalCatalog,
+            meta: {
+              requiresAuth: true,
+              accessIsAllowed: allRoles(),
+              header: 'Вибіркові дисципліни за освітньою програмою (каталог)',
+              breadCrumb: [
+                {
+                  text: 'Вибіркові дисципліни',
+                  to: { name: 'SelectiveDisciplines' },
+                },
+                { text: 'Каталоги вибіркових дисциплін за освітньою програмою' },
+              ],
             },
-            { text: 'Вибіркові дисципліни за освітньою програмою (каталог)' },
-          ],
-        },
+          },
+          {
+            path: ':id',
+            name: 'CatalogEducationalProgram',
+            component: SelectiveDisciplinesCatalog,
+            meta: {
+              requiresAuth: true,
+              header: 'Каталог',
+              accessIsAllowed: allRoles(),
+              breadCrumb: [
+                {
+                  text: 'Вибіркові дисципліни',
+                  to: { name: 'SelectiveDisciplines' },
+                },
+                {
+                  text: 'Каталоги вибіркових дисциплін за освітньою програмою',
+                  to: { name: 'CatalogEducationalPrograms' },
+                },
+                { text: 'Каталог' },
+              ],
+            },
+          },
+        ]
       },
     ],
   },
