@@ -13,7 +13,7 @@
           <v-col cols="12" md="6">
             <v-autocomplete
               v-model="year"
-              :items="years"
+              :items="filters.years"
               item-text="year"
               item-value="id"
               label="Рік"
@@ -23,8 +23,8 @@
           </v-col>
           <v-col cols="12" md="6">
             <v-autocomplete
-              v-model="specialty"
-              :items="specialties"
+              v-model="speciality"
+              :items="filters.specialties"
               item-text="title"
               item-value="id"
               label="Спеціальність"
@@ -38,11 +38,10 @@
           <v-col cols="12" lg="6">
             <v-autocomplete
               v-model="faculty"
-              :items="faculties"
+              :items="filters.faculties"
               item-text="name"
               item-value="id"
               label="Факультет"
-              :loading="facultiesLoading"
               hide-details
               clearable
             ></v-autocomplete>
@@ -62,7 +61,7 @@
           <v-col cols="12" lg="6">
             <v-autocomplete
               v-model="division"
-              :items="divisions"
+              :items="filters.divisions"
               item-text="title"
               item-value="id"
               hide-details
@@ -73,7 +72,7 @@
           <v-col cols="12" lg="6">
             <v-select
               v-model="verificationDivisionStatus"
-              :items="verificationsDivisionsStatus"
+              :items="filters.verificationsStatus"
               :disabled="division === null"
               item-text="title"
               item-value="id"
@@ -105,36 +104,45 @@
         <v-icon v-if="item.actions.delete" small class="mr-2 cursor-pointer" color="red">mdi-trash-can-outline</v-icon>
       </template>
     </v-data-table>
+
+    <AddButton @show="() => this.createModal = true">Створити каталог</AddButton>
+
+    <createCatalogModal
+      :dialog="createModal"
+      @close="closeDialogCreate"
+      @submit="store"
+      ref="createModal"
+      :object="filters"
+    />
+
+
   </v-container>
 </template>
 
 <script>
 import GlobalMixin from "@/mixins/GlobalMixin";
 import {ALLOWED_REQUEST_PARAMETERS, API} from "@/api/constants-api";
+import AddButton from "@c/base/AddButton";
 import api from "@/api";
+import CreateCatalogModal from "@/views/pages/SelectiveDisciplines/CatalogSpecialties/createCatalogModal";
 
 export default {
   name: "CatalogSpecialties",
+  components: {
+    CreateCatalogModal,
+    AddButton
+  },
   data() {
     return {
-      years: [],
-      year: new Date().getFullYear(),
-
-      specialties: [],
-      specialty: null,
-
-      faculties: [],
+      year: null,
+      speciality: null,
       faculty: null,
-      facultiesLoading: false,
 
       departments: [],
       department: null,
       departmentsLoading: false,
 
-      divisions: [],
       division: null,
-
-      verificationsDivisionsStatus: [],
       verificationDivisionStatus: 1,
 
       headers: [
@@ -147,10 +155,19 @@ export default {
       items: [],
       meta: [],
       options: null,
+      createModal: false,
+      filters: {
+        divisions: [],
+        education_levels: [],
+        faculties: [],
+        specialties: [],
+        verificationsStatus: [],
+        years: [],
+      }
     }
   },
   mounted() {
-    this.apiGetItems();
+    this.apiGetFilters();
   },
   watch: {
     faculty(v) {
@@ -161,8 +178,7 @@ export default {
         this.faculty = v[0].id;
       }
     },
-    options(v) {
-      v.year = new Date().getFullYear();
+    options() {
       this.apiGetItems();
     },
   },
@@ -181,9 +197,14 @@ export default {
         console.error(e); // TODO: show error
       }
     },
+    apiGetFilters() {
+      api.get(API.CATALOG_SPECIALTIES_FILTERS).then(({ data }) => {
+        this.filters = data;
+      })
+    },
     clear() {
       this.options.year = null;
-      this.specialty = this.options.specialty = null;
+      this.speciality = this.options.speciality = null;
       this.faculty = this.options.faculty = null;
       this.department = this.options.department = null;
       this.division = this.options.divisionWithStatus = null;
@@ -191,7 +212,7 @@ export default {
     },
     search() {
       this.options.year = this.year;
-      this.options.group = this.group;
+      this.options.speciality = this.speciality;
       this.options.faculty = this.faculty;
       this.options.department = this.department;
       if (this.division !== null) {
@@ -199,6 +220,27 @@ export default {
       }
       this.apiGetItems();
     },
+    store(item) {
+      api.post(API.CATALOG_SPECIALTIES, item).then((response) => {
+        this.$refs.createModal.close();
+
+        const { message } = response.data;
+        this.$swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+
+        this.apiGetItems();
+      }).catch((errors) => {
+        this.$refs.createModal.setErrors(errors.response.data.errors);
+      });
+    },
+    closeDialogCreate() {
+      this.createModal = false;
+    }
   }
 }
 </script>
