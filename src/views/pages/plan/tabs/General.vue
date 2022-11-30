@@ -275,11 +275,11 @@
           </validation-provider>
         </v-col>
         <v-col cols="12" lg="6" class="py-0" v-if="allowedRoles([
-            ROLES.ID.admin, 
-            ROLES.ID.root, 
-            ROLES.ID.training_department, 
-            ROLES.ID.practice_department, 
-            ROLES.ID.educational_department_deputy, 
+            ROLES.ID.admin,
+            ROLES.ID.root,
+            ROLES.ID.training_department,
+            ROLES.ID.practice_department,
+            ROLES.ID.educational_department_deputy,
             ROLES.ID.educational_department_chief
           ])">
           <v-checkbox
@@ -395,7 +395,7 @@ export default {
       formsStudy: [],
       studyTerm: null,
       termsStudy: [],
-      years: this.fakerYears(),
+      years: this.GlobalFakerYears(),
       numberSemesters: null,
       specialities: [],
       specialitiesLoading: false,
@@ -474,18 +474,6 @@ export default {
     }
   },
   methods: {
-    fakerYears() {
-      let years = []
-      const limit = 10
-      const currentYear = new Date().getFullYear()
-      let i = 1;
-      while (i < limit) {
-        years.push(currentYear + i, currentYear - i)
-        i++;
-      }
-      years.push(currentYear)
-      return years.sort();
-    },
     apiGetFields() {
       api.get(API.PLAN_CREATE).then(({data}) => {
         this.faculties = data.faculties ?? [];

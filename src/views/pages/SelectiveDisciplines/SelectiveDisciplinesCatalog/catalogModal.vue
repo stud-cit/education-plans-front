@@ -273,7 +273,7 @@ export default {
           this.apiGetYears();
           break;
         case 1:
-          this.years = this.fakerYears();
+          this.years = this.GlobalFakerYears();
           break;
         default:
           this.apiGetYears();
@@ -356,18 +356,6 @@ export default {
     },
     copy() {
 
-    },
-    fakerYears() {
-      let years = []
-      const limit = 10
-      const currentYear = new Date().getFullYear()
-      let i = 1;
-      while (i < limit) {
-        years.push(currentYear + i, currentYear - i)
-        i++;
-      }
-      years.push(currentYear)
-      return years.sort();
     },
     clear() {
       this.options.year = '';
