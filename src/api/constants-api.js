@@ -52,6 +52,7 @@ export const API = {
   SPECIALITIES_ALL: version + '/specialities',
   CATALOG_SUBJECTS_GENERATE_PDF: version + '/catalog-subjects/generate-pdf',
   CATALOG_SPECIALTIES: version + '/catalog-specialties',
+  CATALOG_SPECIALTIES_FILTERS: version + '/catalog-specialties/filters',
 
   ERR: version + '/err',
 };
@@ -110,7 +111,7 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     itemsPerPage: 'items_per_page',
     page: 'page',
     year: 'year',
-    specialty: 'specialty',
+    speciality: 'speciality',
     faculty: 'faculty',
     department: 'department',
     divisionWithStatus: 'divisionWithStatus',
