@@ -202,6 +202,14 @@ export default {
         this.filters = data;
       })
     },
+    apiGetDepartments(id) {
+      this.departmentsLoading = true;
+
+      api.show(API.DEPARTMENTS, id).then(({ data }) => {
+        this.departments = data.data;
+        this.departmentsLoading = false;
+      });
+    },
     clear() {
       this.options.year = null;
       this.speciality = this.options.speciality = null;
