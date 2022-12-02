@@ -185,7 +185,7 @@ export default {
   methods: {
     async apiGetItems() {
       const options = GlobalMixin.methods.GlobalHandlingRequestParameters(
-        ALLOWED_REQUEST_PARAMETERS.GET_CATALOG_CATALOG_SPECIALTIES,
+        ALLOWED_REQUEST_PARAMETERS.GET_CATALOG_SPECIALTIES,
         this.options,
       );
       try {
