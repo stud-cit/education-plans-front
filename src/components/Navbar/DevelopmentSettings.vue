@@ -5,7 +5,11 @@
       left
       temporary
       :value="panelOpen"
-      @input="(v) => {toggle(v)}"
+      @input="
+        (v) => {
+          toggle(v);
+        }
+      "
       width="360"
     >
       <template v-slot:prepend>
@@ -19,8 +23,7 @@
       <v-divider></v-divider>
 
       <v-list dense>
-        <v-list-item
-        >
+        <v-list-item>
           <v-select
             v-if="user && roles"
             v-model="user.role_id"
@@ -33,47 +36,49 @@
             @change="apiSetRole"
           ></v-select>
         </v-list-item>
+        <v-btn class="mt-4 ml-4" color="primary" @click="apply"> Застосувати </v-btn>
       </v-list>
     </v-navigation-drawer>
   </div>
 </template>
 
 <script>
-import api from "@/api";
-import {API} from "@/api/constants-api";
-import RolesMixin from "@/mixins/RolesMixin";
-import {ROLES} from "@/utils/constants";
-import { mapGetters, mapActions } from "vuex";
+import api from '@/api';
+import { API } from '@/api/constants-api';
+import RolesMixin from '@/mixins/RolesMixin';
+import { ROLES } from '@/utils/constants';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
-  name: "DevelopmentSettings",
+  name: 'DevelopmentSettings',
   data: () => ({
     ROLES,
-    states: null
+    states: null,
   }),
   mixins: [RolesMixin],
   computed: {
     ...mapGetters({
-      panelOpen: "developmentSettings/panelOpen",
-      roles: "developmentSettings/roles",
-      user: 'auth/user'
-    })
+      panelOpen: 'developmentSettings/panelOpen',
+      roles: 'developmentSettings/roles',
+      user: 'auth/user',
+    }),
   },
   mounted() {
-    this.apiGetRoles()
+    this.apiGetRoles();
   },
   methods: {
     ...mapActions({
       toggle: 'developmentSettings/toggle',
-      apiGetRoles: 'developmentSettings/setRoles'
+      apiGetRoles: 'developmentSettings/setRoles',
     }),
     apiSetRole(id) {
-      api.put(API.USERS + '/' + this.user.id, {role_id: id} )
-    }
-  }
-}
+      api.put(API.USERS + '/' + this.user.id, { role_id: id });
+    },
+    apply() {
+      location.reload();
+    },
+  },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
