@@ -156,6 +156,8 @@ export default {
 <style scoped>
   .table {
     font-size: 15px;
+    display: block;
+    overflow-x: auto;
   }
   .table th, .table td {
     padding: 10px;

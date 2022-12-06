@@ -376,6 +376,8 @@ export default {
   width: 100%;
   margin: 40px 0 60px;
   font-size: 15px;
+  display: block;
+  overflow-x: auto;
 }
 .table th,
 .table td {
