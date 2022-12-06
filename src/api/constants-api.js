@@ -53,7 +53,7 @@ export const API = {
   CATALOG_SUBJECTS_GENERATE_PDF: version + '/catalog-subjects/generate-pdf',
   CATALOG_SPECIALTIES: version + '/catalog-specialties',
   CATALOG_SPECIALTIES_FILTERS: version + '/catalog-specialties/filters',
-  CATALOG_SPECIALTIES_COPY: version + '/catalog-specialties/copy/',
+  CATALOG_SPECIALTIES_COPY: version + '/catalog-specialties/copy',
   SPECIALTY_SUBJECTS: version + '/speciality-subjects',
 
   ERR: version + '/err',
