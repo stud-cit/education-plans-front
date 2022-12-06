@@ -20,7 +20,8 @@
           <v-col cols="12" lg="6">
             <v-autocomplete
               v-model="faculty"
-              :items="filters.faculties"
+              :items="faculties"
+              :loading="facultiesLoading"
               item-text="name"
               item-value="id"
               label="Факультет що пропонує"
@@ -39,30 +40,6 @@
               :loading="departmentsLoading"
               clearable
             ></v-autocomplete>
-          </v-col>
-          <v-col cols="12" lg="6">
-            <v-autocomplete
-              v-model="division"
-              :items="filters.divisions"
-              item-text="title"
-              item-value="id"
-              hide-details
-              label="Представник відділу"
-              clearable
-            ></v-autocomplete>
-          </v-col>
-          <v-col cols="12" lg="6">
-            <v-select
-              v-model="verificationDivisionStatus"
-              :items="filters.verificationsStatus"
-              :disabled="division === null"
-              item-text="title"
-              item-value="id"
-              select
-              hide-details
-              label="Статус верифікації"
-              clearable
-            ></v-select>
           </v-col>
         </v-row>
         <v-row class="px-4 pb-4">
@@ -153,13 +130,12 @@ export default {
     return {
       nav: false,
       faculty: null,
+      faculties: [],
+      facultiesLoading: false,
 
       departments: [],
       department: null,
       departmentsLoading: false,
-
-      division: null,
-      verificationDivisionStatus: 1,
 
       headers: [
         { text: '№', value: 'index', sortable: false, width: '20px' },
@@ -171,11 +147,6 @@ export default {
       meta: [],
       options: null,
       createModal: false,
-      filters: {
-        divisions: [],
-        faculties: [],
-        verificationsStatus: [],
-      },
       catalog: null,
     }
   },
@@ -187,6 +158,9 @@ export default {
       this.options.catalogSubject = this.$route.params.id;
       this.apiGetItems();
     },
+  },
+  mounted() {
+    this.apiGetFaculties();
   },
   methods: {
     async apiGetItems() {
@@ -205,6 +179,12 @@ export default {
         console.error(e); // TODO: show error
       }
     },
+    apiGetFaculties() {
+      api.get(API.FACULTIES).then(({ data }) => {
+        this.faculties = data.data;
+        this.facultiesLoading = false;
+      });
+    },
     apiGetDepartments(id) {
       this.departmentsLoading = true;
 
@@ -214,21 +194,15 @@ export default {
       });
     },
     clear() {
-      this.options.year = null;
-      this.speciality = this.options.speciality = null;
       this.faculty = this.options.faculty = null;
       this.department = this.options.department = null;
-      this.division = this.options.divisionWithStatus = null;
+
       this.apiGetItems();
     },
     search() {
-      this.options.year = this.year;
-      this.options.speciality = this.speciality;
       this.options.faculty = this.faculty;
       this.options.department = this.department;
-      if (this.division !== null) {
-        this.options.divisionWithStatus = [this.division, this.verificationDivisionStatus];
-      }
+
       this.apiGetItems();
     },
     store(data) {
