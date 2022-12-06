@@ -100,7 +100,14 @@
           <v-icon  small class="mr-2" color="primary">mdi-eye</v-icon>
         </router-link>
         <v-icon v-if="item.actions.edit" small class="mr-2 cursor-pointer" color="primary">mdi-pencil</v-icon>
-        <v-icon v-if="item.actions.copy" small class="mr-1 cursor-pointer" color="primary">mdi-content-copy</v-icon>
+        <v-icon
+          v-if="item.actions.copy"
+          small class="mr-1 cursor-pointer"
+          color="primary"
+          @click="openDialogCopy(item)"
+        >
+          mdi-content-copy
+        </v-icon>
         <v-icon v-if="item.actions.delete" small class="mr-2 cursor-pointer" color="red">mdi-trash-can-outline</v-icon>
       </template>
     </v-data-table>
@@ -114,7 +121,14 @@
       ref="createModal"
       :object="filters"
     />
-
+    <copyCatalogModal
+      :dialog="copyModal"
+      @close="closeDialogCopy"
+      :item="item"
+      @submit="copy"
+      :object="filters"
+      ref="copyModal"
+    />
 
   </v-container>
 </template>
@@ -125,11 +139,13 @@ import {ALLOWED_REQUEST_PARAMETERS, API} from "@/api/constants-api";
 import AddButton from "@c/base/AddButton";
 import api from "@/api";
 import CreateCatalogModal from "@/views/pages/SelectiveDisciplines/CatalogSpecialties/createCatalogModal";
+import copyCatalogModal from "@/views/pages/SelectiveDisciplines/CatalogSpecialties/copyCatalogModal";
 
 export default {
   name: "CatalogSpecialties",
   components: {
     CreateCatalogModal,
+    copyCatalogModal,
     AddButton
   },
   data() {
@@ -153,9 +169,12 @@ export default {
         { text: 'Дії', value: 'actions', sortable: false, width: '140px' },
       ],
       items: [],
+      item: null,
       meta: [],
       options: null,
       createModal: false,
+      copyModal: false,
+
       filters: {
         divisions: [],
         education_levels: [],
@@ -210,24 +229,6 @@ export default {
         this.departmentsLoading = false;
       });
     },
-    clear() {
-      this.options.year = null;
-      this.speciality = this.options.speciality = null;
-      this.faculty = this.options.faculty = null;
-      this.department = this.options.department = null;
-      this.division = this.options.divisionWithStatus = null;
-      this.apiGetItems();
-    },
-    search() {
-      this.options.year = this.year;
-      this.options.speciality = this.speciality;
-      this.options.faculty = this.faculty;
-      this.options.department = this.department;
-      if (this.division !== null) {
-        this.options.divisionWithStatus = [this.division, this.verificationDivisionStatus];
-      }
-      this.apiGetItems();
-    },
     store(item) {
       api.post(API.CATALOG_SPECIALTIES, item).then((response) => {
         this.$refs.createModal.close();
@@ -246,9 +247,52 @@ export default {
         this.$refs.createModal.setErrors(errors.response.data.errors);
       });
     },
+    copy(data) {
+      api.patch(API.CATALOG_SPECIALTIES_COPY, data.catalog_id, data).then((response) => {
+        this.$refs.copyModal.close();
+
+        const { message } = response.data;
+        this.$swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+
+        this.apiGetItems();
+      }).catch((errors) => {
+        this.$refs.copyModal.setErrors(errors.response.data.errors);
+      });
+    },
+    clear() {
+      this.options.year = null;
+      this.speciality = this.options.speciality = null;
+      this.faculty = this.options.faculty = null;
+      this.department = this.options.department = null;
+      this.division = this.options.divisionWithStatus = null;
+      this.apiGetItems();
+    },
+    search() {
+      this.options.year = this.year;
+      this.options.speciality = this.speciality;
+      this.options.faculty = this.faculty;
+      this.options.department = this.department;
+      if (this.division !== null) {
+        this.options.divisionWithStatus = [this.division, this.verificationDivisionStatus];
+      }
+      this.apiGetItems();
+    },
     closeDialogCreate() {
       this.createModal = false;
-    }
+    },
+    openDialogCopy(data) {
+      this.item = data;
+      this.copyModal = true;
+    },
+    closeDialogCopy() {
+      this.copyModal = false;
+    },
   }
 }
 </script>
