@@ -55,7 +55,15 @@
         {{ ++index }}
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-icon v-if="item.actions.preview" small class="mr-2 cursor-pointer" color="primary">mdi-eye</v-icon>
+        <v-icon
+          v-if="item.actions.preview"
+          small
+          class="mr-2 cursor-pointer"
+          color="primary"
+          @click="openDialogPreview(item)"
+        >
+          mdi-eye
+        </v-icon>
         <v-icon v-if="item.actions.edit" small class="mr-2 cursor-pointer" color="primary">mdi-pencil</v-icon>
         <v-icon
           v-if="item.actions.delete"
@@ -108,7 +116,13 @@
       </v-tooltip>
     </v-speed-dial>
 
-
+    <PreviewSpecialitySubjectModal
+      :dialog="previewModal"
+      :item="item"
+      :catalog="catalog"
+      @close="closeDialogPreview"
+      ref="previewModal"
+    />
     <CreateSpecialitySubjectModal
       :dialog="createModal"
       :catalog="catalog"
@@ -128,11 +142,13 @@ import GlobalMixin from "@/mixins/GlobalMixin";
 import {ALLOWED_REQUEST_PARAMETERS, API} from "@/api/constants-api";
 import api from "@/api";
 import CreateSpecialitySubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/createSubjectModal'
+import PreviewSpecialitySubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/previewSubjectModal'
 
 export default {
   name: "CatalogSpecialty",
   components: {
-    CreateSpecialitySubjectModal
+    CreateSpecialitySubjectModal,
+    PreviewSpecialitySubjectModal
   },
   data() {
     return {
@@ -152,9 +168,11 @@ export default {
         { text: 'Дії', value: 'actions', sortable: false, width: '140px' },
       ],
       items: [],
+      item: null,
       meta: [],
       options: null,
       createModal: false,
+      previewModal: false,
       catalog: null,
     }
   },
@@ -260,6 +278,14 @@ export default {
             });
           }
         });
+    },
+    openDialogPreview(item) {
+      this.item = item;
+      this.previewModal = true;
+    },
+    closeDialogPreview() {
+      this.previewModal = false;
+      this.item = null;
     },
     openDialogPdf() {
 
