@@ -7,6 +7,7 @@
       :server-items-length="meta.total"
       :options.sync="options"
       :footer-props="{ 'items-per-page-options': [15, 25, 50] }"
+      :loading="items.length === 0"
     >
       <template v-slot:top>
         <v-row class="px-4">
@@ -99,7 +100,7 @@
         <router-link v-if="item.actions.preview" :to="{ name: 'CatalogSpecialty', params:{id: item.id} }" target="_blank">
           <v-icon  small class="mr-2" color="primary">mdi-eye</v-icon>
         </router-link>
-        <v-icon v-if="item.actions.edit" small class="mr-2 cursor-pointer" color="primary">mdi-pencil</v-icon>
+<!--        <v-icon v-if="item.actions.edit" small class="mr-2 cursor-pointer" color="primary">mdi-pencil</v-icon>-->
         <v-icon
           v-if="item.actions.copy"
           small class="mr-1 cursor-pointer"
@@ -108,7 +109,15 @@
         >
           mdi-content-copy
         </v-icon>
-        <v-icon v-if="item.actions.delete" small class="mr-2 cursor-pointer" color="red">mdi-trash-can-outline</v-icon>
+        <v-icon
+          v-if="item.actions.delete"
+          small
+          class="mr-2 cursor-pointer"
+          color="red"
+          @click="deleted(item.id, item.speciality, item.year)"
+        >
+          mdi-trash-can-outline
+        </v-icon>
       </template>
     </v-data-table>
 
@@ -250,6 +259,7 @@ export default {
     copy(data) {
       api.patch(API.CATALOG_SPECIALTIES_COPY, data.catalog_id, data).then((response) => {
         this.$refs.copyModal.close();
+        this.item = null;
 
         const { message } = response.data;
         this.$swal.fire({
@@ -264,6 +274,32 @@ export default {
       }).catch((errors) => {
         this.$refs.copyModal.setErrors(errors.response.data.errors);
       });
+    },
+    deleted(id, speciality, year) {
+      this.$swal
+        .fire({
+          title: `Ви хочете видалити каталог?`,
+          text: `За спеціальностю ${speciality} ${year} - ${year + 1}р.`,
+          showDenyButton: true,
+          confirmButtonText: 'Так',
+          denyButtonText: `Ні`,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            api.destroy(API.CATALOG_SPECIALTIES, id).then((response) => {
+              const { message } = response.data;
+              this.$swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: message,
+                showConfirmButton: false,
+                timer: 1500,
+              });
+
+              this.apiGetItems();
+            });
+          }
+        });
     },
     clear() {
       this.options.year = null;
