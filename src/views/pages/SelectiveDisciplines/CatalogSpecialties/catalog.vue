@@ -57,7 +57,15 @@
       <template v-slot:item.actions="{ item }">
         <v-icon v-if="item.actions.preview" small class="mr-2 cursor-pointer" color="primary">mdi-eye</v-icon>
         <v-icon v-if="item.actions.edit" small class="mr-2 cursor-pointer" color="primary">mdi-pencil</v-icon>
-        <v-icon v-if="item.actions.delete" small class="mr-2 cursor-pointer" color="red">mdi-trash-can-outline</v-icon>
+        <v-icon
+          v-if="item.actions.delete"
+          small
+          class="mr-2 cursor-pointer"
+          color="red"
+          @click="deleted(item.id, item.title)"
+        >
+          mdi-trash-can-outline
+        </v-icon>
       </template>
     </v-data-table>
 
@@ -225,6 +233,32 @@ export default {
         })
         .catch((errors) => {
           this.$refs.createModal.setErrors(errors.response.data.errors);
+        });
+    },
+    deleted(id, name) {
+      this.$swal
+        .fire({
+          title: `Ви хочете видалити предмет?`,
+          text: `${name}`,
+          showDenyButton: true,
+          confirmButtonText: 'Так',
+          denyButtonText: `Ні`,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            api.destroy(API.SPECIALTY_SUBJECTS, id).then((response) => {
+              const { message } = response.data;
+              this.$swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: message,
+                showConfirmButton: false,
+                timer: 1500,
+              });
+
+              this.apiGetItems();
+            });
+          }
         });
     },
     openDialogPdf() {
