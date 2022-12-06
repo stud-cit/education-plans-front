@@ -24,7 +24,7 @@
       </v-toolbar>
       <v-card-text class="pb-0">
         <p class="title-speciality" >
-          Ви хочете скопиювати каталог за спеціальностю
+          Ви хочете скопіювати каталог за спеціальностю
           <span class="">{{item.speciality}} {{item.year}} - {{item.year + 1}}р.</span>?
         </p>
       </v-card-text>
