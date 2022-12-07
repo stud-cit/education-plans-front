@@ -95,7 +95,7 @@
       <v-tooltip left color="info">
         <template v-slot:activator="{ on, attrs }">
           <v-fab-transition>
-            <v-btn color="warning" small dark fab v-bind="attrs" v-on="on" @click="openDialogCatalog">
+            <v-btn color="warning" small dark fab v-bind="attrs" v-on="on" @click="() => settingModal = true">
               <v-icon>mdi-cog-outline</v-icon>
             </v-btn>
           </v-fab-transition>
@@ -146,6 +146,13 @@
       ref="editModal"
     />
 
+    <SettingCatalogModal
+      :dialog="settingModal"
+      :catalog="catalog"
+      @close="closeDialogSetting"
+      ref="settingModal"
+    />
+
   </v-container>
 
 
@@ -160,13 +167,15 @@ import api from "@/api";
 import CreateSpecialitySubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/createSubjectModal'
 import PreviewSpecialitySubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/previewSubjectModal'
 import EditSpecialitySubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/editSubjectModal'
+import SettingCatalogModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/settingCatalogModal'
 
 export default {
   name: "CatalogSpecialty",
   components: {
     CreateSpecialitySubjectModal,
     PreviewSpecialitySubjectModal,
-    EditSpecialitySubjectModal
+    EditSpecialitySubjectModal,
+    SettingCatalogModal
   },
   data() {
     return {
@@ -192,6 +201,7 @@ export default {
       createModal: false,
       previewModal: false,
       editModal: false,
+      settingModal: false,
       catalog: null,
     }
   },
@@ -330,8 +340,11 @@ export default {
     openDialogPdf() {
 
     },
-    openDialogCatalog() {
-
+    openDialogSetting() {
+      this.settingModal = true;
+    },
+    closeDialogSetting() {
+      this.settingModal = false;
     },
     openDialogEdit(item) {
       this.item = item;

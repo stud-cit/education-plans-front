@@ -55,6 +55,7 @@ export const API = {
   CATALOG_SPECIALTIES_FILTERS: version + '/catalog-specialties/filters',
   CATALOG_SPECIALTIES_COPY: version + '/catalog-specialties/copy',
   SPECIALTY_SUBJECTS: version + '/speciality-subjects',
+  SAVE_SPECIALITY_OWNERS: version + '/catalog-specialties/owners',
 
   ERR: version + '/err',
 };
