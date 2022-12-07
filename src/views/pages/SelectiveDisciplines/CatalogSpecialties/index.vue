@@ -97,13 +97,18 @@
         {{ ++index }}
       </template>
       <template v-slot:item.actions="{ item }">
-        <router-link v-if="item.actions.preview" :to="{ name: 'CatalogSpecialty', params:{id: item.id} }" target="_blank">
-          <v-icon  small class="mr-2" color="primary">mdi-eye</v-icon>
+        <router-link
+          v-if="item.actions.preview"
+          :to="{ name: 'CatalogSpecialty', params: { id: item.id } }"
+          target="_blank"
+        >
+          <v-icon small class="mr-2" color="primary">mdi-eye</v-icon>
         </router-link>
-<!--        <v-icon v-if="item.actions.edit" small class="mr-2 cursor-pointer" color="primary">mdi-pencil</v-icon>-->
+        <!--        <v-icon v-if="item.actions.edit" small class="mr-2 cursor-pointer" color="primary">mdi-pencil</v-icon>-->
         <v-icon
           v-if="item.actions.copy"
-          small class="mr-1 cursor-pointer"
+          small
+          class="mr-1 cursor-pointer"
           color="primary"
           @click="openDialogCopy(item)"
         >
@@ -121,7 +126,7 @@
       </template>
     </v-data-table>
 
-    <AddButton @show="() => this.createModal = true">Створити каталог</AddButton>
+    <AddButton @show="() => (this.createModal = true)">Створити каталог</AddButton>
 
     <createCatalogModal
       :dialog="createModal"
@@ -138,24 +143,23 @@
       :object="filters"
       ref="copyModal"
     />
-
   </v-container>
 </template>
 
 <script>
-import GlobalMixin from "@/mixins/GlobalMixin";
-import {ALLOWED_REQUEST_PARAMETERS, API} from "@/api/constants-api";
-import AddButton from "@c/base/AddButton";
-import api from "@/api";
-import CreateCatalogModal from "@/views/pages/SelectiveDisciplines/CatalogSpecialties/createCatalogModal";
-import copyCatalogModal from "@/views/pages/SelectiveDisciplines/CatalogSpecialties/copyCatalogModal";
+import GlobalMixin from '@/mixins/GlobalMixin';
+import { ALLOWED_REQUEST_PARAMETERS, API } from '@/api/constants-api';
+import AddButton from '@c/base/AddButton';
+import api from '@/api';
+import CreateCatalogModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/createCatalogModal';
+import copyCatalogModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/copyCatalogModal';
 
 export default {
-  name: "CatalogSpecialties",
+  name: 'CatalogSpecialties',
   components: {
     CreateCatalogModal,
     copyCatalogModal,
-    AddButton
+    AddButton,
   },
   data() {
     return {
@@ -191,8 +195,8 @@ export default {
         specialties: [],
         verificationsStatus: [],
         years: [],
-      }
-    }
+      },
+    };
   },
   mounted() {
     this.apiGetFilters();
@@ -228,7 +232,7 @@ export default {
     apiGetFilters() {
       api.get(API.CATALOG_SPECIALTIES_FILTERS).then(({ data }) => {
         this.filters = data;
-      })
+      });
     },
     apiGetDepartments(id) {
       this.departmentsLoading = true;
@@ -239,41 +243,47 @@ export default {
       });
     },
     store(item) {
-      api.post(API.CATALOG_SPECIALTIES, item).then((response) => {
-        this.$refs.createModal.close();
+      api
+        .post(API.CATALOG_SPECIALTIES, item)
+        .then((response) => {
+          this.$refs.createModal.close();
 
-        const { message } = response.data;
-        this.$swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: message,
-          showConfirmButton: false,
-          timer: 1500,
+          const { message } = response.data;
+          this.$swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+
+          this.apiGetItems();
+        })
+        .catch((errors) => {
+          this.$refs.createModal.setErrors(errors.response.data.errors);
         });
-
-        this.apiGetItems();
-      }).catch((errors) => {
-        this.$refs.createModal.setErrors(errors.response.data.errors);
-      });
     },
     copy(data) {
-      api.patch(API.CATALOG_SPECIALTIES_COPY, data.catalog_id, data).then((response) => {
-        this.$refs.copyModal.close();
-        this.item = null;
+      api
+        .patch(API.CATALOG_SPECIALTIES_COPY, data.catalog_id, data)
+        .then((response) => {
+          this.$refs.copyModal.close();
+          this.item = null;
 
-        const { message } = response.data;
-        this.$swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: message,
-          showConfirmButton: false,
-          timer: 1500,
+          const { message } = response.data;
+          this.$swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+
+          this.apiGetItems();
+        })
+        .catch((errors) => {
+          this.$refs.copyModal.setErrors(errors.response.data.errors);
         });
-
-        this.apiGetItems();
-      }).catch((errors) => {
-        this.$refs.copyModal.setErrors(errors.response.data.errors);
-      });
     },
     deleted(id, speciality, year) {
       this.$swal
@@ -286,7 +296,7 @@ export default {
         })
         .then((result) => {
           if (result.isConfirmed) {
-            api.destroy(API.CATALOG_SPECIALTIES, id).then((response) => {
+            api.destroy(API.CATALOG_SPECIALTIES + '/delete', id).then((response) => {
               const { message } = response.data;
               this.$swal.fire({
                 position: 'center',
@@ -329,10 +339,8 @@ export default {
     closeDialogCopy() {
       this.copyModal = false;
     },
-  }
-}
+  },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
