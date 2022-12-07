@@ -5,6 +5,7 @@
     hide-overlay
     persistent
     transition="dialog-bottom-transition"
+    v-if="item && subject"
   >
     <v-card>
       <v-toolbar
@@ -43,6 +44,7 @@
                   item-value="id"
                   return-object
                   label="Назва дисципліни"
+                  disabled
                 ></v-autocomplete>
               </validation-provider>
               <validation-provider
@@ -146,7 +148,7 @@
                 rules="required"
               >
                 <v-combobox
-                  v-model="resultsOfStudy"
+                  v-model="learningOutcomes"
                   :items="helpersResultsOfStudy"
                   item-value="id"
                   item-text="title"
@@ -278,7 +280,7 @@ import api from '@/api';
 import {API} from '@/api/constants-api';
 
 export default {
-  name: 'CreateSpecialitySubjectModal',
+  name: 'EditSpecialitySubjectModal',
   data() {
     return {
       disciplines: [],
@@ -298,7 +300,7 @@ export default {
       generalCompetence: null,
 
       helpersResultsOfStudy: [],
-      resultsOfStudy: null,
+      learningOutcomes: null,
 
       helpersTypesTrainingSessions: [],
       typesTrainingSessions: null,
@@ -315,6 +317,8 @@ export default {
       restrictionsSemester: null,
       semesters: null,
       published: false,
+      catalog: null,
+      subject: null,
     };
   },
   created() {
@@ -324,11 +328,18 @@ export default {
     dialog(v) {
       if (v === true) {
         this.apiGetCreate();
+      } else {
+        this.clear();
       }
     },
     discipline(v) {
-      if (v && v.title_en) {
+      if (v.title_en) {
         this.anotherDiscipline = v.title_en;
+      }
+    },
+    item(v) {
+      if (v !== null && this.dialog === true) {
+        this.apiGetItem(v.id);
       }
     },
   },
@@ -340,19 +351,49 @@ export default {
         return false;
       },
     },
-    catalog: {
-      type: Object,
-      default() {
-        return {
-          id: this.$route.params.id,
-          title: '',
-        }
-      },
-    }
+    item: null,
   },
   methods: {
+    apiGetItem(id) {
+      api.edit(API.SPECIALTY_SUBJECTS, id, { showLoader: true }).then(({ data }) => {
+        const {
+          discipline,
+          catalog_subject_id,
+          language,
+          department_id,
+          faculty_id,
+          lecturers,
+          practice,
+          general_competence,
+          learning_outcomes,
+          types_educational_activities,
+          entry_requirements_applicants,
+          number_acquirers,
+          limitation,
+          published,
+        } = data.data;
+
+        this.subject = data.data;
+
+        this.catalog = catalog_subject_id;
+        this.discipline = discipline;
+        this.language = language;
+        this.anotherDiscipline = discipline.title_en;
+        this.department = {id: department_id, faculty_id};
+        this.lecture = lecturers;
+        this.practice = practice;
+        this.generalCompetence = general_competence;
+        this.learningOutcomes = learning_outcomes;
+        this.typesTrainingSessions = types_educational_activities;
+        this.numberAcquirers = number_acquirers;
+        this.requirements = entry_requirements_applicants;
+        this.published = published;
+        this.restrictionsSemester = this.radioRestrictionsSemester.find((el) => el.label === limitation.label);
+        this.semesters = limitation.semesters;
+      });
+    },
     apiGetCreate() {
-      api.get(API.CATALOG_SELECTIVE_SUBJECTS + '/create', null, { showLoader: true }).then(({ data }) => {
+      api.get(API.SPECIALTY_SUBJECTS + '/create', null, { showLoader: true }).then(({ data }) => {
         const {
           subjects, languages, departments, teachers,
           helpersGeneralCompetence, helpersResultsOfStudy, helpersTypesTrainingSessions,
@@ -381,7 +422,8 @@ export default {
           };
 
           this.$emit('submit', {
-            catalog_subject_id: this.catalog.id,
+            id: this.subject.id,
+            catalog_subject_id: this.catalog,
             asu_id: this.discipline.id,
             title: this.discipline.title,
             title_en: this.anotherDiscipline,
@@ -391,7 +433,7 @@ export default {
             department_id: this.department.id,
             faculty_id: this.department.faculty_id,
             general_competence: this.generalCompetence,
-            learning_outcomes: this.resultsOfStudy,
+            learning_outcomes: this.learningOutcomes,
             types_educational_activities: this.typesTrainingSessions,
             number_acquirers: this.numberAcquirers,
             entry_requirements_applicants: this.requirements,
@@ -412,7 +454,7 @@ export default {
       this.practice = null;
       this.department = null;
       this.generalCompetence = null;
-      this.resultsOfStudy = null;
+      this.learningOutcomes = null;
       this.typesTrainingSessions = null;
       this.numberAcquirers = null;
       this.requirements = null;

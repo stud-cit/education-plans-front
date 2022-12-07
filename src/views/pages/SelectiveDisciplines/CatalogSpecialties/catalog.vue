@@ -64,7 +64,15 @@
         >
           mdi-eye
         </v-icon>
-        <v-icon v-if="item.actions.edit" small class="mr-2 cursor-pointer" color="primary">mdi-pencil</v-icon>
+        <v-icon
+          v-if="item.actions.edit"
+          small
+          class="mr-2 cursor-pointer"
+          color="primary"
+          @click="openDialogEdit(item)"
+        >
+          mdi-pencil
+        </v-icon>
         <v-icon
           v-if="item.actions.delete"
           small
@@ -130,6 +138,14 @@
       @submit="store"
       ref="createModal"
     />
+    <EditSpecialitySubjectModal
+      :dialog="editModal"
+      :item="item"
+      @close="closeDialogEdit"
+      @submit="edit"
+      ref="editModal"
+    />
+
   </v-container>
 
 
@@ -143,12 +159,14 @@ import {ALLOWED_REQUEST_PARAMETERS, API} from "@/api/constants-api";
 import api from "@/api";
 import CreateSpecialitySubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/createSubjectModal'
 import PreviewSpecialitySubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/previewSubjectModal'
+import EditSpecialitySubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/editSubjectModal'
 
 export default {
   name: "CatalogSpecialty",
   components: {
     CreateSpecialitySubjectModal,
-    PreviewSpecialitySubjectModal
+    PreviewSpecialitySubjectModal,
+    EditSpecialitySubjectModal
   },
   data() {
     return {
@@ -173,6 +191,7 @@ export default {
       options: null,
       createModal: false,
       previewModal: false,
+      editModal: false,
       catalog: null,
     }
   },
@@ -253,6 +272,27 @@ export default {
           this.$refs.createModal.setErrors(errors.response.data.errors);
         });
     },
+    edit(data) {
+      api
+        .patch(API.SPECIALTY_SUBJECTS, data.id, data)
+        .then((response) => {
+          this.editModal = false;
+
+          const { message } = response.data;
+          this.$swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          this.apiGetItems();
+          this.item = null;
+        })
+        .catch((errors) => {
+          this.$refs.editModal.setErrors(errors.response.data.errors);
+        });
+    },
     deleted(id, name) {
       this.$swal
         .fire({
@@ -292,6 +332,13 @@ export default {
     },
     openDialogCatalog() {
 
+    },
+    openDialogEdit(item) {
+      this.item = item;
+      this.editModal = true;
+    },
+    closeDialogEdit() {
+      this.editModal = false;
     },
     openDialogCreate() {
       this.createModal = true;
