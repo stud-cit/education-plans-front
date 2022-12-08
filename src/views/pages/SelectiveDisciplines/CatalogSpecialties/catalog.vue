@@ -102,7 +102,7 @@
         </template>
         <span>Налаштування каталога</span>
       </v-tooltip>
-      <v-tooltip left color="info" v-if="options && options.year && options.group">
+      <v-tooltip left color="info">
         <template v-slot:activator="{ on, attrs }">
           <v-fab-transition>
             <v-btn fab dark small color="red accent-4" v-bind="attrs" v-on="on" @click="openDialogPdf">
@@ -152,6 +152,9 @@
       @close="closeDialogSetting"
       ref="settingModal"
     />
+    <PdfCatalogModal :dialog="pdfModal" @close="closeDialogPdf" :options="options" ref="pdfModal" />
+
+
 
   </v-container>
 
@@ -168,10 +171,12 @@ import CreateSpecialitySubjectModal from '@/views/pages/SelectiveDisciplines/Cat
 import PreviewSpecialitySubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/previewSubjectModal'
 import EditSpecialitySubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/editSubjectModal'
 import SettingCatalogModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/settingCatalogModal'
+import PdfCatalogModal from "@/views/pages/SelectiveDisciplines/CatalogSpecialties/pdfCatalogModal";
 
 export default {
   name: "CatalogSpecialty",
   components: {
+    PdfCatalogModal,
     CreateSpecialitySubjectModal,
     PreviewSpecialitySubjectModal,
     EditSpecialitySubjectModal,
@@ -202,6 +207,7 @@ export default {
       previewModal: false,
       editModal: false,
       settingModal: false,
+      pdfModal: false,
       catalog: null,
     }
   },
@@ -338,7 +344,10 @@ export default {
       this.item = null;
     },
     openDialogPdf() {
-
+      this.pdfModal = true;
+    },
+    closeDialogPdf() {
+      this.pdfModal = false;
     },
     openDialogSetting() {
       this.settingModal = true;
