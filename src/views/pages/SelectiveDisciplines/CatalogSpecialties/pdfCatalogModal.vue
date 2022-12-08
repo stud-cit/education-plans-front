@@ -89,17 +89,25 @@
             За всіма вказаними навчальними дисциплінами розроблені повні комплекси навчально-методичного забезпечення.
           </p>
 
-          <div class="">
-            <div>
-              <div class="pdf__signatures">
-                <div class="title">
-                  Голова Ради з якості інституту (факультету)
-                </div>
-                <div class="field">
-                  <span>(абревіатура інституту (факультету))</span>
-                </div>
+          <v-row class="pdf__signatures">
+            <v-col cols="4" class="left">
+              <div class="pdf__signature">
                 <v-row>
                   <v-col>
+                    <div class="title">
+                      Голова Ради з якості інституту (факультету)
+                    </div>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <div class="field">
+                      <span>(абревіатура інституту (факультету))</span>
+                    </div>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="4">
                     <div class="field">
                       <span>(підпис)</span>
                     </div>
@@ -111,18 +119,89 @@
                   </v-col>
                 </v-row>
               </div>
-            </div>
-            <div>
-              <div class="pdf__signatures">
-
+            </v-col>
+            <v-col cols="4" class="right">
+              <v-row>
+                <v-col class="agreed">
+                  ПОГОДЖЕНО:
+                </v-col>
+              </v-row>
+              <div class="pdf__signature">
+                <v-row>
+                  <v-col>
+                    <div class="title">
+                      Керівник групи забезпечення спеціальності
+                    </div>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="4">
+                    <div class="field">
+                      <span>(підпис)</span>
+                    </div>
+                  </v-col>
+                  <v-col>
+                    <div class="field">
+                      Pento Penrovinko
+<!--                      <span>(ім’я та прізвище)</span>-->
+                    </div>
+                  </v-col>
+                </v-row>
               </div>
-              <div class="pdf__signatures">
-
+              <div class="pdf__signature">
+                <v-row>
+                  <v-col cols="5">
+                    <div class="title">
+                      Завідувач кафедри
+                    </div>
+                  </v-col>
+                  <v-col>
+                    <div class="field">
+                      <span>(абревіатура кафедри)</span>
+                    </div>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="4">
+                    <div class="field">
+                      <span>(підпис)</span>
+                    </div>
+                  </v-col>
+                  <v-col>
+                    <div class="field">
+                      <span>(ім’я та прізвище)</span>
+                    </div>
+                  </v-col>
+                </v-row>
               </div>
-            </div>
-          </div>
-
-
+              <div class="pdf__signature">
+                <v-row>
+                  <v-col cols="5">
+                    <div class="title">
+                      Завідувач кафедри
+                    </div>
+                  </v-col>
+                  <v-col>
+                    <div class="field">
+                      <span>(абревіатура кафедри)</span>
+                    </div>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="4">
+                    <div class="field">
+                      <span>(підпис)</span>
+                    </div>
+                  </v-col>
+                  <v-col>
+                    <div class="field">
+                      <span>(ім’я та прізвище)</span>
+                    </div>
+                  </v-col>
+                </v-row>
+              </div>
+            </v-col>
+          </v-row>
 
           <v-btn
             class="btn-center no-print"
