@@ -91,7 +91,6 @@
                     :error-messages="errors"
                     item-text="full_name"
                     item-value="asu_id"
-                    return-object
                     class="mt-3"
                     label="Голова Ради з якості інституту (факультету) "
                   ></v-autocomplete>
@@ -107,27 +106,65 @@
                     :error-messages="errors"
                     item-text="full_name"
                     item-value="asu_id"
-                    return-object
                     class="mt-3"
                     label="Керівник групи забезпечення спеціальності"
                   ></v-autocomplete>
                 </validation-provider>
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="Завідувач кафедри "
-                  rules="required"
-                >
-                  <v-autocomplete
-                    v-model="managerSignature"
-                    :items="workers"
-                    :error-messages="errors"
-                    item-text="full_name"
-                    item-value="asu_id"
-                    return-object
-                    class="mt-3"
-                    label="Завідувач кафедри"
-                  ></v-autocomplete>
-                </validation-provider>
+
+                <v-row v-for="(manager, index)  in managerSignature" :key="index">
+                  <v-col cols="12" lg="5" class="py-0">
+                    <validation-provider
+                      v-slot="{ errors }"
+                      name="Кафедра"
+                      rules="required"
+                    >
+                      <v-autocomplete
+                        v-model="manager.department_id"
+                        :items="departments"
+                        :error-messages="errors"
+                        item-text="name"
+                        item-value="id"
+                        class="mt-3"
+                        :loading="departmentsLoading"
+                        label="Кафедра"
+                      ></v-autocomplete>
+                    </validation-provider>
+                  </v-col>
+                  <v-col cols="12" :lg="index !== 0 ? '6' : '7'" class="py-0">
+                    <validation-provider
+                      v-slot="{ errors }"
+                      name="Завідувач кафедри"
+                      rules="required"
+                    >
+                      <v-autocomplete
+                        v-model="manager.asu_id"
+                        :items="workers"
+                        :error-messages="errors"
+                        item-text="full_name"
+                        item-value="asu_id"
+                        class="mt-3"
+                        label="Завідувач кафедри"
+                      ></v-autocomplete>
+                    </validation-provider>
+                  </v-col>
+                  <v-col cols="12" lg="1" v-if="index !== 0" class="d-flex align-center justify-center py-0" >
+                    <v-btn outlined fab small color="red" @click="removeManager(index)">
+                      <v-icon aria-hidden="false"> mdi-trash-can-outline </v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+
+                <div class="text-center my-4">
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn icon large v-bind="attrs" v-on="on" @click="addManager">
+                        <v-icon>mdi-plus</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Додати завідувача кафедри</span>
+                  </v-tooltip>
+                </div>
+
                 <v-btn
                   color="primary"
                   @click="saveSignatures"
@@ -159,23 +196,9 @@ export default {
       workers: [],
       headSignature: null,
       leaderSignature: null,
-      managerSignature: null,
-
-
-      headers: [
-        { text: '№', value: 'index', sortable: false, width: '20px' },
-        { text: 'Рік', value: 'year', sortable: false },
-        { text: 'Назва групи', value: 'group_name', sortable: false },
+      managerSignature: [
+        {'department_id': null, asu_id: null},
       ],
-      items: [],
-      meta: [],
-      options: null,
-
-      catalogs: [],
-      groups: [],
-      group: null,
-      years: [],
-      year: null,
       tab: null
     }
   },
@@ -255,6 +278,12 @@ export default {
     },
 
     saveSignatures() {
+      const data = {
+        head: this.headSignature,
+        leader: this.leaderSignature,
+        managers: this.managerSignature
+      }
+      console.log('save Signatures', data)
       // const data = {
       //   id: this.catalog.id,
       //   owners: this.department
@@ -271,84 +300,14 @@ export default {
       //   });
       // })
     },
-
-
-
-
-
-
-    async apiGetItems() {
-      const options = GlobalMixin.methods.GlobalHandlingRequestParameters(
-        ALLOWED_REQUEST_PARAMETERS.GET_CATALOG_SUBJECTS,
-        this.options,
-      );
-      try {
-        const response = await api.get(API.CATALOG_SUBJECTS, options, { showLoader: true });
-        const { data } = response;
-        this.items = data.data;
-        this.meta = data.meta;
-      } catch (e) {
-        console.error(e); // TODO: show error
-      }
+    removeManager(index) {
+      this.managerSignature.splice(this.managerSignature.indexOf(index), 1);
     },
-    async apiGetYears() {
-      const response = await api.get(API.CATALOG_SUBJECTS + '/years');
-      const { data } = response.data;
-      this.years = data;
-    },
-    apiGetCatalogs() {
-      api.get(API.CATALOG_SUBJECTS_TITLES).then( ({ data }) => {
-        this.catalogs = data.data;
+    addManager() {
+      this.managerSignature.push({
+        department_id: null,
+        asu_id: null,
       })
-    },
-    apiGetGroups() {
-      api.get(API.CATALOG_GROUPS).then(({ data }) => {
-        this.groups = data.data;
-      });
-    },
-
-
-    create() {
-      this.$refs.create.validate().then((validated) => {
-        if (validated) {
-          const data = {
-            year: this.year,
-            selective_discipline_id: 1,
-            group_id: this.group
-          }
-          api
-            .post(API.CATALOG_SUBJECTS, data)
-            .then((response) => {
-              this.showCreate = false;
-              const { message } = response.data;
-              this.$swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: message,
-                showConfirmButton: false,
-                timer: 1500,
-              });
-              this.$refs.create.reset();
-              this.close();
-            })
-            .catch((errors) => {
-              console.log(errors) // todo when duplicate catalog
-            });
-        }
-      });
-    },
-    copy() {
-
-    },
-    clear() {
-      this.options.year = '';
-      this.options.group = '';
-      this.apiGetItems();
-    },
-    search() {
-      this.options.year = this.year;
-      this.options.group = this.group;
-      this.apiGetItems();
     },
   }
 }
