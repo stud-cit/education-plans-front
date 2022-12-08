@@ -26,14 +26,24 @@
           <p class="pdf_title">
             СУМСЬКИЙ ДЕРЖАВНИЙ УНІВЕРСИТЕТ
           </p>
-          <div class="pdf_faculty">
+          <div v-if="catalog && catalog.faculty" class="pdf_faculty">
+            {{catalog.faculty}}
+          </div>
+          <div v-else class="pdf_faculty-line">
             (назва навчально-наукового інституту/факультету)
           </div>
-          <div class="pdf_faculty-line">
-            (назва навчально-наукового інституту/факультету)
+
+          <div v-if="catalog && catalog.department" class="pdf_faculty">
+            {{catalog.department}}
           </div>
-          <p class="pdf_subtitle" v-if="item && 'year' in item">
-            ПРОПОЗИЦІЇ ДО КАТАЛОГУ ВИБІРКОВИХ НАВЧАЛЬНИХ ДИСЦИПЛІН ЦИКЛУ ЗАГАЛЬНОЇ ПІДГОТОВКИ на {{item.year}} &mdash; {{item.year + 1}} н. р.
+          <div v-else class="pdf_faculty-line">
+            (назва кафедри)
+          </div>
+
+          <p class="pdf_subtitle mt-3" v-if="catalog && catalog.speciality && catalog.year && catalog.education_level">
+            КАТАЛОГ ВИБІРКОВИХ НАВЧАЛЬНИХ ДИСЦИПЛІН ЦИКЛУ ПРОФЕСІЙНОЇ ПІДГОТОВКИ ЗА СПЕЦІАЛЬНІСТЮ <br>
+            {{catalog.speciality}} <br>
+            {{catalog.education_level}} {{catalog.year}} &mdash; {{catalog.year + 1}} н. р.
           </p>
           <table class="table pdf_table">
             <thead>
@@ -144,32 +154,6 @@
                     <div class="field">
                       Pento Penrovinko
 <!--                      <span>(ім’я та прізвище)</span>-->
-                    </div>
-                  </v-col>
-                </v-row>
-              </div>
-              <div class="pdf__signature">
-                <v-row>
-                  <v-col cols="5">
-                    <div class="title">
-                      Завідувач кафедри
-                    </div>
-                  </v-col>
-                  <v-col>
-                    <div class="field">
-                      <span>(абревіатура кафедри)</span>
-                    </div>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="4">
-                    <div class="field">
-                      <span>(підпис)</span>
-                    </div>
-                  </v-col>
-                  <v-col>
-                    <div class="field">
-                      <span>(ім’я та прізвище)</span>
                     </div>
                   </v-col>
                 </v-row>

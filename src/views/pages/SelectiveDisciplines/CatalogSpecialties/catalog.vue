@@ -152,7 +152,13 @@
       @close="closeDialogSetting"
       ref="settingModal"
     />
-    <PdfCatalogModal :dialog="pdfModal" @close="closeDialogPdf" :options="options" ref="pdfModal" />
+    <PdfCatalogModal
+      :dialog="pdfModal"
+      @close="closeDialogPdf"
+      :options="options"
+      :catalog="catalog"
+      ref="pdfModal"
+    />
 
 
 
