@@ -5,6 +5,7 @@
     hide-overlay
     persistent
     transition="dialog-bottom-transition"
+    v-if="item"
   >
     <v-card>
         <v-toolbar
@@ -26,24 +27,24 @@
           <p class="pdf_title">
             СУМСЬКИЙ ДЕРЖАВНИЙ УНІВЕРСИТЕТ
           </p>
-          <div v-if="catalog && catalog.faculty" class="pdf_faculty">
-            {{catalog.faculty}}
+          <div v-if="item.catalog" class="pdf_faculty">
+            {{item.catalog.faculty}}
           </div>
           <div v-else class="pdf_faculty-line">
             (назва навчально-наукового інституту/факультету)
           </div>
 
-          <div v-if="catalog && catalog.department" class="pdf_faculty">
-            {{catalog.department}}
+          <div v-if="item.catalog" class="pdf_faculty">
+            {{item.catalog.department}}
           </div>
           <div v-else class="pdf_faculty-line">
             (назва кафедри)
           </div>
 
-          <p class="pdf_subtitle mt-3" v-if="catalog && catalog.speciality && catalog.year && catalog.education_level">
+          <p class="pdf_subtitle mt-3" v-if="item.catalog">
             КАТАЛОГ ВИБІРКОВИХ НАВЧАЛЬНИХ ДИСЦИПЛІН ЦИКЛУ ПРОФЕСІЙНОЇ ПІДГОТОВКИ ЗА СПЕЦІАЛЬНІСТЮ <br>
-            {{catalog.speciality}} <br>
-            {{catalog.education_level}} {{catalog.year}} &mdash; {{catalog.year + 1}} н. р.
+            {{item.catalog.speciality}} <br>
+            {{item.catalog.education_level}} {{item.catalog.year}} &mdash; {{item.catalog.year + 1}} н. р.
           </p>
           <table class="table pdf_table">
             <thead>
@@ -112,7 +113,10 @@
                 <v-row>
                   <v-col>
                     <div class="field">
-                      <span>(абревіатура інституту (факультету))</span>
+                      <template v-if="getNameSignature(item.signatures, CATALOG_SIGNATURE_TYPE.head.id)">
+                        {{getNameSignature(item.signatures, CATALOG_SIGNATURE_TYPE.head.id).faculty}}
+                      </template>
+                      <span v-else>(абревіатура інституту (факультету))</span>
                     </div>
                   </v-col>
                 </v-row>
@@ -124,7 +128,10 @@
                   </v-col>
                   <v-col>
                     <div class="field">
-                      <span>(ім’я та прізвище)</span>
+                      <template v-if="getNameSignature(item.signatures, CATALOG_SIGNATURE_TYPE.head.id)">
+                        {{getNameSignature(item.signatures, CATALOG_SIGNATURE_TYPE.head.id).name}}
+                      </template>
+                      <span v-else>(ім’я та прізвище)</span>
                     </div>
                   </v-col>
                 </v-row>
@@ -152,13 +159,18 @@
                   </v-col>
                   <v-col>
                     <div class="field">
-                      Pento Penrovinko
-<!--                      <span>(ім’я та прізвище)</span>-->
+                      <template v-if="getNameSignature(item.signatures, CATALOG_SIGNATURE_TYPE.leader.id)">
+                        {{getNameSignature(item.signatures, CATALOG_SIGNATURE_TYPE.leader.id).name}}
+                      </template>
+                      <span v-else>(ім’я та прізвище)</span>
                     </div>
                   </v-col>
                 </v-row>
               </div>
-              <div class="pdf__signature">
+              <div class="pdf__signature"
+                   v-for="manager in item.signatures.filter(el => el.type === CATALOG_SIGNATURE_TYPE.manager.id)"
+                   :key="manager.id"
+              >
                 <v-row>
                   <v-col cols="5">
                     <div class="title">
@@ -167,7 +179,10 @@
                   </v-col>
                   <v-col>
                     <div class="field">
-                      <span>(абревіатура кафедри)</span>
+                      <template v-if="manager.department">
+                        {{manager.department}}
+                      </template>
+                      <span v-else>(абревіатура кафедри)</span>
                     </div>
                   </v-col>
                 </v-row>
@@ -179,7 +194,10 @@
                   </v-col>
                   <v-col>
                     <div class="field">
-                      <span>(ім’я та прізвище)</span>
+                      <template v-if="manager.name">
+                        {{manager.name}}
+                      </template>
+                      <span v-else>(ім’я та прізвище)</span>
                     </div>
                   </v-col>
                 </v-row>
@@ -203,6 +221,7 @@
 <script>
 import GlobalMixin from "@/mixins/GlobalMixin";
 import {ALLOWED_REQUEST_PARAMETERS, API} from "@/api/constants-api";
+import { CATALOG_SIGNATURE_TYPE } from "@/utils/constants"
 import api from "@/api";
 import print from 'vue-print-nb'
 import '@/assets/styles/print.css'
@@ -216,6 +235,7 @@ export default {
   data() {
     return {
       item: null,
+      CATALOG_SIGNATURE_TYPE
     }
   },
   props: {
@@ -236,13 +256,17 @@ export default {
   },
   methods: {
     apiGetItems(id) {
-      // api.get(API.CATALOG_SUBJECTS_GENERATE_PDF, null, { showLoader: true }).then( ({data}) => {
-      //   this.item = data.data;
-      // }).catch(() => this.$emit('close'));
+      api.get(API.CATALOG_SPECIALITY_GENERATE_PDF, {catalog_id: id}, { showLoader: true }).then( ({data}) => {
+        console.log(data.data);
+        this.item = data.data;
+      }).catch(() => this.$emit('close'));
     },
     close() {
       this.$emit('close');
     },
+    getNameSignature(signatures, type) {
+      return signatures.find(el => el.type === type)
+    }
   }
 }
 </script>

@@ -81,6 +81,7 @@
 }
 .pdf .pdf__signature .field {
     font-size: 16px;
+    text-align: center;
 }
 
 .pdf .pdf__signature .field span {
@@ -106,6 +107,8 @@
     .pdf .pdf_table {
         font-family: "Times New Roman", sans-serif;
         color: black;
+        display: table;
+        /*overflow-x: ;*/
     }
 
     .pdf .pdf_title,
