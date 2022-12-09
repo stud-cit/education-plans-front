@@ -202,11 +202,6 @@ export default {
       tab: null
     }
   },
-  mounted() {
-    this.apiGetCatalogs();
-    this.apiGetGroups();
-    this.apiGetYears();
-  },
   watch: {
     dialog(v) {
       if (v === true) {
@@ -219,18 +214,6 @@ export default {
         this.department = v.owners;
       }
     },
-    tab(v) {
-      switch (v) {
-        case 0:
-          this.apiGetYears();
-          break;
-        case 1:
-          this.years = this.GlobalFakerYears();
-          break;
-        default:
-          this.apiGetYears();
-      }
-    }
   },
   props: {
     dialog: {
