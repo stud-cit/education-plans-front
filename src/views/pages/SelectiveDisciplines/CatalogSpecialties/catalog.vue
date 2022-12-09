@@ -112,7 +112,7 @@
         </template>
         <span>PDF</span>
       </v-tooltip>
-      <v-tooltip left color="info">
+      <v-tooltip left color="info" v-if="catalog && catalog.can_create">
         <template v-slot:activator="{ on, attrs }">
           <v-fab-transition>
             <v-btn color="primary" small dark fab v-bind="attrs" v-on="on" @click="openDialogCreate">
