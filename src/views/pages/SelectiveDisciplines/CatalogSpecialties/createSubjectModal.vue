@@ -103,6 +103,8 @@
                   return-object
                   class="mt-3"
                   label="Лекції"
+                  chips
+                  deletable-chips
                   multiple
                 ></v-autocomplete>
               </validation-provider>
@@ -121,6 +123,8 @@
                   return-object
                   class="mt-3"
                   label="Семінарські та практичні заняття, лабораторні роботи"
+                  chips
+                  deletable-chips
                   multiple
                 ></v-autocomplete>
               </validation-provider>
