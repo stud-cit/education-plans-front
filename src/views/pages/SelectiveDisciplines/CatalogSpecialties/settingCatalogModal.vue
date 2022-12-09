@@ -3,6 +3,7 @@
     v-model="dialog"
     fullscreen
     hide-overlay
+    persistent
     transition="dialog-bottom-transition"
   >
     <v-card>
@@ -80,78 +81,70 @@
               v-slot="{ invalid }"
             >
               <form @submit.prevent="saveSignatures" @keyup.enter="saveSignatures">
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="Голова Ради з якості інституту (факультету)"
-                  rules="required"
-                >
-                  <v-autocomplete
-                    v-model="headSignature"
-                    :items="workers"
-                    :error-messages="errors"
-                    item-text="full_name"
-                    item-value="asu_id"
-                    class="mt-3"
-                    label="Голова Ради з якості інституту (факультету) "
-                  ></v-autocomplete>
-                </validation-provider>
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="Керівник групи забезпечення спеціальності"
-                  rules="required"
-                >
-                  <v-autocomplete
-                    v-model="leaderSignature"
-                    :items="workers"
-                    :error-messages="errors"
-                    item-text="full_name"
-                    item-value="asu_id"
-                    class="mt-3"
-                    label="Керівник групи забезпечення спеціальності"
-                  ></v-autocomplete>
-                </validation-provider>
 
-                <v-row v-for="(manager, index)  in managerSignature" :key="index">
-                  <v-col cols="12" lg="5" class="py-0">
+                <v-row v-for="(signature, index)  in signatures" :key="index">
+                  <v-col v-if="signature.catalog_signature_type_id !== CATALOG_SIGNATURE_TYPE.manager.id">
                     <validation-provider
                       v-slot="{ errors }"
-                      name="Кафедра"
                       rules="required"
+                      :name="Object.values(CATALOG_SIGNATURE_TYPE).find(el => el.id === signature.catalog_signature_type_id).label"
                     >
                       <v-autocomplete
-                        v-model="manager.department_id"
-                        :items="departments"
-                        :error-messages="errors"
-                        item-text="name"
-                        item-value="id"
-                        class="mt-3"
-                        :loading="departmentsLoading"
-                        label="Кафедра"
-                      ></v-autocomplete>
-                    </validation-provider>
-                  </v-col>
-                  <v-col cols="12" :lg="index !== 0 ? '6' : '7'" class="py-0">
-                    <validation-provider
-                      v-slot="{ errors }"
-                      name="Завідувач кафедри"
-                      rules="required"
-                    >
-                      <v-autocomplete
-                        v-model="manager.asu_id"
+                        v-model="signature.asu_id"
                         :items="workers"
                         :error-messages="errors"
                         item-text="full_name"
                         item-value="asu_id"
                         class="mt-3"
-                        label="Завідувач кафедри"
+                        :label="Object.values(CATALOG_SIGNATURE_TYPE).find(el => el.id === signature.catalog_signature_type_id).label"
                       ></v-autocomplete>
                     </validation-provider>
                   </v-col>
-                  <v-col cols="12" lg="1" v-if="index !== 0" class="d-flex align-center justify-center py-0" >
-                    <v-btn outlined fab small color="red" @click="removeManager(index)">
-                      <v-icon aria-hidden="false"> mdi-trash-can-outline </v-icon>
-                    </v-btn>
-                  </v-col>
+
+                  <template v-else>
+                    <v-col cols="12" lg="5" class="py-0">
+                      <validation-provider
+                        v-slot="{ errors }"
+                        name="Кафедра"
+                        rules="required"
+                      >
+                        <v-autocomplete
+                          v-model="signature.department_id"
+                          :items="departments"
+                          :error-messages="errors"
+                          item-text="name"
+                          item-value="id"
+                          class="mt-3"
+                          return-object
+                          :loading="departmentsLoading"
+                          label="Кафедра"
+                          @change="setFacultySignature(signature, index)"
+                        ></v-autocomplete>
+                      </validation-provider>
+                    </v-col>
+                    <v-col cols="12" lg="6" class="py-0">
+                      <validation-provider
+                        v-slot="{ errors }"
+                        :name="Object.values(CATALOG_SIGNATURE_TYPE).find(el => el.id === signature.catalog_signature_type_id).label"
+                        rules="required"
+                      >
+                        <v-autocomplete
+                          v-model="signature.asu_id"
+                          :items="workers"
+                          :error-messages="errors"
+                          item-text="full_name"
+                          item-value="asu_id"
+                          class="mt-3"
+                          :label="Object.values(CATALOG_SIGNATURE_TYPE).find(el => el.id === signature.catalog_signature_type_id).label"
+                        ></v-autocomplete>
+                      </validation-provider>
+                    </v-col>
+                    <v-col cols="12" lg="1" class="d-flex align-center justify-center py-0">
+                      <v-btn outlined fab small color="red" @click="removeManager(index)">
+                        <v-icon aria-hidden="false"> mdi-trash-can-outline </v-icon>
+                      </v-btn>
+                    </v-col>
+                  </template>
                 </v-row>
 
                 <div class="text-center my-4">
@@ -183,8 +176,8 @@
 
 <script>
 import api from '@/api';
-import {ALLOWED_REQUEST_PARAMETERS, API} from '@/api/constants-api';
-import GlobalMixin from "@/mixins/GlobalMixin";
+import {API} from '@/api/constants-api';
+import {CATALOG_SIGNATURE_TYPE} from '@/utils/constants';
 
 export default {
   name: "settingCatalogModal",
@@ -192,14 +185,11 @@ export default {
     return {
       department: null,
       departments: [],
-      departmentsLoading: false,
+      departmentsLoading: true,
       workers: [],
-      headSignature: null,
-      leaderSignature: null,
-      managerSignature: [
-        {'department_id': null, asu_id: null},
-      ],
-      tab: null
+      signatures: [],
+      tab: null,
+      CATALOG_SIGNATURE_TYPE,
     }
   },
   watch: {
@@ -212,6 +202,7 @@ export default {
     catalog(v) {
       if (v !== null && 'owners' in v) {
         this.department = v.owners;
+        this.signatures = v.signatures.length > 0 ? v.signatures : this.generateSignatures();
       }
     },
   },
@@ -231,11 +222,50 @@ export default {
         this.departmentsLoading = false;
       });
     },
+
     apiGetWorkers() {
       api.get(API.LIST_WORKERS).then((response) => {
         const { data } = response;
         this.workers = data;
       });
+    },
+
+    setFacultySignature(item, index) {
+      this.signatures.map((signature, i) => {
+        if (index === i) {
+          signature.faculty_id = item.department_id.faculty_id;
+          signature.department_id = item.department_id.id;
+        }
+      })
+    },
+
+    generateSignatures() {
+      return [
+        {
+          id: null,
+          department_id: this.catalog.department_id,
+          faculty_id: this.catalog.faculty_id,
+          catalog_subject_id: this.catalog ? this.catalog.id : this.$route.params.id,
+          catalog_signature_type_id: CATALOG_SIGNATURE_TYPE.head.id,
+          asu_id: null
+        },
+        {
+          id: null,
+          department_id: this.catalog.department_id,
+          faculty_id: this.catalog.faculty_id,
+          catalog_subject_id: this.catalog ? this.catalog.id : this.$route.params.id,
+          catalog_signature_type_id: CATALOG_SIGNATURE_TYPE.leader.id,
+          asu_id: null
+        },
+        {
+          id: null,
+          department_id: null,
+          faculty_id: null,
+          catalog_subject_id: this.catalog ? this.catalog.id : this.$route.params.id,
+          catalog_signature_type_id: CATALOG_SIGNATURE_TYPE.manager.id,
+          asu_id: null
+        }
+      ];
     },
 
     close() {
@@ -247,8 +277,10 @@ export default {
         id: this.catalog.id,
         owners: this.department
       }
+
       api.patch(API.SAVE_SPECIALITY_OWNERS, this.catalog.id, data).then((response) => {
         const { message } = response.data;
+        this.$emit('init');
 
         this.$swal.fire({
           position: 'center',
@@ -261,35 +293,32 @@ export default {
     },
 
     saveSignatures() {
-      const data = {
-        head: this.headSignature,
-        leader: this.leaderSignature,
-        managers: this.managerSignature
-      }
-      console.log('save Signatures', data)
-      // const data = {
-      //   id: this.catalog.id,
-      //   owners: this.department
-      // }
-      // api.patch(API.SAVE_SPECIALITY_OWNERS, this.catalog.id, data).then((response) => {
-      //   const { message } = response.data;
-      //
-      //   this.$swal.fire({
-      //     position: 'center',
-      //     icon: 'success',
-      //     title: message,
-      //     showConfirmButton: false,
-      //     timer: 1500,
-      //   });
-      // })
+      api.patch(API.SAVE_SPECIALITY_SIGNATURE, this.catalog.id, { signatures: this.signatures }).then((response) => {
+        const { message } = response.data;
+        this.$emit('init');
+
+        this.$swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      })
     },
+
     removeManager(index) {
-      this.managerSignature.splice(this.managerSignature.indexOf(index), 1);
+      this.signatures.splice(this.signatures.indexOf(index), 1);
     },
+
     addManager() {
-      this.managerSignature.push({
+      this.signatures.push({
+        id: null,
         department_id: null,
-        asu_id: null,
+        faculty_id: null,
+        catalog_subject_id: 8,
+        catalog_signature_type_id: CATALOG_SIGNATURE_TYPE.manager.id,
+        asu_id: null
       })
     },
   }

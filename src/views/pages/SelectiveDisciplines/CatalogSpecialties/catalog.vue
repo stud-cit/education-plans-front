@@ -151,7 +151,9 @@
       :catalog="catalog"
       @close="closeDialogSetting"
       ref="settingModal"
+      @init="apiGetItems"
     />
+
     <PdfCatalogModal
       :dialog="pdfModal"
       @close="closeDialogPdf"
@@ -159,8 +161,6 @@
       :catalog="catalog"
       ref="pdfModal"
     />
-
-
 
   </v-container>
 

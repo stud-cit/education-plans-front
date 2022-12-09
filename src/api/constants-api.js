@@ -56,6 +56,7 @@ export const API = {
   CATALOG_SPECIALTIES_COPY: version + '/catalog-specialties/copy',
   SPECIALTY_SUBJECTS: version + '/speciality-subjects',
   SAVE_SPECIALITY_OWNERS: version + '/catalog-specialties/owners',
+  SAVE_SPECIALITY_SIGNATURE: version + '/catalog-specialties/signature',
 
   ERR: version + '/err',
 };
