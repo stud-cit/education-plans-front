@@ -103,7 +103,7 @@
           <v-icon v-else> mdi-dots-vertical </v-icon>
         </v-btn>
       </template>
-      <v-tooltip left color="info">
+      <v-tooltip left color="info" v-if="catalog && catalog.can_setting">
         <template v-slot:activator="{ on, attrs }">
           <v-fab-transition>
             <v-btn color="warning" small dark fab v-bind="attrs" v-on="on" @click="() => settingModal = true">
@@ -272,11 +272,8 @@ export default {
         .patch(API.CATALOG_SPECIALTIES + '/verification', this.catalog.id, status)
         .then(() => {
           this.apiGetItems();
-      //     this.$emit('init');
-      //     this.dialogModalVerification = false;
         })
         .catch((errors) => {
-          // this.dialogModalVerification = false;
           console.error(errors.response.data);
         });
     },

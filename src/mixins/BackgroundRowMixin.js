@@ -18,10 +18,7 @@ export default {
         if (item.need_verification == 1 && !item.user_verifications.find((i) => i.role_id == this.user.role_id)) {
           return 'warning lighten-5';
         }
-        if (
-          item.need_verification == 1 &&
-          item.user_verifications.find((i) => i.role_id == this.user.role_id && i.status == 0)
-        ) {
+        if (item.user_verifications.find((i) => i.role_id == this.user.role_id && i.status == 0)) {
           return 'error lighten-5';
         }
         if (

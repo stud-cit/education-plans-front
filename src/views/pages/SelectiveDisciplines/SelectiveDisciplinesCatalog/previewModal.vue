@@ -251,7 +251,7 @@ export default {
     },
     getVerificationStatusId() {
       const verification_status = this.checkVerification.find((el) => el.role_id === this.authUser.role_id);
-      return verification_status?.id;
+      return verification_status?.verification_status_id;
     },
     getShowVerificationBtn() {
       let allow = null;

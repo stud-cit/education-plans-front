@@ -5,6 +5,7 @@
       :items="items"
       class="elevation-1"
       :server-items-length="meta.total"
+      :item-class="this.itemRowBackground"
       :options.sync="options"
       :footer-props="{ 'items-per-page-options': [15, 25, 50] }"
       :loading="items.length === 0"
@@ -153,6 +154,8 @@ import AddButton from '@c/base/AddButton';
 import api from '@/api';
 import CreateCatalogModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/createCatalogModal';
 import copyCatalogModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/copyCatalogModal';
+import RolesMixin from "@/mixins/RolesMixin";
+import BackgroundRowMixin from "@/mixins/BackgroundRowMixin";
 
 export default {
   name: 'CatalogSpecialties',
@@ -198,6 +201,7 @@ export default {
       },
     };
   },
+  mixins: [RolesMixin, BackgroundRowMixin],
   mounted() {
     this.apiGetFilters();
   },

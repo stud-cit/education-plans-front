@@ -40,14 +40,14 @@
         small
         depressed
         :disabled="checkNeedVerification(item)"
-        v-if="allowedRoles([ROLES.ID.admin, ROLES.ID.root]) || item.user_id === authUser.id"
+        v-if="allowedRoles([ROLES.ID.admin, ROLES.ID.root]) || item.toggle_to_verification"
         :color="item.need_verification === true ? '' : 'success'"
         @click="toggleToVerification()"
       >
         {{ item.need_verification ? 'На верифікації' : 'Відправити на верифікацію' }}
       </v-btn>
       <v-spacer></v-spacer>
-      <template v-if="item.can_verification">
+      <template v-if="item.can_verification && item.need_verification">
         <v-btn
           v-if="showVerificationBtn === null"
           v-show="exceptRoles([ROLES.ID.department, ROLES.ID.practice_department, ROLES.ID.admin, ROLES.ID.root])"
@@ -133,7 +133,7 @@ export default {
       if (this.verificationsList !== null) {
         return this.verificationsList.map((element) => {
           let isStatus = this.item.verifications.find((i) => element.id == i.verification_status_id);
-
+          console.log('eleleel',element);
           element.titleHead = 'Не перевірено';
           element.verification_status_id = element.id;
 
@@ -168,7 +168,7 @@ export default {
     },
     getVerificationStatusId() {
       const verification_status = this.checkVerification.find((el) => el.role_id === this.authUser.role_id);
-      return verification_status?.id;
+      return verification_status?.verification_status_id;
     },
     getShowVerificationBtn() {
       let allow = null;
@@ -181,6 +181,7 @@ export default {
       this.showVerificationBtn = allow;
     },
     setVerification(status = true, comment = null) {
+      console.log('this.getVerificationStatusId()', this.getVerificationStatusId());
       const data = {
         catalog_id: this.item.id,
         verification_status_id: this.getVerificationStatusId(),
