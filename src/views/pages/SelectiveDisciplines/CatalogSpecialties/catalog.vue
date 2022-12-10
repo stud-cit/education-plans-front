@@ -16,6 +16,17 @@
             </p>
           </v-col>
         </v-row>
+        <v-row v-if="catalog">
+          <v-col cols="12">
+            <verifications
+              v-if="items.length"
+              :item="catalog"
+              :verifications-list="verificationsList"
+              @submit="apiSetVerification"
+              @toggleVerification="apiSetToggleToVerification"
+            />
+          </v-col>
+        </v-row>
         <v-row class="px-4 pb-4">
           <v-col cols="12" lg="6">
             <v-autocomplete
@@ -178,10 +189,12 @@ import PreviewSpecialitySubjectModal from '@/views/pages/SelectiveDisciplines/Ca
 import EditSpecialitySubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/editSubjectModal'
 import SettingCatalogModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/settingCatalogModal'
 import PdfCatalogModal from "@/views/pages/SelectiveDisciplines/CatalogSpecialties/pdfCatalogModal";
+import Verifications from "@c/base/verifications";
 
 export default {
   name: "CatalogSpecialty",
   components: {
+    Verifications,
     PdfCatalogModal,
     CreateSpecialitySubjectModal,
     PreviewSpecialitySubjectModal,
@@ -215,6 +228,7 @@ export default {
       settingModal: false,
       pdfModal: false,
       catalog: null,
+      verificationsList: null,
     }
   },
   watch: {
@@ -242,9 +256,39 @@ export default {
         this.catalog = data.catalog;
         this.items = data.data;
         this.meta = data.meta;
+
+        this.apiGetVerifications();
       } catch (e) {
         console.error(e); // TODO: show error
       }
+    },
+    apiGetVerifications() {
+      api.get(API.VERIFICATION_CATALOG_SPECIALITY_STATUSES).then(({ data }) => {
+        this.verificationsList = data.data;
+      });
+    },
+    apiSetVerification(status) {
+      api
+        .patch(API.CATALOG_SPECIALTIES + '/verification', this.catalog.id, status)
+        .then(() => {
+          this.apiGetItems();
+      //     this.$emit('init');
+      //     this.dialogModalVerification = false;
+        })
+        .catch((errors) => {
+          // this.dialogModalVerification = false;
+          console.error(errors.response.data);
+        });
+    },
+    apiSetToggleToVerification(data) {
+      api
+        .patch(API.CATALOG_SPECIALTIES + '/toggle-to-verification', this.catalog.id, data)
+        .then(() => {
+          this.apiGetItems();
+        })
+        .catch((errors) => {
+          console.error(errors.response.data);
+        });
     },
     apiGetFaculties() {
       api.get(API.FACULTIES).then(({ data }) => {

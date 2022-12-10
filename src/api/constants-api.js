@@ -30,6 +30,7 @@ export const API = {
   PLAN_FILTERS: version + '/plans/filters',
   VERIFICATIONS: version + '/verifications',
   VERIFICATION_SUBJECT_STATUSES: version + '/verification-subject-statuses',
+  VERIFICATION_CATALOG_SPECIALITY_STATUSES: version + '/verification-catalog-speciality-statuses',
   SPECIALIZATIONS: version + '/specializations',
   SPECIALITIES: version + '/specialities',
   EDUCATIONAL_PROGRAMS: version + '/education-programs',
@@ -58,6 +59,7 @@ export const API = {
   SAVE_SPECIALITY_OWNERS: version + '/catalog-specialties/owners',
   SAVE_SPECIALITY_SIGNATURE: version + '/catalog-specialties/signature',
   CATALOG_SPECIALITY_GENERATE_PDF: version + '/catalog-specialties/generate-pdf',
+
 
   ERR: version + '/err',
 };
