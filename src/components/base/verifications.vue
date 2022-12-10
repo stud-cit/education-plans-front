@@ -47,28 +47,30 @@
         {{ item.need_verification ? 'На верифікації' : 'Відправити на верифікацію' }}
       </v-btn>
       <v-spacer></v-spacer>
-      <v-btn
-        v-if="showVerificationBtn === null"
-        v-show="exceptRoles([ROLES.ID.department, ROLES.ID.practice_department, ROLES.ID.admin, ROLES.ID.root])"
-        small
-        depressed
-        color="primary"
-        class="ml-2"
-        @click="setVerification()"
-      >
-        Верифікувати
-      </v-btn>
-      <v-btn
-        v-if="showVerificationBtn !== false"
-        small
-        depressed
-        color="error"
-        class="ml-2"
-        v-show="exceptRoles([ROLES.ID.department, ROLES.ID.practice_department, ROLES.ID.admin, ROLES.ID.root])"
-        @click="cancelVerification()"
-      >
-        Відхилити верифікацію
-      </v-btn>
+      <template v-if="item.can_verification">
+        <v-btn
+          v-if="showVerificationBtn === null"
+          v-show="exceptRoles([ROLES.ID.department, ROLES.ID.practice_department, ROLES.ID.admin, ROLES.ID.root])"
+          small
+          depressed
+          color="primary"
+          class="ml-2"
+          @click="setVerification()"
+        >
+          Верифікувати
+        </v-btn>
+        <v-btn
+          v-if="showVerificationBtn !== false"
+          small
+          depressed
+          color="error"
+          class="ml-2"
+          v-show="exceptRoles([ROLES.ID.department, ROLES.ID.practice_department, ROLES.ID.admin, ROLES.ID.root])"
+          @click="cancelVerification()"
+        >
+          Відхилити верифікацію
+        </v-btn>
+      </template>
     </v-card-text>
     <v-card-text class="mb-10">
       <v-stepper elevation="1" v-if="checkVerification">
@@ -102,8 +104,6 @@
 <script>
 import { ROLES } from '@/utils/constants';
 import RolesMixin from '@/mixins/RolesMixin';
-import api from "@/api";
-import {API} from "@/api/constants-api";
 
 export default {
   name: "verifications",
@@ -126,16 +126,6 @@ export default {
       default: null,
     },
     verificationsList: null,
-  },
-  watch: {
-    // item: {
-    //   immediate: true,
-    //   handler (v) {
-    //     if (v !== null) {
-    //       this.apiGetVerifications()
-    //     }
-    //   }
-    // }
   },
   mixins: [RolesMixin],
   computed: {
@@ -185,12 +175,8 @@ export default {
 
       if (this.authUser?.role_id && this.item !== null) {
         const status = this.item.verifications.find((item) => item.verification_status_id === this.authUser.role_id);
-        // console.log(status);
-        // if (status === undefined) {
-        //   allow = true;
-        // } else {
+
         allow = status?.status ? status.status : null;
-        // }
       }
       this.showVerificationBtn = allow;
     },
@@ -268,5 +254,7 @@ export default {
 </script>
 
 <style scoped>
-
+  .stepper-header {
+    height: auto;
+  }
 </style>
