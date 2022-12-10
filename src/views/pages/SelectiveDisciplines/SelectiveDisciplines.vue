@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-data-table :headers="computedHeaders" :items="items" class="elevation-1" hide-default-footer @click:row="goTo">
+    <v-data-table :headers="computedHeaders" :items="items" class="table-row-pointer elevation-1" hide-default-footer @click:row="goTo">
       <template v-slot:item.index="{ index }">
         {{ index + 1 }}
       </template>

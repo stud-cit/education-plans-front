@@ -9,6 +9,9 @@ body {
   text-align: justify;
   display: block;
 }
+.table-row-pointer table tbody tr {
+  cursor: pointer;
+}
 a {
   text-decoration: none;
 }
