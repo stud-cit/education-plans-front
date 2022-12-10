@@ -224,6 +224,7 @@ export default {
         element.verification_status_id = element.id;
 
         if (isStatus) {
+          element.id = isStatus.id;
           element.status = !!isStatus.status;
           element.titleHead = isStatus.status ? 'Верифіковано' : 'Не верифіковано';
           element.comment = isStatus.comment;
