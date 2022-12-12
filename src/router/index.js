@@ -30,6 +30,7 @@ import SelectiveDisciplinesCatalog from '@/views/pages/SelectiveDisciplines/Sele
 import CatalogSpecialties from '@/views/pages/SelectiveDisciplines/CatalogSpecialties';
 import CatalogEducationalPrograms from '@/views/pages/SelectiveDisciplines/CatalogEducationalPrograms';
 import CatalogSpecialty from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/catalog'
+import MaintenanceMode from "@/views/MaintenanceMode";
 
 const allRoles = () => Object.values(ROLES.ID);
 // const allRolesExcept = (...exceptRoles) => Object.values(ROLES.ID).filter(role => exceptRoles.indexOf(role) === -1);
@@ -432,6 +433,12 @@ const routes = [
     path: '*',
     name: 'NotFoundPage',
     component: NotFoundPage,
+    meta: { guest: true },
+  },
+  {
+    path: '/503',
+    name: 'MaintenanceMode',
+    component: MaintenanceMode,
     meta: { guest: true },
   },
   {
