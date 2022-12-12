@@ -232,6 +232,7 @@ export default {
         this.meta = data.meta;
         this.itemsLoading = false;
       } catch (e) {
+        this.itemsLoading = false;
         console.error(e); // TODO: show error
       }
     },
