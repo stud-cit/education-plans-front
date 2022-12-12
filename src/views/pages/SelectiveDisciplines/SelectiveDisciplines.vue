@@ -56,7 +56,7 @@ export default {
       links: {
         1: 'SelectiveDisciplinesCatalog',
         2: 'CatalogSpecialties',
-        3: 'CatalogEducationalPrograms',
+        3: 'CatalogEducationPrograms',
       },
     };
   },
