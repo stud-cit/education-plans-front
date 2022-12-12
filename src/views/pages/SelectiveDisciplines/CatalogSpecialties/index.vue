@@ -8,7 +8,7 @@
       :item-class="this.itemRowBackground"
       :options.sync="options"
       :footer-props="{ 'items-per-page-options': [15, 25, 50] }"
-      :loading="items.length === 0"
+      :loading="itemsLoading"
     >
       <template v-slot:top>
         <v-row class="px-4">
@@ -186,6 +186,7 @@ export default {
       ],
       items: [],
       item: null,
+      itemsLoading: true,
       meta: [],
       options: null,
       createModal: false,
@@ -229,6 +230,7 @@ export default {
         const { data } = response;
         this.items = data.data;
         this.meta = data.meta;
+        this.itemsLoading = false;
       } catch (e) {
         console.error(e); // TODO: show error
       }
