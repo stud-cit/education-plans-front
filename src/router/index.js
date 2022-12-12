@@ -145,7 +145,7 @@ const routes = [
         ]
       },
       {
-        path: 'catalog-education-program',
+        path: 'catalog-education-programs',
         component: () => import('@/views/SimpleLayout'),
         children: [
           {
