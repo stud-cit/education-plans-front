@@ -269,7 +269,7 @@ export default {
     },
     apiSetVerification(status) {
       api
-        .patch(API.EDUCATION_PROGRAM_SUBJECTS + '/verification', this.catalog.id, status)
+        .patch(API.CATALOG_EDUCATION_PROGRAMS + '/verification', this.catalog.id, status)
         .then(() => {
           this.apiGetItems();
         })
@@ -279,7 +279,7 @@ export default {
     },
     apiSetToggleToVerification(data) {
       api
-        .patch(API.EDUCATION_PROGRAM_SUBJECTS + '/toggle-to-verification', this.catalog.id, data)
+        .patch(API.CATALOG_EDUCATION_PROGRAMS + '/toggle-to-verification', this.catalog.id, data)
         .then(() => {
           this.apiGetItems();
         })
