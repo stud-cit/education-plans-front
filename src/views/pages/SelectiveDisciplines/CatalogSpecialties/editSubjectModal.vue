@@ -12,7 +12,7 @@
         dark
         color="primary"
       >
-        <v-toolbar-title>Створити дисципліну</v-toolbar-title>
+        <v-toolbar-title>Редагування дисципліни</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn
           icon
