@@ -147,7 +147,7 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     itemsPerPage: 'items_per_page',
     page: 'page',
     year: 'year',
-    speciality: 'speciality',
+    education_program: 'educationProgram',
     faculty: 'faculty',
     department: 'department',
     divisionWithStatus: 'divisionWithStatus',
