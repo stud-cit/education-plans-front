@@ -19,7 +19,6 @@
               item-value="id"
               label="Рік"
               hide-details
-              clearable
             ></v-autocomplete>
           </v-col>
           <v-col cols="12" md="6">
@@ -340,7 +339,7 @@ export default {
       });
     },
     clear() {
-      this.options.year = null;
+      this.options.year = new Date().getFullYear();
       this.group = this.options.group = null;
       this.faculty = this.options.faculty = null;
       this.department = this.options.department = null;
