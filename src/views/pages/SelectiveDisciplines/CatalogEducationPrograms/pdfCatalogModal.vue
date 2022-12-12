@@ -143,30 +143,6 @@
                   ПОГОДЖЕНО:
                 </v-col>
               </v-row>
-              <div class="pdf__signature">
-                <v-row>
-                  <v-col>
-                    <div class="title">
-                      Керівник групи забезпечення спеціальності
-                    </div>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="4">
-                    <div class="field">
-                      <span>(підпис)</span>
-                    </div>
-                  </v-col>
-                  <v-col>
-                    <div class="field">
-                      <template v-if="getNameSignature(item.signatures, CATALOG_SIGNATURE_TYPE.leader.id)">
-                        {{getNameSignature(item.signatures, CATALOG_SIGNATURE_TYPE.leader.id).name}}
-                      </template>
-                      <span v-else>(ім’я та прізвище)</span>
-                    </div>
-                  </v-col>
-                </v-row>
-              </div>
               <div class="pdf__signature"
                    v-for="manager in item.signatures.filter(el => el.type === CATALOG_SIGNATURE_TYPE.manager.id)"
                    :key="manager.id"
@@ -196,6 +172,30 @@
                     <div class="field">
                       <template v-if="manager.name">
                         {{manager.name}}
+                      </template>
+                      <span v-else>(ім’я та прізвище)</span>
+                    </div>
+                  </v-col>
+                </v-row>
+              </div>
+              <div class="pdf__signature">
+                <v-row>
+                  <v-col>
+                    <div class="title">
+                      Гарант освітньої програми
+                    </div>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="4">
+                    <div class="field">
+                      <span>(підпис)</span>
+                    </div>
+                  </v-col>
+                  <v-col>
+                    <div class="field">
+                      <template v-if="getNameSignature(item.signatures, CATALOG_SIGNATURE_TYPE.grant.id)">
+                        {{getNameSignature(item.signatures, CATALOG_SIGNATURE_TYPE.grant.id).name}}
                       </template>
                       <span v-else>(ім’я та прізвище)</span>
                     </div>

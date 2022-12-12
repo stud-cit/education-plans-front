@@ -102,7 +102,7 @@
                   </v-col>
 
                   <template v-else>
-                    <v-col cols="12" lg="5" class="py-0">
+                    <v-col cols="12" lg="6" class="py-0">
                       <validation-provider
                         v-slot="{ errors }"
                         name="Кафедра"
@@ -139,26 +139,27 @@
                         ></v-autocomplete>
                       </validation-provider>
                     </v-col>
-                    <v-col cols="12" lg="1" class="d-flex align-center justify-center py-0">
-                      <v-btn outlined fab small color="red" @click="removeManager(index)">
-                        <v-icon aria-hidden="false"> mdi-trash-can-outline </v-icon>
-                      </v-btn>
-                    </v-col>
+<!--                    <v-col cols="12" lg="1" class="d-flex align-center justify-center py-0">-->
+<!--                      <v-btn outlined fab small color="red" @click="removeManager(index)">-->
+<!--                        <v-icon aria-hidden="false"> mdi-trash-can-outline </v-icon>-->
+<!--                      </v-btn>-->
+<!--                    </v-col>-->
                   </template>
                 </v-row>
 
-                <div class="text-center my-4">
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn icon large v-bind="attrs" v-on="on" @click="addManager">
-                        <v-icon>mdi-plus</v-icon>
-                      </v-btn>
-                    </template>
-                    <span>Додати завідувача кафедри</span>
-                  </v-tooltip>
-                </div>
+<!--                <div class="text-center my-4">-->
+<!--                  <v-tooltip bottom>-->
+<!--                    <template v-slot:activator="{ on, attrs }">-->
+<!--                      <v-btn icon large v-bind="attrs" v-on="on" @click="addManager">-->
+<!--                        <v-icon>mdi-plus</v-icon>-->
+<!--                      </v-btn>-->
+<!--                    </template>-->
+<!--                    <span>Додати завідувача кафедри</span>-->
+<!--                  </v-tooltip>-->
+<!--                </div>-->
 
                 <v-btn
+                  class="mt-5"
                   color="primary"
                   @click="saveSignatures"
                   :disabled="invalid"
@@ -254,7 +255,7 @@ export default {
           department_id: this.catalog.department_id,
           faculty_id: this.catalog.faculty_id,
           catalog_subject_id: this.catalog ? this.catalog.id : this.$route.params.id,
-          catalog_signature_type_id: CATALOG_SIGNATURE_TYPE.leader.id,
+          catalog_signature_type_id: CATALOG_SIGNATURE_TYPE.grant.id,
           asu_id: null
         },
         {

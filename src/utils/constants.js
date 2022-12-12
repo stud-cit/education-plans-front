@@ -38,5 +38,9 @@ export const CATALOG_SIGNATURE_TYPE = {
   manager: {
     id: 3,
     label: 'Завідувач кафедри',
+  },
+  grant: {
+    id: 4,
+    label: 'Гарант освітньої програми',
   }
 };

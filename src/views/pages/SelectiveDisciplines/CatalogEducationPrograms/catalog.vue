@@ -184,11 +184,11 @@
 import GlobalMixin from "@/mixins/GlobalMixin";
 import {ALLOWED_REQUEST_PARAMETERS, API} from "@/api/constants-api";
 import api from "@/api";
-import CreateSubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/createSubjectModal'
-import PreviewSubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/previewSubjectModal'
-import EditSubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/editSubjectModal'
-import SettingCatalogModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/settingCatalogModal'
-import PdfCatalogModal from "@/views/pages/SelectiveDisciplines/CatalogSpecialties/pdfCatalogModal";
+import CreateSubjectModal from '@/views/pages/SelectiveDisciplines/CatalogEducationPrograms/createSubjectModal'
+import PreviewSubjectModal from '@/views/pages/SelectiveDisciplines/CatalogEducationPrograms/previewSubjectModal'
+import EditSubjectModal from '@/views/pages/SelectiveDisciplines/CatalogEducationPrograms/editSubjectModal'
+import SettingCatalogModal from '@/views/pages/SelectiveDisciplines/CatalogEducationPrograms/settingCatalogModal'
+import PdfCatalogModal from "@/views/pages/SelectiveDisciplines/CatalogEducationPrograms/pdfCatalogModal";
 import Verifications from "@c/base/verifications";
 
 export default {
