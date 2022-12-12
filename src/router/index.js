@@ -28,7 +28,8 @@ import { ROLES } from '@/utils/constants';
 import CatalogHelpers from '@/views/pages/settings/Helpers/SubjectHelpers';
 import SelectiveDisciplinesCatalog from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog';
 import CatalogSpecialties from '@/views/pages/SelectiveDisciplines/CatalogSpecialties';
-import CatalogEducationalPrograms from '@/views/pages/SelectiveDisciplines/CatalogEducationalPrograms';
+import CatalogEducationPrograms from '@/views/pages/SelectiveDisciplines/CatalogEducationPrograms';
+import CatalogEducationProgram from '@/views/pages/SelectiveDisciplines/CatalogEducationPrograms/catalog';
 import CatalogSpecialty from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/catalog'
 import MaintenanceMode from "@/views/MaintenanceMode";
 
@@ -149,8 +150,8 @@ const routes = [
         children: [
           {
             path: '',
-            name: 'CatalogEducationalPrograms',
-            component: CatalogEducationalPrograms,
+            name: 'CatalogEducationPrograms',
+            component: CatalogEducationPrograms,
             meta: {
               requiresAuth: true,
               accessIsAllowed: allRoles(),
@@ -166,8 +167,8 @@ const routes = [
           },
           {
             path: ':id',
-            name: 'CatalogEducationalProgram',
-            component: SelectiveDisciplinesCatalog,
+            name: 'CatalogEducationProgram',
+            component: CatalogEducationProgram,
             meta: {
               requiresAuth: true,
               header: 'Каталог',
@@ -179,7 +180,7 @@ const routes = [
                 },
                 {
                   text: 'Каталоги вибіркових дисциплін за освітньою програмою',
-                  to: { name: 'CatalogEducationalPrograms' },
+                  to: { name: 'CatalogEducationPrograms' },
                 },
                 { text: 'Каталог' },
               ],

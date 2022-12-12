@@ -52,6 +52,7 @@ export const API = {
   EDUCATIONAL_PROGRAMS_ALL: version + '/education-programs',
   SPECIALITIES_ALL: version + '/specialities',
   CATALOG_SUBJECTS_GENERATE_PDF: version + '/catalog-subjects/generate-pdf',
+
   CATALOG_SPECIALTIES: version + '/catalog-specialties',
   CATALOG_SPECIALTIES_FILTERS: version + '/catalog-specialties/filters',
   CATALOG_SPECIALTIES_COPY: version + '/catalog-specialties/copy',
@@ -59,6 +60,14 @@ export const API = {
   SAVE_SPECIALITY_OWNERS: version + '/catalog-specialties/owners',
   SAVE_SPECIALITY_SIGNATURE: version + '/catalog-specialties/signature',
   CATALOG_SPECIALITY_GENERATE_PDF: version + '/catalog-specialties/generate-pdf',
+
+  CATALOG_EDUCATION_PROGRAMS: version + '/catalog-education-programs',
+  CATALOG_EDUCATION_PROGRAMS_FILTERS: version + '/catalog-education-programs/filters',
+  CATALOG_EDUCATION_PROGRAMS_COPY: version + '/catalog-education-programs/copy',
+  EDUCATION_PROGRAM_SUBJECTS: version + '/education-program-subjects',
+  SAVE_EDUCATION_PROGRAM_OWNERS: version + '/catalog-education-programs/owners',
+  SAVE_EDUCATION_PROGRAM_SIGNATURE: version + '/catalog-education-programs/signature',
+  CATALOG_EDUCATION_PROGRAM_GENERATE_PDF: version + '/catalog-education-programs/generate-pdf',
 
 
   ERR: version + '/err',
@@ -131,6 +140,16 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     faculty: 'faculty',
     department: 'department',
     catalogSubject: 'catalogSubject',
+    divisionWithStatus: 'divisionWithStatus',
+  },
+
+  GET_CATALOG_EDUCATION_PROGRAMS: {
+    itemsPerPage: 'items_per_page',
+    page: 'page',
+    year: 'year',
+    speciality: 'speciality',
+    faculty: 'faculty',
+    department: 'department',
     divisionWithStatus: 'divisionWithStatus',
   },
 };
