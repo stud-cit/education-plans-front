@@ -25,3 +25,22 @@ export const VERIFICATION_STATUS = {
   warning: 'warning',
   error: 'error',
 }
+
+export const CATALOG_SIGNATURE_TYPE = {
+  head: {
+    id: 1,
+    label: 'Голова Ради з якості інституту (факультету)',
+  },
+  leader: {
+    id: 2,
+    label: 'Керівник групи забезпечення спеціальності',
+  },
+  manager: {
+    id: 3,
+    label: 'Завідувач кафедри',
+  },
+  grant: {
+    id: 4,
+    label: 'Гарант освітньої програми',
+  }
+};

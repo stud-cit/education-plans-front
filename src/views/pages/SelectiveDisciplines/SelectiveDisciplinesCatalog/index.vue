@@ -4,6 +4,7 @@
       :headers="headers"
       :items="items"
       class="elevation-1"
+      :item-class="this.itemRowBackground"
       :server-items-length="meta.total"
       :options.sync="options"
       :footer-props="{ 'items-per-page-options': [15, 25, 50] }"
@@ -18,7 +19,6 @@
               item-value="id"
               label="Рік"
               hide-details
-              clearable
             ></v-autocomplete>
           </v-col>
           <v-col cols="12" md="6">
@@ -59,6 +59,30 @@
               clearable
             ></v-autocomplete>
           </v-col>
+          <v-col cols="12" lg="6">
+            <v-autocomplete
+              v-model="division"
+              :items="divisions"
+              item-text="title"
+              item-value="id"
+              hide-details
+              label="Представник відділу"
+              clearable
+            ></v-autocomplete>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-select
+              v-model="verificationDivisionStatus"
+              :items="verificationsDivisionsStatus"
+              :disabled="division === null"
+              item-text="title"
+              item-value="id"
+              select
+              hide-details
+              label="Статус верифікації"
+              clearable
+            ></v-select>
+          </v-col>
         </v-row>
         <v-row class="px-4 pb-4">
           <v-col align-self="center" class="d-flex">
@@ -72,14 +96,21 @@
       <template v-slot:item.index="{ index }">
         {{ ++index }}
       </template>
+      <template v-slot:item.title="{ item }">
+        <PublishedBadge :published="item.published" /> {{ item.title }}
+      </template>
       <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" color="primary" @click="openDialogPreview(item)">mdi-eye</v-icon>
-        <v-icon small class="mr-2" color="primary" @click="openDialogEdit(item)">mdi-pencil</v-icon>
-        <v-icon small class="mr-2" color="red" @click="deleted(item.id, item)">mdi-trash-can-outline</v-icon>
+        <v-icon v-if="item.actions.preview" small class="mr-2" color="primary" @click="openDialogPreview(item)"
+          >mdi-eye</v-icon
+        >
+        <v-icon v-if="item.actions.edit" small class="mr-2" color="primary" @click="openDialogEdit(item)"
+          >mdi-pencil</v-icon
+        >
+        <v-icon v-if="item.actions.delete" small class="mr-2" color="red" @click="deleted(item.id, item)"
+          >mdi-trash-can-outline</v-icon
+        >
       </template>
     </v-data-table>
-
-    <!--    <AddButton @show="openDialogCreate">Додати дисципліну</AddButton>-->
 
     <v-speed-dial v-model="nav" bottom right fixed direction="top" transition="slide-y-reverse-transition">
       <template v-slot:activator>
@@ -89,6 +120,16 @@
         </v-btn>
       </template>
       <v-tooltip left color="info">
+        <template v-slot:activator="{ on, attrs }">
+          <v-fab-transition>
+            <v-btn color="warning" small dark fab v-bind="attrs" v-on="on" @click="openDialogCatalog">
+              <v-icon>mdi-cog-outline</v-icon>
+            </v-btn>
+          </v-fab-transition>
+        </template>
+        <span>Налаштування каталогів</span>
+      </v-tooltip>
+      <v-tooltip left color="info" v-if="options && options.year && options.group">
         <template v-slot:activator="{ on, attrs }">
           <v-fab-transition>
             <v-btn fab dark small color="red accent-4" v-bind="attrs" v-on="on" @click="openDialogPdf">
@@ -127,9 +168,11 @@
       :dialog="previewModal"
       :item="item"
       @close="closeDialogPreview"
+      @init="apiGetItems"
       ref="previewModal"
     />
-    <PdfSelectiveDisciplinesCatalogModal :dialog="pdfModal" @close="closeDialogPdf" ref="pdfModal" />
+    <PdfSelectiveDisciplinesCatalogModal :dialog="pdfModal" @close="closeDialogPdf" :options="options" ref="pdfModal" />
+    <CatalogSelectiveDisciplinesCatalogModal :dialog="catalogModal" @close="closeDialogCatalog" ref="catalogModal" />
   </v-container>
 </template>
 
@@ -137,11 +180,16 @@
 import api from '@/api';
 import { ALLOWED_REQUEST_PARAMETERS, API } from '@/api/constants-api';
 import GlobalMixin from '@/mixins/GlobalMixin';
+import RolesMixin from '@/mixins/RolesMixin';
+import BackgroundRowMixin from '@/mixins/BackgroundRowMixin';
 import PreviewSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/previewModal';
 import CreateSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/createModal';
 import EditSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/editModal';
 import PdfSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/pdfModal';
-
+import CatalogSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/catalogModal';
+import PublishedBadge from '@/components/base/PublishedBadge';
+import { mapGetters } from 'vuex';
+import { ROLES } from '@/utils/constants';
 export default {
   name: 'SelectiveDisciplinesCatalog',
   components: {
@@ -149,6 +197,8 @@ export default {
     EditSelectiveDisciplinesCatalogModal,
     CreateSelectiveDisciplinesCatalogModal,
     PreviewSelectiveDisciplinesCatalogModal,
+    CatalogSelectiveDisciplinesCatalogModal,
+    PublishedBadge,
   },
   data() {
     return {
@@ -173,24 +223,36 @@ export default {
         { text: 'Назва дисципліни', value: 'title', sortable: false },
         { text: 'Група', value: 'group', sortable: false },
         { text: 'Кафедра', value: 'department', sortable: false },
-        { text: 'Дії', value: 'actions', sortable: false },
+        { text: 'Дії', value: 'actions', sortable: false, width: '120px' },
       ],
       items: [],
       item: null,
       meta: [],
       options: null,
+      divisions: [],
+      division: null,
+      verificationsDivisionsStatus: [],
+      verificationDivisionStatus: 1,
 
       previewModal: false,
       createModal: false,
       editModal: false,
       pdfModal: false,
+      catalogModal: false,
     };
   },
   mounted() {
     this.apiGetYears();
+    this.apiGetDivisions();
     this.apiGetGroups();
     this.apiGetFaculties();
   },
+  computed: {
+    ...mapGetters({
+      user: 'auth/user',
+    }),
+  },
+  mixins: [RolesMixin, BackgroundRowMixin],
   watch: {
     faculty(v) {
       v !== null ? this.apiGetDepartments(v) : (this.departments = []);
@@ -199,6 +261,9 @@ export default {
       if (v.length === 1) {
         this.faculty = v[0].id;
       }
+    },
+    year(v) {
+      this.options.year = v;
     },
     options(v) {
       v.year = new Date().getFullYear();
@@ -245,14 +310,40 @@ export default {
       this.years = data;
     },
     create(data) {
-      console.log('create', data);
-      this.createModal = false;
+      api
+        .post(API.CATALOG_SELECTIVE_SUBJECTS, data)
+        .then((response) => {
+          this.createModal = false;
+
+          const { message } = response.data;
+          this.$swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+
+          this.apiGetItems();
+          this.$refs.createModal.clear();
+        })
+        .catch((errors) => {
+          this.$refs.createModal.setErrors(errors.response.data.errors);
+        });
+    },
+    apiGetDivisions() {
+      api.get(API.CATALOG_SELECTIVE_SUBJECTS_FILTERS).then(({ data }) => {
+        this.divisions = data.divisions;
+        this.verificationsDivisionsStatus = data.verificationsStatus;
+        this.faculties = data.faculties;
+      });
     },
     clear() {
-      this.options.year = '';
-      this.options.group = '';
-      this.options.faculty = '';
-      this.options.department = '';
+      this.options.year = new Date().getFullYear();
+      this.group = this.options.group = null;
+      this.faculty = this.options.faculty = null;
+      this.department = this.options.department = null;
+      this.division = this.options.divisionWithStatus = null;
       this.apiGetItems();
     },
     search() {
@@ -260,10 +351,31 @@ export default {
       this.options.group = this.group;
       this.options.faculty = this.faculty;
       this.options.department = this.department;
+      if (this.division !== null) {
+        this.options.divisionWithStatus = [this.division, this.verificationDivisionStatus];
+      }
       this.apiGetItems();
     },
     edit(data) {
-      console.log('edit', data);
+      api
+        .patch(API.CATALOG_SELECTIVE_SUBJECTS, data.id, data)
+        .then((response) => {
+          this.editModal = false;
+
+          const { message } = response.data;
+          this.$swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          this.apiGetItems();
+          this.$refs.editModal.clear();
+        })
+        .catch((errors) => {
+          this.$refs.editModal.setErrors(errors.response.data.errors);
+        });
     },
     deleted(id, item) {
       const text = '<h4>' + item.title + '</h4>';
@@ -277,17 +389,17 @@ export default {
         })
         .then((result) => {
           if (result.isConfirmed) {
-            //TODO api.destroy('', id).then((response) => {
-            //   const { message } = response.data;
-            //   this.$swal.fire({
-            //     position: 'center',
-            //     icon: 'success',
-            //     title: message,
-            //     showConfirmButton: false,
-            //     timer: 1500,
-            //   });
-            //   this.apiGetItems();
-            // });
+            api.destroy(API.CATALOG_SELECTIVE_SUBJECTS, id).then((response) => {
+              const { message } = response.data;
+              this.$swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: message,
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              this.apiGetItems();
+            });
           }
         });
     },
@@ -317,6 +429,13 @@ export default {
     },
     closeDialogPdf() {
       this.pdfModal = false;
+    },
+    openDialogCatalog() {
+      this.catalogModal = true;
+    },
+    closeDialogCatalog() {
+      this.apiGetYears();
+      this.catalogModal = false;
     },
   },
 };

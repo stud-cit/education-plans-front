@@ -26,11 +26,12 @@ import SubjectLanguage from '@/views/pages/settings/SubjectLanguage';
 import CatalogGroup from '@/views/pages/settings/CatalogGroup';
 import { ROLES } from '@/utils/constants';
 import CatalogHelpers from '@/views/pages/settings/Helpers/SubjectHelpers';
-import SelectiveDisciplinesCatalog from "@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog";
-import SelectiveDisciplinesSpecialtyCatalog
-  from "@/views/pages/SelectiveDisciplines/SelectiveDisciplinesSpecialtyCatalog";
-import SelectiveDisciplinesEducationalCatalog
-  from "@/views/pages/SelectiveDisciplines/SelectiveDisciplinesEducationalCatalog";
+import SelectiveDisciplinesCatalog from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog';
+import CatalogSpecialties from '@/views/pages/SelectiveDisciplines/CatalogSpecialties';
+import CatalogEducationPrograms from '@/views/pages/SelectiveDisciplines/CatalogEducationPrograms';
+import CatalogEducationProgram from '@/views/pages/SelectiveDisciplines/CatalogEducationPrograms/catalog';
+import CatalogSpecialty from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/catalog'
+import MaintenanceMode from "@/views/MaintenanceMode";
 
 const allRoles = () => Object.values(ROLES.ID);
 // const allRolesExcept = (...exceptRoles) => Object.values(ROLES.ID).filter(role => exceptRoles.indexOf(role) === -1);
@@ -95,43 +96,97 @@ const routes = [
               text: 'Вибіркові дисципліни',
               to: { name: 'SelectiveDisciplines' },
             },
-            { text: 'Вибіркові дисципліни (каталог)' }
+            { text: 'Вибіркові дисципліни (каталог)' },
           ],
         },
       },
       {
-        path: 'selective-disciplines-specialty-catalog',
-        name: 'SelectiveDisciplinesSpecialtyCatalog',
-        component: SelectiveDisciplinesSpecialtyCatalog,
-        meta: {
-          requiresAuth: true,
-          accessIsAllowed: allRoles(),
-          header: 'Вибіркові дисципліни за спеціальністю (каталог)',
-          breadCrumb: [
-            {
-              text: 'Вибіркові дисципліни',
-              to: { name: 'SelectiveDisciplines' },
+        path: 'catalog-specialties',
+        component: () => import('@/views/SimpleLayout'),
+        children: [
+          {
+            path: '',
+            name: 'CatalogSpecialties',
+            component: CatalogSpecialties,
+            meta: {
+              requiresAuth: true,
+              accessIsAllowed: allRoles(),
+              header: 'Вибіркові дисципліни за спеціальністю (каталог)',
+              breadCrumb: [
+                {
+                  text: 'Вибіркові дисципліни',
+                  to: { name: 'SelectiveDisciplines' },
+                },
+                { text: 'Каталоги вибіркових дисциплін за спеціальністю' },
+              ],
             },
-            { text: 'Вибіркові дисципліни каталог' }
-          ],
-        },
+          },
+          {
+            path: ':id',
+            name: 'CatalogSpecialty',
+            component: CatalogSpecialty,
+            meta: {
+              requiresAuth: true,
+              header: 'Каталог',
+              accessIsAllowed: allRoles(),
+              breadCrumb: [
+                {
+                  text: 'Вибіркові дисципліни',
+                  to: { name: 'SelectiveDisciplines' },
+                },
+                {
+                  text: 'Каталоги вибіркових дисциплін за спеціальністю',
+                  to: { name: 'CatalogSpecialties' },
+                },
+                { text: 'Каталог' },
+              ],
+            },
+          },
+        ]
       },
       {
-        path: 'selective-disciplines-educational-catalog',
-        name: 'SelectiveDisciplinesEducationalCatalog',
-        component: SelectiveDisciplinesEducationalCatalog,
-        meta: {
-          requiresAuth: true,
-          accessIsAllowed: allRoles(),
-          header: 'Вибіркові дисципліни за освітньою програмою (каталог)',
-          breadCrumb: [
-            {
-              text: 'Вибіркові дисципліни',
-              to: { name: 'SelectiveDisciplines' },
+        path: 'catalog-education-programs',
+        component: () => import('@/views/SimpleLayout'),
+        children: [
+          {
+            path: '',
+            name: 'CatalogEducationPrograms',
+            component: CatalogEducationPrograms,
+            meta: {
+              requiresAuth: true,
+              accessIsAllowed: allRoles(),
+              header: 'Вибіркові дисципліни за освітньою програмою (каталог)',
+              breadCrumb: [
+                {
+                  text: 'Вибіркові дисципліни',
+                  to: { name: 'SelectiveDisciplines' },
+                },
+                { text: 'Каталоги вибіркових дисциплін за освітньою програмою' },
+              ],
             },
-            { text: 'Вибіркові дисципліни за освітньою програмою (каталог)' }
-          ],
-        },
+          },
+          {
+            path: ':id',
+            name: 'CatalogEducationProgram',
+            component: CatalogEducationProgram,
+            meta: {
+              requiresAuth: true,
+              header: 'Каталог',
+              accessIsAllowed: allRoles(),
+              breadCrumb: [
+                {
+                  text: 'Вибіркові дисципліни',
+                  to: { name: 'SelectiveDisciplines' },
+                },
+                {
+                  text: 'Каталоги вибіркових дисциплін за освітньою програмою',
+                  to: { name: 'CatalogEducationPrograms' },
+                },
+                { text: 'Каталог' },
+              ],
+            },
+          },
+        ]
       },
     ],
   },
@@ -355,8 +410,8 @@ const routes = [
         meta: {
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
-          header: 'Підсказки для каталогів',
-          breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Підсказки для каталогів' }],
+          header: 'Підказки для каталогів',
+          breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Підказки для каталогів' }],
         },
       },
       {
@@ -379,6 +434,12 @@ const routes = [
     path: '*',
     name: 'NotFoundPage',
     component: NotFoundPage,
+    meta: { guest: true },
+  },
+  {
+    path: '/503',
+    name: 'MaintenanceMode',
+    component: MaintenanceMode,
     meta: { guest: true },
   },
   {

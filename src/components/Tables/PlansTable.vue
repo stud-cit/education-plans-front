@@ -6,7 +6,7 @@
     :options.sync="options"
     :footer-props="{ 'items-per-page-options': [15, 25, 50] }"
     class="elevation-1 plans-table"
-    :item-class="itemRowBackground"
+    :item-class="this.itemRowBackground"
   >
     <template v-slot:top>
       <v-row>
@@ -93,15 +93,7 @@
     </template>
 
     <template v-slot:item.parent_id="{ item }">
-      <v-tooltip top color="primary">
-        <template v-slot:activator="{ on, attrs }">
-          <span v-bind="attrs" v-on="on" class="cursor-pointer">
-            <v-badge dot :color="getColor(item.published)" label="published" inline left></v-badge>
-            {{ item.parent_id }}
-          </span>
-        </template>
-        <span>{{ item.published ? 'Опубліковано' : 'Не опубліковано' }}</span>
-      </v-tooltip>
+      <PublishedBadge :published="item.published" /> {{ item.parent_id }}
     </template>
 
     <template v-slot:item.actions="{ item }">
@@ -131,8 +123,10 @@
 import api from '@/api';
 import { API } from '@/api/constants-api';
 import RolesMixin from '@/mixins/RolesMixin';
+import BackgroundRowMixin from '@/mixins/BackgroundRowMixin';
 import { ROLES } from '@/utils/constants';
 import { mapGetters } from 'vuex';
+import PublishedBadge from '@/components/base/PublishedBadge';
 
 export default {
   name: 'PlansTable',
@@ -162,6 +156,9 @@ export default {
       verificationsDivisionsStatus: [],
     };
   },
+  components: {
+    PublishedBadge,
+  },
   props: {
     items: {
       type: Array,
@@ -189,7 +186,7 @@ export default {
       },
     },
   },
-  mixins: [RolesMixin],
+  mixins: [RolesMixin, BackgroundRowMixin],
   watch: {
     faculty(v) {
       v !== null ? this.apiGetDepartments(v) : (this.departments = []);
@@ -215,10 +212,6 @@ export default {
     this.apiGetDivisions();
   },
   methods: {
-    getColor(published) {
-      if (published) return 'green';
-      return 'grey';
-    },
     update() {
       this.$emit('update', this.options);
     },
@@ -272,30 +265,6 @@ export default {
         this.departments = data.data;
         this.departmentsLoading = false;
       });
-    },
-    itemRowBackground(item) {
-      if (this.allowedRoles([ROLES.ID.admin]) || this.allowedRoles([ROLES.ID.root])) {
-        return item.status + ' lighten-5';
-      } else {
-        if (
-          item.need_verification == 1 &&
-          !item.user_verifications.find((i) => i.verification_statuses_id == this.user.role_id)
-        ) {
-          return 'warning lighten-5';
-        }
-        if (
-          item.need_verification == 1 &&
-          item.user_verifications.find((i) => i.verification_statuses_id == this.user.role_id && i.status == 0)
-        ) {
-          return 'error lighten-5';
-        }
-        if (
-          item.need_verification == 1 &&
-          item.user_verifications.find((i) => i.verification_statuses_id == this.user.role_id && i.status == 1)
-        ) {
-          return 'success lighten-5';
-        }
-      }
     },
   },
 };
