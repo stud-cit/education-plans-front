@@ -7,7 +7,7 @@
       :server-items-length="meta.total"
       :footer-props="{ 'items-per-page-options': [15, 25, 50] }"
       class="elevation-1"
-      :loading="!items.length"
+      :loading="itemsLoading"
     >
       <template v-slot:top>
         <v-row class="px-4">
@@ -114,6 +114,7 @@ export default {
   data() {
     return {
       items: [],
+      itemsLoading: true,
       roles: [],
       headers: [
         { text: '№', value: 'index', sortable: false, width: '20px' },
@@ -160,6 +161,7 @@ export default {
         data: { data, meta },
       } = await api.get(API.USERS, options, { showLoader: true });
       this.items = data;
+      this.itemsLoading = false;
       this.meta = meta;
     },
     apiWorkers() {
