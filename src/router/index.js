@@ -32,6 +32,8 @@ import CatalogEducationPrograms from '@/views/pages/SelectiveDisciplines/Catalog
 import CatalogEducationProgram from '@/views/pages/SelectiveDisciplines/CatalogEducationPrograms/catalog';
 import CatalogSpecialty from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/catalog'
 import MaintenanceMode from "@/views/MaintenanceMode";
+import CatalogEducationProgramPDF from "@/views/pages/plan/CatalogEducationProgramPDF";
+import CatalogSpecialityPDF from "@/views/pages/plan/CatalogSpecialityPDF";
 
 const allRoles = () => Object.values(ROLES.ID);
 // const allRolesExcept = (...exceptRoles) => Object.values(ROLES.ID).filter(role => exceptRoles.indexOf(role) === -1);
@@ -189,6 +191,69 @@ const routes = [
         ]
       },
     ],
+  },
+  // {
+  //   path: '/plan/pdf/education-program/:id',
+  //   component: Layout,
+  //   children: []
+  // },
+  {
+    path: '/plan/pdf',
+    component: Layout,
+    children: [
+      {
+        path: 'speciality/:id',
+        name: 'PlanCatalogSpecialityPdf',
+        component: CatalogSpecialityPDF,
+        meta: {
+          requiresAuth: true,
+          accessIsAllowed: [
+            ROLES.ID.admin,
+            ROLES.ID.root,
+            ROLES.ID.training_department,
+            ROLES.ID.practice_department,
+            ROLES.ID.educational_department_deputy,
+            ROLES.ID.educational_department_chief,
+          ],
+          header: 'PDF Спеціальності',
+          // breadCrumb: [
+          //   {
+          //     text: 'Робота з планами',
+          //     to: { name: 'ListPlans' },
+          //   },
+          //   {
+          //     text: 'Створення нового плану',
+          //   },
+          // ],
+        },
+      },
+      {
+        path: 'education-program/:id',
+        name: 'PlanCatalogEducationProgramPdf',
+        component: CatalogEducationProgramPDF,
+        meta: {
+          requiresAuth: true,
+          accessIsAllowed: [
+            ROLES.ID.admin,
+            ROLES.ID.root,
+            ROLES.ID.training_department,
+            ROLES.ID.practice_department,
+            ROLES.ID.educational_department_deputy,
+            ROLES.ID.educational_department_chief,
+          ],
+          header: 'PDF Освітної програми',
+          // breadCrumb: [
+          //   {
+          //     text: 'Робота з планами',
+          //     to: { name: 'ListPlans' },
+          //   },
+          //   {
+          //     text: 'Створення нового плану',
+          //   },
+          // ],
+        },
+      }
+    ]
   },
   {
     path: '/plan',

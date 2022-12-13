@@ -70,6 +70,8 @@ export const API = {
   SAVE_EDUCATION_PROGRAM_SIGNATURE: version + '/catalog-education-programs/signature',
   CATALOG_EDUCATION_PROGRAM_GENERATE_PDF: version + '/catalog-education-programs/generate-pdf',
 
+  PLANS_CATALOG_PDF: version + '/plans/catalog-pdf',
+
 
   ERR: version + '/err',
 };

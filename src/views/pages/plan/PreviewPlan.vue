@@ -1,5 +1,42 @@
 <template>
   <v-container class="preview-plan" v-if="plan">
+
+    <div class="no-print mb-5 d-flex flex-wrap justify-end">
+<!--      <router-link-->
+<!--        v-if="item.actions.preview"-->
+<!--        :to="{ name: 'CatalogEducationProgram', params: { id: item.id } }"-->
+<!--        target="_blank"-->
+<!--      >-->
+<!--        <v-icon small class="mr-2" color="primary">mdi-eye</v-icon>-->
+<!--      </router-link>-->
+
+      <v-btn
+        elevation="2"
+        outlined
+        small
+        class="mr-1"
+        :to="{
+          name: 'PlanCatalogSpecialityPdf', params: { id: plan.id },
+          query: {year: plan.year, end_year: getEndYear(plan), speciality_id: plan.speciality_id}
+        }"
+      >
+        Каталог спеціальності
+      </v-btn>
+      <v-btn
+        :to="{
+          name: 'PlanCatalogEducationProgramPdf', params: { id: plan.id },
+          query: {year: plan.year, end_year: getEndYear(plan), education_program_id: plan.education_program_id}
+        }"
+        target="_blank"
+        elevation="2"
+        outlined
+        small
+      >
+        Каталог освітніх програм
+      </v-btn>
+    </div>
+
+
     <div class="print">
       <div class="by-created-pdf" v-if="statusPlanSuccess === plan.status">
         {{byCreatedPDF}}
@@ -804,6 +841,12 @@ export default {
       })
 
       return semestersCredits;
+    },
+    getEndYear(plan){
+      const  studyTerm = plan.study_term;
+      const year = plan.year;
+
+      return year + Number(studyTerm.year) + (studyTerm.month ? 1 : 0);
     }
   }
 }
