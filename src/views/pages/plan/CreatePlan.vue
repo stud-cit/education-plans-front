@@ -66,7 +66,8 @@
         small
         depressed
         color="primary"
-        @click="$router.push({ name: 'PreviewPlan', params: { id: plan.id, title: plan.title } })"
+        :to="{ name: 'PreviewPlan', params: { id: plan.id, title: plan.title } }"
+        target="_blank"
       >
         Переглянути
       </v-btn>
