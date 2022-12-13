@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container v-if="breadCrumbs">
     <v-breadcrumbs :items="breadCrumbs" class="pl-0">
       <template v-slot:item="{ item }">
         <v-breadcrumbs-item
