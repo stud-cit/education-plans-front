@@ -5,17 +5,16 @@
                  @update="getPlansList"
                  @copy="apiCopyPlan"
                  @edit="apiEditPlan"
-                 @preview="apiPreviewPlan"
                  @delete="apiDeletePlan"
     />
-    <v-tooltip left color="info" 
+    <v-tooltip left color="info"
     v-if="allowedRoles(
       [
-        ROLES.ID.admin, 
-        ROLES.ID.root, 
-        ROLES.ID.training_department, 
-        ROLES.ID.practice_department, 
-        ROLES.ID.educational_department_deputy, 
+        ROLES.ID.admin,
+        ROLES.ID.root,
+        ROLES.ID.training_department,
+        ROLES.ID.practice_department,
+        ROLES.ID.educational_department_deputy,
         ROLES.ID.educational_department_chief
       ]
     )">
@@ -85,10 +84,6 @@ export default {
     apiEditPlan(id, title) {
       this.$store.dispatch('plans/clear');
       this.$router.push({name: 'EditPlan', params: { id, title }});
-    },
-
-    apiPreviewPlan(id, title) {
-      this.$router.push({name: 'PreviewPlan', params: { id, title }});
     },
 
     apiDeletePlan(id, title = '') {

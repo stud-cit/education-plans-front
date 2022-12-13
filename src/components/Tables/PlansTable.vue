@@ -97,15 +97,13 @@
     </template>
 
     <template v-slot:item.actions="{ item }">
-      <v-icon
+      <router-link
         v-if="item.actions.preview"
-        small
-        class="mr-1"
-        color="primary"
-        @click="$emit('preview', item.id, item.title)"
+        :to="{ name: 'PreviewPlan', params: { id: item.id, title: item.title } }"
+        target="_blank"
       >
-        mdi-eye-outline
-      </v-icon>
+        <v-icon small class="mr-2" color="primary">mdi-eye-outline</v-icon>
+      </router-link>
       <v-icon v-if="item.actions.copy" small class="mr-1" color="primary" @click="$emit('copy', item.id, item.title)">
         mdi-content-copy
       </v-icon>
