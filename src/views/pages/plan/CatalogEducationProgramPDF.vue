@@ -1,14 +1,13 @@
 <template>
   <v-card>
     <v-toolbar
-      dark
-      color="primary"
+      elevation="0"
       class="mb-12"
     >
       <v-toolbar-title>PDF Освітньої програми</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
-    <v-card-text id="printMe" class="pdf" v-if="item">
+    <v-card-text id="printMe" class="pdf" v-for="item in items" :key="item.catalog.id">
       <p class="pdf_title">
         СУМСЬКИЙ ДЕРЖАВНИЙ УНІВЕРСИТЕТ
       </p>
@@ -217,7 +216,7 @@ export default {
   },
   data() {
     return {
-      item: null,
+      items: null,
       CATALOG_SIGNATURE_TYPE,
     }
   },
@@ -231,7 +230,7 @@ export default {
         ...this.$route.query
       }
       api.get(API.PLANS_CATALOG_PDF, data, { showLoader: true }).then( ({data}) => {
-        this.item = data.data;
+        this.items = data.data;
       });
     },
     getNameSignature(signatures, type) {

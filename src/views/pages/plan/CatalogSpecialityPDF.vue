@@ -1,8 +1,7 @@
 <template>
   <v-card>
     <v-toolbar
-      dark
-      color="primary"
+      elevation="0"
       class="mb-12"
     >
       <v-toolbar-title>PDF Спеціальності</v-toolbar-title>
