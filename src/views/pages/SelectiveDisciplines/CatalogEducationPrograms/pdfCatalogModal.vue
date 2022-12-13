@@ -43,7 +43,8 @@
 
           <p class="pdf_subtitle mt-3" v-if="item.catalog">
             КАТАЛОГ ВИБІРКОВИХ НАВЧАЛЬНИХ ДИСЦИПЛІН ЦИКЛУ ПРОФЕСІЙНОЇ ПІДГОТОВКИ ЗА ОСВІТНЬОЮ ПРОГРАМОЮ <br>
-            {{item.catalog.education_program}} <br>
+            {{item.catalog.education_program}}
+            СПЕЦІАЛЬНІСТЬ {{item.catalog.speciality}} <br>
             {{item.catalog.education_level}} {{item.catalog.year}} &mdash; {{item.catalog.year + 1}} н. р.
           </p>
           <table class="table pdf_table">
