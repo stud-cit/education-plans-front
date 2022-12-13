@@ -257,7 +257,6 @@ export default {
   methods: {
     apiGetItems(id) {
       api.get(API.CATALOG_SPECIALITY_GENERATE_PDF, {catalog_id: id}, { showLoader: true }).then( ({data}) => {
-        console.log(data.data);
         this.item = data.data;
       }).catch(() => this.$emit('close'));
     },

@@ -109,8 +109,6 @@ export default {
       });
     },
     update() {
-      console.log('update')
-      console.log('this.type', this.type)
       this.$emit('update', {
         id: this.item.id,
         title: this.title,

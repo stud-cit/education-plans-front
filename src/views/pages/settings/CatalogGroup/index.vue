@@ -135,7 +135,7 @@ export default {
     },
     edit(data) {
       let { id, title } = data;
-      console.log(id);
+
       if (title === '') return;
 
       api

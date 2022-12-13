@@ -167,6 +167,7 @@ export default {
             catalog_education_level_id: this.educationLevel,
             faculty_id: this.department.faculty_id,
             department_id: this.department.id,
+            speciality_id: this.object.education_programs.find(p => p.id == this.education_program)?.speciality_id,
             education_program_id: this.education_program
           });
         }

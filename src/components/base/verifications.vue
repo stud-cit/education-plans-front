@@ -133,7 +133,7 @@ export default {
       if (this.verificationsList !== null) {
         return this.verificationsList.map((element) => {
           let isStatus = this.item.verifications.find((i) => element.id == i.verification_status_id);
-          console.log('eleleel',element);
+
           element.titleHead = 'Не перевірено';
           element.verification_status_id = element.id;
 
@@ -181,7 +181,6 @@ export default {
       this.showVerificationBtn = allow;
     },
     setVerification(status = true, comment = null) {
-      console.log('this.getVerificationStatusId()', this.getVerificationStatusId());
       const data = {
         catalog_id: this.item.id,
         verification_status_id: this.getVerificationStatusId(),
