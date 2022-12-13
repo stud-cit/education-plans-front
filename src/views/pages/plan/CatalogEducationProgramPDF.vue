@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card elevation="0">
     <v-toolbar
       elevation="0"
       class="mb-12"
@@ -7,7 +7,8 @@
       <v-toolbar-title>PDF Освітньої програми</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
-    <v-card-text id="printMe" class="pdf" v-for="item in items" :key="item.catalog.id">
+    <div id="printMe" v-if="items">
+      <v-card-text class="pdf" v-for="item in items" :key="item.catalog.id">
       <p class="pdf_title">
         СУМСЬКИЙ ДЕРЖАВНИЙ УНІВЕРСИТЕТ
       </p>
@@ -189,8 +190,9 @@
           </div>
         </v-col>
       </v-row>
-
-      <v-btn
+      <div style="page-break-before:always">&nbsp;</div>
+    </v-card-text>
+    <v-btn
         class="btn-center no-print"
         color="primary"
         dark
@@ -198,7 +200,10 @@
         bottom
         v-print="'#printMe'"
       >Завантажити</v-btn>
-    </v-card-text>
+    </div>
+    <div v-else class="d-flex align-center justify-center flex-grow-1 flex-shrink-1">
+      <h2>Каталогів не знайдено</h2>
+    </div>
   </v-card>
 </template>
 
@@ -230,7 +235,7 @@ export default {
         ...this.$route.query
       }
       api.get(API.PLANS_CATALOG_PDF, data, { showLoader: true }).then( ({data}) => {
-        this.items = data.data;
+        this.items = data;
       });
     },
     getNameSignature(signatures, type) {
