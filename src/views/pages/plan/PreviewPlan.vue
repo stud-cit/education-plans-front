@@ -1,20 +1,14 @@
 <template>
   <v-container class="preview-plan" v-if="plan">
 
-    <div class="no-print mb-5 d-flex flex-wrap justify-end">
-<!--      <router-link-->
-<!--        v-if="item.actions.preview"-->
-<!--        :to="{ name: 'CatalogEducationProgram', params: { id: item.id } }"-->
-<!--        target="_blank"-->
-<!--      >-->
-<!--        <v-icon small class="mr-2" color="primary">mdi-eye</v-icon>-->
-<!--      </router-link>-->
-
+    <div class="no-print mb-10 d-flex flex-wrap justify-end">
       <v-btn
+        v-if="plan.speciality_id"
         elevation="2"
-        outlined
         small
-        class="mr-1"
+        color="success"
+        class="mr-2"
+        target="_blank"
         :to="{
           name: 'PlanCatalogSpecialityPdf', params: { id: plan.id },
           query: {year: plan.year, end_year: getEndYear(plan), speciality_id: plan.speciality_id}
@@ -23,13 +17,14 @@
         Каталог спеціальності
       </v-btn>
       <v-btn
+        v-if="plan.speciality_id"
         :to="{
           name: 'PlanCatalogEducationProgramPdf', params: { id: plan.id },
           query: {year: plan.year, end_year: getEndYear(plan), education_program_id: plan.education_program_id}
         }"
         target="_blank"
         elevation="2"
-        outlined
+        color="success"
         small
       >
         Каталог освітніх програм
