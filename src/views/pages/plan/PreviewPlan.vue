@@ -17,7 +17,7 @@
         Каталог спеціальності
       </v-btn>
       <v-btn
-        v-if="plan.speciality_id"
+        v-if="plan.education_program_id"
         :to="{
           name: 'PlanCatalogEducationProgramPdf', params: { id: plan.id },
           query: {year: plan.year, end_year: getEndYear(plan), education_program_id: plan.education_program_id}

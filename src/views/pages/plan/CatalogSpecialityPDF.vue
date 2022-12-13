@@ -7,7 +7,7 @@
       <v-toolbar-title>PDF Спеціальності</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
-    <div id="printMe" v-if="items">
+    <div id="printMe" v-if="items.length !== 0">
       <v-card-text class="pdf" v-for="item in items" :key="item.catalog.id">
         <p class="pdf_title">
           СУМСЬКИЙ ДЕРЖАВНИЙ УНІВЕРСИТЕТ
@@ -220,7 +220,7 @@ export default {
   },
   data() {
     return {
-      items: null,
+      items: [],
       CATALOG_SIGNATURE_TYPE
     }
   },
