@@ -503,8 +503,11 @@ export default {
     },
     apiGetSpecialities(id) {
       this.specialitiesLoading = true;
-
-      api.show(API.SPECIALITIES, id).then(({data}) => {
+      // api.show(API.SPECIALITIES, id).then(({data}) => {
+      //   this.specialities = data.data
+      //   this.specialitiesLoading = false;
+      // })
+      api.get(API.SPECIALITIES).then(({data}) => {
         this.specialities = data.data
         this.specialitiesLoading = false;
       })
