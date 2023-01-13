@@ -154,8 +154,8 @@ import AddButton from '@c/base/AddButton';
 import api from '@/api';
 import CreateCatalogModal from '@/views/pages/SelectiveDisciplines/CatalogEducationPrograms/createCatalogModal';
 import copyCatalogModal from '@/views/pages/SelectiveDisciplines/CatalogEducationPrograms/copyCatalogModal';
-import RolesMixin from "@/mixins/RolesMixin";
-import BackgroundRowMixin from "@/mixins/BackgroundRowMixin";
+import RolesMixin from '@/mixins/RolesMixin';
+import BackgroundRowMixin from '@/mixins/BackgroundRowMixin';
 
 export default {
   name: 'CatalogEducationPrograms',
@@ -304,16 +304,16 @@ export default {
         .then((result) => {
           if (result.isConfirmed) {
             api.destroy(API.CATALOG_EDUCATION_PROGRAMS + '/delete', id).then((response) => {
-              const { message } = response.data;
+              const { message, warning } = response.data;
               this.$swal.fire({
                 position: 'center',
-                icon: 'success',
+                icon: warning ? 'warning' : 'success',
                 title: message,
                 showConfirmButton: false,
-                timer: 1500,
+                timer: 3000,
               });
 
-              this.apiGetItems();
+              !warning && this.apiGetItems();
             });
           }
         });
