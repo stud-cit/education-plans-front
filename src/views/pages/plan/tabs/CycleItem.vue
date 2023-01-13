@@ -37,14 +37,12 @@
       </v-col>
       <v-col cols="1" class="pa-0"></v-col>
       <v-col class="pa-0 text-right">
-        <template v-if="!(authUser.role_id != 1 && item.credit > 0)">
-          <v-btn small icon @click="cycleIndex = item.id" v-if="cycleIndex != item.id">
-            <v-icon>mdi-pencil</v-icon>
-          </v-btn>
-          <v-btn :disabled="item.credit == '' || item.title == ''" small icon @click="saveCycle(item)" v-else>
-            <v-icon>mdi-floppy</v-icon>
-          </v-btn>
-        </template>
+        <v-btn small icon @click="cycleIndex = item.id" v-if="cycleIndex != item.id">
+          <v-icon>mdi-pencil</v-icon>
+        </v-btn>
+        <v-btn :disabled="item.credit == '' || item.title == ''" small icon @click="saveCycle(item)" v-else>
+          <v-icon>mdi-floppy</v-icon>
+        </v-btn>
         <v-btn small icon @click="delCycle(item)">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
