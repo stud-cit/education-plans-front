@@ -193,24 +193,27 @@
                     <v-col>
                       <v-autocomplete
                         :items="formControls"
-                        :disabled="cycleForm.has_discipline == 1 && !moduleNumber.hour"
+                        :disabled="(cycleForm.has_discipline == 1 && !moduleNumber.hour) || moduleNumber.hasTask"
                         label="Форма контролю"
                         item-text="title"
                         item-value="id"
                         v-model="moduleNumber.form_control_id"
                         hide-details
+                        @change="hasTaskInSemester()"
                       ></v-autocomplete>
                     </v-col>
                     <v-col>
                       <v-autocomplete
                         :items="individualTasks"
-                        :disabled="cycleForm.has_discipline == 1 && !moduleNumber.hour"
+                        :disabled="(cycleForm.has_discipline == 1 && !moduleNumber.hour) || moduleNumber.hasTask"
                         label="Індивідуальні завдання"
                         item-text="title"
                         item-value="id"
                         v-model="moduleNumber.individual_task_id"
                         hide-details
+                        @change="hasTaskInSemester()"
                       ></v-autocomplete>
+                      {{ moduleNumber.test }}
                     </v-col>
                   </v-row>
                 </td>
@@ -348,7 +351,10 @@
       @delCycle="delCycle"
     />
 
-    <div class="text-center mt-4">
+    <div class="text-center mt-4" v-if="allowedRoles([
+      ROLES.ID.admin,
+      ROLES.ID.root
+    ])">
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon large v-bind="attrs" v-on="on" @click="addCycle({}, true)">
@@ -366,6 +372,8 @@ import api from '@/api';
 import { API } from '@/api/constants-api';
 import { eventBus } from '@/main';
 import { mapGetters } from 'vuex';
+import { ROLES } from "@/utils/constants"
+import RolesMixin from "@/mixins/RolesMixin";
 export default {
   name: 'Cycles',
   components: {
@@ -374,8 +382,10 @@ export default {
   props: {
     plan: Object,
   },
+  mixins: [RolesMixin],
   data() {
     return {
+      ROLES,
       selectiveDiscipline: [],
       subjects: [],
       faculties: [],
@@ -573,6 +583,20 @@ export default {
     });
   },
   methods: {
+    hasTaskInSemester() {
+      let hasTask = this.subjectForm.hours_modules.find(item => item.semester == this.moduleNumber.semester && (item.form_control_id != 10 || item.individual_task_id != 3));
+      this.subjectForm.hours_modules.map(item => {
+        if(hasTask && item.semester == hasTask.semester && (hasTask.form_control_id != 10 || hasTask.individual_task_id != 3)) {
+          if(item.id != hasTask.id) {
+            item.hasTask = true;
+          } else {
+            item.hasTask = false;
+          }
+        } else {
+          item.hasTask = false;
+        }
+      })
+    },
     addSubject(item) {
       this.activMod = null;
       this.moduleNumber = null;

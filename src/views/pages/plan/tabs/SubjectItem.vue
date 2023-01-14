@@ -23,12 +23,34 @@
         {{ subject.exams ? subject.exams.map(item => item.semester)[0] : '' }}
       </v-col>
       <v-col class="pa-0 text-right">
-        <v-btn small icon @click="editSubject(subject, item)">
-          <v-icon>mdi-pencil</v-icon>
-        </v-btn>
-        <v-btn small icon @click="delSubject(subject)">
-          <v-icon>mdi-delete</v-icon>
-        </v-btn>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              small 
+              icon 
+              @click="editSubject(subject, item)"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+          </template>
+          <span>Редагувати</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              small 
+              icon 
+              @click="delSubject(subject)"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </template>
+          <span>Видалити</span>
+        </v-tooltip>
       </v-col>
     </v-row> 
   </div>
