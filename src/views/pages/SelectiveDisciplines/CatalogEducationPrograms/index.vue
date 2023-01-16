@@ -296,7 +296,7 @@ export default {
       this.$swal
         .fire({
           title: `Ви хочете видалити каталог?`,
-          text: `За спеціальностю ${education_program} ${year} - ${year + 1}р.`,
+          text: `За спеціальністю ${education_program} ${year} - ${year + 1}р.`,
           showDenyButton: true,
           confirmButtonText: 'Так',
           denyButtonText: `Ні`,
