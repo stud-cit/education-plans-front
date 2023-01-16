@@ -37,15 +37,52 @@
       </v-col>
       <v-col cols="1" class="pa-0"></v-col>
       <v-col class="pa-0 text-right">
-        <v-btn small icon @click="cycleIndex = item.id" v-if="cycleIndex != item.id">
-          <v-icon>mdi-pencil</v-icon>
-        </v-btn>
-        <v-btn :disabled="item.credit == '' || item.title == ''" small icon @click="saveCycle(item)" v-else>
-          <v-icon>mdi-floppy</v-icon>
-        </v-btn>
-        <v-btn small icon @click="delCycle(item)">
-          <v-icon>mdi-delete</v-icon>
-        </v-btn>
+        <v-tooltip bottom v-if="cycleIndex != item.id">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              small 
+              icon 
+              @click="cycleIndex = item.id" 
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+          </template>
+          <span>Редагувати</span>
+        </v-tooltip>
+        <v-tooltip bottom v-else>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              small 
+              icon 
+              @click="saveCycle(item)"
+              :disabled="item.title == ''"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-floppy</v-icon>
+            </v-btn>
+          </template>
+          <span>Зберегти</span>
+        </v-tooltip>
+        <v-tooltip bottom v-if="allowedRoles([
+          ROLES.ID.admin,
+          ROLES.ID.root
+        ])">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              small 
+              icon 
+              @click="delCycle(item)"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </template>
+          <span>Видалити</span>
+        </v-tooltip>
         <v-menu
           bottom
           right
@@ -66,7 +103,10 @@
             </v-tooltip>
           </template>
           <v-list>
-            <v-list-item link>
+            <v-list-item link v-if="allowedRoles([
+              ROLES.ID.admin,
+              ROLES.ID.root
+            ])">
               <v-list-item-title @click="addCycle(item)">Цикл</v-list-item-title>
             </v-list-item>
             <v-list-item link>
@@ -126,6 +166,10 @@
 </template>
 <script>
 import SubjectItem from '@/views/pages/plan/tabs/SubjectItem.vue';
+
+import { ROLES } from "@/utils/constants"
+import RolesMixin from "@/mixins/RolesMixin";
+
 export default {
   name: "CycleItem",
   components: {
@@ -156,8 +200,10 @@ export default {
       required: true
     }
   },
+  mixins: [RolesMixin],
   data() {
     return {
+      ROLES,
       cycleIndex: null,
       cycleIndexError: null
     }

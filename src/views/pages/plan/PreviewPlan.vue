@@ -310,7 +310,7 @@
               <td class="border-table">{{ cycle.asu_id ? cycle.title : cycle.selective_discipline.title}}</td>
               <td class="border-table">{{ cycle.exams }}</td><!--Екзамени-->
               <td class="border-table">{{ cycle.test }}</td><!--Заліки-->
-              <td class="border-table">{{ cycle.individual_tasks + (cycle.list_cycle_id == 10 ? plan.exams_table[cycle.index - 1].semester : '') }}</td><!--Індивідуальні завдання-->
+              <td class="border-table">{{ cycle.individual_tasks + (cycle.list_cycle_id == 10 ? plan.individual_task_semester[cycle.index - 1] : '') }}</td><!--Індивідуальні завдання-->
               <td class="border-table">{{ cycle.credits > 0 ? cycle.credits : '' }}</td><!--Кількість кредитів ЄКТС-->
               <td class="border-table">{{ cycle.total_volume_hour > 0 ? cycle.total_volume_hour : '' }}</td><!--загальний обсяг-->
               <td class="border-table">{{ cycle.total_classroom > 0 ? cycle.total_classroom : '' }}</td><!--всього-->
