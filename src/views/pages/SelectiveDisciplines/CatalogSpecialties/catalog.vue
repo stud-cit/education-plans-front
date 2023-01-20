@@ -11,9 +11,7 @@
       <template v-slot:top>
         <v-row class="px-4 pt-3" v-if="catalog">
           <v-col>
-            <p class="text-h6 mb-0 text-center">
-              {{catalog.title}}
-            </p>
+            <p class="text-h6 mb-0 text-center" v-html="catalog.title"></p>
           </v-col>
         </v-row>
         <v-row v-if="catalog">
@@ -106,7 +104,7 @@
       <v-tooltip left color="info" v-if="catalog && catalog.can_setting">
         <template v-slot:activator="{ on, attrs }">
           <v-fab-transition>
-            <v-btn color="warning" small dark fab v-bind="attrs" v-on="on" @click="() => settingModal = true">
+            <v-btn color="warning" small dark fab v-bind="attrs" v-on="on" @click="() => (settingModal = true)">
               <v-icon>mdi-cog-outline</v-icon>
             </v-btn>
           </v-fab-transition>
@@ -165,41 +163,30 @@
       @init="apiGetItems"
     />
 
-    <PdfCatalogModal
-      :dialog="pdfModal"
-      @close="closeDialogPdf"
-      :options="options"
-      :catalog="catalog"
-      ref="pdfModal"
-    />
-
+    <PdfCatalogModal :dialog="pdfModal" @close="closeDialogPdf" :options="options" :catalog="catalog" ref="pdfModal" />
   </v-container>
-
-
-
-
 </template>
 
 <script>
-import GlobalMixin from "@/mixins/GlobalMixin";
-import {ALLOWED_REQUEST_PARAMETERS, API} from "@/api/constants-api";
-import api from "@/api";
-import CreateSpecialitySubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/createSubjectModal'
-import PreviewSpecialitySubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/previewSubjectModal'
-import EditSpecialitySubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/editSubjectModal'
-import SettingCatalogModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/settingCatalogModal'
-import PdfCatalogModal from "@/views/pages/SelectiveDisciplines/CatalogSpecialties/pdfCatalogModal";
-import Verifications from "@c/base/verifications";
+import GlobalMixin from '@/mixins/GlobalMixin';
+import { ALLOWED_REQUEST_PARAMETERS, API } from '@/api/constants-api';
+import api from '@/api';
+import CreateSpecialitySubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/createSubjectModal';
+import PreviewSpecialitySubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/previewSubjectModal';
+import EditSpecialitySubjectModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/editSubjectModal';
+import SettingCatalogModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/settingCatalogModal';
+import PdfCatalogModal from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/pdfCatalogModal';
+import Verifications from '@c/base/verifications';
 
 export default {
-  name: "CatalogSpecialty",
+  name: 'CatalogSpecialty',
   components: {
     Verifications,
     PdfCatalogModal,
     CreateSpecialitySubjectModal,
     PreviewSpecialitySubjectModal,
     EditSpecialitySubjectModal,
-    SettingCatalogModal
+    SettingCatalogModal,
   },
   data() {
     return {
@@ -229,7 +216,7 @@ export default {
       pdfModal: false,
       catalog: null,
       verificationsList: null,
-    }
+    };
   },
   watch: {
     faculty(v) {
@@ -415,10 +402,8 @@ export default {
     closeDialogCreate() {
       this.createModal = false;
     },
-  }
-}
+  },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
