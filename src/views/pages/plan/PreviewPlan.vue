@@ -83,7 +83,7 @@
           </tr>
           <tr></tr>
           <tr class="table-title">
-            <td :colspan="fullColspanTitle" align="center">
+            <td colspan="100%" align="center">
               НАВЧАЛЬНИЙ ПЛАН
             </td>
           </tr>
@@ -115,7 +115,7 @@
           <tr></tr>
 
           <tr class="table-subtitle">
-            <td :colspan="fullColspanTitle">
+            <td colspan="100%">
               І . ГРАФІК НАВЧАЛЬНОГО ПРОЦЕСУ, тижні
             </td>
           </tr>
@@ -158,7 +158,7 @@
           </template>
 
           <tr>
-            <td :colspan="fullColspanTitle" class="table-sing">
+            <td colspan="100%" class="table-sing">
               ПОЗНАЧЕННЯ: {{plan.notes.notes}}
             </td>
           </tr>
@@ -299,9 +299,7 @@
         <tbody>
           <template v-for="(cycle, index) in cycles">
             <tr v-if="cycle.cycle_id === null" class="table-subtitle" :key="index">
-              <td class="border-table"
-                  :colspan="14 + plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id] * 2"
-              >
+              <td class="border-table" colspan="100%">
                 {{cycle.title}}
               </td>
             </tr>
@@ -341,8 +339,8 @@
                 </template>
               </td><!--Todo for course-->
 
-              <td class="border-table">{{cycle.department}}</td>
-              <td class="border-table"></td><!--Todo Потоки-->
+              <td class="border-table d-print-none">{{cycle.department}}</td>
+              <td class="border-table d-print-none"></td><!--Todo Потоки-->
             </tr>
 
             <tr v-if="cycle.total" :key="'total_' + index" class="table-bold">
@@ -381,14 +379,12 @@
                 {{cycle.hours_modules.length > 0 ? hour : 0}}
               </td>
 
-              <td class="border-table"></td>
-              <td class="border-table"></td><!--Todo Потоки-->
+              <td class="border-table d-print-none"></td>
+              <td class="border-table d-print-none"></td><!--Todo Потоки-->
             </tr>
 
             <tr v-if="cycle.cycle_id !== null && cycle.asu_id === undefined && !cycle.total" :key="'cycle_' + index" >
-              <td :colspan="14 + plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id] * 2"
-                  class="table-bold border-table"
-              >
+              <td colspan="100%" class="table-bold border-table">
                 {{cycle.title}}
               </td>
             </tr>
@@ -423,7 +419,7 @@
               >
                 {{totalPlan.hours_modules.length > 0 ? hour : 0}}
               </td>
-              <td class="border-table" v-for="td in 2" :key="'td_2_' + td"></td>
+              <td class="border-table d-print-none" v-for="td in 2" :key="'td_2_' + td"></td>
             </tr>
             <tr class="table-bold">
               <td class="border-table"></td>
@@ -442,7 +438,7 @@
               >
                 {{totalPlan.hours_modules.length > 0 ? hour : 0}}
               </td>
-              <td class="border-table" v-for="td in 2" :key="td"></td>
+              <td class="border-table d-print-none" v-for="td in 2" :key="td"></td>
             </tr>
             <tr class="table-bold">
               <td class="border-table"></td>
@@ -453,8 +449,7 @@
                 :key="'semester_noprint_' + semester"
               ></td>
               <td class="border-table" v-for="(td, index) in plan.count_exams" :key="'count_exams_' + index">{{td}}</td>
-              <td class="border-table"></td>
-              <td class="border-table"></td>
+              <td class="border-table d-print-none" v-for="td in 2" :key="td"></td>
             </tr>
             <tr class="table-bold">
               <td class="border-table"></td>
@@ -465,8 +460,7 @@
                 :key="'semester_noprint_' + semester"
               ></td>
               <td class="border-table" v-for="(td, index) in plan.count_tests" :key="'count_tests_' + index">{{td}}</td>
-              <td class="border-table"></td>
-              <td class="border-table"></td>
+              <td class="border-table d-print-none" v-for="td in 2" :key="td"></td>
             </tr>
             <tr class="table-bold">
               <td class="border-table"></td>
@@ -477,8 +471,7 @@
                 :key="'semester_noprint_' + semester"
               ></td>
               <td class="border-table" v-for="(td, index) in plan.count_coursework" :key="'count_coursework_' + index">{{td}}</td>
-              <td class="border-table"></td>
-              <td class="border-table"></td>
+              <td class="border-table d-print-none" v-for="td in 2" :key="td"></td>
             </tr>
             <tr>
               <td colspan="11" class="text-left">* у кожному семестрі з каталога обирається 1 навчальна дисципліна обсягом 5 кредитів ЄКТС</td>

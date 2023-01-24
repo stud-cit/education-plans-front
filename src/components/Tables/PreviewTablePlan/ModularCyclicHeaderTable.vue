@@ -1,7 +1,7 @@
 <template>
   <thead>
     <tr class="table-subtitle" >
-      <td class="border-table" :colspan="14 + plan.study_term.semesters * 2 * 2">
+      <td class="border-table" colspan="100%">
         V. ПЛАН НАВЧАЛЬНОГО ПРОЦЕСУ
       </td>
     </tr>
@@ -17,8 +17,8 @@
       <td class="border-table" rowspan="1" :colspan="plan.study_term.semesters * 2">
         Розподіл годин на тиждень за курсами, семестрами і модульними атестаційними циклами
       </td>
-      <td class="border-table" rowspan="8">Кафедра викладання</td>
-      <td class="border-table" rowspan="8">Потоки</td>
+      <td class="border-table d-print-none" rowspan="8">Кафедра викладання</td>
+      <td class="border-table d-print-none" rowspan="8">Потоки</td>
     </tr>
     <tr>
       <td class="border-table" rowspan="7">Екзамени</td>
@@ -97,8 +97,11 @@
         {{item}}
       </td>
       <td class="border-table no-print" v-for="item in plan.study_term.semesters" :key="item"></td>
-      <td class="border-table" v-for="item in 2 + plan.study_term.semesters * 2" :key="'num_2_' + item">
+      <td class="border-table" v-for="item in plan.study_term.semesters * 2" :key="'num_2_' + item">
         {{item + 12}}
+      </td>
+      <td class="border-table d-print-none" v-for="item in 2" :key="'num_2_' + item">
+        {{item + 12 + plan.study_term.semesters * 2}}
       </td>
     </tr>
   </thead>
@@ -120,6 +123,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<!--<style >-->
+<!--table tr > *:nth-child(38) {-->
+<!--  display: none;-->
+<!--}-->
+<!--</style>-->
