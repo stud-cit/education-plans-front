@@ -17,6 +17,7 @@ export const API = {
   PLANS: version + '/plans',
   DEPARTMENTS: version + '/departments',
   USERS: version + '/users',
+  SET_USER_ROLE: version + '/set-user-role',
   FACULTIES: version + '/faculties',
   ROLES: version + '/roles',
   WORKERS: version + '/workers',

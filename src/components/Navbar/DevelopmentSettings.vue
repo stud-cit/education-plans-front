@@ -72,7 +72,7 @@ export default {
       apiGetRoles: 'developmentSettings/setRoles',
     }),
     apiSetRole(id) {
-      api.put(API.USERS + '/' + this.user.id, { role_id: id });
+      api.patch(API.SET_USER_ROLE, this.user.id, { role_id: id });
     },
     apply() {
       location.reload();
