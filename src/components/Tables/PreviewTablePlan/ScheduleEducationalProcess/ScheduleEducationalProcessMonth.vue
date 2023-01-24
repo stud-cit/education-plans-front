@@ -5,6 +5,7 @@
     </td>
     <td v-for="(month, index) in items"
         :key="index" :colspan="month.countWeek"
+        class="border-table"
     >
       {{ month.monthTitle }}
     </td>

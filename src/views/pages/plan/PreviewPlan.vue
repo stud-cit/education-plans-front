@@ -1,7 +1,7 @@
 <template>
   <v-container class="preview-plan" v-if="plan">
 
-    <div class="no-print mb-10 d-flex flex-wrap justify-end">
+    <div class="no-print mb-10 d-flex flex-wrap justify-end d-print-none">
       <v-btn
         v-if="plan.speciality_id"
         elevation="2"
@@ -52,17 +52,17 @@
             </td>
           </tr>
           <tr class="table-text">
-            <td colspan="13">
+            <td colspan="25">
               Затверджено рішенням вченої ради.
             </td>
           </tr>
           <tr class="table-text">
-            <td colspan="13">
+            <td colspan="25">
               Протокол від ____._____________._____р.№____
             </td>
           </tr>
           <tr class="table-text">
-            <td colspan="13">
+            <td colspan="25">
               Голова ради ________________ Анатолій ВАСИЛЬЄВ
             </td>
           </tr>
@@ -72,7 +72,7 @@
             </td>
           </tr>
           <tr class="table-text">
-            <td colspan="13">
+            <td colspan="25">
               ______ ________________________ ________ р.
             </td>
           </tr>

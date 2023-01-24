@@ -1,6 +1,6 @@
 <template>
   <tr class="table-month border-table">
-    <td v-for="(week, i) in items" :key="i" class="table-week">
+    <td v-for="(week, i) in items" :key="i" class="table-week border-table">
       {{i + 1}}
     </td>
   </tr>
