@@ -6,7 +6,7 @@
         text
         color="primary"
         class="ma-10"
-        href="https://cabinet.sumdu.edu.ua/" >
+        href="/" >
         Повернутись на головну
       </v-btn>
     </div>
