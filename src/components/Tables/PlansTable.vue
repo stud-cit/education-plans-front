@@ -93,7 +93,9 @@
     </template>
 
     <template v-slot:item.parent_id="{ item }">
-      <PublishedBadge :published="item.published" /> {{ item.parent_id }}
+      <span class="text-no-wrap">
+        <PublishedBadge :published="item.published" /> {{ item.parent_id }}
+      </span>
     </template>
 
     <template v-slot:item.actions="{ item }">
