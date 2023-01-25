@@ -88,8 +88,15 @@
       </v-row>
     </template>
 
-    <template v-slot:item.index="{ index }">
-      {{ (meta.current_page - 1) * meta.per_page + (index + 1) }}
+    <template v-slot:item.index="{ index, item }">
+      <v-tooltip top color="primary">
+        <template v-slot:activator="{ on, attrs }">
+          <span v-bind="attrs" v-on="on" class="cursor-pointer">
+            {{ (meta.current_page - 1) * meta.per_page + (index + 1) }}
+          </span>
+        </template>
+        <span>ID: {{ item.id }}</span>
+      </v-tooltip>
     </template>
 
     <template v-slot:item.parent_id="{ item }">
