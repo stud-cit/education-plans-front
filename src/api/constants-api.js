@@ -42,6 +42,8 @@ export const API = {
   LIST_CYCLES: version + '/list-cycles',
   PROGRAMS: version + '/programs',
   USER_ACTIVITY: version + '/user-activity',
+  EDUCATION_LEVEL: version + '/education-levels',
+  EDUCATION_LEVEL_RESTORE: version + '/education-levels/restore',
   SUBJECT_HELPERS: version + '/subject-helpers',
   CATALOG_HELPER_TYPES: version + '/catalog-helper-types',
   SUBJECT_LANGUAGES: version + '/subject-languages',
@@ -72,7 +74,6 @@ export const API = {
   CATALOG_EDUCATION_PROGRAM_GENERATE_PDF: version + '/catalog-education-programs/generate-pdf',
 
   PLANS_CATALOG_PDF: version + '/plans/catalog-pdf',
-
 
   ERR: version + '/err',
 };
@@ -107,6 +108,10 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     type: 'type',
   },
   GET_CATALOG_GROUPS: {
+    itemsPerPage: 'items_per_page',
+    page: 'page',
+  },
+  GET_EDUCATION_LEVEL: {
     itemsPerPage: 'items_per_page',
     page: 'page',
   },

@@ -27,6 +27,7 @@ export default {
         'StudyTerm',
         'FormStudy',
         'FormOrganization',
+        'EducationLevel',
         'SettingUsers',
         'Position',
         'Note',

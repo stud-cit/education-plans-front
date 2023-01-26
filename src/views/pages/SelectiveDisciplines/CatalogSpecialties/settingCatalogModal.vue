@@ -1,52 +1,26 @@
 <template>
-  <v-dialog
-    v-model="dialog"
-    fullscreen
-    hide-overlay
-    persistent
-    transition="dialog-bottom-transition"
-  >
+  <v-dialog v-model="dialog" fullscreen hide-overlay persistent transition="dialog-bottom-transition">
     <v-card>
-      <v-toolbar
-        dark
-        color="primary"
-      >
-        <v-toolbar-title>Налаштування: <span v-if="catalog">{{catalog.title}}</span></v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn
-          icon
-          dark
-          @click="close"
+      <v-toolbar dark color="primary">
+        <v-toolbar-title
+          >Налаштування: <span v-if="catalog">{{ catalog.title }}</span></v-toolbar-title
         >
+        <v-spacer></v-spacer>
+        <v-btn icon dark @click="close">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
-      <v-tabs
-        fixed-tabs
-        background-color="primary"
-        dark
-        v-model="tab"
-      >
-        <v-tab>
-          Обмеження доступу
-        </v-tab>
-        <v-tab>
-          Підписи
-        </v-tab>
+      <v-tabs fixed-tabs background-color="primary" dark v-model="tab">
+        <v-tab> Обмеження доступу </v-tab>
+        <v-tab> Підписи </v-tab>
       </v-tabs>
 
       <v-tabs-items v-model="tab">
         <v-tab-item>
-          <v-card max-width="1024" class="mx-auto py-10" elevation="0" >
-            <validation-observer
-              ref="create"
-              v-slot="{ invalid }"
-            >
+          <v-card max-width="1024" class="mx-auto py-10" elevation="0">
+            <validation-observer ref="create" v-slot="{ invalid }">
               <form @submit.prevent="saveOwners" @keyup.enter="saveOwners">
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="Кафедрам, яким буде наданий доступ"
-                >
+                <validation-provider v-slot="{ errors }" name="Кафедрам, яким буде наданий доступ">
                   <v-autocomplete
                     v-model="department"
                     :items="departments"
@@ -62,32 +36,25 @@
                     label="Кафедрам, яким буде наданий доступ"
                   ></v-autocomplete>
                 </validation-provider>
-                <v-btn
-                  color="primary"
-                  @click="saveOwners"
-                  :disabled="invalid"
-                >
-                  Зберегти
-                </v-btn>
+                <v-btn color="primary" @click="saveOwners" :disabled="invalid"> Зберегти </v-btn>
               </form>
             </validation-observer>
-
           </v-card>
         </v-tab-item>
         <v-tab-item>
-          <v-card max-width="1024" class="mx-auto py-10" elevation="0" >
-            <validation-observer
-              ref="signatures"
-              v-slot="{ invalid }"
-            >
+          <v-card max-width="1024" class="mx-auto py-10" elevation="0">
+            <validation-observer ref="signatures" v-slot="{ invalid }">
               <form @submit.prevent="saveSignatures" @keyup.enter="saveSignatures">
-
-                <v-row v-for="(signature, index)  in signatures" :key="index">
+                <v-row v-for="(signature, index) in signatures" :key="index">
                   <v-col v-if="signature.catalog_signature_type_id !== CATALOG_SIGNATURE_TYPE.manager.id">
                     <validation-provider
                       v-slot="{ errors }"
                       rules="required"
-                      :name="Object.values(CATALOG_SIGNATURE_TYPE).find(el => el.id === signature.catalog_signature_type_id).label"
+                      :name="
+                        Object.values(CATALOG_SIGNATURE_TYPE).find(
+                          (el) => el.id === signature.catalog_signature_type_id,
+                        ).label
+                      "
                     >
                       <v-autocomplete
                         v-model="signature.asu_id"
@@ -96,18 +63,18 @@
                         item-text="full_name"
                         item-value="asu_id"
                         class="mt-3"
-                        :label="Object.values(CATALOG_SIGNATURE_TYPE).find(el => el.id === signature.catalog_signature_type_id).label"
+                        :label="
+                          Object.values(CATALOG_SIGNATURE_TYPE).find(
+                            (el) => el.id === signature.catalog_signature_type_id,
+                          ).label
+                        "
                       ></v-autocomplete>
                     </validation-provider>
                   </v-col>
 
                   <template v-else>
                     <v-col cols="12" lg="5" class="py-0">
-                      <validation-provider
-                        v-slot="{ errors }"
-                        name="Кафедра"
-                        rules="required"
-                      >
+                      <validation-provider v-slot="{ errors }" name="Кафедра" rules="required">
                         <v-autocomplete
                           v-model="signature.department_id"
                           :items="departments"
@@ -125,7 +92,11 @@
                     <v-col cols="12" lg="6" class="py-0">
                       <validation-provider
                         v-slot="{ errors }"
-                        :name="Object.values(CATALOG_SIGNATURE_TYPE).find(el => el.id === signature.catalog_signature_type_id).label"
+                        :name="
+                          Object.values(CATALOG_SIGNATURE_TYPE).find(
+                            (el) => el.id === signature.catalog_signature_type_id,
+                          ).label
+                        "
                         rules="required"
                       >
                         <v-autocomplete
@@ -135,7 +106,11 @@
                           item-text="full_name"
                           item-value="asu_id"
                           class="mt-3"
-                          :label="Object.values(CATALOG_SIGNATURE_TYPE).find(el => el.id === signature.catalog_signature_type_id).label"
+                          :label="
+                            Object.values(CATALOG_SIGNATURE_TYPE).find(
+                              (el) => el.id === signature.catalog_signature_type_id,
+                            ).label
+                          "
                         ></v-autocomplete>
                       </validation-provider>
                     </v-col>
@@ -158,13 +133,7 @@
                   </v-tooltip>
                 </div>
 
-                <v-btn
-                  color="primary"
-                  @click="saveSignatures"
-                  :disabled="invalid"
-                >
-                  Зберегти
-                </v-btn>
+                <v-btn color="primary" @click="saveSignatures" :disabled="invalid"> Зберегти </v-btn>
               </form>
             </validation-observer>
           </v-card>
@@ -176,11 +145,11 @@
 
 <script>
 import api from '@/api';
-import {API} from '@/api/constants-api';
-import {CATALOG_SIGNATURE_TYPE} from '@/utils/constants';
+import { API } from '@/api/constants-api';
+import { CATALOG_SIGNATURE_TYPE } from '@/utils/constants';
 
 export default {
-  name: "settingCatalogModal",
+  name: 'settingCatalogModal',
   data() {
     return {
       department: null,
@@ -190,7 +159,7 @@ export default {
       signatures: [],
       tab: null,
       CATALOG_SIGNATURE_TYPE,
-    }
+    };
   },
   watch: {
     dialog(v) {
@@ -211,7 +180,7 @@ export default {
       type: Boolean,
       default() {
         return false;
-      }
+      },
     },
     catalog: null,
   },
@@ -236,7 +205,7 @@ export default {
           signature.faculty_id = item.department_id.faculty_id;
           signature.department_id = item.department_id.id;
         }
-      })
+      });
     },
 
     generateSignatures() {
@@ -247,7 +216,7 @@ export default {
           faculty_id: this.catalog.faculty_id,
           catalog_subject_id: this.catalog ? this.catalog.id : this.$route.params.id,
           catalog_signature_type_id: CATALOG_SIGNATURE_TYPE.head.id,
-          asu_id: null
+          asu_id: null,
         },
         {
           id: null,
@@ -255,7 +224,7 @@ export default {
           faculty_id: this.catalog.faculty_id,
           catalog_subject_id: this.catalog ? this.catalog.id : this.$route.params.id,
           catalog_signature_type_id: CATALOG_SIGNATURE_TYPE.leader.id,
-          asu_id: null
+          asu_id: null,
         },
         {
           id: null,
@@ -263,8 +232,8 @@ export default {
           faculty_id: null,
           catalog_subject_id: this.catalog ? this.catalog.id : this.$route.params.id,
           catalog_signature_type_id: CATALOG_SIGNATURE_TYPE.manager.id,
-          asu_id: null
-        }
+          asu_id: null,
+        },
       ];
     },
 
@@ -275,8 +244,8 @@ export default {
     saveOwners() {
       const data = {
         id: this.catalog.id,
-        owners: this.department
-      }
+        owners: this.department,
+      };
 
       api.patch(API.SAVE_SPECIALITY_OWNERS, this.catalog.id, data).then((response) => {
         const { message } = response.data;
@@ -289,7 +258,7 @@ export default {
           showConfirmButton: false,
           timer: 1500,
         });
-      })
+      });
     },
 
     saveSignatures() {
@@ -304,7 +273,7 @@ export default {
           showConfirmButton: false,
           timer: 1500,
         });
-      })
+      });
     },
 
     removeManager(index) {
@@ -318,11 +287,11 @@ export default {
         faculty_id: null,
         catalog_subject_id: 8,
         catalog_signature_type_id: CATALOG_SIGNATURE_TYPE.manager.id,
-        asu_id: null
-      })
+        asu_id: null,
+      });
     },
-  }
-}
+  },
+};
 </script>
 
 <style scoped>

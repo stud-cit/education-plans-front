@@ -69,6 +69,7 @@
           small
           class="mr-2 cursor-pointer"
           color="primary"
+          aria-label="Переглянути каталог"
           @click="openDialogPreview(item)"
         >
           mdi-eye
@@ -78,6 +79,7 @@
           small
           class="mr-2 cursor-pointer"
           color="primary"
+          aria-label="Редагувати каталог"
           @click="openDialogEdit(item)"
         >
           mdi-pencil
@@ -87,6 +89,7 @@
           small
           class="mr-2 cursor-pointer"
           color="red"
+          aria-label="Видалити каталог"
           @click="deleted(item.id, item.title)"
         >
           mdi-trash-can-outline

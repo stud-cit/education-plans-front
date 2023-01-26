@@ -24,16 +24,17 @@ import Err from '@/views/Err';
 import Logs from '@/views/pages/settings/Logs';
 import SubjectLanguage from '@/views/pages/settings/SubjectLanguage';
 import CatalogGroup from '@/views/pages/settings/CatalogGroup';
+import EducationLevel from '@/views/pages/settings/EducationLevel';
 import { ROLES } from '@/utils/constants';
 import CatalogHelpers from '@/views/pages/settings/Helpers/SubjectHelpers';
 import SelectiveDisciplinesCatalog from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog';
 import CatalogSpecialties from '@/views/pages/SelectiveDisciplines/CatalogSpecialties';
 import CatalogEducationPrograms from '@/views/pages/SelectiveDisciplines/CatalogEducationPrograms';
 import CatalogEducationProgram from '@/views/pages/SelectiveDisciplines/CatalogEducationPrograms/catalog';
-import CatalogSpecialty from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/catalog'
-import MaintenanceMode from "@/views/MaintenanceMode";
-import CatalogEducationProgramPDF from "@/views/pages/plan/CatalogEducationProgramPDF";
-import CatalogSpecialityPDF from "@/views/pages/plan/CatalogSpecialityPDF";
+import CatalogSpecialty from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/catalog';
+import MaintenanceMode from '@/views/MaintenanceMode';
+import CatalogEducationProgramPDF from '@/views/pages/plan/CatalogEducationProgramPDF';
+import CatalogSpecialityPDF from '@/views/pages/plan/CatalogSpecialityPDF';
 
 const allRoles = () => Object.values(ROLES.ID);
 // const allRolesExcept = (...exceptRoles) => Object.values(ROLES.ID).filter(role => exceptRoles.indexOf(role) === -1);
@@ -144,7 +145,7 @@ const routes = [
               ],
             },
           },
-        ]
+        ],
       },
       {
         path: 'catalog-education-programs',
@@ -188,7 +189,7 @@ const routes = [
               ],
             },
           },
-        ]
+        ],
       },
     ],
   },
@@ -252,8 +253,8 @@ const routes = [
           //   },
           // ],
         },
-      }
-    ]
+      },
+    ],
   },
   {
     path: '/plan',
@@ -433,6 +434,17 @@ const routes = [
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
           header: 'Група дисциплін',
           breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Група дисциплін' }],
+        },
+      },
+      {
+        path: 'education-level',
+        name: 'EducationLevel',
+        component: EducationLevel,
+        meta: {
+          requiresAuth: true,
+          accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
+          header: 'Рівень знань',
+          breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Рівень знань' }],
         },
       },
       {
