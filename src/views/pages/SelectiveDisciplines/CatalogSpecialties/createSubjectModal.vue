@@ -287,7 +287,7 @@ export default {
   },
   methods: {
     apiGetCreate() {
-      api.get(API.CATALOG_SELECTIVE_SUBJECTS + '/create', null, { showLoader: true }).then(({ data }) => {
+      api.get(API.SPECIALTY_SUBJECTS + '/create', null, { showLoader: true }).then(({ data }) => {
         const {
           subjects,
           languages,
