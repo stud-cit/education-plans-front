@@ -125,7 +125,7 @@
           mdi-pencil-outline
         </v-icon>
       </btn-tooltip>
-      <btn-tooltip tooltip=" ">
+      <btn-tooltip tooltip="Видалити">
         <v-icon v-if="item.actions.delete" small color="red" @click="$emit('delete', item.id, item.title)">
           mdi-trash-can-outline
         </v-icon>
