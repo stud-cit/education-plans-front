@@ -11,7 +11,7 @@
         target="_blank"
         :to="{
           name: 'PlanCatalogSpecialityPdf', params: { id: plan.id },
-          query: {year: plan.year, end_year: getEndYear(plan), speciality_id: plan.speciality_id}
+          query: {year: plan.year, end_year: getEndYear(plan), education_level: plan.education_level.id, speciality_id: plan.speciality_id}
         }"
       >
         Каталог спеціальності
@@ -20,7 +20,7 @@
         v-if="plan.education_program_id"
         :to="{
           name: 'PlanCatalogEducationProgramPdf', params: { id: plan.id },
-          query: {year: plan.year, end_year: getEndYear(plan), education_program_id: plan.education_program_id}
+          query: {year: plan.year, end_year: getEndYear(plan), education_level: plan.education_level.id, education_program_id: plan.education_program_id}
         }"
         target="_blank"
         elevation="2"
