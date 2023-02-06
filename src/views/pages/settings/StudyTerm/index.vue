@@ -6,9 +6,12 @@
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" @click="openEdit(item)"> mdi-pencil </v-icon>
-
-        <v-icon small class="mr-2" color="red" @click="deleteItem(item.id)"> mdi-trash-can-outline </v-icon>
+        <btn-tooltip tooltip="Редагувати">
+          <v-icon small class="mr-2" color="primary" @click="openEdit(item)"> mdi-pencil </v-icon>
+        </btn-tooltip>
+        <btn-tooltip tooltip="Видалити">
+          <v-icon small class="mr-2" color="red" @click="deleteItem(item.id)"> mdi-trash-can-outline </v-icon>
+        </btn-tooltip>
       </template>
     </v-data-table>
 
