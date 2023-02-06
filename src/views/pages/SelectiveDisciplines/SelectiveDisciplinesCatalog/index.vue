@@ -105,12 +105,12 @@
             mdi-eye
           </v-icon>
         </btn-tooltip>
-        <btn-tooltip tooltip="Редагування">
+        <btn-tooltip tooltip="Редагувати">
           <v-icon v-if="item.actions.edit" small class="mr-2" color="primary" @click="openDialogEdit(item)">
             mdi-pencil
           </v-icon>
         </btn-tooltip>
-        <btn-tooltip tooltip="Видалення">
+        <btn-tooltip tooltip="Видалити">
           <v-icon v-if="item.actions.delete" small class="mr-2" color="red" @click="deleted(item.id, item)">
             mdi-trash-can-outline
           </v-icon>

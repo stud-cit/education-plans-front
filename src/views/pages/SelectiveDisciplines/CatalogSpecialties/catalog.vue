@@ -64,36 +64,42 @@
         {{ ++index }}
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-icon
-          v-if="item.actions.preview"
-          small
-          class="mr-2 cursor-pointer"
-          color="primary"
-          aria-label="Переглянути каталог"
-          @click="openDialogPreview(item)"
-        >
-          mdi-eye
-        </v-icon>
-        <v-icon
-          v-if="item.actions.edit"
-          small
-          class="mr-2 cursor-pointer"
-          color="primary"
-          aria-label="Редагувати каталог"
-          @click="openDialogEdit(item)"
-        >
-          mdi-pencil
-        </v-icon>
-        <v-icon
-          v-if="item.actions.delete"
-          small
-          class="mr-2 cursor-pointer"
-          color="red"
-          aria-label="Видалити каталог"
-          @click="deleted(item.id, item.title)"
-        >
-          mdi-trash-can-outline
-        </v-icon>
+        <btn-tooltip tooltip="Перегляд">
+          <v-icon
+            v-if="item.actions.preview"
+            small
+            class="mr-2 cursor-pointer"
+            color="primary"
+            aria-label="Переглянути каталог"
+            @click="openDialogPreview(item)"
+          >
+            mdi-eye
+          </v-icon>
+        </btn-tooltip>
+        <btn-tooltip tooltip="Редагувати">
+          <v-icon
+            v-if="item.actions.edit"
+            small
+            class="mr-2 cursor-pointer"
+            color="primary"
+            aria-label="Редагувати каталог"
+            @click="openDialogEdit(item)"
+          >
+            mdi-pencil
+          </v-icon>
+        </btn-tooltip>
+        <btn-tooltip tooltip="Видалити">
+          <v-icon
+            v-if="item.actions.delete"
+            small
+            class="mr-2 cursor-pointer"
+            color="red"
+            aria-label="Видалити каталог"
+            @click="deleted(item.id, item.title)"
+          >
+            mdi-trash-can-outline
+          </v-icon>
+        </btn-tooltip>
       </template>
     </v-data-table>
 

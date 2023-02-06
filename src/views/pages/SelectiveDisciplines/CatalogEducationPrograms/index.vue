@@ -98,32 +98,37 @@
         {{ ++index }}
       </template>
       <template v-slot:item.actions="{ item }">
-        <router-link
-          v-if="item.actions.preview"
-          :to="{ name: 'CatalogEducationProgram', params: { id: item.id } }"
-          target="_blank"
-        >
-          <v-icon small class="mr-2" color="primary">mdi-eye</v-icon>
-        </router-link>
-        <!--        <v-icon v-if="item.actions.edit" small class="mr-2 cursor-pointer" color="primary">mdi-pencil</v-icon>-->
-        <v-icon
-          v-if="item.actions.copy"
-          small
-          class="mr-1 cursor-pointer"
-          color="primary"
-          @click="openDialogCopy(item)"
-        >
-          mdi-content-copy
-        </v-icon>
-        <v-icon
-          v-if="item.actions.delete"
-          small
-          class="mr-2 cursor-pointer"
-          color="red"
-          @click="deleted(item.id, item.education_program, item.year)"
-        >
-          mdi-trash-can-outline
-        </v-icon>
+        <btn-tooltip tooltip="Перегляд/Редагувати">
+          <router-link
+            v-if="item.actions.preview"
+            :to="{ name: 'CatalogEducationProgram', params: { id: item.id } }"
+            target="_blank"
+          >
+            <v-icon small class="mr-2" color="primary">mdi-eye</v-icon>
+          </router-link>
+        </btn-tooltip>
+        <btn-tooltip tooltip="Скопіювати">
+          <v-icon
+            v-if="item.actions.copy"
+            small
+            class="mr-1 cursor-pointer"
+            color="primary"
+            @click="openDialogCopy(item)"
+          >
+            mdi-content-copy
+          </v-icon>
+        </btn-tooltip>
+        <btn-tooltip tooltip="Видалити">
+          <v-icon
+            v-if="item.actions.delete"
+            small
+            class="mr-2 cursor-pointer"
+            color="red"
+            @click="deleted(item.id, item.education_program, item.year)"
+          >
+            mdi-trash-can-outline
+          </v-icon>
+        </btn-tooltip>
       </template>
     </v-data-table>
 
