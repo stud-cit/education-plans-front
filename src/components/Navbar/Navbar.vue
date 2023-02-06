@@ -26,6 +26,13 @@
     <v-btn @click="logout" text>
       Вихід
     </v-btn>
+    <btn-tooltip tooltip="Довідка">
+      <v-btn icon text :input-value="panelOpen" @click="$store.commit('navbarHelper/show')">
+        <v-icon dark>
+          mdi-help-rhombus-outline
+        </v-icon>
+      </v-btn>
+    </btn-tooltip>
 
     <div id="cabinet_service"></div>
 

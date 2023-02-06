@@ -6,6 +6,7 @@ import plans from "./modules/plans";
 import loader from "@/store/modules/loader";
 import auth from './modules/auth'
 import developmentSettings from "@/store/modules/development-settings";
+import navbarHelper from "@/store/modules/navbar-helper";
 
 export default new Vuex.Store({
   state: {
@@ -24,6 +25,7 @@ export default new Vuex.Store({
     auth,
     plans,
     loader,
-    developmentSettings
+    developmentSettings,
+    navbarHelper
   }
 })

@@ -3,6 +3,7 @@
     <router-view/>
     <loader :show="loading" class="no-print"/>
     <DevelopmentSettings v-if="devtool"/>
+    <Helper/>
   </v-app>
 </template>
 
@@ -10,6 +11,7 @@
 import {mapGetters, mapState} from "vuex";
 import DevelopmentSettings from "@c/Navbar/DevelopmentSettings";
 import Loader from "@c/Loader";
+import Helper from "@c/Navbar/Helper";
 
 export default {
   name: 'App',
@@ -22,6 +24,7 @@ export default {
   },
 
   components: {
+    Helper,
     DevelopmentSettings, Loader
   },
   watch: {
