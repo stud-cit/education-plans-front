@@ -106,22 +106,30 @@
     </template>
 
     <template v-slot:item.actions="{ item }">
-      <router-link
-        v-if="item.actions.preview"
-        :to="{ name: 'PreviewPlan', params: { id: item.id, title: item.title } }"
-        target="_blank"
-      >
-        <v-icon small class="mr-2" color="primary">mdi-eye-outline</v-icon>
-      </router-link>
-      <v-icon v-if="item.actions.copy" small class="mr-1" color="primary" @click="$emit('copy', item.id, item.title)">
-        mdi-content-copy
-      </v-icon>
-      <v-icon v-if="item.actions.edit" small class="mr-1" color="primary" @click="$emit('edit', item.id, item.title)">
-        mdi-pencil-outline
-      </v-icon>
-      <v-icon v-if="item.actions.delete" small color="red" @click="$emit('delete', item.id, item.title)">
-        mdi-trash-can-outline
-      </v-icon>
+      <btn-tooltip tooltip="Перегляд">
+        <router-link
+          v-if="item.actions.preview"
+          :to="{ name: 'PreviewPlan', params: { id: item.id, title: item.title } }"
+          target="_blank"
+        >
+          <v-icon small class="mr-2" color="primary">mdi-eye-outline</v-icon>
+        </router-link>
+      </btn-tooltip>
+      <btn-tooltip tooltip="Скопіювати">
+        <v-icon v-if="item.actions.copy" small class="mr-1" color="primary" @click="$emit('copy', item.id, item.title)">
+          mdi-content-copy
+        </v-icon>
+      </btn-tooltip>
+      <btn-tooltip tooltip="Редагувати">
+        <v-icon v-if="item.actions.edit" small class="mr-1" color="primary" @click="$emit('edit', item.id, item.title)">
+          mdi-pencil-outline
+        </v-icon>
+      </btn-tooltip>
+      <btn-tooltip tooltip=" ">
+        <v-icon v-if="item.actions.delete" small color="red" @click="$emit('delete', item.id, item.title)">
+          mdi-trash-can-outline
+        </v-icon>
+      </btn-tooltip>
     </template>
   </v-data-table>
 </template>
