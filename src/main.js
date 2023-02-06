@@ -10,6 +10,9 @@ import('@/assets/styles/base.css');
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
 import GlobalMixin from "@/mixins/GlobalMixin";
+import btnTooltip from "@c/base/BtnTooltip";
+
+Vue.component('btn-tooltip', btnTooltip);
 
 Vue.config.productionTip = false
 Vue.mixin(GlobalMixin);
