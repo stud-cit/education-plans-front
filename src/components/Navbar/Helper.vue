@@ -73,8 +73,11 @@
 
 <!--          </span>-->
 <!--        </v-list-item>-->
+        <v-list-item>
+          <v-btn class="mt-4 mx-auto" color="primary" :to="{ name: 'HandbookUpload' }"> Детальніше </v-btn>
+        </v-list-item>
       </v-list>
-<!--      <v-btn class="mt-4 mx-auto d-block" color="primary"> Детальніше </v-btn> todo: download file-->
+
     </v-navigation-drawer>
   </div>
 </template>
