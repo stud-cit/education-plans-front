@@ -115,9 +115,11 @@
                       </validation-provider>
                     </v-col>
                     <v-col cols="12" lg="1" class="d-flex align-center justify-center py-0">
-                      <v-btn outlined fab small color="red" @click="removeManager(index)">
-                        <v-icon aria-hidden="false"> mdi-trash-can-outline </v-icon>
-                      </v-btn>
+                      <btn-tooltip tooltip="Видалити">
+                        <v-btn outlined fab small color="red" @click="removeManager(index)">
+                          <v-icon aria-hidden="false"> mdi-trash-can-outline </v-icon>
+                        </v-btn>
+                      </btn-tooltip>
                     </v-col>
                   </template>
                 </v-row>
