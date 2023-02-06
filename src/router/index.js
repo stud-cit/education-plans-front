@@ -35,6 +35,7 @@ import CatalogSpecialty from '@/views/pages/SelectiveDisciplines/CatalogSpecialt
 import MaintenanceMode from '@/views/MaintenanceMode';
 import CatalogEducationProgramPDF from '@/views/pages/plan/CatalogEducationProgramPDF';
 import CatalogSpecialityPDF from '@/views/pages/plan/CatalogSpecialityPDF';
+import InstructionUpload from "@/views/pages/settings/Helpers/InstructionUpload";
 
 const allRoles = () => Object.values(ROLES.ID);
 // const allRolesExcept = (...exceptRoles) => Object.values(ROLES.ID).filter(role => exceptRoles.indexOf(role) === -1);
@@ -500,6 +501,17 @@ const routes = [
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
           header: 'Активності',
           breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Активності' }],
+        },
+      },
+      {
+        path: 'instruction-upload',
+        name: 'InstructionUpload',
+        component: InstructionUpload,
+        meta: {
+          requiresAuth: true,
+          accessIsAllowed: [ROLES.ID.root],
+          header: 'Довідник',
+          breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Довідник' }],
         },
       },
     ],

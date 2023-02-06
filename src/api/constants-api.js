@@ -74,6 +74,7 @@ export const API = {
   CATALOG_EDUCATION_PROGRAM_GENERATE_PDF: version + '/catalog-education-programs/generate-pdf',
 
   PLANS_CATALOG_PDF: version + '/plans/catalog-pdf',
+  UPLOAD_HANDBOOK_PDF: version + '/upload',
 
   ERR: version + '/err',
 };

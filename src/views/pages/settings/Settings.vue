@@ -36,6 +36,7 @@ export default {
         'SubjectLanguage',
         'CatalogGroup',
         'Logs',
+        'InstructionUpload'
       ],
     };
   },
