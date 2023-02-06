@@ -30,19 +30,25 @@
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon v-if="item.edit" small class="mr-2" color="success" @click="edit(item)"> mdi-check </v-icon>
-        <v-icon v-if="!item.edit" small class="mr-2" color="primary" @click="item.edit = true">
-          mdi-square-edit-outline
-        </v-icon>
-        <v-icon
-          v-if="allowedRoles([ROLES.ID.root])"
-          small
-          class="mr-2"
-          color="red"
-          @click="deleteItem(item.id, item.title)"
-        >
-          mdi-trash-can-outline
-        </v-icon>
+
+        <btn-tooltip :tooltip="!item.edit ? 'Редагувати' : 'Зберегти'">
+          <v-icon v-if="item.edit" small class="mr-2" color="success" @click="edit(item)"> mdi-check </v-icon>
+          <v-icon v-if="!item.edit" small class="mr-2" color="primary" @click="item.edit = true">
+            mdi-square-edit-outline
+          </v-icon>
+        </btn-tooltip>
+
+        <btn-tooltip tooltip="Видалити">
+          <v-icon
+            v-if="allowedRoles([ROLES.ID.root])"
+            small
+            class="mr-2"
+            color="red"
+            @click="deleteItem(item.id, item.title)"
+          >
+            mdi-trash-can-outline
+          </v-icon>
+        </btn-tooltip>
       </template>
     </v-data-table>
 
