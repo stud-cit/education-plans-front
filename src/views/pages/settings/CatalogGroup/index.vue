@@ -14,14 +14,19 @@
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon v-if="!item.deleted_at" small class="mr-2" @click="openEdit(item)"> mdi-pencil </v-icon>
-
-        <v-icon v-if="!item.deleted_at" small class="mr-2" color="red" @click="deleteItem(item.id, item.title)">
-          mdi-archive-arrow-down-outline
-        </v-icon>
-        <v-icon v-else small class="mr-2" color="green" @click="restoreItem(item.id, item.title)">
-          mdi-archive-arrow-up-outline
-        </v-icon>
+        <btn-tooltip tooltip="Редагувати">
+          <v-icon v-if="!item.deleted_at" small color="primary" class="mr-2" @click="openEdit(item)"> mdi-pencil </v-icon>
+        </btn-tooltip>
+        <btn-tooltip v-if="!item.deleted_at" tooltip="Видалити">
+          <v-icon small class="mr-2" color="red" @click="deleteItem(item.id, item.title)">
+            mdi-archive-arrow-down-outline
+          </v-icon>
+        </btn-tooltip>
+        <btn-tooltip v-else tooltip="Відновити">
+          <v-icon  small class="mr-2" color="green" @click="restoreItem(item.id, item.title)">
+            mdi-archive-arrow-up-outline
+          </v-icon>
+        </btn-tooltip>
       </template>
     </v-data-table>
 
