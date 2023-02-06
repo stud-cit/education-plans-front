@@ -40,14 +40,16 @@
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <template v-if="item.edit">
-          <v-icon small class="mr-2" color="success" @click="edit(item)"> mdi-check </v-icon>
-        </template>
-        <template v-else>
+        <btn-tooltip v-if="!item.edit" tooltip="Редагувати">
           <v-icon small class="mr-2" color="primary" @click="item.edit = true"> mdi-square-edit-outline </v-icon>
-        </template>
+        </btn-tooltip>
+        <btn-tooltip v-else tooltip="Зберегти">
+          <v-icon small class="mr-2" color="success" @click="edit(item)"> mdi-check </v-icon>
+        </btn-tooltip>
 
-        <v-icon small class="mr-2" color="red" @click="deleted(item.id, item.position)"> mdi-trash-can-outline </v-icon>
+        <btn-tooltip tooltip="Видалити">
+          <v-icon small class="mr-2" color="red" @click="deleted(item.id, item.position)"> mdi-trash-can-outline </v-icon>
+        </btn-tooltip>
       </template>
     </v-data-table>
 
