@@ -27,13 +27,15 @@
           <input type="text" v-model="item.credit">
         </td>
         <td>
-          <v-icon
-            small
-            color="red"
-            @click="deleted(item)"
-          >
-            mdi-trash-can-outline
-          </v-icon>
+          <btn-tooltip tooltip="Видалити">
+            <v-icon
+              small
+              color="red"
+              @click="deleted(item)"
+            >
+              mdi-trash-can-outline
+            </v-icon>
+          </btn-tooltip>
         </td>
       </tr>
     </table>
