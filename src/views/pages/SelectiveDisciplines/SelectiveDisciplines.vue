@@ -30,7 +30,9 @@
         <!--        <v-icon v-if="!item.edit" small class="mr-2" color="primary" @click="item.edit = true">-->
         <!--          mdi-square-edit-outline-->
         <!--        </v-icon>-->
-        <v-icon small class="mr-2 cursor-pointer" color="primary" > mdi-eye </v-icon>
+        <btn-tooltip tooltip="Перегляд">
+          <v-icon small class="mr-2 cursor-pointer" color="primary" > mdi-eye </v-icon>
+        </btn-tooltip>
       </template>
     </v-data-table>
   </v-container>
