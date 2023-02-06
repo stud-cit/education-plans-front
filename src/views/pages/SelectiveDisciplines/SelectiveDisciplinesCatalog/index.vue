@@ -100,15 +100,21 @@
         <PublishedBadge :published="item.published" /> {{ item.title }}
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-icon v-if="item.actions.preview" small class="mr-2" color="primary" @click="openDialogPreview(item)"
-          >mdi-eye</v-icon
-        >
-        <v-icon v-if="item.actions.edit" small class="mr-2" color="primary" @click="openDialogEdit(item)"
-          >mdi-pencil</v-icon
-        >
-        <v-icon v-if="item.actions.delete" small class="mr-2" color="red" @click="deleted(item.id, item)"
-          >mdi-trash-can-outline</v-icon
-        >
+        <btn-tooltip tooltip="Перегляд">
+          <v-icon v-if="item.actions.preview" small class="mr-2" color="primary" @click="openDialogPreview(item)">
+            mdi-eye
+          </v-icon>
+        </btn-tooltip>
+        <btn-tooltip tooltip="Редагування">
+          <v-icon v-if="item.actions.edit" small class="mr-2" color="primary" @click="openDialogEdit(item)">
+            mdi-pencil
+          </v-icon>
+        </btn-tooltip>
+        <btn-tooltip tooltip="Видалення">
+          <v-icon v-if="item.actions.delete" small class="mr-2" color="red" @click="deleted(item.id, item)">
+            mdi-trash-can-outline
+          </v-icon>
+        </btn-tooltip>
       </template>
     </v-data-table>
 
