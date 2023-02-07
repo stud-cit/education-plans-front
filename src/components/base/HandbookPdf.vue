@@ -51,7 +51,7 @@ export default {
 .pdf-app #thumbnailView {
   width: 100%;
 }
-.handbook-pdf {
+.handbook-pdf.pdf-app {
   z-index: 1;
   position: relative;
   height: 100vh;
