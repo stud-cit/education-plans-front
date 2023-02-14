@@ -344,7 +344,7 @@ export default {
       api
         .get(API.PROGRAMS, {
           year: this.plan.year,
-          degree: this.plan.education_level.title,
+          degree: this.plan.education_level.id,
         })
         .then(({ data }) => {
           this.programs = data;
