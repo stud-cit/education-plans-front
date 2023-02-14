@@ -185,7 +185,7 @@ export default {
       headers: [
         { text: '№', value: 'index', sortable: false, width: '20px' },
         { text: 'Рік', value: 'year', sortable: false },
-        { text: 'Спеціальність', value: 'education_program', sortable: false },
+        { text: 'Освітня програма', value: 'education_program', sortable: false },
         { text: 'Рівень освіти', value: 'education_level', sortable: false },
         { text: 'Кафедра', value: 'department', sortable: false },
         { text: 'Дії', value: 'actions', sortable: false, width: '140px' },
