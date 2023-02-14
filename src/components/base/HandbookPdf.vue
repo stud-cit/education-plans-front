@@ -48,7 +48,7 @@ export default {
 </script>
 
 <style>
-.pdf-app #thumbnailView {
+.handbook-pdf.pdf-app #thumbnailView {
   width: 100%;
 }
 .handbook-pdf.pdf-app {
