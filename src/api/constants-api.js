@@ -88,6 +88,8 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     sortDesc: 'sort_desc',
     faculty: 'faculty',
     department: 'department',
+    planId: 'id',
+    planOrTemplate: 'planOrTemplate',
     divisionWithStatus: 'divisionWithStatus',
   },
   GET_LOGS: {

@@ -20,6 +20,18 @@
             class="mx-4"
           ></v-text-field>
         </v-col>
+        <v-col cols="12" md="2">
+          <v-select
+            v-model="planOrTemplate"
+            :items="planTypes"
+            item-text="title"
+            item-value="value"
+            select
+            hide-details
+            label="Тип"
+            clearable
+          ></v-select>
+        </v-col>
         <v-col align-self="center">
           <v-btn color="primary" outlined class="ml-2" @click="search"> Пошук </v-btn>
           <v-btn
@@ -82,6 +94,15 @@
             label="Статус верифікації"
             clearable
           ></v-select>
+        </v-col>
+        <v-col cols="12" lg="6" v-if="allowedRoles([ROLES.ID.root])">
+          <v-text-field
+            v-model="planId"
+            label="Пошук за ID плану"
+            single-line
+            hide-details
+            type="number"
+          ></v-text-field>
         </v-col>
       </v-row>
     </template>
@@ -167,6 +188,12 @@ export default {
       divisions: [],
       verificationDivisionStatus: 1,
       verificationsDivisionsStatus: [],
+      planId: null,
+      planOrTemplate: null,
+      planTypes: [
+        { title: 'Шаблон', value: 0 },
+        { title: 'План', value: 1 },
+      ]
     };
   },
   components: {
@@ -241,6 +268,8 @@ export default {
       this.options.faculty = null;
       this.options.department = null;
       this.division = this.options.divisionWithStatus = null;
+      this.planId = null;
+      this.planOrTemplate = null;
       this.resetPage();
     },
     apiGetDivisions() {
@@ -260,6 +289,8 @@ export default {
     },
     filterSort(values) {
       values.searchTitle = this.searchTitle;
+      values.planId = this.planId;
+      values.planOrTemplate = this.planOrTemplate;
 
       if (this.exceptRoles([ROLES.ID.department])) {
         values.faculty = this.faculty;
