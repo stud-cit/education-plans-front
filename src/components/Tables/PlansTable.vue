@@ -44,7 +44,6 @@
             item-value="id"
             label="Факультет"
             hide-details
-            :readonly="!exceptRoles([ROLES.ID.department, ROLES.ID.faculty_institute])"
             clearable
           ></v-autocomplete>
         </v-col>
@@ -57,7 +56,6 @@
             label="Кафедра"
             hide-details
             :loading="departmentsLoading"
-            :readonly="!exceptRoles([ROLES.ID.department])"
             clearable
           ></v-autocomplete>
         </v-col>
@@ -196,7 +194,7 @@ export default {
         return this.$store.state.plans.options;
       },
       set: function (newValue) {
-        this.$store.dispatch('plans/setOptions', newValue);
+        this.$store.dispatch('plans/setOptions', this.filterSort(newValue));
         this.update();
       },
     },
@@ -211,17 +209,6 @@ export default {
         this.options.divisionWithStatus = null;
       }
     },
-    faculties(v) {
-      if (v.length === 1 && this.allowedRoles([ROLES.ID.faculty_institute, ROLES.ID.department])) {
-        this.faculty = v[0].id;
-      }
-    },
-    departments(v) {
-      if (v.length && this.allowedRoles([ROLES.ID.department])) {
-        const department = v.find((i) => i.id === this.user.department_id);
-        this.department = department ? department.id : null;
-      }
-    },
   },
   mounted() {
     this.apiGetDivisions();
@@ -231,17 +218,7 @@ export default {
       this.$emit('update', this.options);
     },
     search() {
-      this.options.searchTitle = this.searchTitle;
-
-      if (this.exceptRoles([ROLES.ID.department])) {
-        this.options.faculty = this.faculty;
-        this.options.department = this.department;
-      }
-
-      if (this.division !== null) {
-        this.options.divisionWithStatus = [this.division, this.verificationDivisionStatus];
-      }
-      this.resetPage();
+      this.options = this.filterSort(this.options);
     },
     resetPage() {
       if (this.options.page == 1) {
@@ -281,6 +258,20 @@ export default {
         this.departmentsLoading = false;
       });
     },
+    filterSort(values) {
+      values.searchTitle = this.searchTitle;
+
+      if (this.exceptRoles([ROLES.ID.department])) {
+        values.faculty = this.faculty;
+        values.department = this.department;
+      }
+
+      if (this.division !== null) {
+        values.divisionWithStatus = [this.division, this.verificationDivisionStatus];
+      }
+
+      return values;
+    }
   },
 };
 </script>
