@@ -190,10 +190,7 @@ export default {
       verificationsDivisionsStatus: [],
       planId: null,
       planOrTemplate: null,
-      planTypes: [
-        { title: 'Шаблон', value: 2 },
-        { title: 'План', value: 1 },
-      ]
+      planTypes: []
     };
   },
   components: {
@@ -277,6 +274,7 @@ export default {
         this.divisions = data.divisions;
         this.verificationsDivisionsStatus = data.verificationsStatus;
         this.faculties = data.faculties;
+        this.planTypes = data.types;
       });
     },
     apiGetDepartments(id) {
