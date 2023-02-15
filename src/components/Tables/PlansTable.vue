@@ -191,7 +191,7 @@ export default {
       planId: null,
       planOrTemplate: null,
       planTypes: [
-        { title: 'Шаблон', value: 0 },
+        { title: 'Шаблон', value: 2 },
         { title: 'План', value: 1 },
       ]
     };
