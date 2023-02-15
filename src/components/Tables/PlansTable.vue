@@ -102,6 +102,7 @@
             single-line
             hide-details
             type="number"
+            clearable
           ></v-text-field>
         </v-col>
       </v-row>
