@@ -27,13 +27,14 @@
                     v-model="user"
                     :items="workers"
                     :error-messages="errors"
-                    :item-text="(el) => `${item === null ? el.full_name + el.department_id : el.full_name}`"
                     item-disabled="disabled"
+                    item-text="full_name"
                     return-object
                     label="ПІБ"
+                    :filter="filterObject"
                     :disabled="item !== null"
                   >
-<!--                    :filter="filterObject"-->
+<!--                    :item-text="(el) => `${item === null ? el.full_name + el.department_id : el.full_name}`"-->
 
                     <template v-slot:selection="data">
                       {{ data.item.full_name }}
@@ -45,6 +46,26 @@
                         <v-list-item-subtitle v-html="parent.genFilteredText(item.department)"></v-list-item-subtitle>
                       </v-list-item-content>
                     </template>
+                  </v-autocomplete>
+                </validation-provider>
+
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="ПІБ"
+                  rules="required"
+                  vid="asu_id"
+                >
+                  <v-autocomplete
+                    v-model="user"
+                    :items="workers"
+                    :error-messages="errors"
+                    item-disabled="disabled"
+                    item-text="full_name"
+                    return-object
+                    label="ПІБ"
+                    :filter="filterObject"
+                    :disabled="item !== null"
+                  >
                   </v-autocomplete>
                 </validation-provider>
 
