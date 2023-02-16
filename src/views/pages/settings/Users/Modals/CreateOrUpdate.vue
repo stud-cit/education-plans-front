@@ -37,13 +37,21 @@
                     <template v-slot:selection="data">
                       {{ data.item.full_name }}
                     </template>
+<!--Todo light genHighlight-->
+<!--                    <template v-slot:item="{parent, item}">-->
+<!--                      <v-list-item-content>-->
+<!--                        <v-list-item-title v-html="parent.genFilteredText(item.full_name)"></v-list-item-title>-->
+<!--                        <v-list-item-subtitle v-html="parent.genFilteredText(item.department)"></v-list-item-subtitle>-->
+<!--                      </v-list-item-content>-->
+<!--                    </template>-->
 
-                    <template v-slot:item="{parent, item}">
+                    <template v-slot:item="data">
                       <v-list-item-content>
-                        <v-list-item-title v-html="parent.genFilteredText(item.full_name)"></v-list-item-title>
-                        <v-list-item-subtitle v-html="parent.genFilteredText(item.department)"></v-list-item-subtitle>
+                        <v-list-item-title v-html="data.item.full_name"></v-list-item-title>
+                        <v-list-item-subtitle v-html="data.item.department"></v-list-item-subtitle>
                       </v-list-item-content>
                     </template>
+
                   </v-autocomplete>
                 </validation-provider>
 
