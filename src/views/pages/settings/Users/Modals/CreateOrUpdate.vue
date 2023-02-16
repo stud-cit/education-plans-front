@@ -31,9 +31,10 @@
                     item-disabled="disabled"
                     return-object
                     label="ПІБ"
-                    :filter="filterObject"
                     :disabled="item !== null"
                   >
+<!--                    :filter="filterObject"-->
+
                     <template v-slot:selection="data">
                       {{ data.item.full_name }}
                     </template>
