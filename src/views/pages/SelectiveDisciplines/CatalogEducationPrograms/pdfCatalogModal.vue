@@ -27,25 +27,24 @@
           <p class="pdf_title">
             СУМСЬКИЙ ДЕРЖАВНИЙ УНІВЕРСИТЕТ
           </p>
-          <div v-if="item.catalog" class="pdf_faculty">
-            {{item.catalog.faculty}}
+          <div v-if="catalog" class="pdf_faculty">
+            {{catalog.faculty}}
           </div>
           <div v-else class="pdf_faculty-line">
             (назва навчально-наукового інституту/факультету)
           </div>
 
-          <div v-if="item.catalog" class="pdf_faculty">
-            {{item.catalog.department}}
+          <div v-if="catalog" class="pdf_faculty">
+            {{catalog.department}}
           </div>
           <div v-else class="pdf_faculty-line">
             (назва кафедри)
           </div>
 
-          <p class="pdf_subtitle mt-3" v-if="item.catalog">
+          <p class="pdf_subtitle mt-3" v-if="catalog && catalog.year && catalog.education_level">
             КАТАЛОГ ВИБІРКОВИХ НАВЧАЛЬНИХ ДИСЦИПЛІН ЦИКЛУ ПРОФЕСІЙНОЇ ПІДГОТОВКИ ЗА ОСВІТНЬОЮ ПРОГРАМОЮ <br>
-            {{item.catalog.education_program}}
-            СПЕЦІАЛЬНІСТЬ {{item.catalog.speciality}} <br>
-            {{item.catalog.education_level}} {{item.catalog.year}} &mdash; {{item.catalog.year + 1}} н. р.
+            {{catalog.education_program}}<br>
+            {{catalog.education_level}} {{catalog.year}} &mdash; {{catalog.year + 1}} н. р.
           </p>
           <table class="table pdf_table">
             <thead>
@@ -220,8 +219,7 @@
 </template>
 
 <script>
-import GlobalMixin from "@/mixins/GlobalMixin";
-import {ALLOWED_REQUEST_PARAMETERS, API} from "@/api/constants-api";
+import {API} from "@/api/constants-api";
 import { CATALOG_SIGNATURE_TYPE } from "@/utils/constants"
 import api from "@/api";
 import print from 'vue-print-nb'

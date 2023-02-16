@@ -27,7 +27,7 @@
           (назва кафедри)
         </div>
 
-        <p class="pdf_subtitle mt-3" v-if="catalog && catalog.speciality && catalog.year && catalog.education_level">
+        <p class="pdf_subtitle mt-3" v-if="catalog && catalog.year && catalog.education_level">
           КАТАЛОГ ВИБІРКОВИХ НАВЧАЛЬНИХ ДИСЦИПЛІН ЦИКЛУ ПРОФЕСІЙНОЇ ПІДГОТОВКИ ЗА ОСВІТНЬОЮ ПРОГРАМОЮ <br>
           {{catalog.education_program}} <br>
           {{catalog.education_level}} {{catalog.year}} &mdash; {{catalog.year + 1}} н. р.
@@ -86,8 +86,6 @@
 <script>
 import api from '@/api';
 import { API } from '@/api/constants-api';
-import { ROLES } from '@/utils/constants';
-import RolesMixin from '@/mixins/RolesMixin';
 
 export default {
   name: 'PreviewSpecialitySubjectModal',
@@ -106,7 +104,6 @@ export default {
     item: null,
     catalog: null,
   },
-  mixins: [RolesMixin],
   watch: {
     item(v) {
       if (v !== null && this.dialog === true) {
