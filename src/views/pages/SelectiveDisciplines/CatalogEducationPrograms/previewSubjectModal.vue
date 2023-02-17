@@ -29,7 +29,10 @@
 
         <p class="pdf_subtitle mt-3" v-if="catalog && catalog.year && catalog.education_level">
           КАТАЛОГ ВИБІРКОВИХ НАВЧАЛЬНИХ ДИСЦИПЛІН ЦИКЛУ ПРОФЕСІЙНОЇ ПІДГОТОВКИ ЗА ОСВІТНЬОЮ ПРОГРАМОЮ <br>
-          {{catalog.education_program}} <br>
+          {{catalog.education_program}}
+          <template v-if="catalog.speciality">
+            СПЕЦІАЛЬНІСТЬ {{catalog.speciality}}
+          </template><br>
           {{catalog.education_level}} {{catalog.year}} &mdash; {{catalog.year + 1}} н. р.
         </p>
         <table class="table">
