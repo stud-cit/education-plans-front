@@ -31,7 +31,7 @@
           КАТАЛОГ ВИБІРКОВИХ НАВЧАЛЬНИХ ДИСЦИПЛІН ЦИКЛУ ПРОФЕСІЙНОЇ ПІДГОТОВКИ ЗА ОСВІТНЬОЮ ПРОГРАМОЮ <br>
           {{catalog.education_program}}
           <template v-if="catalog.speciality">
-            СПЕЦІАЛЬНІСТЬ {{catalog.speciality}}
+            <br> СПЕЦІАЛЬНІСТЬ {{catalog.speciality}}
           </template><br>
           {{catalog.education_level}} {{catalog.year}} &mdash; {{catalog.year + 1}} н. р.
         </p>
