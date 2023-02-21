@@ -234,7 +234,7 @@ export default {
         ...this.$route.query
       }
       api.get(API.PLANS_CATALOG_PDF, data, { showLoader: true }).then( ({data}) => {
-        this.items = data.data;
+        this.items = data;
       });
     },
     getNameSignature(signatures, type) {
