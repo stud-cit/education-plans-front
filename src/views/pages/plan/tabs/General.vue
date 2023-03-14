@@ -1,33 +1,20 @@
 <template>
-  <validation-observer
-    ref="observer"
-    v-slot="{ invalid }"
-  >
+  <validation-observer ref="observer" v-slot="{ invalid }">
     <form @submit.prevent="submit" @keyup.enter="submit">
       <v-row>
         <v-col cols="12" class="pb-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Назва плану"
-            rules="required"
-          >
-            <span class="body-2 yellow lighten-3"><b>Формат назви:</b> Код спеціальності Назва ОП Освітній рівень Рік прийому. Приклад: 122 ОПП Інформатика бакалавр 2023</span>
-            <v-text-field
-              v-model="plan.title"
-              :error-messages="errors"
-              label="Назва плану"
-              required
-            ></v-text-field>
+          <validation-provider v-slot="{ errors }" name="Назва плану" rules="required">
+            <span class="body-2 yellow lighten-3"
+              ><b>Формат назви:</b> Код спеціальності Назва ОП Освітній рівень Рік прийому. Приклад: 122 ОПП Інформатика
+              бакалавр 2023</span
+            >
+            <v-text-field v-model="plan.title" :error-messages="errors" label="Назва плану" required></v-text-field>
           </validation-provider>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" class="pb-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Галузь знань "
-            rules=""
-          >
+          <validation-provider v-slot="{ errors }" name="Галузь знань " rules="">
             <v-autocomplete
               v-model.number="plan.field_knowledge_id"
               :items="fieldsKnowledge"
@@ -41,11 +28,7 @@
       </v-row>
       <v-row>
         <v-col cols="12" class="pb-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Спеціальність"
-            rules=""
-          >
+          <validation-provider v-slot="{ errors }" name="Спеціальність" rules="">
             <v-autocomplete
               v-model.number="plan.speciality_id"
               :items="specialities"
@@ -61,11 +44,7 @@
       </v-row>
       <v-row>
         <v-col cols="12" class="pb-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Освітня програма"
-            rules=""
-          >
+          <validation-provider v-slot="{ errors }" name="Освітня програма" rules="">
             <v-autocomplete
               v-model.number="plan.education_program_id"
               :items="educationalPrograms"
@@ -81,11 +60,7 @@
       </v-row>
       <v-row>
         <v-col cols="12" class="pb-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Спеціалізація"
-            rules=""
-          >
+          <validation-provider v-slot="{ errors }" name="Спеціалізація" rules="">
             <v-autocomplete
               v-model.number="plan.specialization_id"
               :items="specializations"
@@ -101,11 +76,7 @@
       </v-row>
       <v-row>
         <v-col cols="12" class="pb-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Кваліфікація"
-            rules=""
-          >
+          <validation-provider v-slot="{ errors }" name="Кваліфікація" rules="">
             <v-autocomplete
               v-model="plan.qualification_id"
               :items="qualifications"
@@ -119,11 +90,7 @@
       </v-row>
       <v-row>
         <v-col cols="12" lg="6" class="py-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Факультет"
-            rules=""
-          >
+          <validation-provider v-slot="{ errors }" name="Факультет" rules="">
             <v-autocomplete
               v-model="plan.faculty_id"
               :items="faculties"
@@ -135,11 +102,7 @@
           </validation-provider>
         </v-col>
         <v-col cols="12" lg="6" class="py-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Кафедра"
-            rules=""
-          >
+          <validation-provider v-slot="{ errors }" name="Кафедра" rules="">
             <v-autocomplete
               v-model="plan.department_id"
               :items="departments"
@@ -155,11 +118,7 @@
       </v-row>
       <v-row>
         <v-col cols="12" lg="6" class="py-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Форма організації навчання"
-            rules="required"
-          >
+          <validation-provider v-slot="{ errors }" name="Форма організації навчання" rules="required">
             <v-autocomplete
               v-model="plan.form_organization_id"
               :items="formsOrganizationStudy"
@@ -173,11 +132,7 @@
           </validation-provider>
         </v-col>
         <v-col cols="12" lg="6" class="py-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Форма навчання"
-            rules="required"
-          >
+          <validation-provider v-slot="{ errors }" name="Форма навчання" rules="required">
             <v-autocomplete
               v-model="plan.form_study_id"
               :items="formsStudy"
@@ -191,11 +146,7 @@
       </v-row>
       <v-row>
         <v-col cols="12" lg="6" class="py-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Термін навчання"
-            rules="required"
-          >
+          <validation-provider v-slot="{ errors }" name="Термін навчання" rules="required">
             <v-autocomplete
               v-model="plan.study_term"
               :items="termsStudy"
@@ -209,11 +160,7 @@
           </validation-provider>
         </v-col>
         <v-col cols="12" lg="6" class="py-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Кількість семестрів"
-            rules="required"
-          >
+          <validation-provider v-slot="{ errors }" name="Кількість семестрів" rules="required">
             <v-text-field
               v-model="numberSemesters"
               :error-messages="errors"
@@ -226,11 +173,7 @@
       </v-row>
       <v-row>
         <v-col cols="12" lg="6" class="py-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Освітній (Освітньо-науковий) рівень"
-            rules="required"
-          >
+          <validation-provider v-slot="{ errors }" name="Освітній (Освітньо-науковий) рівень" rules="required">
             <v-autocomplete
               v-model="plan.education_level_id"
               :items="educationsLevel"
@@ -261,11 +204,7 @@
       </v-row>
       <v-row>
         <v-col cols="12" lg="6" class="py-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Рік прийому"
-            rules="required|numeric|digits:4"
-          >
+          <validation-provider v-slot="{ errors }" name="Рік прийому" rules="required|numeric|digits:4">
             <v-autocomplete
               v-model="plan.year"
               :items="years"
@@ -274,18 +213,22 @@
             ></v-autocomplete>
           </validation-provider>
         </v-col>
-        <v-col cols="12" lg="6" class="py-0" v-if="allowedRoles([
-            ROLES.ID.admin,
-            ROLES.ID.root,
-            ROLES.ID.training_department,
-            ROLES.ID.practice_department,
-            ROLES.ID.educational_department_deputy,
-            ROLES.ID.educational_department_chief
-          ])">
-          <v-checkbox
-            v-model="plan.published"
-            label="Відкрити спільний доступ"
-          ></v-checkbox>
+        <v-col
+          cols="12"
+          lg="6"
+          class="py-0"
+          v-if="
+            allowedRoles([
+              ROLES.ID.admin,
+              ROLES.ID.root,
+              ROLES.ID.training_department,
+              ROLES.ID.practice_department,
+              ROLES.ID.educational_department_deputy,
+              ROLES.ID.educational_department_chief,
+            ])
+          "
+        >
+          <v-checkbox v-model="plan.published" label="Відкрити спільний доступ"></v-checkbox>
         </v-col>
       </v-row>
       <v-row v-if="objHoursWeeks.length">
@@ -293,21 +236,27 @@
           <table>
             <thead>
               <tr>
-                <td v-for="course in studyTerm.course" :key="course" :colspan="objHoursWeeks.length / studyTerm.semesters * 2">
-                  {{course}} курс
+                <td
+                  v-for="course in studyTerm.course"
+                  :key="course"
+                  :colspan="(objHoursWeeks.length / studyTerm.semesters) * 2"
+                >
+                  {{ course }} курс
                 </td>
               </tr>
               <tr>
-                <td v-for="semester in studyTerm.semesters" :key="semester" :colspan="objHoursWeeks.length / studyTerm.semesters">
-                  {{semester}} семестр
+                <td
+                  v-for="semester in studyTerm.semesters"
+                  :key="semester"
+                  :colspan="objHoursWeeks.length / studyTerm.semesters"
+                >
+                  {{ semester }} семестр
                 </td>
               </tr>
-              </thead>
-              <tbody>
+            </thead>
+            <tbody>
               <tr>
-                <td :colspan="objHoursWeeks.length">
-                  Кількість тижнів у модульному атестаційному циклі
-                </td>
+                <td :colspan="objHoursWeeks.length">Кількість тижнів у модульному атестаційному циклі</td>
               </tr>
               <tr>
                 <td v-for="(item, index) in objHoursWeeks" :key="index">
@@ -361,13 +310,7 @@
       </v-row>
       <v-row>
         <v-col cols="12">
-          <v-btn
-            class="mr-4"
-            type="submit"
-            color="primary"
-            :loading="submitLoading"
-            :disabled="invalid"
-          >
+          <v-btn class="mr-4" type="submit" color="primary" :loading="submitLoading" :disabled="invalid">
             Зберегти
           </v-btn>
         </v-col>
@@ -377,14 +320,14 @@
 </template>
 
 <script>
-import api from "@/api";
-import {API} from "@/api/constants-api";
-import { FORM_ORGANIZATIONS_TABLE, ROLES } from "@/utils/constants"
-import RolesMixin from "@/mixins/RolesMixin";
-import {mapState} from "vuex";
+import api from '@/api';
+import { API } from '@/api/constants-api';
+import { FORM_ORGANIZATIONS_TABLE, ROLES } from '@/utils/constants';
+import RolesMixin from '@/mixins/RolesMixin';
+import { mapState } from 'vuex';
 
 export default {
-  name: "General",
+  name: 'General',
   data() {
     return {
       ROLES,
@@ -407,46 +350,38 @@ export default {
       fieldsKnowledge: [],
       formsOrganizationStudy: [],
       objHoursWeeks: [],
-    }
+    };
   },
   props: {
     plan: {
       type: Object,
     },
     edit: {
-      type: Boolean
+      type: Boolean,
     },
   },
   computed: {
-    ...mapState('plans', ['submitLoading'])
+    ...mapState('plans', ['submitLoading']),
   },
   mounted() {
     this.apiGetFields();
   },
   mixins: [RolesMixin],
   watch: {
-    'plan'(v) {
-      if (v !== null && v.faculty_id !== null) {
-        this.apiGetDepartments(v.faculty_id)
-      }
+    plan(v) {
       if (v !== null && v.study_term !== null) {
         this.buildObjHoursWeeks();
       }
       if (v !== null && v.field_knowledge_id !== null) {
-        this.apiGetSpecialities(v.field_knowledge_id)
+        this.apiGetSpecialities(v.field_knowledge_id);
       }
       if (v !== null && v.speciality_id !== null) {
-        this.apiGetEducationPrograms(v.speciality_id)
-        this.apiGetSpecializations(v.speciality_id)
+        this.apiGetEducationPrograms(v.speciality_id);
+        this.apiGetSpecializations(v.speciality_id);
       }
     },
     'plan.faculty_id'(v) {
-      if (v !== null) {
-        this.apiGetDepartments(v)
-      } else {
-        this.plan.department_id = null;
-        this.departments = [];
-      }
+      if (v !== null) this.apiGetDepartments(v);
     },
     'plan.study_term'(v) {
       if (v !== null) {
@@ -462,20 +397,20 @@ export default {
       if (old !== null && v !== old) {
         this.plan.speciality_id = null;
       }
-      v !== null ? this.apiGetSpecialities(v) : this.specialities = [];
+      v !== null ? this.apiGetSpecialities(v) : (this.specialities = []);
     },
     'plan.speciality_id'(v, old) {
       if (old !== null && v === old) {
         this.plan.specialization_id = null;
         this.plan.education_program_id = null;
       }
-      v !== null ? this.apiGetSpecializations(v) : this.specializations = [];
-      v !== null ? this.apiGetEducationPrograms(v) : this.educationalPrograms = [];
-    }
+      v !== null ? this.apiGetSpecializations(v) : (this.specializations = []);
+      v !== null ? this.apiGetEducationPrograms(v) : (this.educationalPrograms = []);
+    },
   },
   methods: {
     apiGetFields() {
-      api.get(API.PLAN_CREATE).then(({data}) => {
+      api.get(API.PLAN_CREATE).then(({ data }) => {
         this.faculties = data.faculties ?? [];
         this.educationsLevel = data.educations_level ?? [];
         this.formsStudy = data.forms_study ?? [];
@@ -483,23 +418,23 @@ export default {
         this.qualifications = data.qualifications ?? [];
         this.fieldsKnowledge = data.fields_knowledge ?? [];
         this.formsOrganizationStudy = data.forms_organizationStudy ?? [];
-      })
+      });
     },
     apiGetDepartments(id) {
       this.departmentsLoading = true;
 
-      api.show(API.DEPARTMENTS, id).then(({data}) => {
-        this.departments = data.data
+      api.show(API.DEPARTMENTS, id).then(({ data }) => {
+        this.departments = data.data;
         this.departmentsLoading = false;
-      })
+      });
     },
     apiGetSpecializations(id) {
       this.specializationsLoading = true;
 
-      api.show(API.SPECIALIZATIONS, id).then(({data}) => {
-        this.specializations = data.data
+      api.show(API.SPECIALIZATIONS, id).then(({ data }) => {
+        this.specializations = data.data;
         this.specializationsLoading = false;
-      })
+      });
     },
     apiGetSpecialities(id) {
       this.specialitiesLoading = true;
@@ -507,27 +442,27 @@ export default {
       //   this.specialities = data.data
       //   this.specialitiesLoading = false;
       // })
-      api.get(API.SPECIALITIES).then(({data}) => {
-        this.specialities = data.data
+      api.get(API.SPECIALITIES).then(({ data }) => {
+        this.specialities = data.data;
         this.specialitiesLoading = false;
-      })
+      });
     },
     apiGetEducationPrograms(id) {
       this.educationalProgramsLoading = true;
 
-      api.show(API.EDUCATIONAL_PROGRAMS, id).then(({data}) => {
-        this.educationalPrograms = data.data
+      api.show(API.EDUCATIONAL_PROGRAMS, id).then(({ data }) => {
+        this.educationalPrograms = data.data;
         this.educationalProgramsLoading = false;
-      })
+      });
     },
     buildObjHoursWeeks() {
       const result = [];
       const studyTerm = this.studyTerm;
       const formOrganization = this.plan.form_organization_id;
 
-      if (studyTerm !== null && formOrganization !== null ) {
-
-        if (this.plan !== null &&
+      if (studyTerm !== null && formOrganization !== null) {
+        if (
+          this.plan !== null &&
           studyTerm.id === this.plan.study_term_id &&
           formOrganization === this.plan.form_organization_id &&
           this.plan.hours_weeks_semesters
@@ -538,55 +473,55 @@ export default {
 
         let currentSemester = 1;
         for (let course = 1; course <= studyTerm.course; course++) {
-          const obj = {course};
-          for (let semester = 1; semester <= 2; semester++ ) {
+          const obj = { course };
+          for (let semester = 1; semester <= 2; semester++) {
             if (currentSemester <= studyTerm.semesters) {
               obj.semester = currentSemester;
 
-              for (let item = 1; item <= FORM_ORGANIZATIONS_TABLE[formOrganization]; item++ ) {
-                result.push(
-                  {
-                    ...obj,
-                    week: '',
-                    hour: 0,
-                    index: item,
-                  }
-                );
+              for (let item = 1; item <= FORM_ORGANIZATIONS_TABLE[formOrganization]; item++) {
+                result.push({
+                  ...obj,
+                  week: '',
+                  hour: 0,
+                  index: item,
+                });
               }
             }
             currentSemester++;
           }
         }
         this.objHoursWeeks = result;
-
       } else {
         this.objHoursWeeks = [];
       }
     },
     submit() {
-      this.$refs.observer.validate().then((validated) => {
-        if (validated) {
-          const data = {
-            ...this.plan,
-            study_term_id: this.plan.study_term.id,
-          //   year: this.year,
-            number_semesters: this.numberSemesters,
-            hours_weeks_semesters: JSON.stringify(this.objHoursWeeks),
-          };
+      this.$refs.observer
+        .validate()
+        .then((validated) => {
+          if (validated) {
+            const data = {
+              ...this.plan,
+              study_term_id: this.plan.study_term.id,
+              //   year: this.year,
+              number_semesters: this.numberSemesters,
+              hours_weeks_semesters: JSON.stringify(this.objHoursWeeks),
+            };
 
-          delete data.schedule_education_process
-          delete data.summary_data_budget_time
-          delete data.practical_training
+            delete data.schedule_education_process;
+            delete data.summary_data_budget_time;
+            delete data.practical_training;
 
-          this.$store.dispatch('plans/setSubmitLoading', true);
-          this.$emit('submit', data)
-        }
-      }).catch(() => {
-        this.$store.dispatch('plans/setSubmitLoading', false);
-      });
+            this.$store.dispatch('plans/setSubmitLoading', true);
+            this.$emit('submit', data);
+          }
+        })
+        .catch(() => {
+          this.$store.dispatch('plans/setSubmitLoading', false);
+        });
     },
-  }
-}
+  },
+};
 </script>
 
 <style lang="css" scoped>
