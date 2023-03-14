@@ -436,7 +436,7 @@ export default {
         this.specializationsLoading = false;
       });
     },
-    apiGetSpecialities(id) {
+    apiGetSpecialities() {
       this.specialitiesLoading = true;
       // api.show(API.SPECIALITIES, id).then(({data}) => {
       //   this.specialities = data.data
