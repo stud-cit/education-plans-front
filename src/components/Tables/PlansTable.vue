@@ -30,6 +30,7 @@
             hide-details
             label="Тип"
             clearable
+            class="mx-4"
           ></v-select>
         </v-col>
         <v-col align-self="center">
@@ -120,9 +121,7 @@
     </template>
 
     <template v-slot:item.parent_id="{ item }">
-      <span class="text-no-wrap">
-        <PublishedBadge :published="item.published" /> {{ item.parent_id }}
-      </span>
+      <span class="text-no-wrap"> <PublishedBadge :published="item.published" /> {{ item.parent_id }} </span>
     </template>
 
     <template v-slot:item.actions="{ item }">
@@ -191,7 +190,7 @@ export default {
       verificationsDivisionsStatus: [],
       planId: null,
       planOrTemplate: null,
-      planTypes: []
+      planTypes: [],
     };
   },
   components: {
@@ -301,7 +300,7 @@ export default {
       }
 
       return values;
-    }
+    },
   },
 };
 </script>
