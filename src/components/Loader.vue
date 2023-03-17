@@ -49,7 +49,7 @@ export default {
 <style scoped>
 .loader {
   position: fixed;
-  top: 85px;
+  top: 0;
   bottom: 0;
   left: 0;
   right: 0;
@@ -61,6 +61,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 svg {
   width: 100px;
