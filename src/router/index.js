@@ -1,44 +1,14 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import store from '@/store';
+import { ROLES } from '@/utils/constants';
+
 import Plans from '../views/pages/Plans.vue';
 import Layout from '../views/Layout';
 import CreatePlan from '@/views/pages/plan/CreatePlan';
-import Settings from '@/views/pages/settings/Settings';
-import RestrictionEditor from '@/views/pages/settings/RestrictionEditor';
-import RestrictCreate from '@/views/pages/settings/RestrictionEditor/create';
-import StudyTerm from '@/views/pages/settings/StudyTerm';
-import FormStudy from '@/views/pages/settings/FormStudy';
-import FormOrganization from '@/views/pages/settings/FormOrganization';
-import SettingUsers from '@/views/pages/settings/Users/Users';
 import SelectiveDisciplines from '@/views/pages/SelectiveDisciplines/SelectiveDisciplines';
-import Position from '@/views/pages/settings/Position';
-import Note from '@/views/pages/settings/Note';
-import ListCycle from '@/views/pages/settings/ListCycle';
-import NotFoundPage from '@/views/NotFoundPage';
-import Forbidden from '@/views/Forbidden';
-import Unauthorized from '@/views/Unauthorized';
-import PreviewPlan from '@/views/pages/plan/PreviewPlan';
-import Login from '@/views/pages/LoginLayout';
-import Err from '@/views/Err';
-import Logs from '@/views/pages/settings/Logs';
-import SubjectLanguage from '@/views/pages/settings/SubjectLanguage';
-import CatalogGroup from '@/views/pages/settings/CatalogGroup';
-import EducationLevel from '@/views/pages/settings/EducationLevel';
-import { ROLES } from '@/utils/constants';
-import CatalogHelpers from '@/views/pages/settings/Helpers/SubjectHelpers';
-import SelectiveDisciplinesCatalog from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog';
-import CatalogSpecialties from '@/views/pages/SelectiveDisciplines/CatalogSpecialties';
-import CatalogEducationPrograms from '@/views/pages/SelectiveDisciplines/CatalogEducationPrograms';
-import CatalogEducationProgram from '@/views/pages/SelectiveDisciplines/CatalogEducationPrograms/catalog';
-import CatalogSpecialty from '@/views/pages/SelectiveDisciplines/CatalogSpecialties/catalog';
-import MaintenanceMode from '@/views/MaintenanceMode';
-import CatalogEducationProgramPDF from '@/views/pages/plan/CatalogEducationProgramPDF';
-import CatalogSpecialityPDF from '@/views/pages/plan/CatalogSpecialityPDF';
-import HandbookUpload from "@/views/pages/settings/Helpers/Handbook";
 
 const allRoles = () => Object.values(ROLES.ID);
-// const allRolesExcept = (...exceptRoles) => Object.values(ROLES.ID).filter(role => exceptRoles.indexOf(role) === -1);
 
 Vue.use(VueRouter);
 const BREADCRUMBS = {
@@ -50,16 +20,10 @@ const BREADCRUMBS = {
 
 const routes = [
   {
-    path: '/login',
-    name: 'Login',
-    meta: { guest: true },
-    component: Login,
-  },
-  {
     path: '/err',
     name: 'err',
     meta: { guest: true },
-    component: Err,
+    component: () => import(/* webpackChunkName: "error" */ '@/views/Err'),
   },
   {
     path: '/',
@@ -90,7 +54,11 @@ const routes = [
       {
         path: 'selective-disciplines-catalog',
         name: 'SelectiveDisciplinesCatalog',
-        component: SelectiveDisciplinesCatalog,
+        component: () =>
+          import(
+            /* webpackChunkName: "selective-disciplines-catalog" */
+            '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog'
+          ),
         meta: {
           requiresAuth: true,
           accessIsAllowed: allRoles(),
@@ -111,7 +79,11 @@ const routes = [
           {
             path: '',
             name: 'CatalogSpecialties',
-            component: CatalogSpecialties,
+            component: () =>
+              import(
+                /* webpackChunkName: "catalog-specialties"*/
+                '@/views/pages/SelectiveDisciplines/CatalogSpecialties'
+              ),
             meta: {
               requiresAuth: true,
               accessIsAllowed: allRoles(),
@@ -128,7 +100,11 @@ const routes = [
           {
             path: ':id',
             name: 'CatalogSpecialty',
-            component: CatalogSpecialty,
+            component: () =>
+              import(
+                /* webpackChunkName: "catalog-specialty" */
+                '@/views/pages/SelectiveDisciplines/CatalogSpecialties/catalog'
+              ),
             meta: {
               requiresAuth: true,
               header: 'Каталог',
@@ -155,7 +131,11 @@ const routes = [
           {
             path: '',
             name: 'CatalogEducationPrograms',
-            component: CatalogEducationPrograms,
+            component: () =>
+              import(
+                /* webpackChunkName: "catalog-education-programs" */
+                '@/views/pages/SelectiveDisciplines/CatalogEducationPrograms'
+              ),
             meta: {
               requiresAuth: true,
               accessIsAllowed: allRoles(),
@@ -172,7 +152,11 @@ const routes = [
           {
             path: ':id',
             name: 'CatalogEducationProgram',
-            component: CatalogEducationProgram,
+            component: () =>
+              import(
+                /* webpackChunkName: "catalog-education-program-id" */
+                '@/views/pages/SelectiveDisciplines/CatalogEducationPrograms/catalog'
+              ),
             meta: {
               requiresAuth: true,
               header: 'Каталог',
@@ -194,11 +178,6 @@ const routes = [
       },
     ],
   },
-  // {
-  //   path: '/plan/pdf/education-program/:id',
-  //   component: Layout,
-  //   children: []
-  // },
   {
     path: '/plan/pdf',
     component: Layout,
@@ -206,7 +185,8 @@ const routes = [
       {
         path: 'speciality/:id',
         name: 'PlanCatalogSpecialityPdf',
-        component: CatalogSpecialityPDF,
+        component: () =>
+          import(/* webpackChunkName: "catalog-speciality-pdf" */ '@/views/pages/plan/CatalogSpecialityPDF'),
         meta: {
           requiresAuth: true,
           accessIsAllowed: [
@@ -218,21 +198,13 @@ const routes = [
             ROLES.ID.educational_department_chief,
           ],
           header: 'PDF Спеціальності',
-          // breadCrumb: [
-          //   {
-          //     text: 'Робота з планами',
-          //     to: { name: 'ListPlans' },
-          //   },
-          //   {
-          //     text: 'Створення нового плану',
-          //   },
-          // ],
         },
       },
       {
         path: 'education-program/:id',
         name: 'PlanCatalogEducationProgramPdf',
-        component: CatalogEducationProgramPDF,
+        component: () =>
+          import(/* webpackChunkName: "catalog-edu-program-pdf" */ '@/views/pages/plan/CatalogEducationProgramPDF'),
         meta: {
           requiresAuth: true,
           accessIsAllowed: [
@@ -243,16 +215,7 @@ const routes = [
             ROLES.ID.educational_department_deputy,
             ROLES.ID.educational_department_chief,
           ],
-          header: 'PDF Освітної програми',
-          // breadCrumb: [
-          //   {
-          //     text: 'Робота з планами',
-          //     to: { name: 'ListPlans' },
-          //   },
-          //   {
-          //     text: 'Створення нового плану',
-          //   },
-          // ],
+          header: 'PDF Освітньої програми',
         },
       },
     ],
@@ -304,7 +267,7 @@ const routes = [
       {
         path: 'preview/:id/:title',
         name: 'PreviewPlan',
-        component: PreviewPlan,
+        component: () => import(/* webpackChunkName: "preview-plan" */ '@/views/pages/plan/PreviewPlan'),
         meta: {
           requiresAuth: true,
           accessIsAllowed: allRoles(),
@@ -328,7 +291,7 @@ const routes = [
       {
         path: '',
         name: 'Settings',
-        component: Settings,
+        component: () => import(/* webpackChunkName: "settings" */ '@/views/pages/settings/Settings'),
         meta: {
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root, ROLES.ID.faculty_institute],
           header: 'Налаштування',
@@ -338,7 +301,7 @@ const routes = [
       {
         path: 'users',
         name: 'SettingUsers',
-        component: SettingUsers,
+        component: () => import(/* webpackChunkName: "setting-users" */ '@/views/pages/settings/Users/Users'),
         meta: {
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root, ROLES.ID.faculty_institute],
@@ -349,7 +312,7 @@ const routes = [
       {
         path: 'form-study',
         name: 'FormStudy',
-        component: FormStudy,
+        component: () => import(/* webpackChunkName: "form-study" */ '@/views/pages/settings/FormStudy'),
         meta: {
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
@@ -360,7 +323,11 @@ const routes = [
       {
         path: 'form-organizations',
         name: 'FormOrganization',
-        component: FormOrganization,
+        component: () =>
+          import(
+            /* webpackChunkName: "form-organizations" */
+            '@/views/pages/settings/FormOrganization'
+          ),
         meta: {
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
@@ -375,7 +342,11 @@ const routes = [
           {
             path: '',
             name: 'RestrictionEditor',
-            component: RestrictionEditor,
+            component: () =>
+              import(
+                /* webpackChunkName: "restriction-editor" */
+                '@/views/pages/settings/RestrictionEditor'
+              ),
             meta: {
               requiresAuth: true,
               accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
@@ -386,7 +357,8 @@ const routes = [
           {
             path: 'create',
             name: 'RestrictCreate',
-            component: RestrictCreate,
+            component: () =>
+              import(/* webpackChunkName: "restrict-create" */ '@/views/pages/settings/RestrictionEditor/create'),
             meta: {
               requiresAuth: true,
               accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
@@ -407,7 +379,7 @@ const routes = [
       {
         path: 'study-term',
         name: 'StudyTerm',
-        component: StudyTerm,
+        component: () => import(/* webpackChunkName: "study-term" */ '@/views/pages/settings/StudyTerm'),
         meta: {
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
@@ -418,7 +390,7 @@ const routes = [
       {
         path: 'subject-languages',
         name: 'SubjectLanguage',
-        component: SubjectLanguage,
+        component: () => import(/* webpackChunkName: "subject-language" */ '@/views/pages/settings/SubjectLanguage'),
         meta: {
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
@@ -429,7 +401,7 @@ const routes = [
       {
         path: 'catalog-groups',
         name: 'CatalogGroup',
-        component: CatalogGroup,
+        component: () => import(/* webpackChunkName: "catalog-group" */ '@/views/pages/settings/CatalogGroup'),
         meta: {
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
@@ -440,7 +412,7 @@ const routes = [
       {
         path: 'education-level',
         name: 'EducationLevel',
-        component: EducationLevel,
+        component: () => import(/* webpackChunkName: "education-level" */ '@/views/pages/settings/EducationLevel'),
         meta: {
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
@@ -451,7 +423,7 @@ const routes = [
       {
         path: 'position',
         name: 'Position',
-        component: Position,
+        component: () => import(/* webpackChunkName: "position" */ '@/views/pages/settings/Position'),
         meta: {
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
@@ -462,7 +434,7 @@ const routes = [
       {
         path: 'notes',
         name: 'Note',
-        component: Note,
+        component: () => import(/* webpackChunkName: "note" */ '@/views/pages/settings/Note'),
         meta: {
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
@@ -473,7 +445,7 @@ const routes = [
       {
         path: 'list-cycles',
         name: 'ListCycle',
-        component: ListCycle,
+        component: () => import(/* webpackChunkName: "list-cycle" */ '@/views/pages/settings/ListCycle'),
         meta: {
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
@@ -484,7 +456,8 @@ const routes = [
       {
         path: 'catalog-helpers',
         name: 'CatalogHelpers',
-        component: CatalogHelpers,
+        component: () =>
+          import(/* webpackChunkName: "catalog-helpers"*/ '@/views/pages/settings/Helpers/SubjectHelpers'),
         meta: {
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
@@ -495,7 +468,7 @@ const routes = [
       {
         path: 'logs',
         name: 'Logs',
-        component: Logs,
+        component: () => import(/* webpackChunkName:  "logs" */ '@/views/pages/settings/Logs'),
         meta: {
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
@@ -506,7 +479,7 @@ const routes = [
       {
         path: 'handbook',
         name: 'HandbookUpload',
-        component: HandbookUpload,
+        component: () => import(/* webpackChunkName: "handbook" */ '@/views/pages/settings/Helpers/Handbook'),
         meta: {
           requiresAuth: true,
           accessIsAllowed: allRoles(),
@@ -522,25 +495,25 @@ const routes = [
   {
     path: '*',
     name: 'NotFoundPage',
-    component: NotFoundPage,
+    component: () => import(/* webpackChunkName: "not-found" */ '@/views/NotFoundPage'),
     meta: { guest: true },
   },
   {
     path: '/503',
     name: 'MaintenanceMode',
-    component: MaintenanceMode,
+    component: () => import(/* webpackChunkName: "maintenance-mode"*/ '@/views/MaintenanceMode'),
     meta: { guest: true },
   },
   {
     path: '/403',
     name: 'Forbidden',
-    component: Forbidden,
+    component: () => import(/* webpackChunkName: "forbidden" */ '@/views/Forbidden'),
     meta: { guest: true },
   },
   {
     path: '/401',
     name: 'Unauthorized',
-    component: Unauthorized,
+    component: () => import(/* webpackChunkName: "unauthorized" */ '@/views/Unauthorized'),
     meta: { guest: true },
   },
 ];
