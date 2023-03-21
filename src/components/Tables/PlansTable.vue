@@ -242,6 +242,7 @@ export default {
       this.$emit('update', this.options);
     },
     search() {
+      this.resetPage();
       this.options = this.filterSort(this.options);
     },
     resetPage() {
