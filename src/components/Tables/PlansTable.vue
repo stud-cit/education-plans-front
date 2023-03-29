@@ -242,7 +242,6 @@ export default {
       this.$emit('update', this.options);
     },
     search() {
-      this.resetPage();
       this.options = this.filterSort(this.options);
     },
     resetPage() {
@@ -287,6 +286,7 @@ export default {
       });
     },
     filterSort(values) {
+      values.page = 1;
       values.searchTitle = this.searchTitle;
       values.planId = this.planId;
       values.planOrTemplate = this.planOrTemplate;
