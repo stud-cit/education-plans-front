@@ -76,6 +76,10 @@
         <v-list-item>
           <v-btn class="mt-4 mx-auto" color="primary" :to="{ name: 'HandbookUpload' }"> Детальніше </v-btn>
         </v-list-item>
+
+        <v-list-item v-if="feedbackUrl">
+          <v-btn class="mt-4 mx-auto" color="warning" :href="feedbackUrl" target="_blank"> Зворотній зв'язок </v-btn>
+        </v-list-item>
       </v-list>
 
     </v-navigation-drawer>
@@ -90,6 +94,7 @@ export default {
   name: 'Helper',
   data: () => ({
     states: null,
+    feedbackUrl: process.env.VUE_APP_FEEDBACK,
     icons: [
       {
         icons: [
