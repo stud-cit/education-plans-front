@@ -286,7 +286,6 @@ export default {
       });
     },
     filterSort(values) {
-      values.page = 1;
       values.searchTitle = this.searchTitle;
       values.planId = this.planId;
       values.planOrTemplate = this.planOrTemplate;
