@@ -210,9 +210,6 @@ export default {
     ...mapGetters({
       user: 'auth/user',
     }),
-    loading() {
-      return this.$store.state.plans.loading;
-    },
     options: {
       get: function () {
         return this.$store.state.plans.options;
@@ -242,7 +239,7 @@ export default {
       this.$emit('update', this.options);
     },
     search() {
-      this.options = this.filterSort(this.options);
+      this.$store.dispatch('plans/setOptions', this.filterSort({...this.options, page : 1}));
     },
     resetPage() {
       if (this.options.page == 1) {
@@ -265,8 +262,8 @@ export default {
       this.options.faculty = null;
       this.options.department = null;
       this.division = this.options.divisionWithStatus = null;
-      this.planId = null;
-      this.planOrTemplate = null;
+      this.planId = this.options.planId = null;
+      this.planOrTemplate = this.options.planOrTemplate = null;
       this.resetPage();
     },
     apiGetDivisions() {
