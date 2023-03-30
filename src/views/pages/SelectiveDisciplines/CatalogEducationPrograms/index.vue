@@ -104,7 +104,7 @@
             :to="{ name: 'CatalogEducationProgram', params: { id: item.id } }"
             target="_blank"
           >
-            <v-icon small class="mr-2" color="primary">mdi-eye</v-icon>
+            <v-icon small class="mr-2" color="primary">mdi-pencil</v-icon>
           </router-link>
         </btn-tooltip>
         <btn-tooltip tooltip="Скопіювати">
