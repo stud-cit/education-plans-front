@@ -49,6 +49,13 @@
                   value="number"
                 ></v-autocomplete>
               </v-col>
+              <v-col cols="12" class="py-0">
+                <v-text-field
+                  type="text"
+                  label="Виноска"
+                  v-model.number="subjectForm.note"
+                ></v-text-field>
+              </v-col>
               <v-col cols="6" class="py-0">
                 <v-text-field
                   type="number"
@@ -420,6 +427,7 @@ export default {
         verification: 1,
         faculty_id: null,
         department_id: null,
+        note: ""
       },
       moduleNumber: null,
       activMod: null,

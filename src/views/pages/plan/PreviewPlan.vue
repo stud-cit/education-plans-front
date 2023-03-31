@@ -496,7 +496,12 @@
             </td>
             <td v-for="td in fullColspanPlan - 13" :key="td"></td>
           </tr>
-
+          <tr v-for="(item, index) in plan.subject_notes" :key="index">
+            <td colspan="11" class="text-left">
+              {{ index + 1 }}. {{ item.note }}
+            </td>
+            <td v-for="td in fullColspanPlan - 13" :key="td"></td>
+          </tr>
           <tr v-for="tr in 2" :key="'tr_1_' + tr"></tr>
 
           <template v-for="signature in plan.signatures">
