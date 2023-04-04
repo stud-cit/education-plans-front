@@ -130,6 +130,10 @@
             <v-alert dense outlined type="error" class="mb-2" v-if="cycleForm.has_discipline && !checkCountHoursModules">
               Кількість розподілених годин має відповідати сумі годин лекцій, практичних, лабораторних.
             </v-alert>
+
+            <v-alert dense outlined type="error" class="mb-2" v-if="!checkHasCreditsSemester">
+              В дисципліні повинні бути вказані кредити хоча б в одному семестрі.
+            </v-alert>
             
             <v-alert
               dense
@@ -523,6 +527,9 @@ export default {
         }
       }
       return res;
+    },
+    checkHasCreditsSemester() {
+      return !!this.subjectForm.semesters_credits.find(item => item.credit != 0);
     },
     getErrorsSemesters() {
       let result = [];
