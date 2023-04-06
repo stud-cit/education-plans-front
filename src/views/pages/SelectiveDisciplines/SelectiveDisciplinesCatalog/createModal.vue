@@ -249,6 +249,9 @@
 
               <validation-provider v-slot="{ errors }" name="Обмеження щодо семестру вивчення" rules="required">
                 <v-radio-group v-model="restrictionsSemester" row :error-messages="errors">
+                  <template v-slot:label>
+                    <div class="label">Обмеження щодо семестру вивчення:</div>
+                  </template>
                   <v-radio
                     v-for="radio in radioRestrictionsSemester"
                     :key="radio.id"

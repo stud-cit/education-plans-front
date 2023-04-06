@@ -15,6 +15,9 @@ body {
 a {
   text-decoration: none;
 }
+.v-input--radio-group__input .label {
+  font-size: 16px;
+}
 @media print {
   /*@page {size: A4 landscape}*/
   .print {
