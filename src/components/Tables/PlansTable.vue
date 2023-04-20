@@ -124,6 +124,17 @@
       <span class="text-no-wrap"> <PublishedBadge :published="item.published" /> {{ item.parent_id }} </span>
     </template>
 
+    <template v-slot:item.title="{ item }">
+      <v-tooltip top color="primary">
+        <template v-slot:activator="{ on, attrs }">
+          <div v-bind="attrs" v-on="on">
+            {{ item.title }}
+          </div>
+        </template>
+        <span>Автор: {{ item.author }}</span>
+      </v-tooltip>
+    </template>
+
     <template v-slot:item.actions="{ item }">
       <btn-tooltip tooltip="Перегляд">
         <router-link
