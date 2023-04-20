@@ -113,3 +113,7 @@ export const updateSignature = (context, payload) => {
 export const setSubmitLoading = (context, payload) => {
   context.commit('SET_SUBMIT_LOADING', payload);
 };
+
+export const setValue = (context, payload) => {
+  context.commit('SET_VALUE', payload);
+};

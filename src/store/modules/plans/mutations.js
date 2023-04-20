@@ -72,3 +72,8 @@ export const UPDATE_SIGNATURE = (state, payload) => {
     return item;
   });
 };
+
+
+export const SET_VALUE = (state, payload) => {
+  state.plan = {...state.plan, ...payload };
+};

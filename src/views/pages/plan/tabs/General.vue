@@ -395,14 +395,14 @@ export default {
     },
     'plan.field_knowledge_id'(v, old) {
       if (old !== null && v !== old) {
-        this.plan.speciality_id = null;
+        this.$store.dispatch('plans/setValue', {speciality_id: null})
       }
       v !== null ? this.apiGetSpecialities(v) : (this.specialities = []);
     },
     'plan.speciality_id'(v, old) {
-      if (old !== null && v === old) {
-        this.plan.specialization_id = null;
-        this.plan.education_program_id = null;
+      if (old !== null && v !== old) {
+        this.$store.dispatch('plans/setValue', {specialization_id: null})
+        this.$store.dispatch('plans/setValue', {education_program_id: null})
       }
       v !== null ? this.apiGetSpecializations(v) : (this.specializations = []);
       v !== null ? this.apiGetEducationPrograms(v) : (this.educationalPrograms = []);
