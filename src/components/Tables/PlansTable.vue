@@ -25,7 +25,7 @@
             v-model="planOrTemplate"
             :items="planTypes"
             item-text="title"
-            item-value="value"
+            item-value="id"
             select
             hide-details
             label="Тип"
@@ -120,8 +120,8 @@
       </v-tooltip>
     </template>
 
-    <template v-slot:item.parent_id="{ item }">
-      <span class="text-no-wrap"> <PublishedBadge :published="item.published" /> {{ item.parent_id }} </span>
+    <template v-slot:item.type_id="{ item }">
+      <span class="text-no-wrap"> <PublishedBadge :published="item.published" /> {{ item.type_id }} </span>
     </template>
 
     <template v-slot:item.title="{ item }">
@@ -182,7 +182,7 @@ export default {
       searchTitle: '',
       headers: [
         { text: '№', value: 'index', sortable: false },
-        { text: 'Тип', value: 'parent_id', sortable: true },
+        { text: 'Тип', value: 'type_id', sortable: true },
         { text: 'Назва', value: 'title' },
         { text: 'Факультет', value: 'faculty', sortable: false },
         { text: 'Кафедра', value: 'department', sortable: false },
