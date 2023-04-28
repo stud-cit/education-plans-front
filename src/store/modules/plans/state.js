@@ -16,7 +16,8 @@ const planDefault = {
   published: false,
   verification: [],
   submitLoader: false,
-  signatures: []
+  signatures: [],
+  shorted_by_year: [],
 }
 
 export default {

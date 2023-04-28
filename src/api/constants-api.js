@@ -29,6 +29,7 @@ export const API = {
   PLAN_VERIFICATION: version + '/plans/verification',
   PLAN_VERIFICATION_OP: version + '/plans/verification-op',
   PLAN_FILTERS: version + '/plans/filters',
+  PLAN_GENERATE_SHORTED_BY_YEAR: version + '/plans/short-plan',
   VERIFICATIONS: version + '/verifications',
   VERIFICATION_SUBJECT_STATUSES: version + '/verification-subject-statuses',
   VERIFICATION_CATALOG_SPECIALITY_STATUSES: version + '/verification-catalog-speciality-statuses',

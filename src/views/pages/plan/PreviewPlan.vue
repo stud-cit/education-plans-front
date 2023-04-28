@@ -1,5 +1,11 @@
 <template>
   <v-container class="preview-plan" v-if="plan">
+    <ShortedByYearBtns
+      class="no-print d-print-none"
+      :items="plan.shorted_by_year"
+      :plan-id="plan.id"
+    />
+
     <div class="no-print mb-10 d-flex flex-wrap justify-end d-print-none">
       <v-btn
         v-if="plan.speciality_id"
@@ -559,6 +565,7 @@ import * as XLSX from 'xlsx/xlsx.mjs';
 import ScheduleEducationalProcessWeeks from '@c/Tables/PreviewTablePlan/ScheduleEducationalProcess/ScheduleEducationalProcessWeeks';
 import ScheduleEducationalProcessMonth from '@c/Tables/PreviewTablePlan/ScheduleEducationalProcess/ScheduleEducationalProcessMonth';
 import ScheduleEducationalProcess from '@/mixins/GenerateTable/ScheduleEducationalProcess';
+import ShortedByYearBtns from "@c/base/ShortedByYearBtns";
 
 export default {
   name: 'PreviewPlan',
@@ -567,6 +574,7 @@ export default {
     ScheduleEducationalProcessWeeks,
     ModularCyclicHeaderTable,
     SemesterHeaderTable,
+    ShortedByYearBtns,
   },
   data() {
     return {

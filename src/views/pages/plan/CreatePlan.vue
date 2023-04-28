@@ -51,6 +51,12 @@
       </validation-observer>
     </v-dialog>
 
+    <ShortedByYearBtns
+      v-if="$route.name === 'EditPlan'"
+      :items="plan.shorted_by_year"
+      :plan-id="plan.id"
+    />
+
     <div class="text-right d-flex" v-if="$route.name === 'EditPlan' && plan">
       <v-btn
         small
@@ -163,10 +169,12 @@ import Cycles from '@/views/pages/plan/tabs/Cycles';
 import Signatures from '@/views/pages/plan/tabs/Signatures';
 import api from '@/api';
 import { API } from '@/api/constants-api';
+import ShortedByYearBtns from "@c/base/ShortedByYearBtns";
 
 export default {
   name: 'CreatePlan',
   components: {
+    ShortedByYearBtns,
     General,
     Title,
     Cycles,
