@@ -79,7 +79,7 @@
         depressed
         color="primary"
         class="ml-2"
-        v-show="[2, 3, 4, 5].indexOf(authUser.role_id) != -1"
+        v-show="[2, 3, 4, 5, 6].indexOf(authUser.role_id) != -1"
         @click="verification({ verification_status_id: authUser.role_id, status: true })"
       >
         Верифікувати
@@ -89,7 +89,7 @@
         depressed
         color="error"
         class="ml-2"
-        v-show="[2, 3, 4, 5].indexOf(authUser.role_id) != -1"
+        v-show="[2, 3, 4, 5, 6].indexOf(authUser.role_id) != -1"
         @click="verification({ verification_status_id: authUser.role_id, status: false })"
       >
         Відхилити верифікацію
