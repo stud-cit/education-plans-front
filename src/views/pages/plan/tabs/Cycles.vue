@@ -316,13 +316,13 @@
       outlined
       type="error"
       class="mb-2"
-      v-for="(error, errorIndex) in errorsPlan"
+      v-for="(error, errorIndex) in plan.errors"
       :key="'error' + errorIndex"
     >
       {{ error }}
     </v-alert>
 
-    <v-alert dense outlined type="error" class="mb-2" v-if="getErrorsSemesters">
+    <!-- <v-alert dense outlined type="error" class="mb-2" v-if="getErrorsSemesters">
       Перевищена кількість кредитів у {{ getErrorsSemesters }} семестрі.
     </v-alert>
 
@@ -336,7 +336,7 @@
 
     <v-alert dense outlined type="error" class="mb-2" v-if="getErrorsCourseWorks">
       Перевищена кількість курсових робіт у {{ getErrorsCourseWorks }} семестрі.
-    </v-alert>
+    </v-alert> -->
 
     <v-alert
       dense
