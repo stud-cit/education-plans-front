@@ -286,7 +286,7 @@
             </tr>
             <tr v-if="cycle.asu_id || cycle.selective_discipline_id" :key="'subject_' + index">
               <td class="border-table">{{ cycle.index }}</td>
-              <td class="border-table">{{ cycle.asu_id ? cycle.title : cycle.selective_discipline.title }}</td>
+              <td class="border-table">{{ cycle.asu_id ? cycle.title : cycle.selective_discipline.title }}<sup v-if="cycle.note">{{ plan.subject_notes.indexOf(plan.subject_notes.find(item => item.id == cycle.id)) + 1 }}</sup></td>
               <td class="border-table">{{ cycle.exams }}</td>
               <!--Екзамени-->
               <td class="border-table">{{ cycle.test }}</td>
@@ -570,6 +570,7 @@ export default {
   },
   data() {
     return {
+      hasNote: 0,
       statusPlanSuccess: VERIFICATION_STATUS.success,
       byCreatedPDF: process.env.VUE_APP_BY_CREATED_PDF,
       cycles: [],
@@ -621,6 +622,12 @@ export default {
   },
   mixins: [ScheduleEducationalProcess],
   methods: {
+    getNoteNumber(note) {
+      if(note) {
+        this.hasNote += 1;
+        return this.hasNote;
+      }
+    },
     apiPreviewPlan() {
       const id = this.$route.params.id;
       if (id) {
