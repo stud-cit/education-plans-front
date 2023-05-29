@@ -50,12 +50,11 @@
         </form>
       </validation-observer>
     </v-dialog>
-
     <div class="text-right d-flex" v-if="$route.name === 'EditPlan' && plan">
       <v-btn
         small
         depressed
-        :disabled="plan.status == 'success'"
+        :disabled="plan.status == 'success' || !!plan.errors.length || !!errorsPlan.length || !plan.status_op"
         :color="plan.need_verification == 1 ? '' : 'success'"
         @click="sendToVerification()"
       >
@@ -174,6 +173,7 @@ export default {
   },
   data() {
     return {
+      // tab: this.$route.name == 'EditPlan' ? 1 : 0,
       tab: 0,
       verifications: [],
       programsLoading: false,
@@ -204,6 +204,7 @@ export default {
     },
     ...mapGetters({
       plan: 'plans/plan',
+      errorsPlan: 'plans/errorsPlan',
     }),
   },
   mounted() {

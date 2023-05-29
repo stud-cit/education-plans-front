@@ -16,8 +16,10 @@ const planDefault = {
   published: false,
   verification: [],
   submitLoader: false,
-  signatures: []
-}
+  signatures: [],
+  errors: [],
+  status_op: 0,
+};
 
 export default {
   plan: planDefault,
@@ -25,10 +27,10 @@ export default {
   indexComponent: 1,
   plans: {
     items: [],
-    meta: {}
+    meta: {},
   },
   options: {},
   loading: true,
   submitLoading: false,
-  default: planDefault
-}
+  default: planDefault,
+};
