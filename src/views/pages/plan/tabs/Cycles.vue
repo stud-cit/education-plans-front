@@ -733,8 +733,6 @@ export default {
       this.subjectForm.hours_modules = newHoursModules;
       this.subjectForm.semesters_credits = newSemestersCredits;
       this.subjectDialog = true;
-
-      console.log('ed', this.subjectForm);
     },
     delSubject(item) {
       this.$swal
