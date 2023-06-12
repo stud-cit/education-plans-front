@@ -50,17 +50,71 @@
         </form>
       </validation-observer>
     </v-dialog>
-    <div class="text-right d-flex" v-if="$route.name === 'EditPlan' && plan">
+
+    <!-- Send to verification with comment -->
+    <template>
+      <v-row justify="center">
+        <v-dialog v-model="notConventionalDialog.dialog" persistent max-width="600px">
+          <validation-observer ref="observer" v-slot="{ invalid }">
+            <v-card>
+              <v-card-title>
+                <span class="text-h5">Надрукуйте причину</span>
+              </v-card-title>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12">
+                      <validation-provider v-slot="{ errors }" name="Коментар" rules="required|max:400">
+                        <v-textarea
+                          type="text"
+                          v-model="notConventionalDialog.comment"
+                          solo
+                          name="input-7-4"
+                          :error-messages="errors"
+                        ></v-textarea>
+                      </validation-provider>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="dialogClose()"> Закрити </v-btn>
+                <v-btn color="blue darken-1" text :disabled="invalid" @click="sendNotConventionalPlan()">
+                  Відправити на верифікацію
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </validation-observer>
+        </v-dialog>
+      </v-row>
+    </template>
+
+    <template v-if="plan">
+      <v-alert outlined dense disable name="info" type="info" v-if="plan.comment && plan.not_conventional">
+        {{ plan.comment }}</v-alert
+      >
+    </template>
+    <div class="d-flex align-center flex-wrap gap-1" v-if="$route.name === 'EditPlan' && plan">
       <v-btn
         small
         depressed
-        :disabled="plan.status == 'success' || !!plan.errors.length || !!errorsPlan.length || !plan.status_op"
-        :color="plan.need_verification == 1 ? '' : 'success'"
-        @click="sendToVerification()"
+        :disabled="disableBtnSendToVerification"
+        :color="plan.need_verification === true ? '' : 'success'"
+        @click="actionToVerification()"
       >
-        {{ plan.need_verification == 1 ? 'На верифікації' : 'Відправити на верифікацію' }}
+        {{ plan.need_verification === true ? 'На верифікації' : 'Відправити на верифікацію' }}
       </v-btn>
+
+      <v-checkbox
+        class="custom-space"
+        v-model="plan.not_conventional"
+        :disabled="hasErrors"
+        label="План з особливостями"
+      ></v-checkbox>
+
       <v-spacer></v-spacer>
+
       <v-btn
         small
         depressed
@@ -70,7 +124,7 @@
       >
         Переглянути
       </v-btn>
-      <v-btn small depressed color="primary" class="ml-2" @click="openProgramDialog()">
+      <v-btn small depressed color="primary" :disabled="!!plan.status_op" class="ml-2" @click="openProgramDialog()">
         Верифікувати з освітньою програмою
       </v-btn>
       <v-btn
@@ -173,7 +227,6 @@ export default {
   },
   data() {
     return {
-      // tab: this.$route.name == 'EditPlan' ? 1 : 0,
       tab: 0,
       verifications: [],
       programsLoading: false,
@@ -184,9 +237,35 @@ export default {
         open: false,
         comment: '',
       },
+      notConventionalDialog: {
+        dialog: false,
+        comment: '',
+      },
     };
   },
   computed: {
+    hasErrors() {
+      if (this.plan.comment.length > 0) {
+        return true;
+      } else if (this.plan.errors.length > 0 || this.errorsPlan.length > 0) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    disableBtnSendToVerification() {
+      if (this.plan.not_conventional && !this.plan.comment) {
+        return false;
+      } else {
+        return (
+          this.plan.status == 'success' ||
+          !!this.plan.errors.length ||
+          !!this.errorsPlan.length ||
+          !this.plan.status_op ||
+          this.plan.need_verification === true
+        );
+      }
+    },
     checkVerification() {
       return this.verifications.map((element) => {
         let isStatus = this.plan.verification.find((i) => element.id == i.verification_status_id);
@@ -212,10 +291,38 @@ export default {
   },
 
   methods: {
+    actionToVerification() {
+      if (this.plan.not_conventional === false) {
+        this.sendToVerification();
+      } else {
+        this.notConventionalDialog.dialog = true;
+      }
+    },
+
+    sendNotConventionalPlan() {
+      this.$refs.observer.validate().then((valid) => {
+        if (!valid) {
+          console.error(valid);
+        }
+        if (valid) {
+          this.$store.dispatch('plans/setComment', {
+            comment: this.notConventionalDialog.comment,
+          });
+
+          this.notConventionalDialog.dialog = false;
+          this.notConventionalDialog.comment = null;
+          this.sendToVerification();
+        }
+      });
+    },
+    dialogClose() {
+      this.notConventionalDialog.dialog = false;
+      this.notConventionalDialog.comment = null;
+    },
     sendToVerification() {
       const data = {
         ...this.plan,
-        need_verification: this.plan.need_verification == 1 ? false : true,
+        need_verification: this.plan.need_verification === true ? false : true,
         hours_weeks_semesters: JSON.stringify(this.plan.hours_weeks_semesters),
         schedule_education_process: JSON.stringify(this.plan.schedule_education_process),
         summary_data_budget_time: JSON.stringify(this.plan.summary_data_budget_time),
@@ -371,3 +478,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.gap-1 {
+  gap: 1rem;
+}
+</style>

@@ -19,6 +19,8 @@ const planDefault = {
   signatures: [],
   errors: [],
   status_op: 0,
+  comment: '',
+  not_conventional: false,
 };
 
 export default {
