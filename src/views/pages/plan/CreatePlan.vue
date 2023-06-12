@@ -254,7 +254,9 @@ export default {
       }
     },
     disableBtnSendToVerification() {
-      if (this.plan.not_conventional && !this.plan.comment) {
+      if (this.plan.not_conventional && this.plan.comment > 0) {
+        return true;
+      } else if (this.plan.not_conventional && !this.plan.comment) {
         return false;
       } else {
         return (
@@ -308,16 +310,14 @@ export default {
           this.$store.dispatch('plans/setComment', {
             comment: this.notConventionalDialog.comment,
           });
-
-          this.notConventionalDialog.dialog = false;
-          this.notConventionalDialog.comment = null;
           this.sendToVerification();
+          this.dialogClose();
         }
       });
     },
     dialogClose() {
       this.notConventionalDialog.dialog = false;
-      this.notConventionalDialog.comment = null;
+      this.notConventionalDialog.comment = '';
     },
     sendToVerification() {
       const data = {
