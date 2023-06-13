@@ -133,7 +133,7 @@
               Кількість розподілених годин має відповідати сумі годин лекцій, практичних, лабораторних.
             </v-alert>
 
-            <v-alert dense outlined type="error" class="mb-2" v-if="!checkHasCreditsSemester">
+            <v-alert dense outlined type="error" class="mb-2" v-if="cycleForm.has_discipline && !checkHasCreditsSemester">
               В дисципліні повинні бути вказані кредити хоча б в одному семестрі.
             </v-alert>
 
