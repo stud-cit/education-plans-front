@@ -42,7 +42,7 @@
       </v-btn>
     </div>
 
-    <div class="print">
+    <div :class="['print', statusPlanSuccess != plan.status ? 'no-verification' : '']">
       <div class="by-created-pdf" v-if="statusPlanSuccess === plan.status">
         {{ byCreatedPDF }}
       </div>
@@ -931,11 +931,22 @@ table tfoot tr {
 .table-plan thead {
   display: table-row-group;
 }
+.print {
+  position: relative;
+}
 </style>
 <style scoped>
 @media print {
   .by-created-pdf {
     display: block;
+  }
+  .print.no-verification:before {
+    bottom: 0px;
+    left: 10px;
+    content: 'План не верифіковано';
+    position: fixed;
+    opacity: 0.6;
+    font-size: 8pt;
   }
   @page {
     size: A4 landscape;
