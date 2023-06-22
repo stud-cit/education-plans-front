@@ -73,10 +73,7 @@ export const UPDATE_SIGNATURE = (state, payload) => {
   });
 };
 
-export const SET_VALUE = (state, payload) => {
-  state.plan = { ...state.plan, ...payload };
-};
 
-export const NOT_CONVENTIONAL = (state, payload) => {
-  state.plan.comment = payload.comment;
+export const SET_VALUE = (state, payload) => {
+  state.plan = {...state.plan, ...payload };
 };

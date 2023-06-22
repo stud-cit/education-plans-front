@@ -23,6 +23,12 @@ export const copy = (context, id) => {
   });
 };
 
+export const generateShortedByYear = (context, data) => {
+  api.patch(API.PLAN_GENERATE_SHORTED_BY_YEAR, data.id, {year: data.year}).then((response) => {
+    document.location.href = encodeURI('plan/edit/' + response.data.id + '/' + response.data.title);
+  });
+};
+
 export const store = (context, data) => {
   return api.post(API.PLANS, data).then((response) => {
     data.id = response.data.id;
@@ -116,8 +122,4 @@ export const setSubmitLoading = (context, payload) => {
 
 export const setValue = (context, payload) => {
   context.commit('SET_VALUE', payload);
-};
-
-export const setComment = (context, payload) => {
-  context.commit('NOT_CONVENTIONAL', payload);
 };

@@ -1,5 +1,11 @@
 <template>
   <v-container class="preview-plan" v-if="plan">
+    <ShortedByYearBtns
+      class="no-print d-print-none"
+      :items="plan.shorted_by_year"
+      :plan-id="plan.id"
+    />
+
     <div class="no-print mb-10 d-flex flex-wrap justify-end d-print-none">
       <v-btn
         v-if="plan.speciality_id"
@@ -42,7 +48,7 @@
       </v-btn>
     </div>
 
-    <div :class="['print', statusPlanSuccess != plan.status ? 'no-verification' : '']">
+    <div class="print">
       <div class="by-created-pdf" v-if="statusPlanSuccess === plan.status">
         {{ byCreatedPDF }}
       </div>
@@ -286,7 +292,7 @@
             </tr>
             <tr v-if="cycle.asu_id || cycle.selective_discipline_id" :key="'subject_' + index">
               <td class="border-table">{{ cycle.index }}</td>
-              <td class="border-table">{{ cycle.asu_id ? cycle.title : cycle.selective_discipline.title }}<sup v-if="cycle.note">{{ plan.subject_notes.indexOf(plan.subject_notes.find(item => item.id == cycle.id)) + 1 }}</sup></td>
+              <td class="border-table">{{ cycle.asu_id ? cycle.title : cycle.selective_discipline.title }}</td>
               <td class="border-table">{{ cycle.exams }}</td>
               <!--Екзамени-->
               <td class="border-table">{{ cycle.test }}</td>
@@ -559,6 +565,7 @@ import * as XLSX from 'xlsx/xlsx.mjs';
 import ScheduleEducationalProcessWeeks from '@c/Tables/PreviewTablePlan/ScheduleEducationalProcess/ScheduleEducationalProcessWeeks';
 import ScheduleEducationalProcessMonth from '@c/Tables/PreviewTablePlan/ScheduleEducationalProcess/ScheduleEducationalProcessMonth';
 import ScheduleEducationalProcess from '@/mixins/GenerateTable/ScheduleEducationalProcess';
+import ShortedByYearBtns from "@c/base/ShortedByYearBtns";
 
 export default {
   name: 'PreviewPlan',
@@ -567,10 +574,10 @@ export default {
     ScheduleEducationalProcessWeeks,
     ModularCyclicHeaderTable,
     SemesterHeaderTable,
+    ShortedByYearBtns,
   },
   data() {
     return {
-      hasNote: 0,
       statusPlanSuccess: VERIFICATION_STATUS.success,
       byCreatedPDF: process.env.VUE_APP_BY_CREATED_PDF,
       cycles: [],
@@ -622,12 +629,6 @@ export default {
   },
   mixins: [ScheduleEducationalProcess],
   methods: {
-    getNoteNumber(note) {
-      if(note) {
-        this.hasNote += 1;
-        return this.hasNote;
-      }
-    },
     apiPreviewPlan() {
       const id = this.$route.params.id;
       if (id) {
@@ -931,22 +932,11 @@ table tfoot tr {
 .table-plan thead {
   display: table-row-group;
 }
-.print {
-  position: relative;
-}
 </style>
 <style scoped>
 @media print {
   .by-created-pdf {
     display: block;
-  }
-  .print.no-verification:before {
-    bottom: 0px;
-    left: 10px;
-    content: 'План не верифіковано';
-    position: fixed;
-    opacity: 0.6;
-    font-size: 8pt;
   }
   @page {
     size: A4 landscape;

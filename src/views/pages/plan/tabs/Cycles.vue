@@ -50,7 +50,11 @@
                 ></v-autocomplete>
               </v-col>
               <v-col cols="12" class="py-0">
-                <v-text-field type="text" label="Виноска" v-model.number="subjectForm.note"></v-text-field>
+                <v-text-field
+                  type="text"
+                  label="Виноска"
+                  v-model.number="subjectForm.note"
+                ></v-text-field>
               </v-col>
               <v-col cols="6" class="py-0">
                 <v-text-field
@@ -123,20 +127,14 @@
               Не вірно розподілено аудиторне навантаження на дисципліну.
             </v-alert>
 
-            <v-alert
-              dense
-              outlined
-              type="error"
-              class="mb-2"
-              v-if="cycleForm.has_discipline && !checkCountHoursModules"
-            >
+            <v-alert dense outlined type="error" class="mb-2" v-if="cycleForm.has_discipline && !checkCountHoursModules">
               Кількість розподілених годин має відповідати сумі годин лекцій, практичних, лабораторних.
             </v-alert>
 
-            <v-alert dense outlined type="error" class="mb-2" v-if="cycleForm.has_discipline && !checkHasCreditsSemester">
+            <v-alert dense outlined type="error" class="mb-2" v-if="!checkHasCreditsSemester">
               В дисципліні повинні бути вказані кредити хоча б в одному семестрі.
             </v-alert>
-
+            
             <v-alert
               dense
               outlined
@@ -318,24 +316,13 @@
       outlined
       type="error"
       class="mb-2"
-      v-for="(error, errorIndex) in plan.errors"
-      :key="'error' + errorIndex"
-    >
-      {{ error }}
-    </v-alert>
-
-    <v-alert
-      dense
-      outlined
-      type="error"
-      class="mb-2"
       v-for="(error, errorIndex) in errorsPlan"
       :key="'error' + errorIndex"
     >
       {{ error }}
     </v-alert>
 
-    <!-- <v-alert dense outlined type="error" class="mb-2" v-if="getErrorsSemesters">
+    <v-alert dense outlined type="error" class="mb-2" v-if="getErrorsSemesters">
       Перевищена кількість кредитів у {{ getErrorsSemesters }} семестрі.
     </v-alert>
 
@@ -349,7 +336,7 @@
 
     <v-alert dense outlined type="error" class="mb-2" v-if="getErrorsCourseWorks">
       Перевищена кількість курсових робіт у {{ getErrorsCourseWorks }} семестрі.
-    </v-alert> -->
+    </v-alert>
 
     <v-alert
       dense
@@ -375,7 +362,10 @@
       @delCycle="delCycle"
     />
 
-    <div class="text-center mt-4" v-if="allowedRoles([ROLES.ID.admin, ROLES.ID.root])">
+    <div class="text-center mt-4" v-if="allowedRoles([
+      ROLES.ID.admin,
+      ROLES.ID.root
+    ])">
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon large v-bind="attrs" v-on="on" @click="addCycle({}, true)">
@@ -393,8 +383,8 @@ import api from '@/api';
 import { API } from '@/api/constants-api';
 import { eventBus } from '@/main';
 import { mapGetters } from 'vuex';
-import { ROLES } from '@/utils/constants';
-import RolesMixin from '@/mixins/RolesMixin';
+import { ROLES } from "@/utils/constants"
+import RolesMixin from "@/mixins/RolesMixin";
 export default {
   name: 'Cycles',
   components: {
@@ -441,7 +431,7 @@ export default {
         verification: 1,
         faculty_id: null,
         department_id: null,
-        note: '',
+        note: ""
       },
       moduleNumber: null,
       activMod: null,
@@ -485,7 +475,7 @@ export default {
     },
     checkCountHoursModules() {
       let sumHoursModules = 0;
-      const hours_modules_length = this.subjectForm.hours_modules.length;
+      const hours_modules_length = this.subjectForm.hours_modules.length
       let sumHours = +this.subjectForm.hours + +this.subjectForm.practices + +this.subjectForm.laboratories;
       if (hours_modules_length || hours_modules_length === this.plan.hours_weeks_semesters.length) {
         this.plan.hours_weeks_semesters.forEach((element, index) => {
@@ -539,7 +529,7 @@ export default {
       return res;
     },
     checkHasCreditsSemester() {
-      return !!this.subjectForm.semesters_credits.find((item) => item.credit != 0);
+      return !!this.subjectForm.semesters_credits.find(item => item.credit != 0);
     },
     getErrorsSemesters() {
       let result = [];
@@ -609,17 +599,10 @@ export default {
   },
   methods: {
     hasTaskInSemester() {
-      let hasTask = this.subjectForm.hours_modules.find(
-        (item) =>
-          item.semester == this.moduleNumber.semester && (item.form_control_id != 10 || item.individual_task_id != 3),
-      );
-      this.subjectForm.hours_modules.map((item) => {
-        if (
-          hasTask &&
-          item.semester == hasTask.semester &&
-          (hasTask.form_control_id != 10 || hasTask.individual_task_id != 3)
-        ) {
-          if (item.id != hasTask.id) {
+      let hasTask = this.subjectForm.hours_modules.find(item => item.semester == this.moduleNumber.semester && (item.form_control_id != 10 || item.individual_task_id != 3));
+      this.subjectForm.hours_modules.map(item => {
+        if(hasTask && item.semester == hasTask.semester && (hasTask.form_control_id != 10 || hasTask.individual_task_id != 3)) {
+          if(item.id != hasTask.id) {
             item.hasTask = true;
           } else {
             item.hasTask = false;
@@ -627,7 +610,7 @@ export default {
         } else {
           item.hasTask = false;
         }
-      });
+      })
     },
     addSubject(item) {
       this.activMod = null;
@@ -650,37 +633,34 @@ export default {
         faculty_id: null,
         department_id: null,
       };
-      let semesters = this.plan.study_term.semesters;
-      let formOrganization = this.plan.form_organization.id == 1 ? 2 : 1;
-
-      let currentSemester = 1;
-      let currentModule = 1;
-      for (let course = 1; course <= this.plan.study_term.course; course++) {
-        const obj = { course };
-        for (let semester = 1; semester <= 2; semester++) {
-          if (currentSemester <= semesters) {
-            obj.semester = currentSemester;
-
+      var semesters = this.plan.study_term.semesters;
+      var semesterNumber = 1;
+      for (let course = 0; course < this.plan.study_term.course; course++) {
+        let moduleNumber = 1;
+        for (let semester = 0; semester <= semesters; semester++) {
+          if (semesters != 0) {
             this.subjectForm.semesters_credits.push({
               credit: 0.0,
-              course,
-              semester: currentSemester,
+              course: course + 1,
+              semester: semesterNumber,
             });
-            for (let module = 1; module <= formOrganization; module++) {
+          }
+          for (let module = 0; module < (this.plan.form_organization.id == 1 ? 2 : 1); module++) {
+            if (semesters != 0) {
               this.subjectForm.hours_modules.push({
                 hour: 0,
-                course,
-                semester: currentSemester,
-                module: currentModule++,
+                course: course + 1,
+                semester: semesterNumber,
+                module: moduleNumber++,
                 individual_task_id: 3,
                 form_control_id: 10,
               });
             }
           }
-          currentSemester++;
+          semesterNumber += 1;
+          semesters--;
         }
       }
-
       this.subjectDialog = true;
     },
     editSubject({ subject, cycle }) {

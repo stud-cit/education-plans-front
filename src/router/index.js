@@ -192,8 +192,6 @@ const routes = [
           accessIsAllowed: [
             ROLES.ID.admin,
             ROLES.ID.root,
-            ROLES.ID.department,
-            ROLES.ID.faculty_institute,
             ROLES.ID.training_department,
             ROLES.ID.practice_department,
             ROLES.ID.educational_department_deputy,
@@ -212,8 +210,6 @@ const routes = [
           accessIsAllowed: [
             ROLES.ID.admin,
             ROLES.ID.root,
-            ROLES.ID.department,
-            ROLES.ID.faculty_institute,
             ROLES.ID.training_department,
             ROLES.ID.practice_department,
             ROLES.ID.educational_department_deputy,
