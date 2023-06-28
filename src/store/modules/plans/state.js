@@ -21,7 +21,8 @@ const planDefault = {
   status_op: 0,
   comment: '',
   not_conventional: false,
-};
+  shorted_by_year: [],
+}
 
 export default {
   plan: planDefault,
