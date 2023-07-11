@@ -2,28 +2,26 @@ export default {
   namespaced: true,
 
   state: {
-    loading: false
+    loading: false,
   },
 
-  getters: {
-
-  },
+  getters: {},
 
   mutations: {
-    show(state){
+    show(state) {
       state.loading = true;
     },
-    hide(state){
+    hide(state) {
       state.loading = false;
-    }
+    },
   },
 
   actions: {
-    show({commit}) {
+    show({ commit }) {
       commit('show');
     },
-    hide({commit}) {
+    hide({ commit }) {
       commit('hide');
-    }
-  }
+    },
+  },
 };
