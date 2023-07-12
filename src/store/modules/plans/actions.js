@@ -31,6 +31,8 @@ export const generateShortedByYear = (context, data) => {
     .then((response) => {
       vuexStore.dispatch('loader/hide');
       const { data } = response.data;
+      context.commit('SET_VALUE', { shorted_by_year: data.shorted_by_year });
+
       window.open('/plan/edit/' + data.id + '/' + data.title, '_blank');
     })
     .catch((err) => {

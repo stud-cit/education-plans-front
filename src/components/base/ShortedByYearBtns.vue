@@ -5,25 +5,25 @@
         <v-btn
           v-if="item.id"
           :key="item.year"
-          :class="['flex-grow-1 mb-2', index > 0 ? 'ml-2' : '' ]"
+          :class="['flex-grow-1 mb-2', index > 0 ? 'ml-2' : '']"
           color="success"
           small
           depressed
           :to="{ name: 'EditPlan', params: { id: item.id, title: item.title } }"
           target="_blank"
         >
-          {{ item.label}}
+          {{ item.label }}
         </v-btn>
         <v-btn
           v-else
-          :class="['flex-grow-1 mb-2', index > 0 ? 'ml-2' : '' ]"
+          :class="['flex-grow-1 mb-2', index > 0 ? 'ml-2' : '']"
           :key="item.year"
           small
           depressed
           color="primary"
           @click="generateShortedByYear(item)"
         >
-          {{ item.label}}
+          {{ item.label }}
         </v-btn>
       </template>
     </template>
@@ -32,33 +32,33 @@
 
 <script>
 export default {
-  name: "ShortedByYearBtns",
+  name: 'ShortedByYearBtns',
   props: {
     items: {
       type: Array,
-      required: true
+      required: true,
     },
     planId: {
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
-    generateShortedByYear({year, label}) {
-      this.$swal.fire({
-        title: label + ' ?',
-        showDenyButton: true,
-        confirmButtonText: 'Так',
-        denyButtonText: `Ні`,
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.$store.dispatch('plans/generateShortedByYear', {year, id: this.planId})
-        }
-      })
-    }
-  }
-}
+    generateShortedByYear({ year, label }) {
+      this.$swal
+        .fire({
+          title: label + ' ?',
+          showDenyButton: true,
+          confirmButtonText: 'Так',
+          denyButtonText: `Ні`,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.$store.dispatch('plans/generateShortedByYear', { year, id: this.planId });
+          }
+        });
+    },
+  },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
