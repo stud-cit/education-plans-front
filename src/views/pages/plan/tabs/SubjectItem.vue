@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row :class="['cycle-subject', (subjectIndexError == subject.id || !subject.verification) ? 'error' : '', 'ma-0', 'mb-1']">
+    <v-row :class="['cycle-subject', hasErrors || subjectIndexError == subject.id || !subject.verification ? 'error' : '', 'ma-0', 'mb-1']">
       <v-col cols="5" class="pa-0 text-left">
         {{subject.selective_discipline_id ?  subject.selective_discipline.title : subject.title}}
       </v-col>
@@ -76,6 +76,17 @@ export default {
   },
   mounted() {
     this.checkCredit();
+  },
+  computed: {
+    hasErrors() {
+      return this.subjectIndexError == this.subject.id || 
+      !this.subject.verification ||
+      (this.item.has_discipline && !this.subject.checkCountHoursModules) ||
+      (this.item.has_discipline && this.subject.checkCountHours) ||
+      (this.item.has_discipline && this.subject.checkLastHourModule != null) ||
+      (this.item.has_discipline && !this.subject.checkHasCreditsSemester) ||
+      (this.item.has_discipline && this.subject.checkCountHoursSemester.length > 0)
+    }
   },
   methods: {
     sumHour(array, field) {

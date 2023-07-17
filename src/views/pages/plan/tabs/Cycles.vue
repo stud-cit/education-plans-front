@@ -114,12 +114,12 @@
               outlined
               type="error"
               class="mb-2"
-              v-if="cycleForm.has_discipline && checkCountHoursSemester.length > 0"
+              v-if="cycleForm.has_discipline && subjectForm.checkCountHoursSemester.length > 0 && checkCountHoursSemester.length > 0"
             >
               Не вірно розподілені кредити за семестрами.
             </v-alert>
 
-            <v-alert dense outlined type="error" class="mb-2" v-if="cycleForm.has_discipline && checkCountHours">
+            <v-alert dense outlined type="error" class="mb-2" v-if="cycleForm.has_discipline && subjectForm.checkCountHours && checkCountHours">
               Не вірно розподілено аудиторне навантаження на дисципліну.
             </v-alert>
 
@@ -128,12 +128,12 @@
               outlined
               type="error"
               class="mb-2"
-              v-if="cycleForm.has_discipline && !checkCountHoursModules"
+              v-if="cycleForm.has_discipline && !subjectForm.checkCountHoursModules && !checkCountHoursModules"
             >
               Кількість розподілених годин має відповідати сумі годин лекцій, практичних, лабораторних.
             </v-alert>
 
-            <v-alert dense outlined type="error" class="mb-2" v-if="cycleForm.has_discipline && !checkHasCreditsSemester">
+            <v-alert dense outlined type="error" class="mb-2" v-if="(cycleForm.has_discipline && !subjectForm.checkHasCreditsSemester) || cycleForm.has_discipline && !checkHasCreditsSemester">
               В дисципліні повинні бути вказані кредити хоча б в одному семестрі.
             </v-alert>
 
@@ -142,7 +142,7 @@
               outlined
               type="error"
               class="mb-2"
-              v-if="cycleForm.has_discipline && checkLastHourModule != null"
+              v-if="cycleForm.has_discipline && subjectForm.checkLastHourModule != null && checkLastHourModule != null"
             >
               Необхідно вказати форму контролю в останньому модулі.
             </v-alert>
@@ -177,7 +177,7 @@
                   :class="[
                     cycleForm.has_discipline == 1 &&
                     (index === activMod ? 'activMod' : '',
-                    checkLastHourModule == index || checkCountHoursSemester.indexOf(subject.semester) != -1)
+                    subjectForm.checkLastHourModule - 1 == index || subjectForm.checkCountHoursSemester.indexOf(subject.semester) != -1 || checkLastHourModule == index || checkCountHoursSemester.indexOf(subject.semester) != -1)
                       ? 'error'
                       : '',
                   ]"
@@ -187,7 +187,7 @@
                     min="0"
                     :dark="
                       cycleForm.has_discipline == 1 &&
-                      (checkLastHourModule == index || checkCountHoursSemester.indexOf(subject.semester) != -1)
+                      (subjectForm.checkLastHourModule - 1 == index || subjectForm.checkCountHoursSemester.indexOf(subject.semester) != -1 || checkLastHourModule == index || checkCountHoursSemester.indexOf(subject.semester) != -1)
                     "
                     v-model.number="subject.hour"
                     @click="
@@ -240,7 +240,7 @@
                   v-for="(item, index) in subjectForm.semesters_credits"
                   :key="index"
                   :class="[
-                    cycleForm.has_discipline == 1 && checkCountHoursSemester.indexOf(item.semester) != -1
+                    cycleForm.has_discipline == 1 && subjectForm.checkCountHoursSemester.indexOf(item.semester) != -1 && checkCountHoursSemester.indexOf(item.semester) != -1
                       ? 'error'
                       : '',
                   ]"
@@ -248,7 +248,7 @@
                   <v-text-field
                     type="number"
                     min="0"
-                    :dark="cycleForm.has_discipline == 1 && checkCountHoursSemester.indexOf(item.semester) != -1"
+                    :dark="cycleForm.has_discipline == 1 && subjectForm.checkCountHoursSemester.indexOf(item.semester) != -1 && checkCountHoursSemester.indexOf(item.semester) != -1"
                     v-model.number="item.credit"
                     dense
                     hide-details
@@ -334,7 +334,7 @@
     >
       {{ error }}
     </v-alert>
-
+    
     <!-- <v-alert dense outlined type="error" class="mb-2" v-if="getErrorsSemesters">
       Перевищена кількість кредитів у {{ getErrorsSemesters }} семестрі.
     </v-alert>
@@ -427,6 +427,11 @@ export default {
         sumCyclesCredits: 0,
       },
       subjectForm: {
+        checkCountHoursModules: false,
+        checkCountHours: false,
+        checkLastHourModule: null,
+        checkCountHoursSemester: [],
+        checkHasCreditsSemester: false,
         id: null,
         sumSubjectsCredits: 0,
         selectiveDiscipline: false,
@@ -483,7 +488,7 @@ export default {
     countModules() {
       return this.plan.study_term.module;
     },
-    checkCountHoursModules() {
+        checkCountHoursModules() {
       let sumHoursModules = 0;
       const hours_modules_length = this.subjectForm.hours_modules.length;
       let sumHours = +this.subjectForm.hours + +this.subjectForm.practices + +this.subjectForm.laboratories;
