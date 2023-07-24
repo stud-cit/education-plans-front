@@ -44,7 +44,7 @@
       </v-btn>
     </div>
 
-    <div :class="['print', statusPlanSuccess != plan.status ? 'no-verification' : '']">
+    <div id="printMe" :class="['print', statusPlanSuccess != plan.status ? 'no-verification' : '']">
       <div class="by-created-pdf" v-if="statusPlanSuccess === plan.status">
         {{ byCreatedPDF }}
       </div>
