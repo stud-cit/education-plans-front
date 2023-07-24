@@ -133,7 +133,13 @@
               Кількість розподілених годин має відповідати сумі годин лекцій, практичних, лабораторних.
             </v-alert>
 
-            <v-alert dense outlined type="error" class="mb-2" v-if="cycleForm.has_discipline && !checkHasCreditsSemester">
+            <v-alert
+              dense
+              outlined
+              type="error"
+              class="mb-2"
+              v-if="cycleForm.has_discipline && !checkHasCreditsSemester"
+            >
               В дисципліні повинні бути вказані кредити хоча б в одному семестрі.
             </v-alert>
 
@@ -335,22 +341,6 @@
       {{ error }}
     </v-alert>
 
-    <!-- <v-alert dense outlined type="error" class="mb-2" v-if="getErrorsSemesters">
-      Перевищена кількість кредитів у {{ getErrorsSemesters }} семестрі.
-    </v-alert>
-
-    <v-alert dense outlined type="error" class="mb-2" v-if="getErrorsSemestersHours">
-      Перевищена кількість годин у {{ getErrorsSemestersHours }} семестрі.
-    </v-alert>
-
-    <v-alert dense outlined type="error" class="mb-2" v-if="getErrorsSemestersExams">
-      Перевищена кількість екзаменів у {{ getErrorsSemestersExams }} семестрі.
-    </v-alert>
-
-    <v-alert dense outlined type="error" class="mb-2" v-if="getErrorsCourseWorks">
-      Перевищена кількість курсових робіт у {{ getErrorsCourseWorks }} семестрі.
-    </v-alert> -->
-
     <v-alert
       dense
       outlined
@@ -378,7 +368,7 @@
     <div class="text-center mt-4" v-if="allowedRoles([ROLES.ID.admin, ROLES.ID.root])">
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn icon large v-bind="attrs" v-on="on" @click="addCycle({}, true)">
+          <v-btn :disabled="isShortPlan" icon large v-bind="attrs" v-on="on" @click="addCycle({}, true)">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
         </template>
@@ -587,6 +577,7 @@ export default {
       errorsPlan: 'plans/errorsPlan',
       indexComponent: 'plans/indexComponent',
       options: 'plans/options',
+      isShortPlan: 'plans/isShortPlan',
     }),
   },
   mounted() {

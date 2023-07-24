@@ -52,7 +52,7 @@
         </v-tooltip>
         <v-tooltip bottom v-if="allowedRoles([ROLES.ID.admin, ROLES.ID.root])">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn small icon @click="delCycle(item)" v-bind="attrs" v-on="on">
+            <v-btn :disabled="isShortPlan" small icon @click="delCycle(item)" v-bind="attrs" v-on="on">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </template>
@@ -62,7 +62,7 @@
           <template v-slot:activator="{ on: menu, attrs }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on: tooltip }">
-                <v-btn icon small v-bind="attrs" v-on="{ ...tooltip, ...menu }">
+                <v-btn :disabled="isShortPlan" icon small v-bind="attrs" v-on="{ ...tooltip, ...menu }">
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
               </template>
@@ -120,6 +120,7 @@ import SubjectItem from '@/views/pages/plan/tabs/SubjectItem.vue';
 
 import { ROLES } from '@/utils/constants';
 import RolesMixin from '@/mixins/RolesMixin';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'CycleItem',
@@ -175,6 +176,7 @@ export default {
         }
       });
     },
+    ...mapGetters({ isShortPlan: 'plans/isShortPlan' }),
   },
   methods: {
     checkCredit(parentItem, item) {

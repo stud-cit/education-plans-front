@@ -1,8 +1,15 @@
 <template>
   <div>
-    <v-row :class="['cycle-subject', (subjectIndexError == subject.id || !subject.verification) ? 'error' : '', 'ma-0', 'mb-1']">
+    <v-row
+      :class="[
+        'cycle-subject',
+        subjectIndexError == subject.id || !subject.verification ? 'error' : '',
+        'ma-0',
+        'mb-1',
+      ]"
+    >
       <v-col cols="5" class="pa-0 text-left">
-        {{subject.selective_discipline_id ?  subject.selective_discipline.title : subject.title}}
+        {{ subject.selective_discipline_id ? subject.selective_discipline.title : subject.title }}
       </v-col>
       <v-col class="pa-0">
         {{ subject.hours }}
@@ -20,14 +27,18 @@
         {{ subject.credits }}
       </v-col>
       <v-col class="pa-0">
-        {{ subject.exams ? subject.exams.map(item => item.semester)[0] : '' }}
+        {{ subject.exams ? subject.exams.map((item) => item.semester)[0] : '' }}
       </v-col>
       <v-col class="pa-0 text-right">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-              small 
-              icon 
+              :disabled="
+                isShortPlan &&
+                (item.list_cycle_id === CYCLES.PRACTICAL_TRAINING || item.list_cycle_id === CYCLES.ATTESTATION)
+              "
+              small
+              icon
               @click="editSubject(subject, item)"
               v-bind="attrs"
               v-on="on"
@@ -39,64 +50,72 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              small 
-              icon 
-              @click="delSubject(subject)"
-              v-bind="attrs"
-              v-on="on"
-            >
+            <v-btn :disabled="isShortPlan" small icon @click="delSubject(subject)" v-bind="attrs" v-on="on">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </template>
           <span>Видалити</span>
         </v-tooltip>
       </v-col>
-    </v-row> 
+    </v-row>
   </div>
 </template>
 <script>
-import {eventBus} from '@/main'
+import { eventBus } from '@/main';
+import { mapGetters } from 'vuex';
+import { CYCLES } from '@/utils/constants';
+
 export default {
-  name: "SubjectItem",
+  name: 'SubjectItem',
   props: {
     subject: {
       type: Object,
-      required: true
+      required: true,
     },
     item: {
       type: Object,
-      required: true
+      required: true,
     },
   },
   data() {
     return {
-      subjectIndexError: null
-    }
+      CYCLES,
+      subjectIndexError: null,
+    };
+  },
+  computed: {
+    ...mapGetters({
+      isShortPlan: 'plans/isShortPlan',
+    }),
   },
   mounted() {
     this.checkCredit();
   },
   methods: {
     sumHour(array, field) {
-      return array.map(item => item[field]).reduce((prev, curr) => +prev + +curr, 0);
+      return array.map((item) => item[field]).reduce((prev, curr) => +prev + +curr, 0);
     },
     checkCredit() {
-      let sumCredits = this.item.subjects.map(subjectItem => subjectItem.credits).reduce((prev, curr) => prev + curr, 0);
-      if(sumCredits > this.item.credit) {
+      let sumCredits = this.item.subjects
+        .map((subjectItem) => subjectItem.credits)
+        .reduce((prev, curr) => prev + curr, 0);
+      if (sumCredits > this.item.credit) {
         this.subjectIndexError = this.subject.id;
-        this.$store.dispatch('plans/setErrorsPlan', "Перевищено суму кредитів дисциплін в циклі " + this.item.title + ": " + sumCredits + " із " + this.item.credit);
+        this.$store.dispatch(
+          'plans/setErrorsPlan',
+          `Перевищено суму кредитів дисциплін в циклі ${this.item.title}: ${sumCredits} із ${this.item.credit}`,
+        );
       } else {
         this.subjectIndexError = null;
         this.$store.dispatch('plans/setErrorsPlan', null);
       }
     },
     editSubject(subject, cycle) {
-      eventBus.$emit('editSubject', {subject, cycle})
+      eventBus.$emit('editSubject', { subject, cycle });
     },
     delSubject(subject) {
-      eventBus.$emit('delSubject', subject)
+      eventBus.$emit('delSubject', subject);
     },
-  }
-}
+  },
+};
 </script>

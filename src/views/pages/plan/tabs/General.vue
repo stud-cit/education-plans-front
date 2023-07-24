@@ -8,7 +8,13 @@
               ><b>Формат назви:</b> Код спеціальності Назва ОП Освітній рівень Рік прийому. Приклад: 122 ОПП Інформатика
               бакалавр 2023</span
             >
-            <v-text-field v-model="plan.title" :error-messages="errors" label="Назва плану" required></v-text-field>
+            <v-text-field
+              v-model="plan.title"
+              :error-messages="errors"
+              :disabled="isShortPlan"
+              label="Назва плану"
+              required
+            ></v-text-field>
           </validation-provider>
         </v-col>
       </v-row>
@@ -19,6 +25,7 @@
               v-model.number="plan.field_knowledge_id"
               :items="fieldsKnowledge"
               :error-messages="errors"
+              :disabled="isShortPlan"
               item-text="title"
               item-value="id"
               label="Галузь знань "
@@ -33,7 +40,7 @@
               v-model.number="plan.speciality_id"
               :items="specialities"
               :loading="specialitiesLoading"
-              :disabled="specialities.length === 0"
+              :disabled="specialities.length === 0 || isShortPlan"
               :error-messages="errors"
               item-text="title"
               item-value="id"
@@ -49,7 +56,7 @@
               v-model.number="plan.education_program_id"
               :items="educationalPrograms"
               :loading="educationalProgramsLoading"
-              :disabled="educationalPrograms.length === 0"
+              :disabled="educationalPrograms.length === 0 || isShortPlan"
               :error-messages="errors"
               item-text="title"
               item-value="id"
@@ -69,7 +76,7 @@
               item-text="title"
               item-value="id"
               label="Спеціалізація"
-              :disabled="specializations.length === 0"
+              :disabled="specializations.length === 0 || isShortPlan"
             ></v-autocomplete>
           </validation-provider>
         </v-col>
@@ -81,6 +88,7 @@
               v-model="plan.qualification_id"
               :items="qualifications"
               :error-messages="errors"
+              :disabled="isShortPlan"
               item-text="title"
               item-value="id"
               label="Кваліфікація"
@@ -95,6 +103,7 @@
               v-model="plan.faculty_id"
               :items="faculties"
               :error-messages="errors"
+              :disabled="isShortPlan"
               item-text="name"
               item-value="id"
               label="Факультет"
@@ -108,7 +117,7 @@
               :items="departments"
               :error-messages="errors"
               :loading="departmentsLoading"
-              :disabled="departmentsLoading"
+              :disabled="departmentsLoading || isShortPlan"
               item-text="name"
               item-value="id"
               label="Кафедра"
@@ -127,7 +136,7 @@
               item-value="id"
               label="Форма організації навчання"
               required
-              :disabled="edit"
+              :disabled="edit || isShortPlan"
             ></v-autocomplete>
           </validation-provider>
         </v-col>
@@ -137,6 +146,7 @@
               v-model="plan.form_study_id"
               :items="formsStudy"
               :error-messages="errors"
+              :disabled="isShortPlan"
               item-text="title"
               item-value="id"
               label="Форма навчання"
@@ -155,7 +165,7 @@
               label="Термін навчання"
               return-object
               item-value="id"
-              :disabled="edit"
+              :disabled="edit || isShortPlan"
             ></v-autocomplete>
           </validation-provider>
         </v-col>
@@ -178,6 +188,7 @@
               v-model="plan.education_level_id"
               :items="educationsLevel"
               :error-messages="errors"
+              :disabled="isShortPlan"
               item-text="title"
               item-value="id"
               label="Освітній (Освітньо-науковий) рівень"
@@ -193,6 +204,7 @@
             <v-text-field
               v-model="plan.credits"
               :error-messages="errors"
+              :disabled="isShortPlan"
               label="Обсяг плану в кредитах"
               required
               type="number"
@@ -209,6 +221,7 @@
               v-model="plan.year"
               :items="years"
               :error-messages="errors"
+              :disabled="isShortPlan"
               label="Рік прийому"
             ></v-autocomplete>
           </validation-provider>
@@ -228,7 +241,7 @@
             ])
           "
         >
-          <v-checkbox v-model="plan.published" label="Відкрити спільний доступ"></v-checkbox>
+          <v-checkbox :disabled="isShortPlan" v-model="plan.published" label="Відкрити спільний доступ"></v-checkbox>
         </v-col>
       </v-row>
       <v-row v-if="objHoursWeeks.length">
@@ -269,6 +282,7 @@
                     <v-text-field
                       v-model.number="item.week"
                       :error-messages="errors"
+                      :readonly="isShortPlan"
                       required
                       type="number"
                       :min="1"
@@ -296,6 +310,7 @@
                       v-model.number="item.hour"
                       :error-messages="errors"
                       required
+                      :readonly="isShortPlan"
                       type="number"
                       :min="0"
                       dense
@@ -324,7 +339,7 @@ import api from '@/api';
 import { API } from '@/api/constants-api';
 import { FORM_ORGANIZATIONS_TABLE, ROLES } from '@/utils/constants';
 import RolesMixin from '@/mixins/RolesMixin';
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 export default {
   name: 'General',
@@ -362,6 +377,7 @@ export default {
   },
   computed: {
     ...mapState('plans', ['submitLoading']),
+    ...mapGetters({ isShortPlan: 'plans/isShortPlan' }),
   },
   mounted() {
     this.apiGetFields();
@@ -395,14 +411,14 @@ export default {
     },
     'plan.field_knowledge_id'(v, old) {
       if (old !== null && v !== old) {
-        this.$store.dispatch('plans/setValue', {speciality_id: null})
+        this.$store.dispatch('plans/setValue', { speciality_id: null });
       }
       v !== null ? this.apiGetSpecialities(v) : (this.specialities = []);
     },
     'plan.speciality_id'(v, old) {
       if (old !== null && v !== old) {
-        this.$store.dispatch('plans/setValue', {specialization_id: null})
-        this.$store.dispatch('plans/setValue', {education_program_id: null})
+        this.$store.dispatch('plans/setValue', { specialization_id: null });
+        this.$store.dispatch('plans/setValue', { education_program_id: null });
       }
       v !== null ? this.apiGetSpecializations(v) : (this.specializations = []);
       v !== null ? this.apiGetEducationPrograms(v) : (this.educationalPrograms = []);
