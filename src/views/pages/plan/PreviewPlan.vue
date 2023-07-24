@@ -1,10 +1,6 @@
 <template>
   <v-container class="preview-plan" v-if="plan">
-    <ShortedByYearBtns
-      class="no-print d-print-none"
-      :items="plan.shorted_by_year"
-      :plan-id="plan.id"
-    />
+    <ShortedByYearBtns class="no-print d-print-none" :items="plan.shorted_by_year" :plan-id="plan.id" />
 
     <div class="no-print mb-10 d-flex flex-wrap justify-end d-print-none">
       <v-btn
@@ -48,7 +44,7 @@
       </v-btn>
     </div>
 
-    <div class="print">
+    <div :class="['print', statusPlanSuccess != plan.status ? 'no-verification' : '']">
       <div class="by-created-pdf" v-if="statusPlanSuccess === plan.status">
         {{ byCreatedPDF }}
       </div>
@@ -503,9 +499,7 @@
             <td v-for="td in fullColspanPlan - 13" :key="td"></td>
           </tr>
           <tr v-for="(item, index) in plan.subject_notes" :key="index">
-            <td colspan="11" class="text-left">
-              {{ index + 1 }}. {{ item.note }}
-            </td>
+            <td colspan="11" class="text-left">{{ index + 1 }}. {{ item.note }}</td>
             <td v-for="td in fullColspanPlan - 13" :key="td"></td>
           </tr>
           <tr v-for="tr in 2" :key="'tr_1_' + tr"></tr>
@@ -545,7 +539,7 @@
           <v-icon v-else> mdi-cloud-download-outline </v-icon>
         </v-btn>
       </template>
-      <v-btn fab dark small color="red accent-4" @click="exportPDF()">
+      <v-btn fab dark small color="red accent-4" v-print="'#printMe'">
         <v-icon>mdi-pdf-box</v-icon>
       </v-btn>
       <v-btn fab dark small color="green darken-4" @click="exportExcel('xlsx' /*'xls'*/)">
@@ -565,7 +559,10 @@ import * as XLSX from 'xlsx/xlsx.mjs';
 import ScheduleEducationalProcessWeeks from '@c/Tables/PreviewTablePlan/ScheduleEducationalProcess/ScheduleEducationalProcessWeeks';
 import ScheduleEducationalProcessMonth from '@c/Tables/PreviewTablePlan/ScheduleEducationalProcess/ScheduleEducationalProcessMonth';
 import ScheduleEducationalProcess from '@/mixins/GenerateTable/ScheduleEducationalProcess';
-import ShortedByYearBtns from "@c/base/ShortedByYearBtns";
+import ShortedByYearBtns from '@c/base/ShortedByYearBtns';
+
+import print from 'vue-print-nb';
+import '@/assets/styles/print.css';
 
 export default {
   name: 'PreviewPlan',
@@ -575,6 +572,9 @@ export default {
     ModularCyclicHeaderTable,
     SemesterHeaderTable,
     ShortedByYearBtns,
+  },
+  directives: {
+    print,
   },
   data() {
     return {
@@ -786,9 +786,6 @@ export default {
         }
       }
       return _cycles;
-    },
-    exportPDF() {
-      window.print();
     },
     totalClassroom(subject) {
       // const hours_modules_length = hours_modules.length
