@@ -15,40 +15,28 @@
       <tr v-for="(item, index) in result" :key="item.id">
         <td>{{ ++index }}</td>
         <td>
-          <input type="text" v-model="item.name">
+          <input type="text" v-model="item.name" />
         </td>
         <td>
-          <input type="text" v-model="item.semester">
+          <input type="text" v-model="item.semester" />
         </td>
         <td>
-          <input type="text" v-model="item.week">
+          <input type="text" v-model="item.week" />
         </td>
         <td>
-          <input type="text" v-model="item.credit">
+          <input type="text" v-model="item.credit" />
         </td>
         <td>
           <btn-tooltip tooltip="Видалити">
-            <v-icon
-              small
-              color="red"
-              @click="deleted(item)"
-            >
-              mdi-trash-can-outline
-            </v-icon>
+            <v-icon small color="red" :disabled="isShortPlan" @click="deleted(item)"> mdi-trash-can-outline </v-icon>
           </btn-tooltip>
         </td>
       </tr>
     </table>
+
     <v-tooltip bottom>
       <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          icon
-          large
-          class="d-block mx-auto"
-          v-bind="attrs"
-          v-on="on"
-          @click="addItem"
-        >
+        <v-btn :disabled="isShortPlan" icon large class="d-block mx-auto" v-bind="attrs" v-on="on" @click="addItem">
           <v-icon>mdi-plus</v-icon>
         </v-btn>
       </template>
@@ -58,8 +46,9 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
-  name: "PracticalTraining",
+  name: 'PracticalTraining',
   data: () => {
     return {
       result: [],
@@ -68,27 +57,34 @@ export default {
         name: null,
         semester: null,
         week: null,
-        credit: null
-      }
-    }
+        credit: null,
+      },
+    };
+  },
+  computed: {
+    ...mapGetters({
+      isShortPlan: 'plans/isShortPlan',
+    }),
   },
   mounted() {
-    this.result = this.items
+    this.result = this.items;
   },
   props: ['items'],
   methods: {
     addItem() {
-      this.result.push({...this.item, id: this.generatorId(this.result)})
+      this.result.push({ ...this.item, id: this.generatorId(this.result) });
     },
     deleted(item) {
-      this.result = this.result.filter(i => i.id !== item.id);
+      this.result = this.result.filter((i) => i.id !== item.id);
     },
     generatorId(obj) {
-      const  ids = obj.map(function(o) { return o.id; })
+      const ids = obj.map(function (o) {
+        return o.id;
+      });
       return ids.length ? Math.max.apply(Math, ids) + 1 : 1;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>

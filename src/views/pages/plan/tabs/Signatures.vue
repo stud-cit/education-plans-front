@@ -53,7 +53,17 @@
             <div class="text-center pt-3">
               <v-tooltip bottom v-if="item.edit === true">
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn class="mr-3" v-bind="attrs" v-on="on" outlined fab small color="blue" @click="edit(item)">
+                  <v-btn
+                    :disabled="isShortPlan"
+                    class="mr-3"
+                    v-bind="attrs"
+                    v-on="on"
+                    outlined
+                    fab
+                    small
+                    color="blue"
+                    @click="edit(item)"
+                  >
                     <v-icon aria-hidden="false"> mdi-pencil </v-icon>
                   </v-btn>
                 </template>
@@ -70,7 +80,7 @@
                     fab
                     small
                     color="blue"
-                    :disabled="invalid"
+                    :disabled="invalid || isShortPlan"
                     @click="update(item)"
                   >
                     <v-icon aria-hidden="false"> mdi-content-save </v-icon>
@@ -89,7 +99,7 @@
                     fab
                     small
                     color="blue"
-                    :disabled="invalid"
+                    :disabled="invalid || isShortPlan"
                     @click="save(item)"
                   >
                     <v-icon aria-hidden="false"> mdi-content-save </v-icon>
@@ -100,7 +110,16 @@
 
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn v-bind="attrs" v-on="on" outlined fab small color="red" @click="remove(index, item)">
+                  <v-btn
+                    :disabled="isShortPlan"
+                    v-bind="attrs"
+                    v-on="on"
+                    outlined
+                    fab
+                    small
+                    color="red"
+                    @click="remove(index, item)"
+                  >
                     <v-icon aria-hidden="false"> mdi-trash-can-outline </v-icon>
                   </v-btn>
                 </template>
@@ -115,7 +134,7 @@
     <div class="text-center mt-4">
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn icon large v-bind="attrs" v-on="on" @click="addItem()">
+          <v-btn :disabled="isShortPlan" icon large v-bind="attrs" v-on="on" @click="addItem()">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
         </template>
@@ -143,6 +162,7 @@ export default {
     ...mapGetters({
       plan_id: 'plans/id',
       signatures: 'plans/signatures',
+      isShortPlan: 'plans/isShortPlan',
     }),
   },
   mounted() {

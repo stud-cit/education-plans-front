@@ -1,4 +1,5 @@
 import api from '@/api';
+import vuexStore from '@/store';
 import { API, ALLOWED_REQUEST_PARAMETERS } from '@/api/constants-api';
 import GlobalMixin from '../../../mixins/GlobalMixin';
 
@@ -24,9 +25,20 @@ export const copy = (context, id) => {
 };
 
 export const generateShortedByYear = (context, data) => {
-  api.patch(API.PLAN_GENERATE_SHORTED_BY_YEAR, data.id, {year: data.year}).then((response) => {
-    document.location.href = encodeURI('plan/edit/' + response.data.id + '/' + response.data.title);
-  });
+  vuexStore.dispatch('loader/show');
+  api
+    .patch(API.PLAN_GENERATE_SHORTED_BY_YEAR, data.id, { shortened_by_year: data.year })
+    .then((response) => {
+      vuexStore.dispatch('loader/hide');
+      const { data } = response.data;
+      context.commit('SET_VALUE', { shorted_by_year: data.shorted_by_year });
+
+      window.open('/plan/edit/' + data.id + '/' + data.title, '_blank');
+    })
+    .catch((err) => {
+      console.error(err);
+      vuexStore.dispatch('loader/hide');
+    });
 };
 
 export const store = (context, data) => {

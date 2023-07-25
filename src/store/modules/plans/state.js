@@ -17,8 +17,13 @@ const planDefault = {
   verification: [],
   submitLoader: false,
   signatures: [],
+  errors: [],
+  status_op: 0,
+  comment: '',
+  not_conventional: false,
   shorted_by_year: [],
-}
+  short_plan: false,
+};
 
 export default {
   plan: planDefault,

@@ -48,7 +48,7 @@
       </v-btn>
     </div>
 
-    <div class="print">
+    <div id="printMe" :class="['print', statusPlanSuccess != plan.status ? 'no-verification' : '']">
       <div class="by-created-pdf" v-if="statusPlanSuccess === plan.status">
         {{ byCreatedPDF }}
       </div>
@@ -545,7 +545,7 @@
           <v-icon v-else> mdi-cloud-download-outline </v-icon>
         </v-btn>
       </template>
-      <v-btn fab dark small color="red accent-4" @click="exportPDF()">
+      <v-btn fab dark small color="red accent-4" v-print="'#printMe'">
         <v-icon>mdi-pdf-box</v-icon>
       </v-btn>
       <v-btn fab dark small color="green darken-4" @click="exportExcel('xlsx' /*'xls'*/)">
@@ -567,6 +567,9 @@ import ScheduleEducationalProcessMonth from '@c/Tables/PreviewTablePlan/Schedule
 import ScheduleEducationalProcess from '@/mixins/GenerateTable/ScheduleEducationalProcess';
 import ShortedByYearBtns from "@c/base/ShortedByYearBtns";
 
+import print from 'vue-print-nb'
+import '@/assets/styles/print.css'
+
 export default {
   name: 'PreviewPlan',
   components: {
@@ -575,6 +578,9 @@ export default {
     ModularCyclicHeaderTable,
     SemesterHeaderTable,
     ShortedByYearBtns,
+  },
+  directives: {
+    print
   },
   data() {
     return {
@@ -786,9 +792,6 @@ export default {
         }
       }
       return _cycles;
-    },
-    exportPDF() {
-      window.print();
     },
     totalClassroom(subject) {
       // const hours_modules_length = hours_modules.length
