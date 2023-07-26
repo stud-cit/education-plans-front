@@ -379,6 +379,7 @@ export default {
   font-size: 15px;
   display: block;
   overflow-x: auto;
+  border-collapse: collapse;
 }
 .table th,
 .table td {

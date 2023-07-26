@@ -8,34 +8,19 @@
     v-if="item && subject"
   >
     <v-card>
-      <v-toolbar
-        dark
-        color="primary"
-      >
+      <v-toolbar dark color="primary">
         <v-toolbar-title>Редагування дисципліни</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn
-          icon
-          dark
-          @click="close"
-        >
+        <v-btn icon dark @click="close">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
 
-
-      <validation-observer
-        ref="observer"
-        v-slot="{ invalid }"
-      >
+      <validation-observer ref="observer" v-slot="{ invalid }">
         <form @submit.prevent="submit" @keyup.enter="submit">
           <v-card-text>
             <v-container>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Назва дисципліни"
-                rules="required"
-              >
+              <validation-provider v-slot="{ errors }" name="Назва дисципліни" rules="required">
                 <v-autocomplete
                   v-model="discipline"
                   :items="disciplines"
@@ -47,10 +32,7 @@
                   disabled
                 ></v-autocomplete>
               </validation-provider>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Інша назва дисципліни"
-              >
+              <validation-provider v-slot="{ errors }" name="Інша назва дисципліни">
                 <v-text-field
                   label="Інша назва дисципліни"
                   v-model="anotherDiscipline"
@@ -58,11 +40,7 @@
                   :disabled="!discipline"
                 ></v-text-field>
               </validation-provider>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Мова викладання"
-                rules="required"
-              >
+              <validation-provider v-slot="{ errors }" name="Мова викладання" rules="required">
                 <v-autocomplete
                   v-model="language"
                   multiple
@@ -74,11 +52,7 @@
                   label="Мова викладання"
                 ></v-autocomplete>
               </validation-provider>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Кафедра, що пропонує дисципліну"
-                rules="required"
-              >
+              <validation-provider v-slot="{ errors }" name="Кафедра, що пропонує дисципліну" rules="required">
                 <v-autocomplete
                   v-model="department"
                   :items="departments"
@@ -91,11 +65,7 @@
                 ></v-autocomplete>
               </validation-provider>
 
-              <validation-provider
-                v-slot="{ errors }"
-                name="Лекції"
-                rules="required"
-              >
+              <validation-provider v-slot="{ errors }" name="Лекції" rules="required">
                 <v-autocomplete
                   v-model="lecture"
                   :items="teachers"
@@ -200,17 +170,8 @@
                 ></v-combobox>
               </validation-provider>
 
-              <validation-provider
-                v-slot="{ errors }"
-                name="Обмеження щодо семестру вивчення"
-                rules="required"
-              >
-                <v-radio-group
-                  v-model="restrictionsSemester"
-                  row
-                  :error-messages="errors"
-                >
-
+              <validation-provider v-slot="{ errors }" name="Обмеження щодо семестру вивчення" rules="required">
+                <v-radio-group v-model="restrictionsSemester" row :error-messages="errors">
                   <v-radio
                     v-for="radio in radioRestrictionsSemester"
                     :key="radio.id"
@@ -224,11 +185,11 @@
                 v-if="restrictionsSemester.id === 2"
                 v-slot="{ errors }"
                 name="Виберіть семестр/и"
-                :rules="restrictionsSemester.id ? 'required': ''"
+                :rules="restrictionsSemester.id ? 'required' : ''"
               >
                 <v-select
                   v-model="semesters"
-                  :items="[1,2,3,4,5,6,7,8,9,10,11,12]"
+                  :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
                   :error-messages="errors"
                   disable-lookup
                   chips
@@ -236,38 +197,18 @@
                   hide-selected
                   label="Виберіть семестр/и"
                   multiple
-                  @change="(v) => v.sort((a,b) => a-b)"
+                  @change="(v) => v.sort((a, b) => a - b)"
                 ></v-select>
               </validation-provider>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Опублікувати"
-              >
-                <v-switch
-                  v-model="published"
-                  color="primary"
-                  label="Опублікувати?"
-                  :error-messages="errors"
-                ></v-switch>
-
+              <validation-provider v-slot="{ errors }" name="Опублікувати">
+                <v-switch v-model="published" color="primary" label="Опублікувати?" :error-messages="errors"></v-switch>
               </validation-provider>
             </v-container>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn
-              color="secondary"
-              @click="close"
-            >
-              Закрити
-            </v-btn>
-            <v-btn
-              color="primary"
-              @click="submit"
-              :disabled="invalid"
-            >
-              Зберегти
-            </v-btn>
+            <v-btn color="secondary" @click="close"> Закрити </v-btn>
+            <v-btn color="primary" @click="submit" :disabled="invalid"> Зберегти </v-btn>
           </v-card-actions>
         </form>
       </validation-observer>
@@ -277,7 +218,7 @@
 
 <script>
 import api from '@/api';
-import {API} from '@/api/constants-api';
+import { API } from '@/api/constants-api';
 
 export default {
   name: 'EditSpecialitySubjectModal',
@@ -311,8 +252,8 @@ export default {
       requirements: null,
 
       radioRestrictionsSemester: [
-        {id: 1, label: 'Без обмежень'},
-        {id: 2, label: 'Крім:'},
+        { id: 1, label: 'Без обмежень' },
+        { id: 2, label: 'Крім:' },
       ],
       restrictionsSemester: null,
       semesters: null,
@@ -333,7 +274,7 @@ export default {
       }
     },
     discipline(v) {
-      if (v.title_en) {
+      if (v && v.title_en) {
         this.anotherDiscipline = v.title_en;
       }
     },
@@ -379,7 +320,7 @@ export default {
         this.discipline = discipline;
         this.language = language;
         this.anotherDiscipline = discipline.title_en;
-        this.department = {id: department_id, faculty_id};
+        this.department = { id: department_id, faculty_id };
         this.lecture = lecturers;
         this.practice = practice;
         this.generalCompetence = general_competence;
@@ -395,9 +336,14 @@ export default {
     apiGetCreate() {
       api.get(API.SPECIALTY_SUBJECTS + '/create', null, { showLoader: true }).then(({ data }) => {
         const {
-          subjects, languages, departments, teachers,
-          helpersGeneralCompetence, helpersResultsOfStudy, helpersTypesTrainingSessions,
-          helpersRequirements
+          subjects,
+          languages,
+          departments,
+          teachers,
+          helpersGeneralCompetence,
+          helpersResultsOfStudy,
+          helpersTypesTrainingSessions,
+          helpersRequirements,
         } = data;
         this.disciplines = subjects;
         this.languages = languages;
@@ -415,7 +361,6 @@ export default {
     submit() {
       this.$refs.observer.validate().then((validated) => {
         if (validated) {
-
           const limitation = {
             label: this.restrictionsSemester.label,
             semesters: this.semesters,

@@ -387,7 +387,7 @@ export default {
       }
     },
     discipline(v) {
-      if (v.title_en) {
+      if (v && v.title_en) {
         this.anotherDiscipline = v.title_en;
       }
     },

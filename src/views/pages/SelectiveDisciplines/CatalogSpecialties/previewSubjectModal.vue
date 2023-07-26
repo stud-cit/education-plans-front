@@ -10,27 +10,21 @@
       </v-toolbar>
 
       <v-card-text class="pdf mt-5 header">
-        <p class="pdf_title">
-          СУМСЬКИЙ ДЕРЖАВНИЙ УНІВЕРСИТЕТ
-        </p>
+        <p class="pdf_title">СУМСЬКИЙ ДЕРЖАВНИЙ УНІВЕРСИТЕТ</p>
         <div v-if="catalog && catalog.faculty" class="pdf_faculty">
-          {{catalog.faculty}}
+          {{ catalog.faculty }}
         </div>
-        <div v-else class="pdf_faculty-line">
-          (назва навчально-наукового інституту/факультету)
-        </div>
+        <div v-else class="pdf_faculty-line">(назва навчально-наукового інституту/факультету)</div>
 
         <div v-if="catalog && catalog.department" class="pdf_faculty">
-          {{catalog.department}}
+          {{ catalog.department }}
         </div>
-        <div v-else class="pdf_faculty-line">
-          (назва кафедри)
-        </div>
+        <div v-else class="pdf_faculty-line">(назва кафедри)</div>
 
         <p class="pdf_subtitle mt-3" v-if="catalog && catalog.speciality && catalog.year && catalog.education_level">
-          КАТАЛОГ ВИБІРКОВИХ НАВЧАЛЬНИХ ДИСЦИПЛІН ЦИКЛУ ПРОФЕСІЙНОЇ ПІДГОТОВКИ ЗА СПЕЦІАЛЬНІСТЮ <br>
-          {{catalog.speciality}} <br>
-          {{catalog.education_level}} {{catalog.year}} &mdash; {{catalog.year + 1}} н. р.
+          КАТАЛОГ ВИБІРКОВИХ НАВЧАЛЬНИХ ДИСЦИПЛІН ЦИКЛУ ПРОФЕСІЙНОЇ ПІДГОТОВКИ ЗА СПЕЦІАЛЬНІСТЮ <br />
+          {{ catalog.speciality }} <br />
+          {{ catalog.education_level }} {{ catalog.year }} &mdash; {{ catalog.year + 1 }} н. р.
         </p>
         <table class="table">
           <thead>
@@ -116,13 +110,11 @@ export default {
   },
   methods: {
     apiGetItem(id) {
-      api
-        .show(API.SPECIALTY_SUBJECTS, id, { showLoader: true })
-        .then(({ data }) => {
-          if (data.data) {
-            this.subject = data.data;
-          }
-        })
+      api.show(API.SPECIALTY_SUBJECTS, id, { showLoader: true }).then(({ data }) => {
+        if (data.data) {
+          this.subject = data.data;
+        }
+      });
     },
     close() {
       this.$emit('close');
@@ -138,6 +130,7 @@ export default {
   font-size: 15px;
   display: block;
   overflow-x: auto;
+  border-collapse: collapse;
 }
 .table th,
 .table td {
