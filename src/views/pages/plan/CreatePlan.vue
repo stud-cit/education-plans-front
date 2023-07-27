@@ -79,7 +79,7 @@
       >
         Переглянути
       </v-btn>
-      <v-btn small depressed color="primary" class="ml-2" @click="openProgramDialog()">
+      <v-btn small depressed color="primary" class="ml-2" :disabled="!!plan.status_op" @click="openProgramDialog()">
         Верифікувати з освітньою програмою
       </v-btn>
       <v-btn
