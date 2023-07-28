@@ -3,7 +3,7 @@
     <v-row
       :class="[
         'cycle-subject',
-        subjectIndexError == subject.id || !subject.verification ? 'error' : '',
+        hasErrors || subjectIndexError == subject.id || !subject.verification ? 'error' : '',
         'ma-0',
         'mb-1',
       ]"
@@ -87,6 +87,15 @@ export default {
     ...mapGetters({
       isShortPlan: 'plans/isShortPlan',
     }),
+    hasErrors() {
+      return this.subjectIndexError == this.subject.id || 
+      !this.subject.verification ||
+      (this.item.has_discipline && !this.subject.checkCountHoursModules) ||
+      (this.item.has_discipline && this.subject.checkCountHours) ||
+      (this.item.has_discipline && this.subject.checkLastHourModule != null) ||
+      (this.item.has_discipline && !this.subject.checkHasCreditsSemester) ||
+      (this.item.has_discipline && this.subject.checkCountHoursSemester.length > 0)
+    }
   },
   mounted() {
     this.checkCredit();

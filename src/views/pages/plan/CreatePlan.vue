@@ -139,6 +139,17 @@
       </v-stepper-header>
     </v-stepper>
 
+    <v-alert
+      dense
+      outlined
+      type="error"
+      class="mb-2"
+      v-for="(error, errorIndex) in plan.errors"
+      :key="'error' + errorIndex"
+    >
+      {{ error }}
+    </v-alert>
+
     <v-tabs v-model="tab" class="mb-2">
       <v-tab>Загальна інформація</v-tab>
       <v-tab :disabled="$route.name == 'CreatePlan'">Цикли / предмети</v-tab>
