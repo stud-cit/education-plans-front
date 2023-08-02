@@ -10,7 +10,7 @@
   >
     <template v-slot:top>
       <v-row>
-        <v-col cols="12" md="5">
+        <v-col cols="12" md="6">
           <v-text-field
             v-model="searchTitle"
             append-icon="mdi-magnify"
@@ -20,7 +20,7 @@
             class="mx-4"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <v-select
             v-model="planOrTemplate"
             :items="planTypes"
@@ -250,7 +250,7 @@ export default {
       this.$emit('update', this.options);
     },
     search() {
-      this.$store.dispatch('plans/setOptions', this.filterSort({...this.options, page : 1}));
+      this.$store.dispatch('plans/setOptions', this.filterSort({ ...this.options, page: 1 }));
     },
     resetPage() {
       if (this.options.page == 1) {

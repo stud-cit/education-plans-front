@@ -135,3 +135,7 @@ export const setSubmitLoading = (context, payload) => {
 export const setValue = (context, payload) => {
   context.commit('SET_VALUE', payload);
 };
+
+export const setComment = (context, payload) => {
+  context.commit('NOT_CONVENTIONAL', payload);
+};

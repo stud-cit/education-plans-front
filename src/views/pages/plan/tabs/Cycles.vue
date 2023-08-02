@@ -68,7 +68,13 @@
               Не вірно розподілено аудиторне навантаження на дисципліну.
             </v-alert>
 
-            <v-alert dense outlined type="error" class="mb-2" v-if="cycleForm.has_discipline && !checkCountHoursModules">
+            <v-alert
+              dense
+              outlined
+              type="error"
+              class="mb-2"
+              v-if="cycleForm.has_discipline && !checkCountHoursModules"
+            >
               Кількість розподілених годин має відповідати сумі годин лекцій, практичних, лабораторних.
             </v-alert>
 
@@ -76,8 +82,13 @@
               В дисципліні повинні бути вказані кредити хоча б в одному семестрі.
             </v-alert>
 
-            <v-alert dense outlined type="error" class="mb-2"
-              v-if="cycleForm.has_discipline && checkLastHourModule != null">
+            <v-alert
+              dense
+              outlined
+              type="error"
+              class="mb-2"
+              v-if="cycleForm.has_discipline && checkLastHourModule != null"
+            >
               Необхідно вказати форму контролю в останньому модулі.
             </v-alert>
 
