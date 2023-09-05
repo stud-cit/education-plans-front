@@ -115,6 +115,10 @@
         label="План з особливостями"
       ></v-checkbox>
 
+      <template v-if="plan.short_plan">
+        <span class="orange white--text pl-1 pr-1 rounded">Скорочений план</span>
+      </template>
+
       <v-spacer></v-spacer>
 
       <v-btn
@@ -262,7 +266,7 @@ export default {
     hasErrors() {
       if (this.plan.comment.length > 0) {
         return true;
-      } else if ( this.plan.status_op && (this.plan.errors.length > 0 || this.errorsPlan.length > 0)) {
+      } else if (this.plan.status_op && (this.plan.errors.length > 0 || this.errorsPlan.length > 0)) {
         return false;
       } else {
         return true;
