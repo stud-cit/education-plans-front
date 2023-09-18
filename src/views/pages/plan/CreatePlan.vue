@@ -122,6 +122,16 @@
       <v-spacer></v-spacer>
 
       <v-btn
+        v-if="plan.short_plan"
+        small
+        depressed
+        color="primary"
+        :to="{ name: 'EditPlan', params: { id: plan.basePlan.base_id, title: plan.basePlan.title } }"
+        target="_blank"
+      >
+        До базового плану
+      </v-btn>
+      <v-btn
         small
         depressed
         color="primary"
