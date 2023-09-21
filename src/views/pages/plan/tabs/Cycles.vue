@@ -9,8 +9,13 @@
           <v-toolbar-title>{{ sebjectTitle }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="saveSubject()"
-              :disabled="!subjectForm.selective_discipline_id && !subjectForm.asu_id">
+            <v-btn
+              dark
+              text
+              :loading="submitLoading"
+              @click="saveSubject()"
+              :disabled="!subjectForm.selective_discipline_id && !subjectForm.asu_id"
+            >
               Зберегти
             </v-btn>
           </v-toolbar-items>
@@ -19,48 +24,99 @@
           <v-container>
             <v-row>
               <v-col cols="3" class="py-0" style="display: flex; align-items: end">
-                <v-checkbox v-model="subjectForm.selectiveDiscipline" class="ma-0"
-                  label="Дисципліна за вибором"></v-checkbox>
+                <v-checkbox
+                  v-model="subjectForm.selectiveDiscipline"
+                  class="ma-0"
+                  label="Дисципліна за вибором"
+                ></v-checkbox>
               </v-col>
               <v-col cols="9" class="py-0">
-                <v-autocomplete v-if="subjectForm.selectiveDiscipline" :items="selectiveDiscipline"
-                  v-model="subjectForm.selective_discipline_id" label="Вибіркова дисципліна" item-text="title"
-                  item-value="id" value="number"></v-autocomplete>
-                <v-autocomplete v-else v-model="subjectForm.asu_id" :items="subjects" label="Дисципліна" item-text="title"
-                  item-value="id" value="number"></v-autocomplete>
+                <v-autocomplete
+                  v-if="subjectForm.selectiveDiscipline"
+                  :items="selectiveDiscipline"
+                  v-model="subjectForm.selective_discipline_id"
+                  label="Вибіркова дисципліна"
+                  item-text="title"
+                  item-value="id"
+                  value="number"
+                ></v-autocomplete>
+                <v-autocomplete
+                  v-else
+                  v-model="subjectForm.asu_id"
+                  :items="subjects"
+                  label="Дисципліна"
+                  item-text="title"
+                  item-value="id"
+                  value="number"
+                ></v-autocomplete>
               </v-col>
               <v-col cols="12" class="py-0">
                 <v-text-field type="text" label="Виноска" v-model.number="subjectForm.note"></v-text-field>
               </v-col>
               <v-col cols="6" class="py-0">
-                <v-text-field type="number" label="Кредитів" min="0" v-model.number="subjectForm.credits" :rules="[
-                  (v) => v + subjectForm.sumSubjectsCredits <= cycleForm.credit || 'Перевищена кількість кредитів',
-                ]"></v-text-field>
+                <v-text-field
+                  type="number"
+                  label="Кредитів"
+                  min="0"
+                  v-model.number="subjectForm.credits"
+                  :rules="[
+                    (v) => v + subjectForm.sumSubjectsCredits <= cycleForm.credit || 'Перевищена кількість кредитів',
+                  ]"
+                ></v-text-field>
               </v-col>
               <v-col cols="6" class="py-0">
-                <v-text-field type="number" label="Обсяг годин лекцій" min="0"
-                  v-model.number="subjectForm.hours"></v-text-field>
+                <v-text-field
+                  type="number"
+                  label="Обсяг годин лекцій"
+                  min="0"
+                  v-model.number="subjectForm.hours"
+                ></v-text-field>
               </v-col>
               <v-col cols="6" class="py-0">
-                <v-text-field type="number" label="Обсяг годин практичних занять" min="0"
-                  v-model.number="subjectForm.practices"></v-text-field>
+                <v-text-field
+                  type="number"
+                  label="Обсяг годин практичних занять"
+                  min="0"
+                  v-model.number="subjectForm.practices"
+                ></v-text-field>
               </v-col>
               <v-col cols="6" class="py-0">
-                <v-text-field type="number" label="Обсяг годин лабораторних занять" min="0"
-                  v-model.number="subjectForm.laboratories"></v-text-field>
+                <v-text-field
+                  type="number"
+                  label="Обсяг годин лабораторних занять"
+                  min="0"
+                  v-model.number="subjectForm.laboratories"
+                ></v-text-field>
               </v-col>
               <v-col cols="6" class="py-0">
-                <v-autocomplete v-model="subjectForm.faculty_id" :items="faculties" :loading="facultiesLoading"
-                  item-text="name" item-value="id" label="Факультет"></v-autocomplete>
+                <v-autocomplete
+                  v-model="subjectForm.faculty_id"
+                  :items="faculties"
+                  :loading="facultiesLoading"
+                  item-text="name"
+                  item-value="id"
+                  label="Факультет"
+                ></v-autocomplete>
               </v-col>
               <v-col cols="6" class="py-0">
-                <v-autocomplete v-model="subjectForm.department_id" :items="departments" :loading="departmentsLoading"
-                  item-text="name" item-value="id" label="Кафедра"></v-autocomplete>
+                <v-autocomplete
+                  v-model="subjectForm.department_id"
+                  :items="departments"
+                  :loading="departmentsLoading"
+                  item-text="name"
+                  item-value="id"
+                  label="Кафедра"
+                ></v-autocomplete>
               </v-col>
             </v-row>
 
-            <v-alert dense outlined type="error" class="mb-2"
-              v-if="cycleForm.has_discipline && checkCountHoursSemester.length > 0">
+            <v-alert
+              dense
+              outlined
+              type="error"
+              class="mb-2"
+              v-if="cycleForm.has_discipline && checkCountHoursSemester.length > 0"
+            >
               Не вірно розподілені кредити за семестрами.
             </v-alert>
 
@@ -78,7 +134,13 @@
               Кількість розподілених годин має відповідати сумі годин лекцій, практичних, лабораторних.
             </v-alert>
 
-            <v-alert dense outlined type="error" class="mb-2" v-if="cycleForm.has_discipline && !checkHasCreditsSemester">
+            <v-alert
+              dense
+              outlined
+              type="error"
+              class="mb-2"
+              v-if="cycleForm.has_discipline && !checkHasCreditsSemester"
+            >
               В дисципліні повинні бути вказані кредити хоча б в одному семестрі.
             </v-alert>
 
@@ -115,20 +177,32 @@
                 <td :colspan="countModules * 2">Модульні атестаційні цикли</td>
               </tr>
               <tr>
-                <td :colspan="plan.form_organization.id == 1 ? 0 : 2"
-                  v-for="(subject, index) in subjectForm.hours_modules" :key="index" :class="[
+                <td
+                  :colspan="plan.form_organization.id == 1 ? 0 : 2"
+                  v-for="(subject, index) in subjectForm.hours_modules"
+                  :key="index"
+                  :class="[
                     cycleForm.has_discipline == 1 &&
-                      (index === activMod ? 'activMod' : '',
-                        checkLastHourModule == index || checkCountHoursSemester.indexOf(subject.semester) != -1)
+                    (index === activMod ? 'activMod' : '',
+                    checkLastHourModule == index || checkCountHoursSemester.indexOf(subject.semester) != -1)
                       ? 'error'
                       : '',
-                  ]">
-                  <v-text-field 
-                    type="number" 
-                    min="0" 
-                    :dark="cycleForm.has_discipline == 1 && (checkLastHourModule == index || checkCountHoursSemester.indexOf(subject.semester) != -1)" 
-                    v-model.number="subject.hour" 
-                    @click="activMod = index; moduleNumber = subject;" dense hide-details
+                  ]"
+                >
+                  <v-text-field
+                    type="number"
+                    min="0"
+                    :dark="
+                      cycleForm.has_discipline == 1 &&
+                      (checkLastHourModule == index || checkCountHoursSemester.indexOf(subject.semester) != -1)
+                    "
+                    v-model.number="subject.hour"
+                    @click="
+                      activMod = index;
+                      moduleNumber = subject;
+                    "
+                    dense
+                    hide-details
                   >
                   </v-text-field>
                 </td>
@@ -137,17 +211,28 @@
                 <td :colspan="countModules * 2" class="activMod">
                   <v-row>
                     <v-col>
-                      <v-autocomplete :items="formControls"
+                      <v-autocomplete
+                        :items="formControls"
                         :disabled="(cycleForm.has_discipline == 1 && !moduleNumber.hour) || moduleNumber.hasTask"
-                        label="Форма контролю" item-text="title" item-value="id" v-model="moduleNumber.form_control_id"
-                        hide-details @change="hasTaskInSemester()"></v-autocomplete>
+                        label="Форма контролю"
+                        item-text="title"
+                        item-value="id"
+                        v-model="moduleNumber.form_control_id"
+                        hide-details
+                        @change="hasTaskInSemester()"
+                      ></v-autocomplete>
                     </v-col>
                     <v-col>
-                      <v-autocomplete :items="individualTasks"
+                      <v-autocomplete
+                        :items="individualTasks"
                         :disabled="(cycleForm.has_discipline == 1 && !moduleNumber.hour) || moduleNumber.hasTask"
-                        label="Індивідуальні завдання" item-text="title" item-value="id"
-                        v-model="moduleNumber.individual_task_id" hide-details
-                        @change="hasTaskInSemester()"></v-autocomplete>
+                        label="Індивідуальні завдання"
+                        item-text="title"
+                        item-value="id"
+                        v-model="moduleNumber.individual_task_id"
+                        hide-details
+                        @change="hasTaskInSemester()"
+                      ></v-autocomplete>
                       {{ moduleNumber.test }}
                     </v-col>
                   </v-row>
@@ -157,14 +242,24 @@
                 <td :colspan="countModules * 2">Розподіл кредитів на вивчення за семестрами</td>
               </tr>
               <tr>
-                <td colspan="2" v-for="(item, index) in subjectForm.semesters_credits" :key="index" :class="[
-                  cycleForm.has_discipline == 1 && checkCountHoursSemester.indexOf(item.semester) != -1
-                    ? 'error'
-                    : '',
-                ]">
-                  <v-text-field type="number" min="0"
+                <td
+                  colspan="2"
+                  v-for="(item, index) in subjectForm.semesters_credits"
+                  :key="index"
+                  :class="[
+                    cycleForm.has_discipline == 1 && checkCountHoursSemester.indexOf(item.semester) != -1
+                      ? 'error'
+                      : '',
+                  ]"
+                >
+                  <v-text-field
+                    type="number"
+                    min="0"
                     :dark="cycleForm.has_discipline == 1 && checkCountHoursSemester.indexOf(item.semester) != -1"
-                    v-model.number="item.credit" dense hide-details>
+                    v-model.number="item.credit"
+                    dense
+                    hide-details
+                  >
                   </v-text-field>
                 </td>
               </tr>
@@ -181,18 +276,38 @@
             <v-card-text class="pb-0">
               <v-container>
                 <validation-provider v-slot="{ errors }" name="цикл" rules="required">
-                  <v-autocomplete :items="listCycles" v-model="cycleForm.list_cycle_id" :error-messages="errors"
-                    item-text="title" item-value="id" label="Цикл" class="mb-4" required></v-autocomplete>
+                  <v-autocomplete
+                    :items="listCycles"
+                    v-model="cycleForm.list_cycle_id"
+                    :error-messages="errors"
+                    item-text="title"
+                    item-value="id"
+                    label="Цикл"
+                    class="mb-4"
+                    required
+                  ></v-autocomplete>
                 </validation-provider>
 
-                <v-text-field label="Кредитів" v-model="cycleForm.credit" type="number" min="0" :rules="[
-                  (v) =>
-                    +v + cycleForm.sumCyclesCredits <= cycleForm.parrentCycleCredit ||
-                    'Перевищена кількість кредитів',
-                ]" dense hide-details class="mb-4"></v-text-field>
+                <v-text-field
+                  label="Кредитів"
+                  v-model="cycleForm.credit"
+                  type="number"
+                  min="0"
+                  :rules="[
+                    (v) =>
+                      +v + cycleForm.sumCyclesCredits <= cycleForm.parrentCycleCredit ||
+                      'Перевищена кількість кредитів',
+                  ]"
+                  dense
+                  hide-details
+                  class="mb-4"
+                ></v-text-field>
 
-                <v-checkbox class="ma-0" v-model="cycleForm.has_discipline"
-                  label="Цикл з навчальними дисциплінами"></v-checkbox>
+                <v-checkbox
+                  class="ma-0"
+                  v-model="cycleForm.has_discipline"
+                  label="Цикл з навчальними дисциплінами"
+                ></v-checkbox>
               </v-container>
             </v-card-text>
             <v-card-actions class="pt-0">
@@ -205,14 +320,29 @@
       </validation-observer>
     </v-dialog>
 
-    <v-alert dense outlined type="error" class="mb-2"
-      v-if="plan.count_credits_selective_discipline < options['min-quantity-credits'] && plan.credits.length > 0">
+    <v-alert
+      dense
+      outlined
+      type="error"
+      class="mb-2"
+      v-if="plan.count_credits_selective_discipline < options['min-quantity-credits'] && plan.credits.length > 0"
+    >
       Кількість кредитів для вибіркових дисциплін має бути не менше {{ options['min-quantity-credits'] }}.
     </v-alert>
 
-    <CycleItem :item="item" :index="index" v-for="(item, index) in plan.cycles" :key="'cycle' + item.id + indexComponent"
-      :indexComponent="indexComponent" :data="plan" :cycles="cycles" @addSubject="addSubject" @addCycle="addCycle"
-      @saveCycle="saveCycle" @delCycle="delCycle" />
+    <CycleItem
+      :item="item"
+      :index="index"
+      v-for="(item, index) in plan.cycles"
+      :key="'cycle' + item.id + indexComponent"
+      :indexComponent="indexComponent"
+      :data="plan"
+      :cycles="cycles"
+      @addSubject="addSubject"
+      @addCycle="addCycle"
+      @saveCycle="saveCycle"
+      @delCycle="delCycle"
+    />
 
     <div class="text-center mt-4" v-if="allowedRoles([ROLES.ID.admin, ROLES.ID.root])">
       <v-tooltip bottom>
@@ -231,7 +361,7 @@ import CycleItem from '@/views/pages/plan/tabs/CycleItem.vue';
 import api from '@/api';
 import { API } from '@/api/constants-api';
 import { eventBus } from '@/main';
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { ROLES } from '@/utils/constants';
 import RolesMixin from '@/mixins/RolesMixin';
 export default {
@@ -432,6 +562,7 @@ export default {
       indexComponent: 'plans/indexComponent',
       options: 'plans/options',
     }),
+    ...mapState('plans', ['submitLoading']),
   },
   mounted() {
     if (this.$route.name === 'EditPlan') {
@@ -603,24 +734,30 @@ export default {
     saveSubject() {
       if (this.subjectForm.id) {
         this.subjectForm.plan_id = this.$route.params.id;
+        this.$store.dispatch('plans/setSubmitLoading', true);
         api
           .patch(API.SUBJECTS, this.subjectForm.id, this.subjectForm)
           .then(() => {
             this.$emit('apiGetPlanId');
             this.subjectDialog = false;
+            this.$store.dispatch('plans/setSubmitLoading', false);
           })
           .catch((errors) => {
+            this.$store.dispatch('plans/setSubmitLoading', false);
             console.log(errors.response.data);
           });
       } else {
         this.subjectForm.plan_id = this.$route.params.id;
+        this.$store.dispatch('plans/setSubmitLoading', true);
         api
           .post(API.SUBJECTS, this.subjectForm)
           .then(() => {
             this.$emit('apiGetPlanId');
             this.subjectDialog = false;
+            this.$store.dispatch('plans/setSubmitLoading', false);
           })
           .catch((errors) => {
+            this.$store.dispatch('plans/setSubmitLoading', false);
             console.log(errors.response.data);
           });
       }
