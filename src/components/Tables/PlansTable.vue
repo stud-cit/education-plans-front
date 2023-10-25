@@ -188,6 +188,7 @@ export default {
         { text: 'Кафедра', value: 'department', sortable: false },
         { text: 'Рік', value: 'year', width: '80px' },
         { text: 'Дата створення', value: 'created_at', width: '150px' },
+        { text: 'Верифікація', value: 'verification', width: '150px', sortable: false },
         { text: 'Дії', value: 'actions', width: '120px', sortable: false },
       ],
       faculty: null,
