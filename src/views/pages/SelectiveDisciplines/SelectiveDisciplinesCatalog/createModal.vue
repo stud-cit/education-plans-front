@@ -139,7 +139,7 @@
                 ></v-autocomplete>
               </validation-provider>
 
-              <validation-provider v-slot="{ errors }" name="Лекції" rules="required">
+              <validation-provider v-slot="{ errors }" name="Лекції">
                 <v-autocomplete
                   v-model="lecture"
                   :items="teachers"
