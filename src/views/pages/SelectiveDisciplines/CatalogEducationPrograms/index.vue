@@ -95,7 +95,7 @@
       </template>
 
       <template v-slot:item.index="{ index }">
-        {{ ++index }}
+        {{ (index + 1) + (options.itemsPerPage * (options.page - 1)) }}
       </template>
       <template v-slot:item.actions="{ item }">
         <btn-tooltip tooltip="Перегляд/Редагувати">
