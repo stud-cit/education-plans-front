@@ -94,7 +94,7 @@
       </template>
 
       <template v-slot:item.index="{ index }">
-        {{ ++index }}
+        {{ (index + 1) + (options.itemsPerPage * (options.page - 1)) }}
       </template>
       <template v-slot:item.title="{ item }">
         <PublishedBadge :published="item.published" /> {{ item.title }}
@@ -272,7 +272,8 @@ export default {
       this.options.year = v;
     },
     options(v) {
-      v.year = new Date().getFullYear();
+      const cYear = new Date().getFullYear();
+      v.year = cYear === this.year ? cYear : this.year;
       this.apiGetItems();
     },
   },
@@ -282,6 +283,7 @@ export default {
         ALLOWED_REQUEST_PARAMETERS.GET_CATALOG_SELECTIVE_SUBJECTS,
         this.options,
       );
+      console.log('this.options',this.options, options)
       try {
         const response = await api.get(API.CATALOG_SELECTIVE_SUBJECTS, options, { showLoader: true });
         const { data } = response;
