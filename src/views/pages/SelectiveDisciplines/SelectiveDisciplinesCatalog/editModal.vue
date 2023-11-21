@@ -345,7 +345,7 @@ export default {
       requirements: null,
 
       radioRestrictionsSemester: [
-        { id: 1, label: 'Без обмежень' },
+        { id: 1, label: 'Відповідно до навчального плану' },
         { id: 2, label: 'Крім:' },
       ],
       restrictionsSemester: null,
