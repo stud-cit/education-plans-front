@@ -95,6 +95,7 @@
                 <v-radio-group v-model="selectListKnowledgeSpecialties" row :error-messages="errors">
                   <v-radio
                     v-for="radio in radioBtnListKnowledgeSpecialties"
+                    :disabled="radio.disabled"
                     :key="radio.id"
                     :label="radio.label"
                     :value="radio"
@@ -123,6 +124,27 @@
                   :label="
                     radioBtnListKnowledgeSpecialties.find((el) => el.id === selectListKnowledgeSpecialties.id).label
                   "
+                ></v-autocomplete>
+              </validation-provider>
+
+              <!-- begin  -->
+
+              <validation-provider
+                v-if="knowledgeSpecialty && knowledgeSpecialty.id === 3"
+                v-slot="{ errors }"
+                name="Спеціальності"
+                :rules="knowledgeSpecialty.id === 3 ? 'required' : ''"
+              >
+                <v-autocomplete
+                  v-model="listKnowledgeSpecialties"
+                  :items="listsKnowledgeSpecialties"
+                  :error-messages="errors"
+                  item-text="title"
+                  hide-details
+                  item-value="id"
+                  return-object
+                  multiple
+                  class="mt-3"
                 ></v-autocomplete>
               </validation-provider>
 
@@ -318,13 +340,14 @@ export default {
       knowledgeSpecialties: [
         { id: 1, title: 'Для всіх ОП' },
         { id: 2, title: 'Для всіх здобувачів освіти крім:' },
+        { id: 3, title: 'Для спеціальностей:' },
       ],
       knowledgeSpecialty: null,
       showListKnowledgeSpecialties: false,
       radioBtnListKnowledgeSpecialties: [
-        { id: 1, label: 'Інститут/факультет', type: 'faculty', itemText: 'name' },
-        { id: 2, label: 'Спеціальностей', type: 'specialty', itemText: 'title' },
-        { id: 3, label: 'Освітні програми', type: 'education_program', itemText: 'title' },
+        { id: 1, label: 'Інститут/факультет', type: 'faculty', itemText: 'name', disabled: true },
+        { id: 2, label: 'Спеціальностей', type: 'specialty', itemText: 'title', disabled: false },
+        { id: 3, label: 'Освітні програми', type: 'education_program', itemText: 'title', disabled: false },
       ],
       selectListKnowledgeSpecialties: null,
       listsKnowledgeSpecialties: [],
@@ -371,10 +394,14 @@ export default {
   },
   watch: {
     knowledgeSpecialty(v) {
-      if (v === null || v.id === 1) {
+      if (v !== null && v.id === 1) {
+        console.log('Select 1', v);
         this.selectListKnowledgeSpecialties = null;
+      } else if (v !== null && v.id === 3) {
+        console.log('Select 3', v);
+        this.selectListKnowledgeSpecialties = this.radioBtnListKnowledgeSpecialties[1];
       } else {
-        this.selectListKnowledgeSpecialties = this.radioBtnListKnowledgeSpecialties[0];
+        this.selectListKnowledgeSpecialties = this.radioBtnListKnowledgeSpecialties[1];
       }
     },
     selectListKnowledgeSpecialties(v) {
@@ -438,6 +465,7 @@ export default {
       });
     },
     close() {
+      this.clear();
       this.$emit('close');
     },
     submit() {
@@ -449,6 +477,13 @@ export default {
             type_name: this.selectListKnowledgeSpecialties ? this.selectListKnowledgeSpecialties.label : null,
             list: this.listKnowledgeSpecialties,
           };
+
+          // TODO: видалення type_name при умові, що knowledgeSpecialty буде Для спеціальностей
+          if (this.knowledgeSpecialty.id === 3) {
+            listFieldsKnowledge.type_name = null;
+          }
+
+          console.log('listFieldsKnowledge', listFieldsKnowledge);
           const limitation = {
             label: this.restrictionsSemester.label,
             semesters: this.semesters,
