@@ -347,6 +347,70 @@
               <!--Todo Потоки-->
             </tr>
 
+            <template v-if="(cycle.asu_id || cycle.selective_discipline_id) && (cycle.subjects.length > 0)">
+              <tr v-for="(subject, subjectIndex) in cycle.subjects" :key="'subject_1_' + subjectIndex">
+                <td class="border-table">{{ cycle.index }}.{{ subjectIndex + 1 }}</td>
+                <td class="border-table">
+                  {{ subject.asu_id ? subject.title : subject.selective_discipline.title
+                  }}<sup v-if="subject.note">{{
+                    plan.subject_notes.indexOf(plan.subject_notes.find((item) => item.id == subject.id)) + 1
+                  }}</sup>
+                </td>
+                <td class="border-table">{{ subject.exams }}</td>
+                <!--Екзамени-->
+                <td class="border-table">{{ subject.test }}</td>
+                <!--Заліки-->
+                <td class="border-table">
+                  {{
+                    subject.individual_tasks +
+                    (cycle.list_cycle_id == 10 ? plan.individual_task_semester[cycle.index - 1] : '')
+                  }}
+                </td>
+                <!--Індивідуальні завдання-->
+                <td class="border-table">{{ subject.credits > 0 ? subject.credits : '' }}</td>
+                <!--Кількість кредитів ЄКТС-->
+                <td class="border-table">{{ subject.total_volume_hour > 0 ? subject.total_volume_hour : '' }}</td>
+                <!--загальний обсяг-->
+                <td class="border-table">{{ subject.total_classroom > 0 ? subject.total_classroom : '' }}</td>
+                <!--всього-->
+                <td class="border-table">{{ subject.hours > 0 ? subject.hours : '' }}</td>
+                <!--лекції-->
+                <td class="border-table">{{ subject.practices > 0 ? subject.practices : '' }}</td>
+                <!--практичні, семінарські-->
+                <td class="border-table">{{ subject.laboratories > 0 ? subject.laboratories : '' }}</td>
+                <!--лабораторні-->
+                <td class="border-table">{{ subject.individual_work > 0 ? subject.individual_work : '' }}</td>
+                <!--самостійна робота-->
+
+                <td
+                  v-for="semester in plan.study_term.semesters"
+                  class="border-table no-print"
+                  :key="'semester_noprint_' + semester"
+                >
+                  <template v-if="subject.semesters_credits">
+                    {{ subject.semesters_credits[semester] }}
+                  </template>
+                </td>
+
+                <td
+                  v-for="(hour, idx) in subject.hours_modules.length > 0
+                    ? subject.hours_modules
+                    : plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
+                  :key="'hour_' + idx"
+                  class="border-table"
+                >
+                  <template v-if="hour.hasOwnProperty('hour')">
+                    {{ hour.hour > 0 ? hour.hour : '' }}
+                  </template>
+                </td>
+                <!--Todo for course-->
+
+                <td class="border-table d-print-none">{{ subject.department }}</td>
+                <td class="border-table d-print-none"></td>
+                <!--Todo Потоки-->
+              </tr>
+            </template>
+
             <tr v-if="cycle.total" :key="'total_' + index" class="table-bold">
               <td class="border-table">{{ cycle.index }}</td>
               <td class="border-table">{{ cycle.title }}</td>
