@@ -1,14 +1,15 @@
 <template>
   <div>
-    <v-row
-      :class="[
-        'cycle-subject',
-        hasErrors || subjectIndexError == subject.id || !subject.verification ? 'error' : '',
-        'ma-0',
-        'mb-1',
-      ]"
-    >
+    <v-row :class="[
+      'cycle-subject',
+      hasErrors || subjectIndexError == subject.id || !subject.verification ? 'error' : '',
+      'ma-0',
+      'mb-1',
+    ]">
       <v-col cols="5" class="pa-0 text-left">
+        <v-icon v-if="subject.subjects.length > 0">mdi-chevron-down</v-icon>
+        <v-icon v-if="subject.subject_id">mdi-circle-small</v-icon>
+        {{ subject.checkCountCreditSubjects }}
         {{ subject.selective_discipline_id ? subject.selective_discipline.title : subject.title }}
       </v-col>
       <v-col class="pa-0">
@@ -32,17 +33,9 @@
       <v-col class="pa-0 text-right">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              :disabled="
-                isShortPlan &&
-                (item.list_cycle_id === CYCLES.PRACTICAL_TRAINING || item.list_cycle_id === CYCLES.ATTESTATION)
-              "
-              small
-              icon
-              @click="editSubject(subject, item)"
-              v-bind="attrs"
-              v-on="on"
-            >
+            <v-btn :disabled="isShortPlan &&
+              (item.list_cycle_id === CYCLES.PRACTICAL_TRAINING || item.list_cycle_id === CYCLES.ATTESTATION)
+              " small icon @click="editSubject(subject, item)" v-bind="attrs" v-on="on">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </template>
@@ -56,14 +49,25 @@
           </template>
           <span>Видалити</span>
         </v-tooltip>
+        <v-tooltip bottom v-if="!subject.subject_id">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn :disabled="isShortPlan" small icon @click="addSubSubject(subject, item)" v-bind="attrs" v-on="on">
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+          </template>
+          <span>Додати піддисципліну</span>
+        </v-tooltip>
       </v-col>
     </v-row>
+    <SubjectItem v-for="(child, subjectIndex) in subject.subjects" :key="'subject' + subjectIndex" :parentItem="subject"
+      v-bind:subject="child" :item="item" />
   </div>
 </template>
 <script>
 import { eventBus } from '@/main';
 import { mapGetters } from 'vuex';
 import { CYCLES } from '@/utils/constants';
+import SubjectItem from '@/views/pages/plan/tabs/SubjectItem.vue';
 
 export default {
   name: 'SubjectItem',
@@ -88,13 +92,13 @@ export default {
       isShortPlan: 'plans/isShortPlan',
     }),
     hasErrors() {
-      return this.subjectIndexError == this.subject.id || 
-      !this.subject.verification ||
-      (this.item.has_discipline && !this.subject.checkCountHoursModules) ||
-      (this.item.has_discipline && this.subject.checkCountHours) ||
-      (this.item.has_discipline && this.subject.checkLastHourModule != null) ||
-      (this.item.has_discipline && !this.subject.checkHasCreditsSemester) ||
-      (this.item.has_discipline && this.subject.checkCountHoursSemester.length > 0)
+      return this.subjectIndexError == this.subject.id ||
+        !this.subject.verification ||
+        (this.item.has_discipline && !this.subject.checkCountHoursModules) ||
+        (this.item.has_discipline && this.subject.checkCountHours) ||
+        (this.item.has_discipline && this.subject.checkLastHourModule != null) ||
+        (this.item.has_discipline && !this.subject.checkHasCreditsSemester) ||
+        (this.item.has_discipline && this.subject.checkCountHoursSemester.length > 0)
     }
   },
   mounted() {
@@ -124,6 +128,9 @@ export default {
     },
     delSubject(subject) {
       eventBus.$emit('delSubject', subject);
+    },
+    addSubSubject(subject, cycle) {
+      eventBus.$emit('addSubSubject', { subject, cycle });
     },
   },
 };

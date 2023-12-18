@@ -581,6 +581,9 @@ export default {
     eventBus.$on('delSubject', (data) => {
       this.delSubject(data);
     });
+    eventBus.$on('addSubSubject', (data) => {
+      this.addSubSubject(data);
+    });
   },
   methods: {
     hasTaskInSemester() {
@@ -604,6 +607,65 @@ export default {
         }
       });
     },
+
+    addSubSubject({ subject, cycle }) {
+      console.log(subject, cycle)
+      this.activMod = null;
+      this.moduleNumber = null;
+      this.cycleForm = cycle;
+      this.subjectForm = {
+        sumSubjectsCredits: this.sumArray(cycle.subjects, 'credits'),
+        id: null,
+        subject_id: subject.id,
+        cycle_id: cycle.id,
+        selectiveDiscipline: false,
+        selective_discipline_id: null,
+        asu_id: null,
+        credits: 0,
+        hours: 0,
+        practices: 0,
+        laboratories: 0,
+        hours_modules: [],
+        semesters_credits: [],
+        verification: 1,
+        faculty_id: null,
+        department_id: null,
+      };
+      let semesters = this.plan.study_term.semesters;
+      let formOrganization = this.plan.form_organization.id == 1 ? 2 : 1;
+
+      let currentSemester = 1;
+      let currentModule = 1;
+      for (let course = 1; course <= this.plan.study_term.course; course++) {
+        const obj = { course };
+        for (let semester = 1; semester <= 2; semester++) {
+          if (currentSemester <= semesters) {
+            obj.semester = currentSemester;
+
+            this.subjectForm.semesters_credits.push({
+              credit: 0.0,
+              course,
+              semester: currentSemester,
+            });
+            for (let module = 1; module <= formOrganization; module++) {
+              this.subjectForm.hours_modules.push({
+                hour: 0,
+                course,
+                semester: currentSemester,
+                module: currentModule++,
+                individual_task_id: 3,
+                form_control_id: 10,
+              });
+            }
+          }
+          currentSemester++;
+        }
+      }
+
+      this.subjectDialog = true;
+    },
+
+
     addSubject(item) {
       this.activMod = null;
       this.moduleNumber = null;
