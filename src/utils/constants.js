@@ -8,6 +8,7 @@ export const ROLES = {
     faculty_institute: 6,
     department: 7,
     root: 8,
+    guest: 9,
   },
 };
 export const FORM_ORGANIZATIONS = {
