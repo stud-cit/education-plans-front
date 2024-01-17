@@ -180,17 +180,7 @@ export default {
       ROLES,
       filterToggle: false,
       searchTitle: '',
-      headers: [
-        { text: '№', value: 'index', sortable: false },
-        { text: 'Тип', value: 'type_id', sortable: true },
-        { text: 'Назва', value: 'title' },
-        { text: 'Факультет', value: 'faculty', sortable: false },
-        { text: 'Кафедра', value: 'department', sortable: false },
-        { text: 'Рік', value: 'year', width: '80px' },
-        { text: 'Дата створення', value: 'created_at', width: '150px' },
-        { text: 'Верифікація', value: 'verification', width: '150px', sortable: false },
-        { text: 'Дії', value: 'actions', width: '120px', sortable: false },
-      ],
+      headers: [],
       faculty: null,
       faculties: [],
       department: null,
@@ -245,8 +235,28 @@ export default {
   },
   mounted() {
     this.apiGetDivisions();
+    this.generateHeader();
   },
   methods: {
+    generateHeader() {
+      let headers = [
+        { text: '№', value: 'index', sortable: false },
+        { text: 'Тип', value: 'type_id', sortable: true },
+        { text: 'Назва', value: 'title' },
+        { text: 'Факультет', value: 'faculty', sortable: false },
+        { text: 'Кафедра', value: 'department', sortable: false },
+        { text: 'Рік', value: 'year', width: '80px' },
+        { text: 'Дата створення', value: 'created_at', width: '150px' },
+        { text: 'Верифікація', value: 'verification', width: '150px', sortable: false },
+        { text: 'Дії', value: 'actions', width: '120px', sortable: false },
+      ];
+
+      if (this.allowedRoles([ROLES.ID.guest])) {
+        headers = headers.filter((item) => item.value != 'verification' && item.value != 'created_at');
+      }
+
+      this.headers = headers;
+    },
     update() {
       this.$emit('update', this.options);
     },
