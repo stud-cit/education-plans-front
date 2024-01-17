@@ -12,6 +12,10 @@ export default {
   },
   methods: {
     itemRowBackground(item) {
+      if (this.allowedRoles([ROLES.ID.guest])) {
+        return '';
+      }
+
       if (this.allowedRoles([ROLES.ID.admin]) || this.allowedRoles([ROLES.ID.root])) {
         return item.status + ' lighten-5';
       } else {
