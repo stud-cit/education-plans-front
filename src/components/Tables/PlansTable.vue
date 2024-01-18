@@ -72,7 +72,7 @@
             clearable
           ></v-autocomplete>
         </v-col>
-        <v-col cols="12" lg="6">
+        <v-col cols="12" lg="6" v-if="exceptRoles([ROLES.ID.guest])">
           <v-autocomplete
             v-model="division"
             :items="divisions"
@@ -83,7 +83,7 @@
             clearable
           ></v-autocomplete>
         </v-col>
-        <v-col cols="12" lg="6">
+        <v-col cols="12" lg="6" v-if="exceptRoles([ROLES.ID.guest])">
           <v-select
             v-model="verificationDivisionStatus"
             :items="verificationsDivisionsStatus"
