@@ -1,6 +1,11 @@
 <template>
   <v-container class="preview-plan" v-if="plan">
-    <ShortedByYearBtns class="no-print d-print-none" :items="plan.shorted_by_year" :plan-id="plan.id" />
+    <ShortedByYearBtns
+      v-if="actions.can_generate_short_plan"
+      class="no-print d-print-none"
+      :items="plan.shorted_by_year"
+      :plan-id="plan.id"
+    />
     <div class="no-print mb-10 d-flex flex-wrap justify-end d-print-none">
       <v-btn
         v-if="plan.speciality_id"
@@ -347,7 +352,7 @@
               <!--Todo Потоки-->
             </tr>
 
-            <template v-if="(cycle.asu_id || cycle.selective_discipline_id) && (cycle.subjects.length > 0)">
+            <template v-if="(cycle.asu_id || cycle.selective_discipline_id) && cycle.subjects.length > 0">
               <tr v-for="(subject, subjectIndex) in cycle.subjects" :key="'subject_1_' + subjectIndex">
                 <td class="border-table">{{ cycle.index }}.{{ subjectIndex + 1 }}</td>
                 <td class="border-table">
@@ -691,6 +696,7 @@ export default {
           { key: 'year', acolspan: 6 },
         ],
       ],
+      actions: [],
     };
   },
   mounted() {
@@ -710,7 +716,7 @@ export default {
         api.show(API.PLANS, id, { showLoader: true }).then((response) => {
           if (response.status === 200) {
             this.plan = response.data.data;
-            this.getFullColspan();
+            (this.actions = response.data.actions), this.getFullColspan();
             this.generateTable(this.plan);
             this.updateCycles(this.getCyclesRow(this.plan.cycles));
           }
