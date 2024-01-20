@@ -140,9 +140,9 @@
       >
         Переглянути
       </v-btn>
-      <v-btn small depressed color="primary" :disabled="!!plan.status_op" class="ml-2" @click="openProgramDialog()">
+      <!-- <v-btn small depressed color="primary" :disabled="!!plan.status_op" class="ml-2" @click="openProgramDialog()">
         Верифікувати з освітньою програмою
-      </v-btn>
+      </v-btn> -->
       <v-btn
         small
         depressed
@@ -276,7 +276,7 @@ export default {
     hasErrors() {
       if (this.plan.comment.length > 0) {
         return true;
-      } else if (this.plan.status_op && (this.plan.errors.length > 0 || this.errorsPlan.length > 0)) {
+      } else if (this.plan.errors.length > 0 || this.errorsPlan.length > 0) {
         return false;
       } else {
         return true;
@@ -292,7 +292,6 @@ export default {
           this.plan.status == 'success' ||
           !!this.plan.errors.length ||
           !!this.errorsPlan.length ||
-          !this.plan.status_op ||
           this.plan.need_verification === true
         );
       }
@@ -421,10 +420,10 @@ export default {
       this.modalVerification.comment = comment;
     },
 
-    openProgramDialog() {
-      this.apiGetPrograms();
-      this.programsDialog = true;
-    },
+    // openProgramDialog() {
+    //   this.apiGetPrograms();
+    //   this.programsDialog = true;
+    // },
     submit(data) {
       let path = 'plans/store';
 
