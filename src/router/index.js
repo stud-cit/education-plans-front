@@ -9,6 +9,7 @@ import CreatePlan from '@/views/pages/plan/CreatePlan';
 import SelectiveDisciplines from '@/views/pages/SelectiveDisciplines/SelectiveDisciplines';
 
 const allRoles = () => Object.values(ROLES.ID);
+const exceptRoles = (role_ids) => allRoles().filter((key) => !role_ids.includes(key));
 
 Vue.use(VueRouter);
 const BREADCRUMBS = {
@@ -46,7 +47,7 @@ const routes = [
         component: SelectiveDisciplines,
         meta: {
           requiresAuth: true,
-          accessIsAllowed: allRoles(),
+          accessIsAllowed: exceptRoles([ROLES.ID.guest]),
           header: 'Вибіркові дисципліни',
           breadCrumb: [{ text: 'Вибіркові дисципліни' }],
         },
@@ -61,7 +62,7 @@ const routes = [
           ),
         meta: {
           requiresAuth: true,
-          accessIsAllowed: allRoles(),
+          accessIsAllowed: exceptRoles([ROLES.ID.guest]),
           header: 'Вибіркові дисципліни (каталог)',
           breadCrumb: [
             {
@@ -86,7 +87,7 @@ const routes = [
               ),
             meta: {
               requiresAuth: true,
-              accessIsAllowed: allRoles(),
+              accessIsAllowed: exceptRoles([ROLES.ID.guest]),
               header: 'Вибіркові дисципліни за спеціальністю (каталог)',
               breadCrumb: [
                 {
@@ -108,7 +109,7 @@ const routes = [
             meta: {
               requiresAuth: true,
               header: 'Каталог',
-              accessIsAllowed: allRoles(),
+              accessIsAllowed: exceptRoles([ROLES.ID.guest]),
               breadCrumb: [
                 {
                   text: 'Вибіркові дисципліни',
@@ -138,7 +139,7 @@ const routes = [
               ),
             meta: {
               requiresAuth: true,
-              accessIsAllowed: allRoles(),
+              accessIsAllowed: exceptRoles([ROLES.ID.guest]),
               header: 'Вибіркові дисципліни за освітньою програмою (каталог)',
               breadCrumb: [
                 {
@@ -160,7 +161,7 @@ const routes = [
             meta: {
               requiresAuth: true,
               header: 'Каталог',
-              accessIsAllowed: allRoles(),
+              accessIsAllowed: exceptRoles([ROLES.ID.guest]),
               breadCrumb: [
                 {
                   text: 'Вибіркові дисципліни',
@@ -242,7 +243,7 @@ const routes = [
         component: CreatePlan,
         meta: {
           requiresAuth: true,
-          accessIsAllowed: allRoles(),
+          accessIsAllowed: exceptRoles([ROLES.ID.guest]),
           header: 'Редагування плану',
           breadCrumb() {
             const paramToPageB = this.$route.params.title;
