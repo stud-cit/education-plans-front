@@ -1,87 +1,37 @@
 <template>
   <v-container>
-    <v-data-table
-      :headers="headers"
-      :items="items"
-      class="elevation-1"
-      :item-class="this.itemRowBackground"
-      :server-items-length="meta.total"
-      :options.sync="options"
-      :footer-props="{ 'items-per-page-options': [15, 25, 50] }"
-    >
+    <v-data-table :headers="headers" :items="items" class="elevation-1" :item-class="this.itemRowBackground"
+      :server-items-length="meta.total" :options.sync="options"
+      :footer-props="{ 'items-per-page-options': [15, 25, 50] }">
       <template v-slot:top>
         <v-row class="px-4">
           <v-col cols="12" md="6">
-            <v-autocomplete
-              v-model="year"
-              :items="years"
-              item-text="year"
-              item-value="id"
-              label="Рік"
-              hide-details
-            ></v-autocomplete>
+            <v-autocomplete v-model="year" :items="years" item-text="year" item-value="id" label="Рік"
+              hide-details></v-autocomplete>
           </v-col>
           <v-col cols="12" md="6">
-            <v-autocomplete
-              v-model="group"
-              :items="groups"
-              item-text="title"
-              item-value="id"
-              label="Група"
-              hide-details
-              clearable
-            ></v-autocomplete>
+            <v-autocomplete v-model="group" :items="groups" item-text="title" item-value="id" label="Група" hide-details
+              clearable></v-autocomplete>
           </v-col>
         </v-row>
 
         <v-row class="px-4 pb-4">
           <v-col cols="12" lg="6">
-            <v-autocomplete
-              v-model="faculty"
-              :items="faculties"
-              item-text="name"
-              item-value="id"
-              label="Факультет"
-              :loading="facultiesLoading"
-              hide-details
-              clearable
-            ></v-autocomplete>
+            <v-autocomplete v-model="faculty" :items="faculties" item-text="name" item-value="id" label="Факультет"
+              :loading="facultiesLoading" hide-details clearable></v-autocomplete>
           </v-col>
           <v-col cols="12" lg="6">
-            <v-autocomplete
-              v-model="department"
-              :items="departments"
-              item-text="name"
-              item-value="id"
-              label="Кафедра"
-              hide-details
-              :loading="departmentsLoading"
-              clearable
-            ></v-autocomplete>
+            <v-autocomplete v-model="department" :items="departments" item-text="name" item-value="id" label="Кафедра"
+              hide-details :loading="departmentsLoading" clearable></v-autocomplete>
           </v-col>
           <v-col cols="12" lg="6">
-            <v-autocomplete
-              v-model="division"
-              :items="divisions"
-              item-text="title"
-              item-value="id"
-              hide-details
-              label="Представник відділу"
-              clearable
-            ></v-autocomplete>
+            <v-autocomplete v-model="division" :items="divisions" item-text="title" item-value="id" hide-details
+              label="Представник відділу" clearable></v-autocomplete>
           </v-col>
           <v-col cols="12" lg="6">
-            <v-select
-              v-model="verificationDivisionStatus"
-              :items="verificationsDivisionsStatus"
-              :disabled="division === null"
-              item-text="title"
-              item-value="id"
-              select
-              hide-details
-              label="Статус верифікації"
-              clearable
-            ></v-select>
+            <v-select v-model="verificationDivisionStatus" :items="verificationsDivisionsStatus"
+              :disabled="division === null" item-text="title" item-value="id" select hide-details
+              label="Статус верифікації" clearable></v-select>
           </v-col>
         </v-row>
         <v-row class="px-4 pb-4">
@@ -97,7 +47,7 @@
         {{ (index + 1) + (options.itemsPerPage * (options.page - 1)) }}
       </template>
       <template v-slot:item.title="{ item }">
-        <PublishedBadge :published="item.published" /> {{ item.title }}
+        {{ item.title }}
       </template>
       <template v-slot:item.actions="{ item }">
         <btn-tooltip tooltip="Перегляд">
@@ -157,26 +107,12 @@
       </v-tooltip>
     </v-speed-dial>
 
-    <CreateSelectiveDisciplinesCatalogModal
-      :dialog="createModal"
-      @close="closeDialogCreate"
-      @submit="create"
-      ref="createModal"
-    />
-    <EditSelectiveDisciplinesCatalogModal
-      :dialog="editModal"
-      :item="item"
-      @close="closeDialogEdit"
-      @submit="edit"
-      ref="editModal"
-    />
-    <PreviewSelectiveDisciplinesCatalogModal
-      :dialog="previewModal"
-      :item="item"
-      @close="closeDialogPreview"
-      @init="apiGetItems"
-      ref="previewModal"
-    />
+    <CreateSelectiveDisciplinesCatalogModal :dialog="createModal" @close="closeDialogCreate" @submit="create"
+      ref="createModal" />
+    <EditSelectiveDisciplinesCatalogModal :dialog="editModal" :item="item" @close="closeDialogEdit" @submit="edit"
+      ref="editModal" />
+    <PreviewSelectiveDisciplinesCatalogModal :dialog="previewModal" :item="item" @close="closeDialogPreview"
+      @init="apiGetItems" ref="previewModal" />
     <PdfSelectiveDisciplinesCatalogModal :dialog="pdfModal" @close="closeDialogPdf" :options="options" ref="pdfModal" />
     <CatalogSelectiveDisciplinesCatalogModal :dialog="catalogModal" @close="closeDialogCatalog" ref="catalogModal" />
   </v-container>
@@ -193,9 +129,7 @@ import CreateSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisci
 import EditSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/editModal';
 import PdfSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/pdfModal';
 import CatalogSelectiveDisciplinesCatalogModal from '@/views/pages/SelectiveDisciplines/SelectiveDisciplinesCatalog/catalogModal';
-import PublishedBadge from '@/components/base/PublishedBadge';
 import { mapGetters } from 'vuex';
-import { ROLES } from '@/utils/constants';
 export default {
   name: 'SelectiveDisciplinesCatalog',
   components: {
@@ -204,7 +138,6 @@ export default {
     CreateSelectiveDisciplinesCatalogModal,
     PreviewSelectiveDisciplinesCatalogModal,
     CatalogSelectiveDisciplinesCatalogModal,
-    PublishedBadge,
   },
   data() {
     return {
@@ -283,7 +216,7 @@ export default {
         ALLOWED_REQUEST_PARAMETERS.GET_CATALOG_SELECTIVE_SUBJECTS,
         this.options,
       );
-      console.log('this.options',this.options, options)
+
       try {
         const response = await api.get(API.CATALOG_SELECTIVE_SUBJECTS, options, { showLoader: true });
         const { data } = response;

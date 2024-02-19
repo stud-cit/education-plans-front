@@ -1,115 +1,48 @@
 <template>
-  <v-dialog
-    v-model="dialog"
-    v-if="item"
-    hide-overlay
-    persistent
-    width="800"
-    transition="dialog-bottom-transition"
-  >
+  <v-dialog v-model="dialog" v-if="item" hide-overlay persistent width="800" transition="dialog-bottom-transition">
     <v-card>
-      <v-toolbar
-        dark
-        color="primary"
-      >
+      <v-toolbar dark color="primary">
         <v-toolbar-title>Копиювання каталога</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn
-          icon
-          dark
-          @click="close"
-        >
+        <v-btn icon dark @click="close">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
       <v-card-text class="pb-0">
-        <p class="title-catalog" >
+        <p class="title-catalog">
           Ви хочете скопіювати каталог за освітньою програмою
-          <span class="">{{item.education_program}} {{item.year}} - {{item.year + 1}}р.</span>?
+          <span class="">{{ item.education_program }} {{ item.year }} - {{ item.year + 1 }}р.</span>?
         </p>
       </v-card-text>
-      <validation-observer
-        ref="observer"
-        v-slot="{ invalid }"
-      >
+      <validation-observer ref="observer" v-slot="{ invalid }">
         <form @submit.prevent="submit" @keyup.enter="submit">
           <v-card-text class="pt-0">
             <v-container class="pt-0">
-              <validation-provider
-                v-slot="{ errors }"
-                name="year"
-                rules="required"
-              >
-                <v-autocomplete
-                  v-model="year"
-                  :items="years"
-                  :error-messages="errors"
-                  label="Рік"
-                ></v-autocomplete>
+              <validation-provider v-slot="{ errors }" name="year" rules="required">
+                <v-autocomplete v-model="year" :items="years" :error-messages="errors" label="Рік"></v-autocomplete>
               </validation-provider>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Освітня програма"
-                rules="required"
-              >
-                <v-autocomplete
-                  v-model="education_program"
-                  :items="object.education_programs"
-                  :error-messages="errors"
-                  item-text="title"
-                  item-value="id"
-                  label="Освітня програма"
-                ></v-autocomplete>
+              <validation-provider v-slot="{ errors }" name="Освітня програма" rules="required">
+                <v-autocomplete v-model="education_program" :items="object.education_programs" :error-messages="errors"
+                  item-text="title" item-value="id" label="Освітня програма"></v-autocomplete>
               </validation-provider>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Рівень освіти"
-                rules="required"
-              >
-                <v-autocomplete
-                  v-model="item.education_level_id"
-                  :items="object.education_levels"
-                  :error-messages="errors"
-                  item-text="title"
-                  item-value="id"
-                  persistent-hint
-                  hint="(перший/другий/третій)"
-                  disabled
-                  label="Рівень освіти"
-                ></v-autocomplete>
+              <validation-provider v-slot="{ errors }" name="Рівень освіти" rules="required">
+                <v-autocomplete v-model="item.education_level_id" :items="object.education_levels"
+                  :error-messages="errors" item-text="title" item-value="id" persistent-hint hint="(перший/другий/третій)"
+                  disabled label="Рівень освіти"></v-autocomplete>
               </validation-provider>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Кафедра, що пропонує дисципліну"
-                rules="required"
-              >
-                <v-autocomplete
-                  v-model="item.department_id"
-                  :items="departments"
-                  :error-messages="errors"
-                  item-text="name"
-                  item-value="id"
-                  return-object
-                  class="mt-3"
-                  disabled
-                  label="Кафедра, що пропонує дисципліну"
-                ></v-autocomplete>
+              <validation-provider v-slot="{ errors }" name="Кафедра, що пропонує дисципліну" rules="required">
+                <v-autocomplete v-model="item.department_id" :items="departments" :error-messages="errors"
+                  item-text="name" item-value="id" return-object class="mt-3" disabled
+                  label="Кафедра, що пропонує дисципліну"></v-autocomplete>
               </validation-provider>
             </v-container>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn
-              color="secondary"
-              @click="close"
-            >
+            <v-btn color="secondary" @click="close">
               Закрити
             </v-btn>
-            <v-btn
-              color="primary"
-              @click="submit"
-              :disabled="invalid"
-            >
+            <v-btn color="primary" @click="submit" :disabled="invalid">
               Зберегти
             </v-btn>
           </v-card-actions>
@@ -121,7 +54,7 @@
 
 <script>
 
-import {API} from "@/api/constants-api";
+import { API } from "@/api/constants-api";
 import api from "@/api";
 
 export default {
@@ -166,7 +99,7 @@ export default {
   },
   methods: {
     apiGetDepartments() {
-      api.get(API.DEPARTMENTS, null, {showLoader: true}).then(({ data }) => {
+      api.get(API.DEPARTMENTS, null, { showLoader: true }).then(({ data }) => {
         this.departments = data.data;
       })
     },
@@ -196,7 +129,6 @@ export default {
       this.educationLevel = null;
       this.department = null;
       this.education_program = null;
-      this.published = null;
       this.$refs.observer.reset();
     },
   },
@@ -204,11 +136,12 @@ export default {
 </script>
 
 <style scoped>
-  .title-catalog {
-    padding-top: 40px;
-    font-size: 16px;
-  }
-  .title-catalog span {
-    font-weight: bold;
-  }
+.title-catalog {
+  padding-top: 40px;
+  font-size: 16px;
+}
+
+.title-catalog span {
+  font-weight: bold;
+}
 </style>
