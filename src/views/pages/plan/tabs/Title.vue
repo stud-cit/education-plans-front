@@ -21,19 +21,10 @@
             {{ cursIndex + 1 }}
           </td>
           <td v-for="(week, i) in k" :key="i">
-            <ValidationProvider
-              :vid="'data_' + i + '_row_' + week.course + '_col_' + week.month"
-              :rules="'oneOf:' + rule"
-              name="Тиждень"
-              v-slot="{ errors }"
-            >
-              <input
-                :disabled="isShortPlan"
-                type="text"
-                :class="[errors[0] ? 'errors' : '']"
-                v-model="week.val"
-                @input="(val) => (week.val = week.val.toUpperCase())"
-              />
+            <ValidationProvider :vid="'data_' + i + '_row_' + week.course + '_col_' + week.month"
+              :rules="'oneOf:' + rule" name="Тиждень" v-slot="{ errors }">
+              <input :disabled="isShortPlan" type="text" :class="[errors[0] ? 'errors' : '']" v-model="week.val"
+                @input="(val) => (week.val = week.val.toUpperCase())" />
             </ValidationProvider>
           </td>
         </tr>
@@ -46,14 +37,12 @@
       </table>
 
       <v-alert outlined type="error" :value="hasErrors(errors)">
+        {{ errors }}
         Ви ввели недопустиме значення, зверніть увагу на розкладку клавіатури допускається тільки українська!
       </v-alert>
 
-      <SummaryDataBudgetTime
-        :items="data.summary_data_budget_time"
-        :course="data.study_term.course"
-        ref="summary_data_budget_time"
-      />
+      <SummaryDataBudgetTime :items="data.summary_data_budget_time" :course="data.study_term.course"
+        ref="summary_data_budget_time" />
       <br />
       <v-row>
         <v-col>
@@ -83,6 +72,7 @@
     </ValidationObserver>
   </div>
 </template>
+
 <script>
 import api from '@/api';
 import { API } from '@/api/constants-api';
@@ -205,13 +195,14 @@ export default {
       api.get(`${API.NOTES}/rules`).then((response) => {
         this.noteLoaded = true;
         const { rule, notes } = response.data.data;
-        this.rule = rule;
+        this.rule = rule + ',Т*'; // TODO: MAY BY LOOP OVER JSON GET UNIQUE LETTERS
         this.notes = notes;
       });
     },
   },
 };
 </script>
+
 <style lang="css" scoped>
 table {
   width: 100%;
@@ -220,6 +211,7 @@ table {
   border-collapse: collapse;
   margin-bottom: 15px;
 }
+
 table td {
   text-align: center;
   color: #000;
@@ -227,23 +219,28 @@ table td {
   border: 1px solid #dee2e6;
   width: 19.5px;
 }
+
 table th {
   padding: 10px 0;
 }
+
 table td input {
   width: 100%;
   height: 100%;
   text-align: center;
   outline: none;
 }
+
 table td input:focus {
   border: 1px solid #000;
   box-sizing: border-box;
 }
+
 table tfoot {
   font-weight: bold;
   border: 0;
 }
+
 .errors {
   border: solid 2px red;
 }
