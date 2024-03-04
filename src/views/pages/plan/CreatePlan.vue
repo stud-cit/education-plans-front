@@ -20,29 +20,17 @@
             <v-card-text class="pb-0">
               <v-container>
                 <validation-provider v-slot="{ errors }" name="освітня програма" rules="required">
-                  <v-autocomplete
-                    :items="programs"
-                    :loading="programsLoading"
-                    v-model="plan.program_op_id"
-                    :error-messages="errors"
-                    :item-text="getItemText"
-                    item-value="program_id"
-                    label="Освітня програма"
-                    required
-                  ></v-autocomplete>
+                  <v-autocomplete :items="programs" :loading="programsLoading" v-model="plan.program_op_id"
+                    :error-messages="errors" :item-text="getItemText" item-value="program_id" label="Освітня програма"
+                    required></v-autocomplete>
                 </validation-provider>
               </v-container>
             </v-card-text>
             <v-card-actions class="pt-0">
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="programsDialog = false"> Закрити </v-btn>
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="verificationOP()"
-                :loading="verificationOPLoading"
-                :disabled="invalid"
-              >
+              <v-btn color="blue darken-1" text @click="verificationOP()" :loading="verificationOPLoading"
+                :disabled="invalid">
                 Готово
               </v-btn>
             </v-card-actions>
@@ -65,13 +53,8 @@
                   <v-row>
                     <v-col cols="12">
                       <validation-provider v-slot="{ errors }" name="Коментар" rules="required|max:400">
-                        <v-textarea
-                          type="text"
-                          v-model="notConventionalDialog.comment"
-                          solo
-                          name="input-7-4"
-                          :error-messages="errors"
-                        ></v-textarea>
+                        <v-textarea type="text" v-model="notConventionalDialog.comment" solo name="input-7-4"
+                          :error-messages="errors"></v-textarea>
                       </validation-provider>
                     </v-col>
                   </v-row>
@@ -92,28 +75,19 @@
 
     <template v-if="plan">
       <v-alert outlined dense disable name="info" type="info" v-if="plan.comment && plan.not_conventional">
-        {{ plan.comment }}</v-alert
-      >
+        {{ plan.comment }}</v-alert>
     </template>
-    <ShortedByYearBtns v-if="$route.name === 'EditPlan'" :items="plan.shorted_by_year" :plan-id="plan.id" />
+
+    <ShortedByYearBtns v-if="$route.name === 'EditPlan' && plan" :items="plan.shorted_by_year" :plan-id="plan.id" />
 
     <div class="d-flex align-center flex-wrap gap-1" v-if="$route.name === 'EditPlan' && plan">
-      <v-btn
-        small
-        depressed
-        :disabled="disableBtnSendToVerification"
-        :color="plan.need_verification === true ? '' : 'success'"
-        @click="actionToVerification()"
-      >
+      <v-btn small depressed :disabled="disableBtnSendToVerification"
+        :color="plan.need_verification === true ? '' : 'success'" @click="actionToVerification()">
         {{ plan.need_verification === true ? 'На верифікації' : 'Відправити на верифікацію' }}
       </v-btn>
 
-      <v-checkbox
-        class="custom-space"
-        v-model="plan.not_conventional"
-        :disabled="hasErrors"
-        label="План з особливостями"
-      ></v-checkbox>
+      <v-checkbox class="custom-space" v-model="plan.not_conventional" :disabled="hasErrors"
+        label="План з особливостями"></v-checkbox>
 
       <template v-if="plan.short_plan">
         <span class="orange white--text pl-1 pr-1 rounded">Скорочений план</span>
@@ -121,93 +95,54 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn
-        v-if="plan.short_plan"
-        small
-        depressed
-        color="primary"
-        :to="{ name: 'EditPlan', params: { id: plan.basePlan.base_id, title: plan.basePlan.title } }"
-        target="_blank"
-      >
+      <v-btn v-if="plan.short_plan" small depressed color="primary"
+        :to="{ name: 'EditPlan', params: { id: plan.basePlan.base_id, title: plan.basePlan.title } }" target="_blank">
         До базового плану
       </v-btn>
-      <v-btn
-        small
-        depressed
-        color="primary"
-        :to="{ name: 'PreviewPlan', params: { id: plan.id, title: plan.title } }"
-        target="_blank"
-      >
+      <v-btn small depressed color="primary" :to="{ name: 'PreviewPlan', params: { id: plan.id, title: plan.title } }"
+        target="_blank">
         Переглянути
       </v-btn>
       <!-- <v-btn small depressed color="primary" :disabled="!!plan.status_op" class="ml-2" @click="openProgramDialog()">
         Верифікувати з освітньою програмою
       </v-btn> -->
-      <v-btn
-        small
-        depressed
-        color="primary"
-        class="ml-2"
-        v-show="[2, 3, 4, 5, 6].indexOf(authUser.role_id) != -1"
-        @click="verification({ verification_status_id: authUser.role_id, status: true })"
-      >
+      <v-btn small depressed color="primary" class="ml-2" v-show="[2, 3, 4, 5, 6].indexOf(authUser.role_id) != -1"
+        @click="verification({ verification_status_id: authUser.role_id, status: true })">
         Верифікувати
       </v-btn>
-      <v-btn
-        small
-        depressed
-        color="error"
-        class="ml-2"
-        v-show="[2, 3, 4, 5, 6].indexOf(authUser.role_id) != -1"
-        @click="verification({ verification_status_id: authUser.role_id, status: false })"
-      >
+      <v-btn small depressed color="error" class="ml-2" v-show="[2, 3, 4, 5, 6].indexOf(authUser.role_id) != -1"
+        @click="verification({ verification_status_id: authUser.role_id, status: false })">
         Відхилити верифікацію
       </v-btn>
     </div>
 
     <v-stepper elevation="1" class="my-2" v-if="$route.name === 'EditPlan' && plan">
       <v-stepper-header v-if="checkVerification">
+
         <template v-for="(item, index) in checkVerification">
-          <v-stepper-step
-            :key="`${index}-step`"
-            :step="index + 1"
-            :complete="item.status"
-            :rules="[() => item.status == null || item.status]"
-            :editable="authUser.role_id == 1"
-          >
-            <span
-              @click="
-                authUser.role_id == 1
-                  ? verification({ verification_status_id: item.id, status: item.status ? false : true })
-                  : ''
-              "
-              >{{ item.titleHead }}</span
-            >
+          <v-stepper-step :key="`${index}-step`" :step="index + 1" :complete="item.status"
+            :rules="[() => item.status == null || item.status]" :editable="authUser.role_id == 1">
+            <span @click="
+      authUser.role_id == 1
+        ? verification({ verification_status_id: item.id, status: item.status ? false : true })
+        : ''
+      ">{{ item.titleHead }}</span>
             <v-btn icon small v-if="item.comment" @click="openDialog(item.comment)" color="error">
               <v-icon small>mdi-bell-ring</v-icon>
             </v-btn>
-            <small
-              @click="
-                authUser.role_id == 1
-                  ? verification({ verification_status_id: item.id, status: item.status ? false : true })
-                  : ''
-              "
-              >{{ item.title }}</small
-            >
+            <small @click="
+      authUser.role_id == 1
+        ? verification({ verification_status_id: item.id, status: item.status ? false : true })
+        : ''
+      ">{{ item.title }}</small>
           </v-stepper-step>
           <v-divider v-if="index != verifications.length - 1" :key="index"></v-divider>
         </template>
       </v-stepper-header>
     </v-stepper>
 
-    <v-alert
-      dense
-      outlined
-      type="error"
-      class="mb-2"
-      v-for="(error, errorIndex) in plan.errors"
-      :key="'error' + errorIndex"
-    >
+    <v-alert dense outlined type="error" class="mb-2" v-for="(error, errorIndex) in plan.errors"
+      :key="'error' + errorIndex">
       {{ error }}
     </v-alert>
 
