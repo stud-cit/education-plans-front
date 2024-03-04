@@ -37,7 +37,6 @@
       </table>
 
       <v-alert outlined type="error" :value="hasErrors(errors)">
-        {{ errors }}
         Ви ввели недопустиме значення, зверніть увагу на розкладку клавіатури допускається тільки українська!
       </v-alert>
 
