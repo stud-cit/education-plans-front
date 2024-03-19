@@ -14,259 +14,110 @@
           <v-card-text>
             <v-container>
               <validation-provider v-slot="{ errors }" name="Оберіть каталог" rules="required">
-                <v-autocomplete
-                  v-model="catalog"
-                  :items="catalogs"
-                  :error-messages="errors"
-                  item-text="title"
-                  item-value="id"
-                  label="Оберіть каталог"
-                ></v-autocomplete>
+                <v-autocomplete v-model="catalog" :items="catalogs" :error-messages="errors" item-text="title"
+                  item-value="id" label="Оберіть каталог"></v-autocomplete>
               </validation-provider>
               <validation-provider v-slot="{ errors }" name="Назва дисципліни" rules="required">
-                <v-autocomplete
-                  v-model="discipline"
-                  :items="disciplines"
-                  :error-messages="errors"
-                  item-text="title"
-                  item-value="id"
-                  return-object
-                  label="Назва дисципліни"
-                ></v-autocomplete>
+                <v-autocomplete v-model="discipline" :items="disciplines" :error-messages="errors" item-text="title"
+                  item-value="id" return-object label="Назва дисципліни"></v-autocomplete>
               </validation-provider>
               <validation-provider v-slot="{ errors }" name="Інша назва дисципліни">
-                <v-text-field
-                  label="Інша назва дисципліни"
-                  v-model="anotherDiscipline"
-                  :error-messages="errors"
-                  :disabled="!discipline"
-                ></v-text-field>
+                <v-text-field label="Інша назва дисципліни" v-model="anotherDiscipline" :error-messages="errors"
+                  :disabled="!discipline"></v-text-field>
               </validation-provider>
               <validation-provider v-slot="{ errors }" name="Мова викладання" rules="required">
-                <v-autocomplete
-                  v-model="language"
-                  multiple
-                  :items="languages"
-                  :error-messages="errors"
-                  item-text="title"
-                  item-value="language_id"
-                  return-object
-                  label="Мова викладання"
-                ></v-autocomplete>
+                <v-autocomplete v-model="language" multiple :items="languages" :error-messages="errors" item-text="title"
+                  item-value="language_id" return-object label="Мова викладання"></v-autocomplete>
               </validation-provider>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Рівень освіти, для якого пропонується дисципліна"
-                rules="required"
-              >
-                <v-autocomplete
-                  v-model="educationLevel"
-                  :items="educationsLevel"
-                  :error-messages="errors"
-                  item-text="title"
-                  item-value="id"
-                  persistent-hint
-                  hint="(перший/другий/третій)"
-                  label="Рівень освіти, для якого пропонується дисципліна"
-                ></v-autocomplete>
+              <validation-provider v-slot="{ errors }" name="Рівень освіти, для якого пропонується дисципліна"
+                rules="required">
+                <v-autocomplete v-model="educationLevel" :items="educationsLevel" :error-messages="errors"
+                  item-text="title" item-value="id" persistent-hint hint="(перший/другий/третій)"
+                  label="Рівень освіти, для якого пропонується дисципліна"></v-autocomplete>
               </validation-provider>
-              <validation-provider
-                v-slot="{ errors }"
+              <validation-provider v-slot="{ errors }"
+                name="Перелік галузей знань / спеціальностей, для яких пропонується дисципліна" rules="required">
+                <v-autocomplete v-model="knowledgeSpecialty" :items="knowledgeSpecialties" :error-messages="errors"
+                  item-text="title" item-value="id" return-object class="mt-3"
+                  label="Перелік галузей знань / спеціальностей, для яких пропонується дисципліна"></v-autocomplete>
+              </validation-provider>
+              <validation-provider v-if="knowledgeSpecialty && knowledgeSpecialty.id === 2" v-slot="{ errors }"
                 name="Перелік галузей знань / спеціальностей, для яких пропонується дисципліна"
-                rules="required"
-              >
-                <v-autocomplete
-                  v-model="knowledgeSpecialty"
-                  :items="knowledgeSpecialties"
-                  :error-messages="errors"
-                  item-text="title"
-                  item-value="id"
-                  return-object
-                  class="mt-3"
-                  label="Перелік галузей знань / спеціальностей, для яких пропонується дисципліна"
-                ></v-autocomplete>
-              </validation-provider>
-              <validation-provider
-                v-if="knowledgeSpecialty && knowledgeSpecialty.id === 2"
-                v-slot="{ errors }"
-                name="Перелік галузей знань / спеціальностей, для яких пропонується дисципліна"
-                :rules="knowledgeSpecialty.id === 2 ? 'required' : ''"
-              >
+                :rules="knowledgeSpecialty.id === 2 ? 'required' : ''">
                 <v-radio-group v-model="selectListKnowledgeSpecialties" row :error-messages="errors">
-                  <v-radio
-                    v-for="radio in radioBtnListKnowledgeSpecialties"
-                    :disabled="radio.disabled"
-                    :key="radio.id"
-                    :label="radio.label"
-                    :value="radio"
-                  ></v-radio>
+                  <v-radio v-for="radio in radioBtnListKnowledgeSpecialties" :disabled="radio.disabled" :key="radio.id"
+                    :label="radio.label" :value="radio"></v-radio>
                 </v-radio-group>
               </validation-provider>
 
-              <validation-provider
-                v-if="knowledgeSpecialty && knowledgeSpecialty.id === 2"
-                v-slot="{ errors }"
+              <validation-provider v-if="knowledgeSpecialty && knowledgeSpecialty.id === 2" v-slot="{ errors }"
                 :name="radioBtnListKnowledgeSpecialties.find((el) => el.id === selectListKnowledgeSpecialties.id).label"
-                :rules="knowledgeSpecialty.id === 2 ? 'required' : ''"
-              >
-                <v-autocomplete
-                  v-model="listKnowledgeSpecialties"
-                  :items="listsKnowledgeSpecialties"
-                  :error-messages="errors"
-                  :item-text="
-                    radioBtnListKnowledgeSpecialties.find((el) => el.id === selectListKnowledgeSpecialties.id).itemText
-                  "
-                  hide-details
-                  item-value="id"
-                  return-object
-                  multiple
-                  class="mt-3"
-                  :label="
-                    radioBtnListKnowledgeSpecialties.find((el) => el.id === selectListKnowledgeSpecialties.id).label
-                  "
-                ></v-autocomplete>
+                :rules="knowledgeSpecialty.id === 2 ? 'required' : ''">
+                <v-autocomplete v-model="listKnowledgeSpecialties" :items="listsKnowledgeSpecialties"
+                  :error-messages="errors" :item-text="radioBtnListKnowledgeSpecialties.find((el) => el.id === selectListKnowledgeSpecialties.id).itemText
+                    " hide-details item-value="id" return-object multiple class="mt-3" :label="radioBtnListKnowledgeSpecialties.find((el) => el.id === selectListKnowledgeSpecialties.id).label
+    "></v-autocomplete>
               </validation-provider>
 
               <!-- begin  -->
 
-              <validation-provider
-                v-if="knowledgeSpecialty && knowledgeSpecialty.id === 3"
-                v-slot="{ errors }"
-                name="Спеціальності"
-                :rules="knowledgeSpecialty.id === 3 ? 'required' : ''"
-              >
-                <v-autocomplete
-                  v-model="listKnowledgeSpecialties"
-                  :items="listsKnowledgeSpecialties"
-                  :error-messages="errors"
-                  item-text="title"
-                  hide-details
-                  item-value="id"
-                  return-object
-                  multiple
-                  class="mt-3"
-                ></v-autocomplete>
+              <validation-provider v-if="knowledgeSpecialty && knowledgeSpecialty.id === 3" v-slot="{ errors }"
+                name="Спеціальності" :rules="knowledgeSpecialty.id === 3 ? 'required' : ''">
+                <v-autocomplete v-model="listKnowledgeSpecialties" :items="listsKnowledgeSpecialties"
+                  :error-messages="errors" item-text="title" hide-details item-value="id" return-object multiple
+                  class="mt-3"></v-autocomplete>
               </validation-provider>
 
               <validation-provider v-slot="{ errors }" name="Кафедра, що пропонує дисципліну" rules="required">
-                <v-autocomplete
-                  v-model="department"
-                  :items="departments"
-                  :error-messages="errors"
-                  item-text="name"
-                  item-value="id"
-                  return-object
-                  class="mt-3"
-                  label="Кафедра, що пропонує дисципліну"
-                ></v-autocomplete>
+                <v-autocomplete v-model="department" :items="departments" :error-messages="errors" item-text="name"
+                  item-value="id" return-object class="mt-3" label="Кафедра, що пропонує дисципліну"></v-autocomplete>
               </validation-provider>
 
               <validation-provider v-slot="{ errors }" name="Лекції">
-                <v-autocomplete
-                  v-model="lecture"
-                  :items="teachers"
-                  :error-messages="errors"
-                  item-text="full_name"
-                  item-value="asu_id"
-                  return-object
-                  class="mt-3"
-                  label="Лекції"
-                  multiple
-                  chips
-                  deletable-chips
-                ></v-autocomplete>
+                <v-autocomplete v-model="lecture" :items="teachers" :error-messages="errors" item-text="full_name"
+                  item-value="asu_id" return-object class="mt-3" label="Лекції" multiple chips
+                  deletable-chips></v-autocomplete>
               </validation-provider>
 
-              <validation-provider
-                v-slot="{ errors }"
-                name="Семінарські та практичні заняття, лабораторні роботи"
-                rules="required"
-              >
-                <v-autocomplete
-                  v-model="practice"
-                  :items="teachers"
-                  :error-messages="errors"
-                  item-text="full_name"
-                  item-value="asu_id"
-                  return-object
-                  class="mt-3"
-                  label="Семінарські та практичні заняття, лабораторні роботи"
-                  chips
-                  deletable-chips
-                  multiple
-                ></v-autocomplete>
+              <validation-provider v-slot="{ errors }" name="Семінарські та практичні заняття, лабораторні роботи"
+                rules="required">
+                <v-autocomplete v-model="practice" :items="teachers" :error-messages="errors" item-text="full_name"
+                  item-value="asu_id" return-object class="mt-3"
+                  label="Семінарські та практичні заняття, лабораторні роботи" chips deletable-chips
+                  multiple></v-autocomplete>
               </validation-provider>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Загальна компетентність, на формування або розвиток якої спрямована дисципліна"
-                rules="required"
-              >
-                <v-combobox
-                  v-model="generalCompetence"
-                  :items="helpersGeneralCompetence"
-                  item-value="id"
-                  item-text="title"
-                  :error-messages="errors"
-                  label="Загальна компетентність, на формування або розвиток якої спрямована дисципліна"
-                ></v-combobox>
+              <validation-provider v-slot="{ errors }"
+                name="Загальна компетентність, на формування або розвиток якої спрямована дисципліна" rules="required">
+                <v-combobox v-model="generalCompetence" :items="helpersGeneralCompetence" item-value="id"
+                  item-text="title" :error-messages="errors"
+                  label="Загальна компетентність, на формування або розвиток якої спрямована дисципліна"></v-combobox>
               </validation-provider>
 
-              <validation-provider
-                v-slot="{ errors }"
-                name="Результати навчання за навчальною дисципліною"
-                rules="required"
-              >
-                <v-combobox
-                  v-model="resultsOfStudy"
-                  :items="helpersResultsOfStudy"
-                  item-value="id"
-                  item-text="title"
-                  :error-messages="errors"
-                  label="Результати навчання за навчальною дисципліною"
-                ></v-combobox>
+              <validation-provider v-slot="{ errors }" name="Результати навчання за навчальною дисципліною"
+                rules="required">
+                <v-combobox v-model="resultsOfStudy" :items="helpersResultsOfStudy" item-value="id" item-text="title"
+                  :error-messages="errors" label="Результати навчання за навчальною дисципліною"></v-combobox>
               </validation-provider>
 
-              <validation-provider
-                v-slot="{ errors }"
-                name="Види навчальних занять та методи викладання, що пропонуються"
-                rules="required"
-              >
-                <v-combobox
-                  v-model="typesTrainingSessions"
-                  :items="helpersTypesTrainingSessions"
-                  item-value="id"
-                  item-text="title"
-                  :error-messages="errors"
-                  label="Види навчальних занять та методи викладання, що пропонуються"
-                ></v-combobox>
+              <validation-provider v-slot="{ errors }" name="Види навчальних занять та методи викладання, що пропонуються"
+                rules="required">
+                <v-combobox v-model="typesTrainingSessions" :items="helpersTypesTrainingSessions" item-value="id"
+                  item-text="title" :error-messages="errors"
+                  label="Види навчальних занять та методи викладання, що пропонуються"></v-combobox>
               </validation-provider>
 
-              <validation-provider
-                v-slot="{ errors }"
-                name="Кількість здобувачів, які можуть записатися на дисципліну"
-                rules="required|numeric"
-              >
-                <v-text-field
-                  v-model="numberAcquirers"
-                  :error-messages="errors"
-                  type="number"
-                  label="Кількість здобувачів, які можуть записатися на дисципліну"
-                ></v-text-field>
+              <validation-provider v-slot="{ errors }" name="Кількість здобувачів, які можуть записатися на дисципліну"
+                rules="required|numeric">
+                <v-text-field v-model="numberAcquirers" :error-messages="errors" type="number"
+                  label="Кількість здобувачів, які можуть записатися на дисципліну"></v-text-field>
               </validation-provider>
 
-              <validation-provider
-                v-slot="{ errors }"
+              <validation-provider v-slot="{ errors }"
                 name="Вхідні вимоги до здобувачів, які хочуть обрати дисципліну/вимоги до матеріально-технічного забезпечення"
-                rules="required"
-              >
-                <v-combobox
-                  v-model="requirements"
-                  :items="helpersRequirements"
-                  item-value="id"
-                  item-text="title"
+                rules="required">
+                <v-combobox v-model="requirements" :items="helpersRequirements" item-value="id" item-text="title"
                   :error-messages="errors"
-                  label="Вхідні вимоги до здобувачів, які хочуть обрати дисципліну/вимоги до матеріально-технічного забезпечення"
-                ></v-combobox>
+                  label="Вхідні вимоги до здобувачів, які хочуть обрати дисципліну/вимоги до матеріально-технічного забезпечення"></v-combobox>
               </validation-provider>
 
               <validation-provider v-slot="{ errors }" name="Обмеження щодо семестру вивчення" rules="required">
@@ -274,36 +125,16 @@
                   <template v-slot:label>
                     <div class="label">Обмеження щодо семестру вивчення:</div>
                   </template>
-                  <v-radio
-                    v-for="radio in radioRestrictionsSemester"
-                    :key="radio.id"
-                    :label="radio.label"
-                    :value="radio"
-                  ></v-radio>
+                  <v-radio v-for="radio in radioRestrictionsSemester" :key="radio.id" :label="radio.label"
+                    :value="radio"></v-radio>
                 </v-radio-group>
               </validation-provider>
 
-              <validation-provider
-                v-if="restrictionsSemester.id === 2"
-                v-slot="{ errors }"
-                name="Виберіть семестр/и"
-                :rules="restrictionsSemester.id ? 'required' : ''"
-              >
-                <v-select
-                  v-model="semesters"
-                  :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
-                  :error-messages="errors"
-                  disable-lookup
-                  chips
-                  deletable-chips
-                  hide-selected
-                  label="Виберіть семестр/и"
-                  multiple
-                  @change="(v) => v.sort((a, b) => a - b)"
-                ></v-select>
-              </validation-provider>
-              <validation-provider v-slot="{ errors }" name="Опублікувати">
-                <v-switch v-model="published" color="primary" label="Опублікувати?" :error-messages="errors"></v-switch>
+              <validation-provider v-if="restrictionsSemester.id === 2" v-slot="{ errors }" name="Виберіть семестр/и"
+                :rules="restrictionsSemester.id ? 'required' : ''">
+                <v-select v-model="semesters" :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]" :error-messages="errors"
+                  disable-lookup chips deletable-chips hide-selected label="Виберіть семестр/и" multiple
+                  @change="(v) => v.sort((a, b) => a - b)"></v-select>
               </validation-provider>
             </v-container>
           </v-card-text>
@@ -386,7 +217,6 @@ export default {
         { id: 2, apiPath: API.SPECIALITIES_ALL, label: 'specialities' },
         { id: 3, apiPath: API.EDUCATIONAL_PROGRAMS_ALL, label: 'educational_programs' },
       ],
-      published: false,
     };
   },
   created() {
@@ -507,7 +337,6 @@ export default {
             number_acquirers: this.numberAcquirers,
             entry_requirements_applicants: this.requirements,
             limitation: JSON.stringify(limitation),
-            published: this.published,
           });
         }
       });
@@ -534,7 +363,6 @@ export default {
       this.requirements = null;
       this.restrictionsSemester = this.radioRestrictionsSemester[0];
       this.semesters = null;
-      this.published = null;
       this.$refs.observer.reset();
     },
   },

@@ -181,7 +181,6 @@ export default {
       this.educationLevel = null;
       this.department = null;
       this.education_program = null;
-      this.published = null;
       this.$refs.observer.reset();
     },
   },
