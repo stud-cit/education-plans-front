@@ -146,6 +146,16 @@
       {{ error }}
     </v-alert>
 
+    <template v-if="errorsPlan && errorsPlan.length > 0">
+      <v-alert dense outlined type="error" class="mb-2">
+        <ul>
+          <li v-for="error in errorsPlan" :key="error.index">
+            {{ error }}
+          </li>
+        </ul>
+      </v-alert>
+    </template>
+
     <v-tabs v-model="tab" class="mb-2">
       <v-tab>Загальна інформація</v-tab>
       <v-tab :disabled="$route.name == 'CreatePlan'">Цикли / предмети</v-tab>

@@ -390,8 +390,7 @@ export default {
     },
     getErrorsSemestersHours() {
       let result = [];
-      console.log('sum_semensters_hours');
-      console.log(this.plan.sum_semesters_hours);
+
       this.plan.sum_semesters_hours.forEach((item, index) => {
         if (
           item >
@@ -475,7 +474,6 @@ export default {
     },
 
     addSubSubject({ subject, cycle }) {
-      console.log(subject, cycle)
       this.activMod = null;
       this.moduleNumber = null;
       this.cycleForm = cycle;
