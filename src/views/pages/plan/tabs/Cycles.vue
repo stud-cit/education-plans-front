@@ -33,7 +33,8 @@
                 <v-text-field type="text" label="Виноска" v-model.number="subjectForm.note"></v-text-field>
               </v-col>
               <v-col cols="6" class="py-0">
-                <v-text-field type="number" label="Кредитів" min="0" v-model.number="subjectForm.credits" :rules="[
+                <v-text-field type="number" label="Кредитів" min="0" step="0.01" v-model.number="subjectForm.credits"
+                  :rules="[
       (v) => v + subjectForm.sumSubjectsCredits <= cycleForm.credit || 'Перевищена кількість кредитів',
     ]"></v-text-field>
               </v-col>
@@ -111,7 +112,7 @@
       (index === activMod ? 'activMod' : '',
         checkLastHourModule == index ||
         checkCountHoursSemester.indexOf(subject.semester) != -1) ? 'error' : '']">
-                  <v-text-field type="number" min="0" :dark="cycleForm.has_discipline == 1 &&
+                  <v-text-field type="number" min="0" step="0.01" :dark="cycleForm.has_discipline == 1 &&
       (checkLastHourModule == index || checkCountHoursSemester.indexOf(subject.semester) != -1)
       " v-model.number="subject.hour" @click="
       activMod = index;
@@ -149,7 +150,7 @@
         ? 'error'
         : '',
     ]">
-                  <v-text-field type="number" min="0"
+                  <v-text-field type="number" min="0" step="0.01"
                     :dark="cycleForm.has_discipline == 1 && checkCountHoursSemester.indexOf(item.semester) != -1"
                     v-model.number="item.credit" dense hide-details>
                   </v-text-field>

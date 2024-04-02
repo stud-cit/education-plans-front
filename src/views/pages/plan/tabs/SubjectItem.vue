@@ -34,8 +34,8 @@
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn :disabled="isShortPlan &&
-              (item.list_cycle_id === CYCLES.PRACTICAL_TRAINING || item.list_cycle_id === CYCLES.ATTESTATION)
-              " small icon @click="editSubject(subject, item)" v-bind="attrs" v-on="on">
+      (item.list_cycle_id === CYCLES.PRACTICAL_TRAINING || item.list_cycle_id === CYCLES.ATTESTATION)
+      " small icon @click="editSubject(subject, item)" v-bind="attrs" v-on="on">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </template>
@@ -93,12 +93,11 @@ export default {
     }),
     hasErrors() {
       return this.subjectIndexError == this.subject.id ||
-        !this.subject.verification ||
-        (this.item.has_discipline && !this.subject.checkCountHoursModules) ||
-        (this.item.has_discipline && this.subject.checkCountHours) ||
-        (this.item.has_discipline && this.subject.checkLastHourModule != null) ||
-        (this.item.has_discipline && !this.subject.checkHasCreditsSemester) ||
-        (this.item.has_discipline && this.subject.checkCountHoursSemester.length > 0)
+        (this.item.has_discipline && !this.subject.checkCountHoursModules)||
+      (this.item.has_discipline && this.subject.checkCountHours) ||
+      (this.item.has_discipline && this.subject.checkLastHourModule != null) ||
+      (this.item.has_discipline && !this.subject.checkHasCreditsSemester) ||
+      (this.item.has_discipline && this.subject.checkCountHoursSemester.length > 0)
     }
   },
   mounted() {

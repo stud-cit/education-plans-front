@@ -809,7 +809,7 @@ export default {
       return +subject.hours + +subject.practices + +subject.laboratories;
     },
     parseNumbers(number) {
-      return Number(Number.parseFloat(number).toFixed(3));
+      return Number(Number.parseFloat(number).toFixed(2));
     },
     getHoursModulesTotal(obj, inside_hour = false) {
       let hours_modules_total = [];
