@@ -60,8 +60,7 @@
               </v-col>
             </v-row>
 
-            <v-alert dense outlined type="error" class="mb-2"
-              v-if="cycleForm.has_discipline && checkCountHoursSemester.length > 0">
+            <v-alert dense outlined type="error" class="mb-2" v-if="cycleForm.has_discipline && checkCountCredits">
               Не вірно розподілені кредити за семестрами.
             </v-alert>
 
@@ -71,7 +70,7 @@
 
             <v-alert dense outlined type="error" class="mb-2"
               v-if="cycleForm.has_discipline && !checkCountHoursModules">
-              Кількість розподілених годин має відповідати сумі годин лекцій, практичних, лабораторних.
+              Кількість розподілених годин {{ sumHoursWeeksSemesters.toFixed(2) }} має відповідати сумі годин лекцій, практичних, лабораторних {{ sumHours.toFixed(2) }}.
             </v-alert>
 
             <v-alert dense outlined type="error" class="mb-2"
@@ -112,13 +111,24 @@
       (index === activMod ? 'activMod' : '',
         checkLastHourModule == index ||
         checkCountHoursSemester.indexOf(subject.semester) != -1) ? 'error' : '']">
-                  <v-text-field type="number" min="0" step="0.01" :dark="cycleForm.has_discipline == 1 &&
-      (checkLastHourModule == index || checkCountHoursSemester.indexOf(subject.semester) != -1)
-      " v-model.number="subject.hour" @click="
-      activMod = index;
-    moduleNumber = subject;
-    " dense hide-details>
-                  </v-text-field>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field 
+                        type="number" 
+                        min="0" 
+                        step="0.01" 
+                        :dark="cycleForm.has_discipline == 1 && (checkLastHourModule == index || checkCountHoursSemester.indexOf(subject.semester) != -1)" 
+                        v-model.number="subject.hour" 
+                        @click="activMod = index; moduleNumber = subject;" 
+                        dense 
+                        hide-details
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                      </v-text-field>
+                    </template>
+                    <span>Години * тижнів = {{ (+subject.hour * +plan.hours_weeks_semesters[index].week).toFixed(2) }}</span>
+                  </v-tooltip>
                 </td>
               </tr>
               <tr v-if="moduleNumber">
@@ -315,16 +325,21 @@ export default {
     countModules() {
       return this.plan.study_term.module;
     },
-    checkCountHoursModules() {
+    sumHours() {
+      return +this.subjectForm.hours + +this.subjectForm.practices + +this.subjectForm.laboratories;
+    },
+    sumHoursWeeksSemesters() {
       let sumHoursModules = 0;
       const hours_modules_length = this.subjectForm.hours_modules.length;
-      let sumHours = +this.subjectForm.hours + +this.subjectForm.practices + +this.subjectForm.laboratories;
       if (hours_modules_length || hours_modules_length === this.plan.hours_weeks_semesters.length) {
         this.plan.hours_weeks_semesters.forEach((element, index) => {
           sumHoursModules += element.week * this.subjectForm.hours_modules[index].hour;
         });
       }
-      return Math.round(sumHoursModules) == sumHours;
+      return sumHoursModules;
+    },
+    checkCountHoursModules() {
+      return this.sumHoursWeeksSemesters == this.sumHours;
     },
     checkCountHours() {
       let sumHours = +this.subjectForm.hours + +this.subjectForm.practices + +this.subjectForm.laboratories;
@@ -348,7 +363,7 @@ export default {
         let lastItem = hoursModules.at(-1);
 
         // Без атестацій | set const
-        if (lastItem.form_control_id == 10) {
+        if (lastItem && lastItem.form_control_id == 10) {
           res = this.subjectForm.hours_modules.indexOf(lastItem);
         }
       }
@@ -376,6 +391,10 @@ export default {
         }
       }
       return res;
+    },
+    checkCountCredits() {
+      let sumCredit = this.subjectForm.semesters_credits.reduce(function (acc, obj) { return acc + obj.credit; }, 0);
+      return sumCredit != this.subjectForm.credits
     },
     checkHasCreditsSemester() {
       return !!this.subjectForm.semesters_credits.find((item) => item.credit != 0);
