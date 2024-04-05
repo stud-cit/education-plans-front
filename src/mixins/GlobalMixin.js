@@ -16,9 +16,16 @@ export default {
       return obj;
     },
     GlobalSumPropertyInArray(items, prop) {
-      return items.reduce(function (a, b) {
-        return a + b[prop];
-      }, 0);
+      let res = 0;
+      items.forEach((item) => {
+        res += item[prop];
+        if (item.subjects) {
+          item.subjects.forEach((item2) => {
+            res += item2[prop];
+          });
+        }
+      });
+      return +res.toFixed(2);
     },
     GlobalFakerYears() {
       let years = []
