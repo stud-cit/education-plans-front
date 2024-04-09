@@ -23,8 +23,8 @@
           <td v-for="(week, i) in k" :key="i">
             <ValidationProvider :vid="'data_' + i + '_row_' + week.course + '_col_' + week.month"
               :rules="'oneOf:' + rule" name="Тиждень" v-slot="{ errors }">
-              <input :disabled="isShortPlan" type="text" :class="[errors[0] ? 'errors' : '']" v-model="week.val"
-                @input="(val) => (week.val = week.val.toUpperCase())" />
+              <input :disabled="readOnly || isShortPlan" type="text" :class="[errors[0] ? 'errors' : '']"
+                v-model="week.val" @input="(val) => (week.val = week.val.toUpperCase())" />
             </ValidationProvider>
           </td>
         </tr>
@@ -67,7 +67,8 @@
           </table>
         </v-col>
       </v-row>
-      <v-btn class="mt-4" color="primary" :disabled="invalid" type="submit" @click="save()"> Зберегти </v-btn>
+      <v-btn v-if="!readOnly" class="mt-4" color="primary" :disabled="invalid" type="submit" @click="save()"> Зберегти
+      </v-btn>
     </ValidationObserver>
   </div>
 </template>
@@ -118,6 +119,7 @@ export default {
     ...mapGetters({
       plan: 'plans/plan',
       isShortPlan: 'plans/isShortPlan',
+      readOnly: 'plans/readOnly'
     }),
   },
   mounted() {

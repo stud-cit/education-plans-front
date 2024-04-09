@@ -33,7 +33,7 @@
       <v-col class="pa-0 text-right">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn :disabled="isShortPlan &&
+            <v-btn :disabled="readOnly || isShortPlan &&
       (item.list_cycle_id === CYCLES.PRACTICAL_TRAINING || item.list_cycle_id === CYCLES.ATTESTATION)
       " small icon @click="editSubject(subject, item)" v-bind="attrs" v-on="on">
               <v-icon>mdi-pencil</v-icon>
@@ -43,7 +43,7 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn :disabled="isShortPlan" small icon @click="delSubject(subject)" v-bind="attrs" v-on="on">
+            <v-btn :disabled="readOnly || isShortPlan" small icon @click="delSubject(subject)" v-bind="attrs" v-on="on">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </template>
@@ -51,7 +51,8 @@
         </v-tooltip>
         <v-tooltip bottom v-if="!subject.subject_id">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn :disabled="isShortPlan" small icon @click="addSubSubject(subject, item)" v-bind="attrs" v-on="on">
+            <v-btn :disabled="readOnly || isShortPlan" small icon @click="addSubSubject(subject, item)" v-bind="attrs"
+              v-on="on">
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </template>
@@ -90,14 +91,15 @@ export default {
   computed: {
     ...mapGetters({
       isShortPlan: 'plans/isShortPlan',
+      readOnly: 'plans/readOnly'
     }),
     hasErrors() {
       return this.subjectIndexError == this.subject.id ||
-        (this.item.has_discipline && !this.subject.checkCountHoursModules)||
-      (this.item.has_discipline && this.subject.checkCountHours) ||
-      (this.item.has_discipline && this.subject.checkLastHourModule != null) ||
-      (this.item.has_discipline && !this.subject.checkHasCreditsSemester) ||
-      (this.item.has_discipline && this.subject.checkCountHoursSemester.length > 0)
+        (this.item.has_discipline && !this.subject.checkCountHoursModules) ||
+        (this.item.has_discipline && this.subject.checkCountHours) ||
+        (this.item.has_discipline && this.subject.checkLastHourModule != null) ||
+        (this.item.has_discipline && !this.subject.checkHasCreditsSemester) ||
+        (this.item.has_discipline && this.subject.checkCountHoursSemester.length > 0)
     }
   },
   mounted() {

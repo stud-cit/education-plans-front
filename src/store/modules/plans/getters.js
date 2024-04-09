@@ -40,3 +40,16 @@ export const signatures = (state) => {
 export const isShortPlan = (state) => {
   return state.plan.short_plan;
 };
+
+export const readOnly = (state, _, rootState) => {
+  const isTrue = (item) => item.status == true;
+  const isEveryTrue = state.plan.verification.every(isTrue);
+  const roles = [6, 7];
+  const currentRoleId = rootState.auth.userData.role_id;
+
+  if (state.plan.need_verification && isEveryTrue && roles.includes(currentRoleId)) {
+    return true;
+  }
+
+  return false;
+};

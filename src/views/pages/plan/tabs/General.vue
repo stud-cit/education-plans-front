@@ -4,244 +4,140 @@
       <v-row>
         <v-col cols="12" class="pb-0">
           <validation-provider v-slot="{ errors }" name="Назва плану" rules="required">
-            <span class="body-2 yellow lighten-3"
-              ><b>Формат назви:</b> Код спеціальності Назва ОП Освітній рівень Рік прийому. Приклад: 122 ОПП Інформатика
-              бакалавр 2023</span
-            >
-            <v-text-field
-              v-model="plan.title"
-              :error-messages="errors"
-              :disabled="isShortPlan"
-              label="Назва плану"
-              required
-            ></v-text-field>
+            <span class="body-2 yellow lighten-3"><b>Формат назви:</b> Код спеціальності Назва ОП Освітній рівень Рік
+              прийому. Приклад: 122 ОПП Інформатика
+              бакалавр 2023</span>
+            <v-text-field v-model="plan.title" :error-messages="errors" :disabled="readOnly || isShortPlan"
+              label="Назва плану" required></v-text-field>
           </validation-provider>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" class="pb-0">
           <validation-provider v-slot="{ errors }" name="Галузь знань " rules="">
-            <v-autocomplete
-              v-model.number="plan.field_knowledge_id"
-              :items="fieldsKnowledge"
-              :error-messages="errors"
-              :disabled="isShortPlan"
-              item-text="title"
-              item-value="id"
-              label="Галузь знань "
-            ></v-autocomplete>
+            <v-autocomplete v-model.number="plan.field_knowledge_id" :items="fieldsKnowledge" :error-messages="errors"
+              :disabled="readOnly || isShortPlan" item-text="title" item-value="id"
+              label="Галузь знань "></v-autocomplete>
           </validation-provider>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" class="pb-0">
           <validation-provider v-slot="{ errors }" name="Спеціальність" rules="">
-            <v-autocomplete
-              v-model.number="plan.speciality_id"
-              :items="specialities"
-              :loading="specialitiesLoading"
-              :disabled="specialities.length === 0 || isShortPlan"
-              :error-messages="errors"
-              item-text="title"
-              item-value="id"
-              label="Спеціальність"
-            ></v-autocomplete>
+            <v-autocomplete v-model.number="plan.speciality_id" :items="specialities" :loading="specialitiesLoading"
+              :disabled="specialities.length === 0 || readOnly || isShortPlan" :error-messages="errors"
+              item-text="title" item-value="id" label="Спеціальність"></v-autocomplete>
           </validation-provider>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" class="pb-0">
           <validation-provider v-slot="{ errors }" name="Освітня програма" rules="">
-            <v-autocomplete
-              v-model.number="plan.education_program_id"
-              :items="educationalPrograms"
+            <v-autocomplete v-model.number="plan.education_program_id" :items="educationalPrograms"
               :loading="educationalProgramsLoading"
-              :disabled="educationalPrograms.length === 0 || isShortPlan"
-              :error-messages="errors"
-              item-text="title"
-              item-value="id"
-              label="Освітня програма"
-            ></v-autocomplete>
+              :disabled="educationalPrograms.length === 0 || readOnly || isShortPlan" :error-messages="errors"
+              item-text="title" item-value="id" label="Освітня програма"></v-autocomplete>
           </validation-provider>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" class="pb-0">
           <validation-provider v-slot="{ errors }" name="Спеціалізація" rules="">
-            <v-autocomplete
-              v-model.number="plan.specialization_id"
-              :items="specializations"
-              :loading="specializationsLoading"
-              :error-messages="errors"
-              item-text="title"
-              item-value="id"
+            <v-autocomplete v-model.number="plan.specialization_id" :items="specializations"
+              :loading="specializationsLoading" :error-messages="errors" item-text="title" item-value="id"
               label="Спеціалізація"
-              :disabled="specializations.length === 0 || isShortPlan"
-            ></v-autocomplete>
+              :disabled="specializations.length === 0 || readOnly || isShortPlan"></v-autocomplete>
           </validation-provider>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" class="pb-0">
           <validation-provider v-slot="{ errors }" name="Кваліфікація" rules="">
-            <v-autocomplete
-              v-model="plan.qualification_id"
-              :items="qualifications"
-              :error-messages="errors"
-              :disabled="isShortPlan"
-              item-text="title"
-              item-value="id"
-              label="Кваліфікація"
-            ></v-autocomplete>
+            <v-autocomplete v-model="plan.qualification_id" :items="qualifications" :error-messages="errors"
+              :disabled="readOnly || isShortPlan" item-text="title" item-value="id"
+              label="Кваліфікація"></v-autocomplete>
           </validation-provider>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" lg="6" class="py-0">
           <validation-provider v-slot="{ errors }" name="Факультет" rules="">
-            <v-autocomplete
-              v-model="plan.faculty_id"
-              :items="faculties"
-              :error-messages="errors"
-              :disabled="isShortPlan"
-              item-text="name"
-              item-value="id"
-              label="Факультет"
-            ></v-autocomplete>
+            <v-autocomplete v-model="plan.faculty_id" :items="faculties" :error-messages="errors"
+              :disabled="readOnly || isShortPlan" item-text="name" item-value="id" label="Факультет"></v-autocomplete>
           </validation-provider>
         </v-col>
         <v-col cols="12" lg="6" class="py-0">
           <validation-provider v-slot="{ errors }" name="Кафедра" rules="">
-            <v-autocomplete
-              v-model="plan.department_id"
-              :items="departments"
-              :error-messages="errors"
-              :loading="departmentsLoading"
-              :disabled="departmentsLoading || isShortPlan"
-              item-text="name"
-              item-value="id"
-              label="Кафедра"
-            ></v-autocomplete>
+            <v-autocomplete v-model="plan.department_id" :items="departments" :error-messages="errors"
+              :loading="departmentsLoading" :disabled="departmentsLoading || readOnly || isShortPlan" item-text="name"
+              item-value="id" label="Кафедра"></v-autocomplete>
           </validation-provider>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" lg="6" class="py-0">
           <validation-provider v-slot="{ errors }" name="Форма організації навчання" rules="required">
-            <v-autocomplete
-              v-model="plan.form_organization_id"
-              :items="formsOrganizationStudy"
-              :error-messages="errors"
-              item-text="title"
-              item-value="id"
-              label="Форма організації навчання"
-              required
-              :disabled="edit || isShortPlan"
-            ></v-autocomplete>
+            <v-autocomplete v-model="plan.form_organization_id" :items="formsOrganizationStudy" :error-messages="errors"
+              item-text="title" item-value="id" label="Форма організації навчання" required
+              :disabled="edit || readOnly || isShortPlan"></v-autocomplete>
           </validation-provider>
         </v-col>
         <v-col cols="12" lg="6" class="py-0">
           <validation-provider v-slot="{ errors }" name="Форма навчання" rules="required">
-            <v-autocomplete
-              v-model="plan.form_study_id"
-              :items="formsStudy"
-              :error-messages="errors"
-              :disabled="isShortPlan"
-              item-text="title"
-              item-value="id"
-              label="Форма навчання"
-            ></v-autocomplete>
+            <v-autocomplete v-model="plan.form_study_id" :items="formsStudy" :error-messages="errors"
+              :disabled="readOnly || isShortPlan" item-text="title" item-value="id"
+              label="Форма навчання"></v-autocomplete>
           </validation-provider>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" lg="6" class="py-0">
           <validation-provider v-slot="{ errors }" name="Термін навчання" rules="required">
-            <v-autocomplete
-              v-model="plan.study_term"
-              :items="termsStudy"
-              :error-messages="errors"
-              item-text="title"
-              label="Термін навчання"
-              return-object
-              item-value="id"
-              :disabled="edit || isShortPlan"
-            ></v-autocomplete>
+            <v-autocomplete v-model="plan.study_term" :items="termsStudy" :error-messages="errors" item-text="title"
+              label="Термін навчання" return-object item-value="id" :disabled="edit || isShortPlan"></v-autocomplete>
           </validation-provider>
         </v-col>
         <v-col cols="12" lg="6" class="py-0">
           <validation-provider v-slot="{ errors }" name="Кількість семестрів" rules="required">
-            <v-text-field
-              v-model="numberSemesters"
-              :error-messages="errors"
-              label="Кількість семестрів"
-              disabled
-              required
-            ></v-text-field>
+            <v-text-field v-model="numberSemesters" :error-messages="errors" label="Кількість семестрів" disabled
+              required></v-text-field>
           </validation-provider>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" lg="6" class="py-0">
           <validation-provider v-slot="{ errors }" name="Освітній (Освітньо-науковий) рівень" rules="required">
-            <v-autocomplete
-              v-model="plan.education_level_id"
-              :items="educationsLevel"
-              :error-messages="errors"
-              :disabled="isShortPlan"
-              item-text="title"
-              item-value="id"
-              label="Освітній (Освітньо-науковий) рівень"
-            ></v-autocomplete>
+            <v-autocomplete v-model="plan.education_level_id" :items="educationsLevel" :error-messages="errors"
+              :disabled="readOnly || isShortPlan" item-text="title" item-value="id"
+              label="Освітній (Освітньо-науковий) рівень"></v-autocomplete>
           </validation-provider>
         </v-col>
         <v-col cols="12" lg="6" class="py-0">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Обсяг плану в кредитах"
-            rules="required|numeric|min:1|max:3|min_value:1"
-          >
-            <v-text-field
-              v-model="plan.credits"
-              :error-messages="errors"
-              :disabled="isShortPlan"
-              label="Обсяг плану в кредитах"
-              required
-              type="number"
-              :min="1"
-              :max="999"
-            ></v-text-field>
+          <validation-provider v-slot="{ errors }" name="Обсяг плану в кредитах"
+            rules="required|numeric|min:1|max:3|min_value:1">
+            <v-text-field v-model="plan.credits" :error-messages="errors" :disabled="readOnly || isShortPlan"
+              label="Обсяг плану в кредитах" required type="number" :min="1" :max="999"></v-text-field>
           </validation-provider>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" lg="6" class="py-0">
           <validation-provider v-slot="{ errors }" name="Рік прийому" rules="required|numeric|digits:4">
-            <v-autocomplete
-              v-model="plan.year"
-              :items="years"
-              :error-messages="errors"
-              :disabled="isShortPlan"
-              label="Рік прийому"
-            ></v-autocomplete>
+            <v-autocomplete v-model="plan.year" :items="years" :error-messages="errors"
+              :disabled="readOnly || isShortPlan" label="Рік прийому"></v-autocomplete>
           </validation-provider>
         </v-col>
-        <v-col
-          cols="12"
-          lg="6"
-          class="py-0"
-          v-if="
-            allowedRoles([
-              ROLES.ID.admin,
-              ROLES.ID.root,
-              ROLES.ID.training_department,
-              ROLES.ID.practice_department,
-              ROLES.ID.educational_department_deputy,
-              ROLES.ID.educational_department_chief,
-            ])
-          "
-        >
-          <v-checkbox :disabled="isShortPlan" v-model="plan.published" label="Відкрити спільний доступ"></v-checkbox>
+        <v-col cols="12" lg="6" class="py-0" v-if="allowedRoles([
+    ROLES.ID.admin,
+    ROLES.ID.root,
+    ROLES.ID.training_department,
+    ROLES.ID.practice_department,
+    ROLES.ID.educational_department_deputy,
+    ROLES.ID.educational_department_chief,
+  ])
+    ">
+          <v-checkbox :disabled="readOnly || isShortPlan" v-model="plan.published"
+            label="Відкрити спільний доступ"></v-checkbox>
         </v-col>
       </v-row>
       <v-row v-if="objHoursWeeks.length">
@@ -249,20 +145,14 @@
           <table>
             <thead>
               <tr>
-                <td
-                  v-for="course in studyTerm.course"
-                  :key="course"
-                  :colspan="(objHoursWeeks.length / studyTerm.semesters) * 2"
-                >
+                <td v-for="course in studyTerm.course" :key="course"
+                  :colspan="(objHoursWeeks.length / studyTerm.semesters) * 2">
                   {{ course }} курс
                 </td>
               </tr>
               <tr>
-                <td
-                  v-for="semester in studyTerm.semesters"
-                  :key="semester"
-                  :colspan="objHoursWeeks.length / studyTerm.semesters"
-                >
+                <td v-for="semester in studyTerm.semesters" :key="semester"
+                  :colspan="objHoursWeeks.length / studyTerm.semesters">
                   {{ semester }} семестр
                 </td>
               </tr>
@@ -273,22 +163,12 @@
               </tr>
               <tr>
                 <td v-for="(item, index) in objHoursWeeks" :key="index">
-                  <validation-provider
-                    v-slot="{ errors }"
-                    rules="required|numeric|min_value:1"
+                  <validation-provider v-slot="{ errors }" rules="required|numeric|min_value:1"
                     name="Кількість тижнів у модульному атестаційному циклі"
-                    :vid="'weeds_' + item.index + '_' + item.course"
-                  >
-                    <v-text-field
-                      v-model.number="item.week"
-                      :error-messages="errors"
-                      :readonly="isShortPlan"
-                      required
-                      type="number"
-                      :min="1"
-                      dense
-                      hide-details
-                    ></v-text-field>
+                    :vid="'weeds_' + item.index + '_' + item.course">
+                    <v-text-field v-model.number="item.week" :error-messages="errors"
+                      :readonly="readOnly || isShortPlan" required type="number" :min="1" dense
+                      hide-details></v-text-field>
                   </validation-provider>
                 </td>
               </tr>
@@ -300,22 +180,11 @@
               </tr>
               <tr>
                 <td v-for="(item, index) in objHoursWeeks" :key="index">
-                  <validation-provider
-                    v-slot="{ errors }"
-                    rules="required|numeric|min_value:0"
+                  <validation-provider v-slot="{ errors }" rules="required|numeric|min_value:0"
                     name="Максимальна кількість годин в тижні модульного атестаційного циклу"
-                    :vid="'hours_' + item.index + '_' + item.course"
-                  >
-                    <v-text-field
-                      v-model.number="item.hour"
-                      :error-messages="errors"
-                      required
-                      :readonly="isShortPlan"
-                      type="number"
-                      :min="0"
-                      dense
-                      hide-details
-                    ></v-text-field>
+                    :vid="'hours_' + item.index + '_' + item.course">
+                    <v-text-field v-model.number="item.hour" :error-messages="errors" required
+                      :readonly="readOnly || isShortPlan" type="number" :min="0" dense hide-details></v-text-field>
                   </validation-provider>
                 </td>
               </tr>
@@ -325,7 +194,8 @@
       </v-row>
       <v-row>
         <v-col cols="12">
-          <v-btn class="mr-4" type="submit" color="primary" :loading="submitLoading" :disabled="invalid">
+          <v-btn v-if="!readOnly" class="mr-4" type="submit" color="primary" :loading="submitLoading"
+            :disabled="invalid">
             Зберегти
           </v-btn>
         </v-col>
@@ -377,7 +247,7 @@ export default {
   },
   computed: {
     ...mapState('plans', ['submitLoading']),
-    ...mapGetters({ isShortPlan: 'plans/isShortPlan' }),
+    ...mapGetters({ isShortPlan: 'plans/isShortPlan', 'readOnly': 'plans/readOnly' }),
   },
   mounted() {
     this.apiGetFields();
@@ -547,6 +417,7 @@ table {
   border-collapse: collapse;
   width: 100%;
 }
+
 table td {
   text-align: center;
   color: #000;

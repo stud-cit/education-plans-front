@@ -1,69 +1,33 @@
 <template>
   <div>
     <v-container>
-      <validation-observer
-        :ref="'observer' + item.id"
-        v-slot="{ invalid }"
-        v-for="(item, index) in signatures"
-        :key="'signature_' + index"
-      >
+      <validation-observer :ref="'observer' + item.id" v-slot="{ invalid }" v-for="(item, index) in signatures"
+        :key="'signature_' + index">
         <v-row>
           <v-col cols="12" md="2">
             <validation-provider v-slot="{ errors }" name="Посада" rules="required">
-              <v-autocomplete
-                v-model="item.position_id"
-                :items="positions"
-                :error-messages="errors"
-                label="Посада"
-                data-vv-name="Посада"
-                item-text="position"
-                item-value="id"
-                required
-                :disabled="item.edit"
-              ></v-autocomplete>
+              <v-autocomplete v-model="item.position_id" :items="positions" :error-messages="errors" label="Посада"
+                data-vv-name="Посада" item-text="position" item-value="id" required
+                :disabled="item.edit"></v-autocomplete>
             </validation-provider>
           </v-col>
 
           <v-col cols="12" md="5">
-            <v-text-field
-              v-model="item.manual_position"
-              :items="positions"
-              label="Підрозділ"
-              data-vv-name="Підрозділ"
-              item-text="manual_position"
-              item-value="manual_position"
-              :disabled="item.edit"
-            ></v-text-field>
+            <v-text-field v-model="item.manual_position" :items="positions" label="Підрозділ" data-vv-name="Підрозділ"
+              item-text="manual_position" item-value="manual_position" :disabled="item.edit"></v-text-field>
           </v-col>
 
           <v-col cols="12" md="3">
-            <v-autocomplete
-              v-model="item.asu_id"
-              :items="workers"
-              label="Посадова особа"
-              data-vv-name="Посадова особа"
-              item-text="full_name"
-              item-value="asu_id"
-              :loading="workerLoader"
-              :disabled="item.edit"
-            ></v-autocomplete>
+            <v-autocomplete v-model="item.asu_id" :items="workers" label="Посадова особа" data-vv-name="Посадова особа"
+              item-text="full_name" item-value="asu_id" :loading="workerLoader" :disabled="item.edit"></v-autocomplete>
           </v-col>
 
           <v-col cols="12" md="2">
             <div class="text-center pt-3">
               <v-tooltip bottom v-if="item.edit === true">
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    :disabled="isShortPlan"
-                    class="mr-3"
-                    v-bind="attrs"
-                    v-on="on"
-                    outlined
-                    fab
-                    small
-                    color="blue"
-                    @click="edit(item)"
-                  >
+                  <v-btn :disabled="readOnly || isShortPlan" class="mr-3" v-bind="attrs" v-on="on" outlined fab small
+                    color="blue" @click="edit(item)">
                     <v-icon aria-hidden="false"> mdi-pencil </v-icon>
                   </v-btn>
                 </template>
@@ -72,17 +36,8 @@
 
               <v-tooltip bottom v-if="item.edit === false">
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    class="mr-3"
-                    v-bind="attrs"
-                    v-on="on"
-                    outlined
-                    fab
-                    small
-                    color="blue"
-                    :disabled="invalid || isShortPlan"
-                    @click="update(item)"
-                  >
+                  <v-btn class="mr-3" v-bind="attrs" v-on="on" outlined fab small color="blue"
+                    :disabled="invalid || readOnly || isShortPlan" @click="update(item)">
                     <v-icon aria-hidden="false"> mdi-content-save </v-icon>
                   </v-btn>
                 </template>
@@ -91,17 +46,8 @@
 
               <v-tooltip bottom v-if="item.edit === null">
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    class="mr-3"
-                    v-bind="attrs"
-                    v-on="on"
-                    outlined
-                    fab
-                    small
-                    color="blue"
-                    :disabled="invalid || isShortPlan"
-                    @click="save(item)"
-                  >
+                  <v-btn class="mr-3" v-bind="attrs" v-on="on" outlined fab small color="blue"
+                    :disabled="invalid || readOnly || isShortPlan" @click="save(item)">
                     <v-icon aria-hidden="false"> mdi-content-save </v-icon>
                   </v-btn>
                 </template>
@@ -110,16 +56,8 @@
 
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    :disabled="isShortPlan"
-                    v-bind="attrs"
-                    v-on="on"
-                    outlined
-                    fab
-                    small
-                    color="red"
-                    @click="remove(index, item)"
-                  >
+                  <v-btn :disabled="readOnly || isShortPlan" v-bind="attrs" v-on="on" outlined fab small color="red"
+                    @click="remove(index, item)">
                     <v-icon aria-hidden="false"> mdi-trash-can-outline </v-icon>
                   </v-btn>
                 </template>
@@ -134,7 +72,7 @@
     <div class="text-center mt-4">
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn :disabled="isShortPlan" icon large v-bind="attrs" v-on="on" @click="addItem()">
+          <v-btn :disabled="readOnly || isShortPlan" icon large v-bind="attrs" v-on="on" @click="addItem()">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
         </template>
@@ -163,6 +101,7 @@ export default {
       plan_id: 'plans/id',
       signatures: 'plans/signatures',
       isShortPlan: 'plans/isShortPlan',
+      readOnly: 'plans/readOnly'
     }),
   },
   mounted() {

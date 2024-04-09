@@ -19,31 +19,33 @@
     <tr v-for="item in result" :key="item.course">
       <td>{{ item.course }}</td>
       <td>
-        <input v-model="item.theoretical_training">
+        <input v-model="item.theoretical_training" :disabled="readOnly">
       </td>
       <td>
-        <input v-model="item.exam_session">
+        <input v-model="item.exam_session" :disabled="readOnly">
       </td>
       <td>
-        <input v-model="item.practical_training">
+        <input v-model="item.practical_training" :disabled="readOnly">
       </td>
       <td>
-        <input v-model="item.bachelor_qualifying_work">
+        <input v-model="item.bachelor_qualifying_work" :disabled="readOnly">
       </td>
       <td>
-        <input v-model="item.attestation_qualifying_exams">
+        <input v-model="item.attestation_qualifying_exams" :disabled="readOnly">
       </td>
       <td>
-        <input v-model="item.vacation">
+        <input v-model="item.vacation" :disabled="readOnly">
       </td>
       <td>
-        <input v-model="item.all">
+        <input v-model="item.all" :disabled="readOnly">
       </td>
     </tr>
   </table>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: "SummaryDataBudgetTime",
   data: () => {
@@ -55,6 +57,11 @@ export default {
     this.result = this.items.length === 0 ? this.generatorFields(this.course) : this.items
   },
   props: ['items', 'course'],
+  computed: {
+    ...mapGetters({
+      readOnly: 'plans/readOnly'
+    })
+  },
   methods: {
     generatorFields(course) {
       let result = [];
@@ -69,7 +76,7 @@ export default {
         attestation_qualifying_exams: null,
       }
       for (let i = 1; i <= course; i++) {
-        result.push({...item, course: i});
+        result.push({ ...item, course: i });
       }
 
       return result;
@@ -86,6 +93,7 @@ table {
   border-collapse: collapse;
   margin-bottom: 15px;
 }
+
 table td {
   text-align: center;
   color: #000;
@@ -93,19 +101,23 @@ table td {
   border: 1px solid #dee2e6;
   width: 19.5px;
 }
+
 table th {
   padding: 10px 0;
 }
+
 table td input {
   width: 100%;
   height: 100%;
   text-align: center;
   outline: none;
 }
+
 table td input:focus {
   border: 1px solid #000;
   box-sizing: border-box;
 }
+
 table tfoot {
   font-weight: bold;
   border: 0;

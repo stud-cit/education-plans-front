@@ -11,32 +11,21 @@
       <v-col cols="1" class="pa-0">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <input
-              type="checkbox"
-              v-bind="attrs"
-              v-on="on"
-              :disabled="cycleIndex != item.id"
-              v-model="item.has_discipline"
-            />
+            <input type="checkbox" v-bind="attrs" v-on="on" :disabled="cycleIndex != item.id"
+              v-model="item.has_discipline" />
           </template>
           <span>Цикл з навчальними дисциплінами</span>
         </v-tooltip>
       </v-col>
       <v-col cols="1" class="pa-0">
-        <input
-          type="number"
-          min="0"
-          class="credits"
-          :disabled="cycleIndex != item.id"
-          v-model="item.credit"
-          @input="checkCredit(parentItem, item)"
-        />
+        <input type="number" min="0" class="credits" :disabled="cycleIndex != item.id" v-model="item.credit"
+          @input="checkCredit(parentItem, item)" />
       </v-col>
       <v-col cols="1" class="pa-0"></v-col>
       <v-col class="pa-0 text-right">
         <v-tooltip bottom v-if="cycleIndex != item.id">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn small icon @click="cycleIndex = item.id" v-bind="attrs" v-on="on">
+            <v-btn :disabled="readOnly" small icon @click="cycleIndex = item.id" v-bind="attrs" v-on="on">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </template>
@@ -52,7 +41,7 @@
         </v-tooltip>
         <v-tooltip bottom v-if="allowedRoles([ROLES.ID.admin, ROLES.ID.root])">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn :disabled="isShortPlan" small icon @click="delCycle(item)" v-bind="attrs" v-on="on">
+            <v-btn :disabled="readOnly || isShortPlan" small icon @click="delCycle(item)" v-bind="attrs" v-on="on">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </template>
@@ -62,7 +51,7 @@
           <template v-slot:activator="{ on: menu, attrs }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on: tooltip }">
-                <v-btn :disabled="isShortPlan" icon small v-bind="attrs" v-on="{ ...tooltip, ...menu }">
+                <v-btn :disabled="readOnly || isShortPlan" icon small v-bind="attrs" v-on="{ ...tooltip, ...menu }">
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
               </template>
@@ -92,27 +81,13 @@
       <v-col class="pa-0"></v-col>
     </v-row>
 
-    <SubjectItem
-      v-for="(subject, subjectIndex) in item.subjects"
-      :key="'subject' + subjectIndex + indexComponent"
-      :subject="subject"
-      :item="item"
-    />
+    <SubjectItem v-for="(subject, subjectIndex) in item.subjects" :key="'subject' + subjectIndex + indexComponent"
+      :subject="subject" :item="item" />
 
-    <CycleItem
-      :parentItem="item"
-      v-bind:item="child"
-      :index="subIndex"
-      :indexComponent="indexComponent"
-      :cycles="cycles"
-      v-for="(child, subIndex) in item.cycles"
-      :key="'cycle_' + child.id + indexComponent"
-      @addCycle="addCycle"
-      @addSubject="addSubject"
-      @saveCycle="saveCycle"
-      @editCycle="editCycle"
-      @delCycle="delCycle"
-    />
+    <CycleItem :parentItem="item" v-bind:item="child" :index="subIndex" :indexComponent="indexComponent"
+      :cycles="cycles" v-for="(child, subIndex) in item.cycles" :key="'cycle_' + child.id + indexComponent"
+      @addCycle="addCycle" @addSubject="addSubject" @saveCycle="saveCycle" @editCycle="editCycle"
+      @delCycle="delCycle" />
   </div>
 </template>
 <script>
@@ -176,7 +151,7 @@ export default {
         }
       });
     },
-    ...mapGetters({ isShortPlan: 'plans/isShortPlan' }),
+    ...mapGetters({ isShortPlan: 'plans/isShortPlan', 'readOnly': 'plans/readOnly' }),
   },
   methods: {
     checkCredit(parentItem, item) {
@@ -249,30 +224,37 @@ export default {
   display: flex;
   align-items: center;
 }
+
 .cycle-subject.error,
 .cycle-subject.error input,
 .cycle-subject.error select,
 .cycle-subject.error i {
   color: #fff !important;
 }
+
 .cycle-subject select:disabled {
   color: #000 !important;
 }
+
 .cycle-subject.error select:disabled {
   color: #fff !important;
 }
+
 .cycle-subject input,
 .cycle-subject select {
   width: 90%;
   text-align: center;
 }
+
 .cycle-subject.head {
   text-align: center;
   color: #9b9b9b;
 }
+
 .cycle-subject.cycle {
   background: #f8f8f8;
 }
+
 input.credits {
   padding-left: 14px;
 }

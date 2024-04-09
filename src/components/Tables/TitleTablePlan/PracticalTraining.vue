@@ -15,20 +15,21 @@
       <tr v-for="(item, index) in result" :key="item.id">
         <td>{{ ++index }}</td>
         <td>
-          <input type="text" v-model="item.name" />
+          <input type="text" v-model="item.name" :disabled="readOnly" />
         </td>
         <td>
-          <input type="text" v-model="item.semester" />
+          <input type="text" v-model="item.semester" :disabled="readOnly" />
         </td>
         <td>
-          <input type="text" v-model="item.week" />
+          <input type="text" v-model="item.week" :disabled="readOnly" />
         </td>
         <td>
-          <input type="text" v-model="item.credit" />
+          <input type="text" v-model="item.credit" :disabled="readOnly" />
         </td>
         <td>
           <btn-tooltip tooltip="Видалити">
-            <v-icon small color="red" :disabled="isShortPlan" @click="deleted(item)"> mdi-trash-can-outline </v-icon>
+            <v-icon small color="red" :disabled="readOnly || isShortPlan" @click="deleted(item)"> mdi-trash-can-outline
+            </v-icon>
           </btn-tooltip>
         </td>
       </tr>
@@ -36,7 +37,8 @@
 
     <v-tooltip bottom>
       <template v-slot:activator="{ on, attrs }">
-        <v-btn :disabled="isShortPlan" icon large class="d-block mx-auto" v-bind="attrs" v-on="on" @click="addItem">
+        <v-btn :disabled="readOnly || isShortPlan" icon large class="d-block mx-auto" v-bind="attrs" v-on="on"
+          @click="addItem">
           <v-icon>mdi-plus</v-icon>
         </v-btn>
       </template>
@@ -64,6 +66,7 @@ export default {
   computed: {
     ...mapGetters({
       isShortPlan: 'plans/isShortPlan',
+      readOnly: 'plans/readOnly'
     }),
   },
   mounted() {
@@ -95,6 +98,7 @@ table {
   border-collapse: collapse;
   margin-bottom: 5px;
 }
+
 table td {
   text-align: center;
   color: #000;
@@ -102,19 +106,23 @@ table td {
   border: 1px solid #dee2e6;
   width: 19.5px;
 }
+
 table th {
   padding: 10px 0;
 }
+
 table td input {
   width: 100%;
   height: 100%;
   text-align: center;
   outline: none;
 }
+
 table td input:focus {
   border: 1px solid #000;
   box-sizing: border-box;
 }
+
 table tfoot {
   font-weight: bold;
   border: 0;
