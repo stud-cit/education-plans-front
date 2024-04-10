@@ -159,12 +159,12 @@
             </thead>
             <tbody>
               <tr>
-                <td :colspan="objHoursWeeks.length">Кількість тижнів у модульному атестаційному циклі</td>
+                <td :colspan="objHoursWeeks.length">Кількість тижнів теоретичної підготовки в модульному циклі</td>
               </tr>
               <tr>
                 <td v-for="(item, index) in objHoursWeeks" :key="index">
                   <validation-provider v-slot="{ errors }" rules="required|numeric|min_value:1"
-                    name="Кількість тижнів у модульному атестаційному циклі"
+                    name="Кількість тижнів теоретичної підготовки в модульному циклі"
                     :vid="'weeds_' + item.index + '_' + item.course">
                     <v-text-field v-model.number="item.week" :error-messages="errors"
                       :readonly="readOnly || isShortPlan" required type="number" :min="1" dense
