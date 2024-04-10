@@ -163,11 +163,11 @@
               </tr>
               <tr>
                 <td v-for="(item, index) in objHoursWeeks" :key="index">
-                  <validation-provider v-slot="{ errors }" rules="required|numeric|min_value:1"
+                  <validation-provider v-slot="{ errors }" rules="required|numeric|min_value:0"
                     name="Кількість тижнів теоретичної підготовки в модульному циклі"
                     :vid="'weeds_' + item.index + '_' + item.course">
                     <v-text-field v-model.number="item.week" :error-messages="errors"
-                      :readonly="readOnly || isShortPlan" required type="number" :min="1" dense
+                      :readonly="readOnly || isShortPlan" required type="number" :min="0" dense
                       hide-details></v-text-field>
                   </validation-provider>
                 </td>
