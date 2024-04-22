@@ -78,7 +78,8 @@
         {{ plan.comment }}</v-alert>
     </template>
 
-    <ShortedByYearBtns v-if="$route.name === 'EditPlan' && plan" :items="plan.shorted_by_year" :plan-id="plan.id" />
+    <ShortedByYearBtns v-if="$route.name === 'EditPlan' && plan" :items="plan.shorted_by_year" :plan-id="plan.id"
+      :can="plan.actions.can_generate_short_plan" />
 
     <div class="d-flex align-center flex-wrap gap-1" v-if="$route.name === 'EditPlan' && plan">
       <v-btn small depressed :disabled="disableBtnSendToVerification"
@@ -123,18 +124,18 @@
           <v-stepper-step :key="`${index}-step`" :step="index + 1" :complete="item.status"
             :rules="[() => item.status == null || item.status]" :editable="authUser.role_id == 1">
             <span @click="
-      authUser.role_id == 1
-        ? verification({ verification_status_id: item.id, status: item.status ? false : true })
-        : ''
-      ">{{ item.titleHead }}</span>
+              authUser.role_id == 1
+                ? verification({ verification_status_id: item.id, status: item.status ? false : true })
+                : ''
+              ">{{ item.titleHead }}</span>
             <v-btn icon small v-if="item.comment" @click="openDialog(item.comment)" color="error">
               <v-icon small>mdi-bell-ring</v-icon>
             </v-btn>
             <small @click="
-      authUser.role_id == 1
-        ? verification({ verification_status_id: item.id, status: item.status ? false : true })
-        : ''
-      ">{{ item.title }}</small>
+              authUser.role_id == 1
+                ? verification({ verification_status_id: item.id, status: item.status ? false : true })
+                : ''
+              ">{{ item.title }}</small>
           </v-stepper-step>
           <v-divider v-if="index != verifications.length - 1" :key="index"></v-divider>
         </template>

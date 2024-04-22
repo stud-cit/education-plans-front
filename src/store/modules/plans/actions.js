@@ -27,11 +27,11 @@ export const copy = (context, id) => {
 export const generateShortedByYear = (context, data) => {
   vuexStore.dispatch('loader/show');
   api
-    .patch(API.PLAN_GENERATE_SHORTED_BY_YEAR, data.id, { shortened_by_year: data.year })
+    .patch(API.PLAN_GENERATE_SHORTED_BY_YEAR, data.id, { shortened_by_year: data.short, year: data.year })
     .then((response) => {
       vuexStore.dispatch('loader/hide');
       const { data } = response.data;
-      context.commit('SET_VALUE', { shorted_by_year: data.shorted_by_year });
+      context.commit('SET_SHORTENED_RELATION', data.shorted_by_year.at(-1));
 
       window.open('/plan/edit/' + data.id + '/' + data.title, '_blank');
     })

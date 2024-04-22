@@ -80,3 +80,7 @@ export const SET_VALUE = (state, payload) => {
 export const NOT_CONVENTIONAL = (state, payload) => {
   state.plan.comment = payload.comment;
 };
+
+export const SET_SHORTENED_RELATION = (state, payload) => {
+  state.plan.shorted_by_year.push(payload);
+};

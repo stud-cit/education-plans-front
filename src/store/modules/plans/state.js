@@ -25,6 +25,7 @@ const planDefault = {
   shorted_by_year: [],
   short_plan: false,
   need_verification: false,
+  actions: [],
 };
 
 export default {

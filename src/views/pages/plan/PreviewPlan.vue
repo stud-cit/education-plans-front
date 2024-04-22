@@ -1,30 +1,30 @@
 <template>
   <v-container class="preview-plan" v-if="plan">
-    <ShortedByYearBtns v-if="actions.can_generate_short_plan" class="no-print d-print-none"
-      :items="plan.shorted_by_year" :plan-id="plan.id" />
+    <ShortedByYearBtns v-if="!plan.short_plan" class="no-print d-print-none" :items="plan.shorted_by_year"
+      :plan-id="plan.id" :can="actions.can_generate_short_plan" />
     <div class="no-print mb-10 d-flex flex-wrap justify-end d-print-none">
       <v-btn v-if="plan.speciality_id" elevation="2" small color="success" class="mr-2" target="_blank" :to="{
-    name: 'PlanCatalogSpecialityPdf',
-    params: { id: plan.id },
-    query: {
-      year: plan.year,
-      end_year: getEndYear(plan),
-      education_level: plan.education_level.id,
-      speciality_id: plan.speciality_id,
-    },
-  }">
+        name: 'PlanCatalogSpecialityPdf',
+        params: { id: plan.id },
+        query: {
+          year: plan.year,
+          end_year: getEndYear(plan),
+          education_level: plan.education_level.id,
+          speciality_id: plan.speciality_id,
+        },
+      }">
         Каталог ВД за спеціальністю
       </v-btn>
       <v-btn v-if="plan.education_program_id" :to="{
-    name: 'PlanCatalogEducationProgramPdf',
-    params: { id: plan.id },
-    query: {
-      year: plan.year,
-      end_year: getEndYear(plan),
-      education_level: plan.education_level.id,
-      education_program_id: plan.education_program_id,
-    },
-  }" target="_blank" elevation="2" color="success" small>
+        name: 'PlanCatalogEducationProgramPdf',
+        params: { id: plan.id },
+        query: {
+          year: plan.year,
+          end_year: getEndYear(plan),
+          education_level: plan.education_level.id,
+          education_program_id: plan.education_program_id,
+        },
+      }" target="_blank" elevation="2" color="success" small>
         Каталог ВД за ОП
       </v-btn>
     </div>
@@ -68,14 +68,14 @@
           <tr></tr>
           <tr v-for="(td, index) in professions" :key="'tr_' + index">
             <td v-for="(item, i) in td" :colspan="item.hasOwnProperty('colspan')
-    ? item.colspan
-    : item.hasOwnProperty('acolspan')
-      ? (fullColspanTitle - item.acolspan * 2) / 2
-      : ''
-    " :class="[
-    { 'table-profession-title': item.hasOwnProperty('title') },
-    { 'table-profession-text': item.hasOwnProperty('key') },
-  ]" :key="index + '_' + i">
+              ? item.colspan
+              : item.hasOwnProperty('acolspan')
+                ? (fullColspanTitle - item.acolspan * 2) / 2
+                : ''
+              " :class="[
+                { 'table-profession-title': item.hasOwnProperty('title') },
+                { 'table-profession-text': item.hasOwnProperty('key') },
+              ]" :key="index + '_' + i">
               <template v-if="item.hasOwnProperty('title')">
                 {{ item.title }}
               </template>
@@ -177,11 +177,11 @@
           </tr>
 
           <tr class="subtable" v-for="(item, index) in Math.max(
-    plan.exams_table.length,
-    plan.summary_data_budget_time.length,
-    plan.practical_training.length,
-    Math.ceil(plan.number_semesters / 2),
-  )" :key="'test_' + item">
+            plan.exams_table.length,
+            plan.summary_data_budget_time.length,
+            plan.practical_training.length,
+            Math.ceil(plan.number_semesters / 2),
+          )" :key="'test_' + item">
             <template v-if="plan.summary_data_budget_time[index]">
               <td colspan="1" class="border-table">{{ plan.summary_data_budget_time[index].course }}</td>
               <td colspan="2" class="border-table">{{ plan.summary_data_budget_time[index].theoretical_training }}</td>
@@ -263,8 +263,8 @@
               <td class="border-table">
                 {{ cycle.asu_id ? cycle.title : cycle.selective_discipline.title
                 }}<sup v-if="cycle.note">{{
-    plan.subject_notes.indexOf(plan.subject_notes.find((item) => item.id == cycle.id)) + 1
-  }}</sup>
+                  plan.subject_notes.indexOf(plan.subject_notes.find((item) => item.id == cycle.id)) + 1
+                  }}</sup>
               </td>
               <td class="border-table">{{ cycle.exams }}</td>
               <!--Екзамени-->
@@ -272,9 +272,9 @@
               <!--Заліки-->
               <td class="border-table">
                 {{
-    cycle.individual_tasks +
-    (cycle.list_cycle_id == 10 ? plan.individual_task_semester[cycle.index - 1] : '')
-  }}
+                  cycle.individual_tasks +
+                  (cycle.list_cycle_id == 10 ? plan.individual_task_semester[cycle.index - 1] : '')
+                }}
               </td>
               <!--Індивідуальні завдання-->
               <td class="border-table">{{ cycle.credits > 0 ? cycle.credits : '' }}</td>
@@ -300,8 +300,8 @@
               </td>
 
               <td v-for="(hour, idx) in cycle.hours_modules.length > 0
-    ? cycle.hours_modules
-    : plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]" :key="'hour_' + idx"
+                ? cycle.hours_modules
+                : plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]" :key="'hour_' + idx"
                 class="border-table">
                 <template v-if="hour.hasOwnProperty('hour')">
                   {{ hour.hour > 0 ? hour.hour : '' }}
@@ -320,8 +320,8 @@
                 <td class="border-table">
                   {{ subject.asu_id ? subject.title : subject.selective_discipline.title
                   }}<sup v-if="subject.note">{{
-    plan.subject_notes.indexOf(plan.subject_notes.find((item) => item.id == subject.id)) + 1
-  }}</sup>
+                    plan.subject_notes.indexOf(plan.subject_notes.find((item) => item.id == subject.id)) + 1
+                    }}</sup>
                 </td>
                 <td class="border-table">{{ subject.exams }}</td>
                 <!--Екзамени-->
@@ -329,9 +329,9 @@
                 <!--Заліки-->
                 <td class="border-table">
                   {{
-    subject.individual_tasks +
-    (cycle.list_cycle_id == 10 ? plan.individual_task_semester[cycle.index - 1] : '')
-  }}
+                    subject.individual_tasks +
+                    (cycle.list_cycle_id == 10 ? plan.individual_task_semester[cycle.index - 1] : '')
+                  }}
                 </td>
                 <!--Індивідуальні завдання-->
                 <td class="border-table">{{ subject.credits > 0 ? subject.credits : '' }}</td>
@@ -357,9 +357,9 @@
                 </td>
 
                 <td v-for="(hour, idx) in subject.hours_modules.length > 0
-    ? subject.hours_modules
-    : plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]" :key="'hour_' + idx"
-                  class="border-table">
+                  ? subject.hours_modules
+                  : plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
+                  :key="'hour_' + idx" class="border-table">
                   <template v-if="hour.hasOwnProperty('hour')">
                     {{ hour.hour > 0 ? hour.hour : '' }}
                   </template>
@@ -406,8 +406,8 @@
               </td>
 
               <td v-for="(hour, idx) in cycle.hours_modules.length > 0
-    ? cycle.hours_modules
-    : plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]" :key="'hour_' + idx"
+                ? cycle.hours_modules
+                : plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]" :key="'hour_' + idx"
                 class="border-table">
                 {{ cycle.hours_modules.length > 0 ? hour : 0 }}
               </td>
@@ -448,9 +448,9 @@
               </template>
             </td>
             <td v-for="(hour, idx) in totalPlan.hours_modules.length > 0
-    ? totalPlan.hours_modules
-    : plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]" :key="'total_plan_' + idx"
-              class="border-table">
+              ? totalPlan.hours_modules
+              : plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]"
+              :key="'total_plan_' + idx" class="border-table">
               {{ totalPlan.hours_modules.length > 0 ? hour : 0 }}
             </td>
             <td class="border-table d-print-none" v-for="td in 2" :key="'td_2_' + td"></td>
@@ -461,8 +461,8 @@
             <td v-for="semester in plan.study_term.semesters" class="border-table no-print"
               :key="'semester_noprint_' + semester"></td>
             <td v-for="(hour, idx) in totalPlan.hours_modules.length > 0
-    ? totalPlan.hours_modules
-    : plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]" :key="'hour_' + idx"
+              ? totalPlan.hours_modules
+              : plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]" :key="'hour_' + idx"
               class="border-table">
               {{ totalPlan.hours_modules.length > 0 ? hour : 0 }}
             </td>
