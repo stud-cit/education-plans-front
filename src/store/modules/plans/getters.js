@@ -43,7 +43,8 @@ export const isShortPlan = (state) => {
 
 export const readOnly = (state, _, rootState) => {
   const isTrue = (item) => item.status == true;
-  const isEveryTrue = state.plan.verification.every(isTrue);
+  const hasAllStatuses = state.plan.verification.length >= 5;
+  const isEveryTrue = state.plan.verification.every(isTrue) && hasAllStatuses;
   const roles = [6, 7];
   const currentRoleId = rootState.auth.userData.role_id;
 
