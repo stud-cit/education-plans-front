@@ -25,7 +25,7 @@
       <v-col class="pa-0 text-right">
         <v-tooltip bottom v-if="cycleIndex != item.id">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn :disabled="readOnly" small icon @click="cycleIndex = item.id" v-bind="attrs" v-on="on">
+            <v-btn :disabled="readOnly || isShortPlan" small icon @click="cycleIndex = item.id" v-bind="attrs" v-on="on">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </template>
