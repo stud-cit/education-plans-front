@@ -1,47 +1,22 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="items"
-    :server-items-length="meta.total"
-    :options.sync="options"
-    :footer-props="{ 'items-per-page-options': [15, 25, 50] }"
-    class="elevation-1 plans-table"
-    :item-class="this.itemRowBackground"
-  >
+  <v-data-table :headers="headers" :items="items" :server-items-length="meta.total" :options.sync="options"
+    :footer-props="{ 'items-per-page-options': [15, 25, 50] }" class="elevation-1 plans-table"
+    :item-class="this.itemRowBackground">
+
     <template v-slot:top>
       <v-row>
         <v-col cols="12" md="6">
-          <v-text-field
-            v-model="searchTitle"
-            append-icon="mdi-magnify"
-            label="Пошук за назвою"
-            single-line
-            hide-details
-            class="mx-4"
-          ></v-text-field>
+          <v-text-field v-model="searchTitle" append-icon="mdi-magnify" label="Пошук за назвою" single-line hide-details
+            class="mx-4"></v-text-field>
         </v-col>
         <v-col cols="12" md="2">
-          <v-select
-            v-model="planOrTemplate"
-            :items="planTypes"
-            item-text="title"
-            item-value="id"
-            select
-            hide-details
-            label="Тип"
-            clearable
-            class="mx-4"
-          ></v-select>
+          <v-select v-model="planOrTemplate" :items="planTypes" item-text="title" item-value="id" select hide-details
+            label="Тип" clearable class="mx-4"></v-select>
         </v-col>
         <v-col align-self="center">
           <v-btn color="primary" outlined class="ml-2" @click="search"> Пошук </v-btn>
-          <v-btn
-            color="primary"
-            class="ml-2"
-            outlined
-            :input-value="filterToggle"
-            @click="filterToggle = !filterToggle"
-          >
+          <v-btn color="primary" class="ml-2" outlined :input-value="filterToggle"
+            @click="filterToggle = !filterToggle">
             <v-icon> mdi-filter </v-icon>
           </v-btn>
           <v-btn color="primary" class="ml-2" outlined @click="clear"> Очистити </v-btn>
@@ -50,61 +25,25 @@
 
       <v-row v-show="filterToggle" class="px-4 pb-4">
         <v-col cols="12" lg="6" v-if="exceptRoles([ROLES.ID.department])">
-          <v-autocomplete
-            v-model="faculty"
-            :items="faculties"
-            item-text="name"
-            item-value="id"
-            label="Факультет"
-            hide-details
-            clearable
-          ></v-autocomplete>
+          <v-autocomplete v-model="faculty" :items="faculties" item-text="name" item-value="id" label="Факультет"
+            hide-details clearable></v-autocomplete>
         </v-col>
         <v-col cols="12" lg="6" v-if="exceptRoles([ROLES.ID.department])">
-          <v-autocomplete
-            v-model="department"
-            :items="departments"
-            item-text="name"
-            item-value="id"
-            label="Кафедра"
-            hide-details
-            :loading="departmentsLoading"
-            clearable
-          ></v-autocomplete>
+          <v-autocomplete v-model="department" :items="departments" item-text="name" item-value="id" label="Кафедра"
+            hide-details :loading="departmentsLoading" clearable></v-autocomplete>
         </v-col>
         <v-col cols="12" lg="6" v-if="exceptRoles([ROLES.ID.guest])">
-          <v-autocomplete
-            v-model="division"
-            :items="divisions"
-            item-text="title"
-            item-value="id"
-            hide-details
-            label="Представник відділу"
-            clearable
-          ></v-autocomplete>
+          <v-autocomplete v-model="division" :items="divisions" item-text="title" item-value="id" hide-details
+            label="Представник відділу" clearable></v-autocomplete>
         </v-col>
         <v-col cols="12" lg="6" v-if="exceptRoles([ROLES.ID.guest])">
-          <v-select
-            v-model="verificationDivisionStatus"
-            :items="verificationsDivisionsStatus"
-            :disabled="division === null"
-            item-text="title"
-            item-value="id"
-            select
-            hide-details
-            label="Статус верифікації"
-            clearable
-          ></v-select>
+          <v-select v-model="verificationDivisionStatus" :items="verificationsDivisionsStatus"
+            :disabled="division === null" item-text="title" item-value="id" select hide-details
+            label="Статус верифікації" clearable></v-select>
         </v-col>
         <v-col cols="12" lg="6" v-if="allowedRoles([ROLES.ID.root])">
-          <v-text-field
-            v-model="planId"
-            label="Пошук за ID плану"
-            single-line
-            hide-details
-            type="number"
-            clearable
-          ></v-text-field>
+          <v-text-field v-model="planId" label="Пошук за ID плану" single-line hide-details type="number"
+            clearable></v-text-field>
         </v-col>
       </v-row>
     </template>
@@ -121,7 +60,9 @@
     </template>
 
     <template v-slot:item.type_id="{ item }">
-      <span class="text-no-wrap"> <PublishedBadge :published="item.published" /> {{ item.type_id }} </span>
+      <span class="text-no-wrap">
+        <PublishedBadge :published="item.published" /> {{ item.type_id }}
+      </span>
     </template>
 
     <template v-slot:item.title="{ item }">
@@ -135,13 +76,34 @@
       </v-tooltip>
     </template>
 
+    <template v-slot:item.catalog_speciality="{ item }">
+      <v-tooltip top color="primary">
+        <template v-slot:activator="{ on, attrs }">
+          <div v-bind="attrs" v-on="on">
+            {{ item.catalog_speciality ? 'Так' : 'Ні' }}
+          </div>
+        </template>
+        <span v-if="item.catalog_speciality">Присутній каталог дисциплін за СПЕЦІАЛЬНІСТЮ</span>
+        <span v-else>Відсутній каталог дисциплін за СПЕЦІАЛЬНІСТЮ</span>
+      </v-tooltip>
+    </template>
+
+    <template v-slot:item.catalog_education_programs="{ item }">
+      <v-tooltip top color="primary">
+        <template v-slot:activator="{ on, attrs }">
+          <div v-bind="attrs" v-on="on">
+            {{ item.catalog_education_programs ? 'Так' : 'Ні' }}
+          </div>
+        </template>
+        <span v-if="item.catalog_education_programs">Присутній каталог дисциплін за ОСВІТНЬОЮ ПРОГРАМОЮ</span>
+        <span v-else>Відсутній каталог дисциплін за ОСВІТНЬОЮ ПРОГРАМОЮ</span>
+      </v-tooltip>
+    </template>
+
     <template v-slot:item.actions="{ item }">
       <btn-tooltip tooltip="Перегляд">
-        <router-link
-          v-if="item.actions.preview"
-          :to="{ name: 'PreviewPlan', params: { id: item.id, title: item.title } }"
-          target="_blank"
-        >
+        <router-link v-if="item.actions.preview"
+          :to="{ name: 'PreviewPlan', params: { id: item.id, title: item.title } }" target="_blank">
           <v-icon small class="mr-2" color="primary">mdi-eye-outline</v-icon>
         </router-link>
       </btn-tooltip>
@@ -205,7 +167,7 @@ export default {
     },
     meta: {
       type: Object,
-      default: () => {},
+      default: () => { },
     },
   },
   computed: {
@@ -248,6 +210,8 @@ export default {
         { text: 'Рік', value: 'year', width: '80px' },
         { text: 'Дата створення', value: 'created_at', width: '150px' },
         { text: 'Верифікація', value: 'verification', width: '150px', sortable: false },
+        { text: 'СП', value: 'catalog_speciality', sortable: false },
+        { text: 'ОП', value: 'catalog_education_programs', sortable: false },
         { text: 'Дії', value: 'actions', width: '120px', sortable: false },
       ];
 
