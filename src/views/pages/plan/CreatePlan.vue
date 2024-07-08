@@ -104,27 +104,28 @@
         target="_blank">
         Переглянути
       </v-btn>
-      <!-- <v-btn small depressed color="primary" :disabled="!!plan.status_op" class="ml-2" @click="openProgramDialog()">
-        Верифікувати з освітньою програмою
-      </v-btn> -->
-      <v-btn small depressed color="primary" class="ml-2" v-show="[2, 3, 4, 5, 6].indexOf(authUser.role_id) != -1"
+      <!-- Verification buttons -->
+      <v-btn small depressed color="primary" class="ml-2" v-show="verificationBtn"
         @click="verification({ verification_status_id: authUser.role_id, status: true })">
         Верифікувати
       </v-btn>
-      <v-btn small depressed color="error" class="ml-2" v-show="[2, 3, 4, 5, 6].indexOf(authUser.role_id) != -1"
+      <v-btn small depressed color="error" class="ml-2" v-show="cancelVerificationBtn"
         @click="verification({ verification_status_id: authUser.role_id, status: false })">
         Відхилити верифікацію
       </v-btn>
+      <!-- End verification buttons -->
     </div>
 
+    <!-- Verification -->
     <v-stepper elevation="1" class="my-2" v-if="$route.name === 'EditPlan' && plan">
       <v-stepper-header v-if="checkVerification">
 
         <template v-for="(item, index) in checkVerification">
           <v-stepper-step :key="`${index}-step`" :step="index + 1" :complete="item.status"
-            :rules="[() => item.status == null || item.status]" :editable="authUser.role_id == 1">
+            :rules="[() => item.status == null || item.status]"
+            :editable="allowedRoles([ROLES.ID.admin, ROLES.ID.root])">
             <span @click="
-              authUser.role_id == 1
+              allowedRoles([ROLES.ID.admin, ROLES.ID.root])
                 ? verification({ verification_status_id: item.id, status: item.status ? false : true })
                 : ''
               ">{{ item.titleHead }}</span>
@@ -132,7 +133,7 @@
               <v-icon small>mdi-bell-ring</v-icon>
             </v-btn>
             <small @click="
-              authUser.role_id == 1
+              allowedRoles([ROLES.ID.admin, ROLES.ID.root])
                 ? verification({ verification_status_id: item.id, status: item.status ? false : true })
                 : ''
               ">{{ item.title }}</small>
@@ -141,7 +142,7 @@
         </template>
       </v-stepper-header>
     </v-stepper>
-
+    <!-- End Verification -->
     <v-alert dense outlined type="error" class="mb-2" v-for="(error, errorIndex) in plan.errors"
       :key="'error' + errorIndex">
       {{ error }}
@@ -190,6 +191,8 @@ import Signatures from '@/views/pages/plan/tabs/Signatures';
 import api from '@/api';
 import { API } from '@/api/constants-api';
 import ShortedByYearBtns from '@c/base/ShortedByYearBtns';
+import { ROLES } from '@/utils/constants';
+import RolesMixin from '@/mixins/RolesMixin';
 
 export default {
   name: 'CreatePlan',
@@ -202,6 +205,7 @@ export default {
   },
   data() {
     return {
+      ROLES,
       tab: 0,
       verifications: [],
       programsLoading: false,
@@ -218,6 +222,7 @@ export default {
       },
     };
   },
+  mixins: [RolesMixin],
   computed: {
     hasErrors() {
       if (this.plan.comment.length > 0) {
@@ -241,6 +246,41 @@ export default {
           this.plan.need_verification === true
         );
       }
+    },
+
+    verificationBtn() {
+      if (this.plan.need_verification === false) {
+        return false;
+      }
+
+      const found = this.verifications.find((element) => {
+        if (element.role_id === this.authUser.role_id || element.role_id === ROLES.ID.educational_department_deputy && element.status === true) {
+          return true;
+        }
+      });
+
+      if (found) {
+        return false;
+      }
+
+      return [2, 3, 4, 5, 6].indexOf(this.authUser.role_id) != -1;
+    },
+    cancelVerificationBtn() {
+      if (this.plan.need_verification === false) {
+        return false;
+      }
+
+      const found = this.verifications.find((element) => {
+        if (element.role_id === this.authUser.role_id || element.role_id === ROLES.ID.educational_department_deputy && element.status === false) {
+          return true;
+        }
+      });
+
+      if (found) {
+        return false;
+      }
+
+      return [2, 3, 4, 5, 6].indexOf(this.authUser.role_id) != -1
     },
     checkVerification() {
       return this.verifications.map((element) => {
@@ -307,23 +347,6 @@ export default {
     getItemText(item) {
       return `${item.education_program_name}, ${item.year}, ${item.educational_degree}`;
     },
-    verificationOP() {
-      this.verificationOPLoading = true;
-      api
-        .patch(API.PLAN_VERIFICATION_OP, this.$route.params.id, {
-          user_id: this.authUser.id,
-          status: false,
-          program_op_id: this.plan.program_op_id,
-        })
-        .then(() => {
-          this.verificationOPLoading = false;
-          this.programsDialog = false;
-          this.apiGetPlanId();
-        })
-        .catch(() => {
-          this.verificationOPLoading = false;
-        });
-    },
 
     verification(status) {
       status.user_id = this.authUser.id;
@@ -365,11 +388,6 @@ export default {
       this.modalVerification.open = true;
       this.modalVerification.comment = comment;
     },
-
-    // openProgramDialog() {
-    //   this.apiGetPrograms();
-    //   this.programsDialog = true;
-    // },
     submit(data) {
       let path = 'plans/store';
 
