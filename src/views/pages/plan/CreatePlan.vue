@@ -94,6 +94,9 @@
         <span class="orange white--text pl-1 pr-1 rounded">Скорочений план</span>
       </template>
 
+      <Messages v-if="verifications && plan.verification_comments" :messages="plan.verification_comments"
+        :verifications="verifications" />
+
       <v-spacer></v-spacer>
 
       <v-btn v-if="plan.short_plan" small depressed color="primary"
@@ -105,7 +108,7 @@
         Переглянути
       </v-btn>
       <!-- Verification buttons -->
-      <v-btn small depressed color="primary" class="ml-2" v-show="verificationBtn"
+      <v-btn small depressed color="success" class="ml-2" v-show="verificationBtn"
         @click="verification({ verification_status_id: authUser.role_id, status: true })">
         Верифікувати
       </v-btn>
@@ -124,7 +127,7 @@
           <v-stepper-step :key="`${index}-step`" :step="index + 1" :complete="item.status"
             :rules="[() => item.status == null || item.status]"
             :editable="allowedRoles([ROLES.ID.admin, ROLES.ID.root])">
-            <span @click="
+            <span role="button" @click="
               allowedRoles([ROLES.ID.admin, ROLES.ID.root])
                 ? verification({ verification_status_id: item.id, status: item.status ? false : true })
                 : ''
@@ -132,7 +135,7 @@
             <v-btn icon small v-if="item.comment" @click="openDialog(item.comment)" color="error">
               <v-icon small>mdi-bell-ring</v-icon>
             </v-btn>
-            <small @click="
+            <small role="button" @click="
               allowedRoles([ROLES.ID.admin, ROLES.ID.root])
                 ? verification({ verification_status_id: item.id, status: item.status ? false : true })
                 : ''
@@ -191,6 +194,7 @@ import Signatures from '@/views/pages/plan/tabs/Signatures';
 import api from '@/api';
 import { API } from '@/api/constants-api';
 import ShortedByYearBtns from '@c/base/ShortedByYearBtns';
+import Messages from '@c/base/Messages';
 import { ROLES } from '@/utils/constants';
 import RolesMixin from '@/mixins/RolesMixin';
 
@@ -202,6 +206,7 @@ export default {
     Cycles,
     Signatures,
     ShortedByYearBtns,
+    Messages,
   },
   data() {
     return {
@@ -210,7 +215,6 @@ export default {
       verifications: [],
       programsLoading: false,
       programsDialog: false,
-      verificationOPLoading: false,
       programs: [],
       modalVerification: {
         open: false,
@@ -254,13 +258,16 @@ export default {
       }
 
       const found = this.verifications.find((element) => {
-        if (element.role_id === this.authUser.role_id || element.role_id === ROLES.ID.educational_department_deputy && element.status === true) {
-          return true;
+        if (element.role_id === this.authUser.role_id) {
+          return element;
+        } else if (element.role_id === ROLES.ID.educational_department_deputy
+          && this.authUser.role_id === ROLES.ID.educational_department_chief) {
+          return element;
         }
       });
 
       if (found) {
-        return false;
+        return !found.status;
       }
 
       return [2, 3, 4, 5, 6].indexOf(this.authUser.role_id) != -1;
@@ -271,13 +278,13 @@ export default {
       }
 
       const found = this.verifications.find((element) => {
-        if (element.role_id === this.authUser.role_id || element.role_id === ROLES.ID.educational_department_deputy && element.status === false) {
-          return true;
+        if (element.role_id === this.authUser.role_id && element.status == true) {
+          return element;
         }
       });
 
-      if (found) {
-        return false;
+      if (found !== undefined) {
+        return found.status;
       }
 
       return [2, 3, 4, 5, 6].indexOf(this.authUser.role_id) != -1
