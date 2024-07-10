@@ -25,8 +25,7 @@
           {{ catalog.education_program }}
           <template v-if="catalog.speciality">
             <br />
-            СПЕЦІАЛЬНІСТЬ {{ catalog.speciality }} </template
-          ><br />
+            СПЕЦІАЛЬНІСТЬ {{ catalog.speciality }} </template><br />
           {{ catalog.education_level }} {{ catalog.year }} &mdash; {{ catalog.year + 1 }} н. р.
         </p>
         <table class="table pdf_table">
@@ -39,7 +38,7 @@
                 Посада, прізвище та ініціали викладача (ів), який (і) пропонується для викладання
               </th>
               <th class="text-center" rowspan="2">
-                Компетентності (загальні та/або фахові, на розвиток яких спрямована дисципліна
+                Компетентності (загальні та/або фахові, на розвиток яких спрямована дисципліна)
               </th>
               <th class="text-center" rowspan="2">Результати навчання за навчальною дисципліною</th>
               <th class="text-center" rowspan="2">Види навчальних занять та методи викладання, що пропонуються</th>
@@ -49,6 +48,7 @@
                 забезпечення
               </th>
               <th class="text-center" rowspan="2">Обмеження щодо семестру вивчення</th>
+              <th class="text-center d-print-none" rowspan="2">Посилання на силабус</th>
             </tr>
             <tr>
               <th class="text-center">Лекції</th>
@@ -57,7 +57,7 @@
           </thead>
           <tbody>
             <tr>
-              <td class="text-center" v-for="number in 11" :key="number">{{ number }}</td>
+              <td class="text-center" v-for="number in 12" :key="number">{{ number }}</td>
             </tr>
             <tr v-if="item && 'group_name' in item">
               <td class="pdf_table-group" colspan="12">
@@ -77,6 +77,7 @@
                 <td class="text-center">{{ subject.number_acquirers }}</td>
                 <td>{{ subject.entry_requirements_applicants }}</td>
                 <td>{{ subject.limitation }}</td>
+                <td><a :href="subject.url" target="_blank"> {{ subject.url }}</a></td>
               </tr>
             </template>
             <template v-else>
@@ -129,11 +130,9 @@
             <v-row>
               <v-col class="agreed"> ПОГОДЖЕНО: </v-col>
             </v-row>
-            <div
-              class="pdf__signature"
+            <div class="pdf__signature"
               v-for="manager in item.signatures.filter((el) => el.type === CATALOG_SIGNATURE_TYPE.manager.id)"
-              :key="manager.id"
-            >
+              :key="manager.id">
               <v-row>
                 <v-col cols="5">
                   <div class="title">Завідувач кафедри</div>
@@ -254,16 +253,25 @@ export default {
   overflow-x: auto;
   border-collapse: collapse;
 }
+
 .table th,
 .table td {
   padding: 10px;
   border: 1px solid rgba(0, 0, 0, 0.12);
 }
+
 .table thead {
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
+
 .btn-center {
   left: 50%;
   transform: translateX(-50%);
+}
+
+@media print {
+  table tr td:last-child {
+    display: none;
+  }
 }
 </style>

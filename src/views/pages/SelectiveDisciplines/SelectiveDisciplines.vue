@@ -1,6 +1,7 @@
 <template>
   <v-container>
-    <v-data-table :headers="computedHeaders" :items="items" class="table-row-pointer elevation-1" hide-default-footer @click:row="goTo">
+    <v-data-table :headers="computedHeaders" :items="items" class="table-row-pointer elevation-1" hide-default-footer
+      @click:row="goTo">
       <template v-slot:item.index="{ index }">
         {{ index + 1 }}
       </template>
@@ -8,15 +9,8 @@
         <template v-if="item.edit">
           <validation-observer ref="observer">
             <validation-provider v-slot="{ errors }" name="Назва" rules="required|max:150">
-              <v-text-field
-                v-model="item.title"
-                :counter="150"
-                :error-messages="errors"
-                required
-                autofocus
-                @change="edit(item)"
-                @blur="closeEdit(item)"
-              ></v-text-field>
+              <v-text-field v-model="item.title" :counter="150" :error-messages="errors" required autofocus
+                @change="edit(item)" @blur="closeEdit(item)"></v-text-field>
             </validation-provider>
           </validation-observer>
         </template>
@@ -31,7 +25,7 @@
         <!--          mdi-square-edit-outline-->
         <!--        </v-icon>-->
         <btn-tooltip tooltip="Перегляд">
-          <v-icon small class="mr-2 cursor-pointer" color="primary" > mdi-eye </v-icon>
+          <v-icon small class="mr-2 cursor-pointer" color="primary"> mdi-eye </v-icon>
         </btn-tooltip>
       </template>
     </v-data-table>

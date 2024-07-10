@@ -46,6 +46,7 @@
                 забезпечення
               </th>
               <th class="text-center" rowspan="2">Обмеження щодо семестру вивчення</th>
+              <th class="text-center d-print-none" rowspan="2">Посилання на силабус</th>
             </tr>
             <tr>
               <th class="text-center">Лекції</th>
@@ -65,6 +66,7 @@
               <td class="text-center">{{ subject.number_acquirers }}</td>
               <td>{{ subject.entry_requirements_applicants }}</td>
               <td>{{ subject.limitation }}</td>
+              <td><a :href="subject.url" target="_blank"> {{ subject.url }}</a></td>
             </tr>
             <tr v-else>
               <td colspan="13" class="text-center">Данні відсутні</td>
@@ -80,7 +82,6 @@
 <script>
 import api from '@/api';
 import { API } from '@/api/constants-api';
-import { ROLES } from '@/utils/constants';
 import RolesMixin from '@/mixins/RolesMixin';
 
 export default {
@@ -132,21 +133,26 @@ export default {
   overflow-x: auto;
   border-collapse: collapse;
 }
+
 .table th,
 .table td {
   padding: 10px;
   border: 1px solid rgba(0, 0, 0, 0.12);
 }
+
 .table thead {
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
+
 .btn-center {
   left: 50%;
   transform: translateX(-50%);
 }
+
 .stepper-header {
   height: auto;
 }
+
 .header p {
   line-height: 1.6;
 }

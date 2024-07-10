@@ -23,8 +23,8 @@
                   :disabled="!discipline"></v-text-field>
               </validation-provider>
               <validation-provider v-slot="{ errors }" name="Мова викладання" rules="required">
-                <v-autocomplete v-model="language" multiple :items="languages" :error-messages="errors" item-text="title"
-                  item-value="language_id" return-object label="Мова викладання"></v-autocomplete>
+                <v-autocomplete v-model="language" multiple :items="languages" :error-messages="errors"
+                  item-text="title" item-value="language_id" return-object label="Мова викладання"></v-autocomplete>
               </validation-provider>
               <validation-provider v-slot="{ errors }" name="Кафедра, що пропонує дисципліну" rules="required">
                 <v-autocomplete v-model="department" :items="departments" :error-messages="errors" item-text="name"
@@ -56,8 +56,8 @@
                   :error-messages="errors" label="Результати навчання за навчальною дисципліною"></v-combobox>
               </validation-provider>
 
-              <validation-provider v-slot="{ errors }" name="Види навчальних занять та методи викладання, що пропонуються"
-                rules="required">
+              <validation-provider v-slot="{ errors }"
+                name="Види навчальних занять та методи викладання, що пропонуються" rules="required">
                 <v-combobox v-model="typesTrainingSessions" :items="helpersTypesTrainingSessions" item-value="id"
                   item-text="title" :error-messages="errors"
                   label="Види навчальних занять та методи викладання, що пропонуються"></v-combobox>
@@ -90,6 +90,12 @@
                   disable-lookup chips deletable-chips hide-selected label="Виберіть семестр/и" multiple
                   @change="(v) => v.sort((a, b) => a - b)"></v-select>
               </validation-provider>
+
+              <validation-provider v-slot="{ errors }" name="Посилання на силабус" rules="max:2048">
+                <v-text-field v-model="url" :error-messages="errors" type="url"
+                  label="Посилання на силабус"></v-text-field>
+              </validation-provider>
+
             </v-container>
           </v-card-text>
           <v-card-actions>
@@ -146,6 +152,7 @@ export default {
       semesters: null,
       catalog: null,
       subject: null,
+      url: null
     };
   },
   created() {
@@ -182,7 +189,7 @@ export default {
   },
   methods: {
     apiGetItem(id) {
-      api.edit(API.SPECIALTY_SUBJECTS, id, { showLoader: true }).then(({ data }) => {
+      api.edit(API.EDUCATION_PROGRAM_SUBJECTS, id, { showLoader: true }).then(({ data }) => {
         const {
           discipline,
           catalog_subject_id,
@@ -197,6 +204,7 @@ export default {
           entry_requirements_applicants,
           number_acquirers,
           limitation,
+          url
         } = data.data;
 
         this.subject = data.data;
@@ -215,10 +223,11 @@ export default {
         this.requirements = entry_requirements_applicants;
         this.restrictionsSemester = this.radioRestrictionsSemester.find((el) => el.label === limitation.label);
         this.semesters = limitation.semesters;
+        this.url = url
       });
     },
     apiGetCreate() {
-      api.get(API.SPECIALTY_SUBJECTS + '/create', null, { showLoader: true }).then(({ data }) => {
+      api.get(API.EDUCATION_PROGRAM_SUBJECTS + '/create', null, { showLoader: true }).then(({ data }) => {
         const {
           subjects,
           languages,
@@ -267,6 +276,7 @@ export default {
             number_acquirers: this.numberAcquirers,
             entry_requirements_applicants: this.requirements,
             limitation: JSON.stringify(limitation),
+            url: this.url
           });
         }
       });
@@ -288,6 +298,7 @@ export default {
       this.requirements = null;
       this.restrictionsSemester = this.radioRestrictionsSemester[0];
       this.semesters = null;
+      this.url = null
       this.$refs.observer.reset();
     },
   },

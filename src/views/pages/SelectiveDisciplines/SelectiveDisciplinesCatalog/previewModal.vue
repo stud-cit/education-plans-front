@@ -18,26 +18,17 @@
             <v-toolbar-title v-else class="text-h6"> Причина відхилення верифікації </v-toolbar-title>
           </v-toolbar>
           <v-card-text class="pt-5">
-            <v-textarea
-              :readonly="modalVerification.status === false"
-              name="input-6-4"
-              label="Коментар"
-              v-model="modalVerification.comment"
-            ></v-textarea>
+            <v-textarea :readonly="modalVerification.status === false" name="input-6-4" label="Коментар"
+              v-model="modalVerification.comment"></v-textarea>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="gray" @click="dialogModalVerification = false"> Закрити </v-btn>
-            <v-btn
-              v-if="modalVerification.status !== false"
-              color="primary"
-              dark
-              @click="
-                allowedRoles([ROLES.ID.admin, ROLES.ID.root])
-                  ? verification(modalVerification)
-                  : setVerification(false, modalVerification.comment)
-              "
-            >
+            <v-btn v-if="modalVerification.status !== false" color="primary" dark @click="
+              allowedRoles([ROLES.ID.admin, ROLES.ID.root])
+                ? verification(modalVerification)
+                : setVerification(false, modalVerification.comment)
+              ">
               Надіслати
             </v-btn>
           </v-card-actions>
@@ -45,37 +36,20 @@
       </v-dialog>
       <!-- end cancel verification -->
       <v-card-text class="mt-6 mb-10 d-flex">
-        <v-btn
-          small
-          depressed
-          :disabled="checkNeedVerification(subject)"
+        <v-btn small depressed :disabled="checkNeedVerification(subject)"
           v-if="allowedRoles([ROLES.ID.admin, ROLES.ID.root]) || subject.user_id === authUser.id"
-          :color="subject.need_verification === true ? '' : 'success'"
-          @click="toggleToVerification()"
-        >
+          :color="subject.need_verification === true ? '' : 'success'" @click="toggleToVerification()">
           {{ subject.need_verification ? 'На верифікації' : 'Відправити на верифікацію' }}
         </v-btn>
         <v-spacer></v-spacer>
-        <v-btn
-          v-if="showVerificationBtn === null"
-          v-show="exceptRoles([ROLES.ID.department, ROLES.ID.practice_department, ROLES.ID.admin, ROLES.ID.root])"
-          small
-          depressed
-          color="primary"
-          class="ml-2"
-          @click="setVerification()"
-        >
+        <v-btn v-if="showVerificationBtn === null"
+          v-show="exceptRoles([ROLES.ID.department, ROLES.ID.practice_department, ROLES.ID.admin, ROLES.ID.root])" small
+          depressed color="primary" class="ml-2" @click="setVerification()">
           Верифікувати
         </v-btn>
-        <v-btn
-          v-if="showVerificationBtn !== false"
-          small
-          depressed
-          color="error"
-          class="ml-2"
+        <v-btn v-if="showVerificationBtn !== false" small depressed color="error" class="ml-2"
           v-show="exceptRoles([ROLES.ID.department, ROLES.ID.practice_department, ROLES.ID.admin, ROLES.ID.root])"
-          @click="cancelVerification()"
-        >
+          @click="cancelVerification()">
           Відхилити верифікацію
         </v-btn>
       </v-card-text>
@@ -84,14 +58,10 @@
           <v-skeleton-loader type="list-item-three-line" v-if="checkVerification.length <= 0"></v-skeleton-loader>
           <v-stepper-header v-else class="stepper-header">
             <template v-for="(item, index) in checkVerification">
-              <v-stepper-step
-                @click="allowedRoles([ROLES.ID.admin, ROLES.ID.root]) ? openDialog(item) : ''"
-                :key="`${index}-step`"
-                :step="index + 1"
-                :complete="item.status"
+              <v-stepper-step @click="allowedRoles([ROLES.ID.admin, ROLES.ID.root]) ? openDialog(item) : ''"
+                :key="`${index}-step`" :step="index + 1" :complete="item.status"
                 :rules="[() => item.status == null || item.status]"
-                :editable="allowedRoles([ROLES.ID.admin, ROLES.ID.root])"
-              >
+                :editable="allowedRoles([ROLES.ID.admin, ROLES.ID.root])">
                 <span>{{ item.titleHead }}</span>
 
                 <v-btn icon small v-if="item.comment" @click="openDialog(item)" color="error">
@@ -140,6 +110,7 @@
                 забезпечення
               </th>
               <th class="text-center" rowspan="2">Обмеження щодо семестру вивчення</th>
+              <th class="text-center d-print-none" rowspan="2">Посилання на силабус</th>
             </tr>
             <tr>
               <th class="text-center">Лекції</th>
@@ -161,6 +132,7 @@
               <td class="text-center">{{ subject.number_acquirers }}</td>
               <td>{{ subject.entry_requirements_applicants }}</td>
               <td>{{ subject.limitation }}</td>
+              <td><a :href="subject.url" target="_blank"> {{ subject.url }}</a></td>
             </tr>
             <tr v-else>
               <td colspan="13" class="text-center">Данні відсутні</td>
@@ -258,12 +230,8 @@ export default {
 
       if (this.authUser?.role_id && this.subject !== null) {
         const status = this.subject.verifications.find((item) => item.verification_status_id === this.authUser.role_id);
-        // console.log(status);
-        // if (status === undefined) {
-        //   allow = true;
-        // } else {
+
         allow = status?.status ? status.status : null;
-        // }
       }
       this.showVerificationBtn = allow;
     },
@@ -381,18 +349,22 @@ export default {
   overflow-x: auto;
   border-collapse: collapse;
 }
+
 .table th,
 .table td {
   padding: 10px;
   border: 1px solid rgba(0, 0, 0, 0.12);
 }
+
 .table thead {
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
+
 .btn-center {
   left: 50%;
   transform: translateX(-50%);
 }
+
 .stepper-header {
   height: auto;
 }

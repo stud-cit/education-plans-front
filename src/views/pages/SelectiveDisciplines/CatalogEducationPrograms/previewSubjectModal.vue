@@ -26,8 +26,7 @@
           {{ catalog.education_program }}
           <template v-if="catalog.speciality">
             <br />
-            СПЕЦІАЛЬНІСТЬ {{ catalog.speciality }} </template
-          ><br />
+            СПЕЦІАЛЬНІСТЬ {{ catalog.speciality }} </template><br />
           {{ catalog.education_level }} {{ catalog.year }} &mdash; {{ catalog.year + 1 }} н. р.
         </p>
         <table class="table">
@@ -50,6 +49,7 @@
                 забезпечення
               </th>
               <th class="text-center" rowspan="2">Обмеження щодо семестру вивчення</th>
+              <th class="text-center" rowspan="2">Посилання на силабус</th>
             </tr>
             <tr>
               <th class="text-center">Лекції</th>
@@ -69,6 +69,7 @@
               <td class="text-center">{{ subject.number_acquirers }}</td>
               <td>{{ subject.entry_requirements_applicants }}</td>
               <td>{{ subject.limitation }}</td>
+              <td><a :href="subject.url" target="_blank"> {{ subject.url }}</a></td>
             </tr>
             <tr v-else>
               <td colspan="13" class="text-center">Данні відсутні</td>
@@ -133,21 +134,26 @@ export default {
   overflow-x: auto;
   border-collapse: collapse;
 }
+
 .table th,
 .table td {
   padding: 10px;
   border: 1px solid rgba(0, 0, 0, 0.12);
 }
+
 .table thead {
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
+
 .btn-center {
   left: 50%;
   transform: translateX(-50%);
 }
+
 .stepper-header {
   height: auto;
 }
+
 .header p {
   line-height: 1.6;
 }

@@ -26,8 +26,8 @@
                   :disabled="!discipline"></v-text-field>
               </validation-provider>
               <validation-provider v-slot="{ errors }" name="Мова викладання" rules="required">
-                <v-autocomplete v-model="language" multiple :items="languages" :error-messages="errors" item-text="title"
-                  item-value="language_id" return-object label="Мова викладання"></v-autocomplete>
+                <v-autocomplete v-model="language" multiple :items="languages" :error-messages="errors"
+                  item-text="title" item-value="language_id" return-object label="Мова викладання"></v-autocomplete>
               </validation-provider>
               <validation-provider v-slot="{ errors }" name="Рівень освіти, для якого пропонується дисципліна"
                 rules="required">
@@ -56,7 +56,7 @@
                 <v-autocomplete v-model="listKnowledgeSpecialties" :items="listsKnowledgeSpecialties"
                   :error-messages="errors" :item-text="radioBtnListKnowledgeSpecialties.find((el) => el.id === selectListKnowledgeSpecialties.id).itemText
                     " hide-details item-value="id" return-object multiple class="mt-3" :label="radioBtnListKnowledgeSpecialties.find((el) => el.id === selectListKnowledgeSpecialties.id).label
-    "></v-autocomplete>
+                      "></v-autocomplete>
               </validation-provider>
 
               <validation-provider v-if="knowledgeSpecialty && knowledgeSpecialty.id === 3" v-slot="{ errors }"
@@ -91,12 +91,13 @@
 
               <validation-provider v-slot="{ errors }" name="Результати навчання за навчальною дисципліною"
                 rules="required">
-                <v-combobox v-model="learningOutcomes" :items="helpersLearningOutcomes" item-value="id" item-text="title"
-                  :error-messages="errors" label="Результати навчання за навчальною дисципліною"></v-combobox>
+                <v-combobox v-model="learningOutcomes" :items="helpersLearningOutcomes" item-value="id"
+                  item-text="title" :error-messages="errors"
+                  label="Результати навчання за навчальною дисципліною"></v-combobox>
               </validation-provider>
 
-              <validation-provider v-slot="{ errors }" name="Види навчальних занять та методи викладання, що пропонуються"
-                rules="required">
+              <validation-provider v-slot="{ errors }"
+                name="Види навчальних занять та методи викладання, що пропонуються" rules="required">
                 <v-combobox v-model="typesTrainingSessions" :items="helpersTypesTrainingSessions" item-value="id"
                   item-text="title" :error-messages="errors"
                   label="Види навчальних занять та методи викладання, що пропонуються"></v-combobox>
@@ -129,6 +130,12 @@
                   disable-lookup chips deletable-chips hide-selected label="Виберіть семестр/и" multiple
                   @change="(v) => v.sort((a, b) => a - b)"></v-select>
               </validation-provider>
+
+              <validation-provider v-slot="{ errors }" name="Посилання на силабус" rules="max:2048">
+                <v-text-field v-model="url" :error-messages="errors" type="url"
+                  label="Посилання на силабус"></v-text-field>
+              </validation-provider>
+
             </v-container>
           </v-card-text>
           <v-card-actions>
@@ -210,6 +217,7 @@ export default {
         { id: 3, apiPath: API.EDUCATIONAL_PROGRAMS_ALL, label: 'educational_programs' },
       ],
       subject: null,
+      url: null,
     };
   },
   created() {
@@ -277,6 +285,7 @@ export default {
           number_acquirers,
           list_fields_knowledge,
           limitation,
+          url,
         } = data.data;
 
         this.subject = data.data;
@@ -301,6 +310,7 @@ export default {
         this.listKnowledgeSpecialties = list_fields_knowledge.list;
         this.restrictionsSemester = this.radioRestrictionsSemester.find((el) => el.label === limitation.label);
         this.semesters = limitation.semesters;
+        this.url = url;
       });
     },
     apiGetCreate() {
@@ -378,6 +388,7 @@ export default {
             number_acquirers: this.numberAcquirers,
             entry_requirements_applicants: this.requirements,
             limitation: JSON.stringify(limitation),
+            url: this.url,
           });
         }
       });
@@ -404,6 +415,7 @@ export default {
       this.requirements = null;
       this.restrictionsSemester = this.radioRestrictionsSemester[0];
       this.semesters = null;
+      this.url = null;
       this.$refs.observer.reset();
     },
   },
