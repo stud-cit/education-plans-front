@@ -1,14 +1,8 @@
 <template>
   <v-container>
-    <plans-table :items="items"
-                 :meta="meta"
-                 @update="getPlansList"
-                 @copy="apiCopyPlan"
-                 @edit="apiEditPlan"
-                 @delete="apiDeletePlan"
-    />
-    <v-tooltip left color="info"
-    v-if="allowedRoles(
+    <plans-table :items="items" :meta="meta" @update="getPlansList" @copy="apiCopyPlan" @edit="apiEditPlan"
+      @delete="apiDeletePlan" @restore="apiRestore" />
+    <v-tooltip left color="info" v-if="allowedRoles(
       [
         ROLES.ID.admin,
         ROLES.ID.root,
@@ -20,17 +14,7 @@
     )">
       <template v-slot:activator="{ on, attrs }">
         <v-fab-transition>
-          <v-btn
-              color="primary"
-              dark
-              fixed
-              bottom
-              right
-              fab
-              v-bind="attrs"
-              v-on="on"
-              :to="{name: 'CreatePlan'}"
-          >
+          <v-btn color="primary" dark fixed bottom right fab v-bind="attrs" v-on="on" :to="{ name: 'CreatePlan' }">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-fab-transition>
@@ -42,11 +26,11 @@
 <script>
 import PlansTable from "@c/Tables/PlansTable";
 import RolesMixin from "@/mixins/RolesMixin";
-import {ROLES} from "@/utils/constants";
+import { ROLES } from "@/utils/constants";
 
 export default {
   name: 'Plans',
-  components: {PlansTable},
+  components: { PlansTable },
   data() {
     return {
       ROLES,
@@ -83,12 +67,12 @@ export default {
 
     apiEditPlan(id, title) {
       this.$store.dispatch('plans/clear');
-      this.$router.push({name: 'EditPlan', params: { id, title }});
+      this.$router.push({ name: 'EditPlan', params: { id, title } });
     },
 
     apiDeletePlan(id, title = '') {
       this.$swal.fire({
-        title: `Ви хочете видалити план ?`,
+        title: `Ви хочете архівувати план ?`,
         text: `${title}`,
         showDenyButton: true,
         focusDeny: true,
@@ -97,6 +81,20 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           this.$store.dispatch('plans/destroy', id)
+        }
+      })
+    },
+    apiRestore(id, title = '') {
+      this.$swal.fire({
+        title: `Ви хочете відновити план ?`,
+        text: `${title}`,
+        showDenyButton: true,
+        focusDeny: true,
+        confirmButtonText: 'Так',
+        denyButtonText: `Ні`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$store.dispatch('plans/restore', id)
         }
       })
     }

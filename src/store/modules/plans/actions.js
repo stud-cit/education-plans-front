@@ -18,6 +18,12 @@ export const destroy = (context, id) => {
   });
 };
 
+export const restore = (context, id) => {
+  api.patch(API.PLAN_RESTORE, id).then(() => {
+    context.dispatch('getListPlans', context.state.options);
+  });
+};
+
 export const copy = (context, id) => {
   api.post(API.COPY_PLAN + id, null, { showLoader: true }).then((response) => {
     document.location.href = encodeURI('plan/edit/' + response.data.id + '/' + response.data.title);

@@ -117,9 +117,14 @@
           mdi-pencil-outline
         </v-icon>
       </btn-tooltip>
-      <btn-tooltip tooltip="Видалити">
+      <btn-tooltip tooltip="Архівувати">
         <v-icon v-if="item.actions.delete" small color="red" @click="$emit('delete', item.id, item.title)">
-          mdi-trash-can-outline
+          mdi-archive-arrow-down-outline
+        </v-icon>
+      </btn-tooltip>
+      <btn-tooltip tooltip="Відновити">
+        <v-icon v-if="item.actions.restore" small color="primary" @click="$emit('restore', item.id, item.title)">
+          mdi-archive-arrow-up-outline
         </v-icon>
       </btn-tooltip>
     </template>
@@ -216,7 +221,10 @@ export default {
       ];
 
       if (this.allowedRoles([ROLES.ID.guest])) {
-        headers = headers.filter((item) => item.value != 'verification' && item.value != 'created_at');
+        headers = headers.filter((item) =>
+          item.value != 'verification' && item.value != 'created_at' &&
+          item.value != 'catalog_speciality' && item.value != 'catalog_education_programs'
+        );
       }
 
       this.headers = headers;

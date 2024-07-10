@@ -14,6 +14,7 @@ export const API = {
   FORM_CONTROLS: version + '/form-controls',
   INDIVIDUAL_TASKS: version + '/individual-tasks',
   PLAN_CREATE: version + '/plans/additional-data',
+  PLAN_RESTORE: version + '/plans/restore',
   PLANS: version + '/plans',
   DEPARTMENTS: version + '/departments',
   USERS: version + '/users',
