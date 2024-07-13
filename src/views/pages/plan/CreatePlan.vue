@@ -38,7 +38,6 @@
         </form>
       </validation-observer>
     </v-dialog>
-
     <!-- Send to verification with comment -->
     <template>
       <v-row justify="center">
@@ -146,6 +145,17 @@
       </v-stepper-header>
     </v-stepper>
     <!-- End Verification -->
+
+    <v-row v-if="plan && plan.duplicate_message">
+      <v-col>
+        <v-alert color="orange" class="mb-2" outlined dense type="warning">
+          {{ plan.duplicate_message }}
+        </v-alert>
+      </v-col>
+    </v-row>
+    <AlertDuplicate @save="save" @cancel="cancel" v-if="plan && hasDuplicate" :id="plan.id" :hasDuplicate="hasDuplicate"
+      :version="version" />
+
     <v-alert dense outlined type="error" class="mb-2" v-for="(error, errorIndex) in plan.errors"
       :key="'error' + errorIndex">
       {{ error }}
@@ -195,7 +205,8 @@ import api from '@/api';
 import { API } from '@/api/constants-api';
 import ShortedByYearBtns from '@c/base/ShortedByYearBtns';
 import Messages from '@c/base/Messages';
-import { ROLES } from '@/utils/constants';
+import AlertDuplicate from '@c/base/AlertDuplicate';
+import { ROLES, PLAN_TYPE } from '@/utils/constants';
 import RolesMixin from '@/mixins/RolesMixin';
 
 export default {
@@ -207,10 +218,12 @@ export default {
     Signatures,
     ShortedByYearBtns,
     Messages,
+    AlertDuplicate
   },
   data() {
     return {
       ROLES,
+      PLAN_TYPE,
       tab: 0,
       verifications: [],
       programsLoading: false,
@@ -224,6 +237,10 @@ export default {
         dialog: false,
         comment: '',
       },
+      hasDuplicate: false,
+      duplicateMessage: '',
+      version: 0,
+      data: null
     };
   },
   mixins: [RolesMixin],
@@ -304,6 +321,7 @@ export default {
     authUser() {
       return JSON.parse(localStorage.getItem('user'));
     },
+
     ...mapGetters({
       plan: 'plans/plan',
       errorsPlan: 'plans/errorsPlan',
@@ -395,7 +413,40 @@ export default {
       this.modalVerification.open = true;
       this.modalVerification.comment = comment;
     },
+    apiGetSearchDuplicate() {
+      const { id, year, speciality_id, education_program_id, type_id } = this.plan;
+      if (type_id === PLAN_TYPE.PLAN && (speciality_id || education_program_id)) {
+        return this.$store.dispatch('plans/searchDuplicate', {
+          'id': id, 'year': year, 'speciality_id': speciality_id, 'education_program_id': education_program_id
+        });
+      }
+    },
+    save(message) {
+      this.duplicateMessage = message;
+      this.plan.duplicate_message = message;
+      this.data.duplicate_message = message;
+      this.sendRequest(this.data)
+    },
+    cancel() {
+      this.hasDuplicate = false;
+    },
     submit(data) {
+      this.data = data;
+      if (!this.plan.duplicate_message && this.plan.type_id === PLAN_TYPE.PLAN) {
+        this.apiGetSearchDuplicate().then((res) => {
+          this.hasDuplicate = res.data.hasDuplicate;
+          this.version = res.data.version;
+        }).then(() => {
+          if (this.hasDuplicate === false) {
+            this.sendRequest(data)
+          }
+        })
+      } else {
+        this.sendRequest(data)
+      }
+    },
+
+    sendRequest(data) {
       let path = 'plans/store';
 
       if (this.$route.name === 'EditPlan') {
@@ -445,7 +496,6 @@ export default {
         });
       });
     },
-
     apiGetPrograms() {
       this.programsLoading = true;
       api

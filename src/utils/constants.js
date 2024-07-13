@@ -50,3 +50,9 @@ export const CYCLES = {
   PRACTICAL_TRAINING: 9,
   ATTESTATION: 10,
 };
+
+export const PLAN_TYPE = {
+  TEMPLATE: 1,
+  PLAN: 2,
+  SHORT_PLAN: 3,
+};

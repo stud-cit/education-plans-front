@@ -128,14 +128,14 @@
           </validation-provider>
         </v-col>
         <v-col cols="12" lg="6" class="py-0" v-if="allowedRoles([
-    ROLES.ID.admin,
-    ROLES.ID.root,
-    ROLES.ID.training_department,
-    ROLES.ID.practice_department,
-    ROLES.ID.educational_department_deputy,
-    ROLES.ID.educational_department_chief,
-  ])
-    ">
+          ROLES.ID.admin,
+          ROLES.ID.root,
+          ROLES.ID.training_department,
+          ROLES.ID.practice_department,
+          ROLES.ID.educational_department_deputy,
+          ROLES.ID.educational_department_chief,
+        ])
+        ">
           <v-checkbox :disabled="readOnly || isShortPlan" v-model="plan.published"
             label="Відкрити спільний доступ"></v-checkbox>
         </v-col>

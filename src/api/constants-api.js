@@ -28,7 +28,6 @@ export const API = {
   CYCLES: version + '/cycles',
   SUBJECTS: version + '/subjects',
   PLAN_VERIFICATION: version + '/plans/verification',
-  PLAN_VERIFICATION_OP: version + '/plans/verification-op',
   PLAN_FILTERS: version + '/plans/filters',
   PLAN_GENERATE_SHORTED_BY_YEAR: version + '/plans/short-plan',
   VERIFICATIONS: version + '/verifications',
@@ -179,5 +178,11 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     department: 'department',
     catalogSubject: 'catalogSubject',
     divisionWithStatus: 'divisionWithStatus',
+  },
+  GET_DUPLICATE: {
+    id: 'id',
+    year: 'year',
+    speciality_id: 'speciality_id',
+    education_program_id: 'education_program_id',
   },
 };

@@ -145,3 +145,23 @@ export const setValue = (context, payload) => {
 export const setComment = (context, payload) => {
   context.commit('NOT_CONVENTIONAL', payload);
 };
+
+export const searchDuplicate = (context, payload) => {
+  const options = GlobalMixin.methods.GlobalHandlingRequestParameters(
+    ALLOWED_REQUEST_PARAMETERS.GET_DUPLICATE,
+    payload,
+  );
+  context.commit('SET_LOADING', true);
+  return api.get(`${API.PLANS}/search-duplicate`, options, { showLoader: true }).then(({ data }) => {
+    context.commit('SET_LOADING', false);
+    return data;
+  });
+};
+
+export const markAsDuplicate = (context, payload) => {
+  context.commit('SET_LOADING', true);
+  return api.patch(`${API.PLANS}/mark-duplicate`, payload.id, payload).then((response) => {
+    context.commit('SET_LOADING', false);
+    return response;
+  });
+};
