@@ -184,5 +184,6 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     year: 'year',
     speciality_id: 'speciality_id',
     education_program_id: 'education_program_id',
+    study_term_id: 'study_term_id'
   },
 };

@@ -414,10 +414,14 @@ export default {
       this.modalVerification.comment = comment;
     },
     apiGetSearchDuplicate() {
-      const { id, year, speciality_id, education_program_id, type_id } = this.plan;
+      const { id, year, speciality_id, education_program_id, study_term_id, type_id } = this.plan;
       if (type_id === PLAN_TYPE.PLAN && (speciality_id || education_program_id)) {
         return this.$store.dispatch('plans/searchDuplicate', {
-          'id': id, 'year': year, 'speciality_id': speciality_id, 'education_program_id': education_program_id
+          'id': id,
+          'year': year,
+          'speciality_id': speciality_id,
+          'education_program_id': education_program_id,
+          'study_term_id': study_term_id
         });
       }
     },
