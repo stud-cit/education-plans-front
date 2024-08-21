@@ -98,12 +98,12 @@
           <template v-if="plan.schedule_education_process && plan.schedule_education_process.length !== 0">
             <ScheduleEducationalProcessMonth :items="plan.schedule_education_process.header" />
             <ScheduleEducationalProcessWeeks :items="plan.schedule_education_process.weeks" />
-            <tr v-for="(k, cursIndex) in plan.schedule_education_process.courses" :key="cursIndex"
+            <tr v-for="(k, cursIndex) in plan.schedule_education_process.courses" :key="cursIndex + 'ci'"
               class="table-month text-center">
               <td class="border-table">
                 {{ cursIndex + 1 }}
               </td>
-              <td v-for="(week, i) in k" :key="i" class="table-week border-table">
+              <td v-for="(week, i) in k" :key="i + 'wi'" class="table-week border-table">
                 {{ week.val }}
               </td>
             </tr>
@@ -111,20 +111,21 @@
           <template v-else>
             <tr class="text-center">
               <td rowspan="2" class="border-table">Курс</td>
-              <td class="border-table" v-for="(month, index) in year.header" :key="index" :colspan="month.countWeek">
+              <td class="border-table" v-for="(month, index) in year.header" :key="index + 'mi'"
+                :colspan="month.countWeek">
                 {{ month.monthTitle }}
               </td>
             </tr>
             <tr>
-              <td class="border-table" v-for="(week, i) in year.weeks" :key="i">
+              <td class="border-table" v-for="(week, i) in year.weeks" :key="i + 'wei'">
                 {{ i + 1 }}
               </td>
             </tr>
-            <tr v-for="(k, cursIndex) in year.courses" :key="cursIndex">
+            <tr v-for="(k, cursIndex) in year.courses" :key="cursIndex + 'kcur'">
               <td class="border-table">
                 {{ cursIndex + 1 }}
               </td>
-              <td v-for="(week, i) in k" :key="i" class="border-table"></td>
+              <td v-for="(week, i) in k" :key="i + 'krwee'" class="border-table"></td>
             </tr>
           </template>
 
@@ -253,7 +254,7 @@
 
         <tbody>
           <template v-for="(cycle, index) in cycles">
-            <tr v-if="cycle.cycle_id === null" class="table-subtitle" :key="index">
+            <tr v-if="cycle.cycle_id === null" class="table-subtitle" :key="index + '_cc_id'">
               <td class="border-table" colspan="100%">
                 {{ cycle.title }}
               </td>
@@ -293,7 +294,7 @@
               <!--самостійна робота-->
 
               <td v-for="semester in plan.study_term.semesters" class="border-table no-print"
-                :key="'semester_noprint_' + semester">
+                :key="'semester_noprint_j_' + semester">
                 <template v-if="cycle.semesters_credits">
                   {{ cycle.semesters_credits[semester] }}
                 </template>
@@ -350,7 +351,7 @@
                 <!--самостійна робота-->
 
                 <td v-for="semester in plan.study_term.semesters" class="border-table no-print"
-                  :key="'semester_noprint_' + semester">
+                  :key="'semester_noprint_h_' + semester">
                   <template v-if="subject.semesters_credits">
                     {{ subject.semesters_credits[semester] }}
                   </template>
@@ -399,7 +400,7 @@
               <!--самостійна робота-->
 
               <td v-for="semester in plan.study_term.semesters" class="border-table no-print"
-                :key="'semester_noprint_' + semester">
+                :key="'semester_noprint_a_' + semester">
                 <template v-if="cycle.semesters_credits">
                   {{ cycle.semesters_credits[semester] }}
                 </template>
@@ -442,7 +443,7 @@
             <td class="border-table">{{ totalPlan.individual_work }}</td>
             <!--самостійна робота-->
             <td v-for="semester in plan.study_term.semesters" class="border-table no-print"
-              :key="'semester_noprint_' + semester">
+              :key="'semester_noprint_c_' + semester">
               <template v-if="totalPlan.semesters_credits">
                 {{ totalPlan.semesters_credits[semester] }}
               </template>
@@ -459,28 +460,28 @@
             <td class="border-table"></td>
             <td colspan="11" class="text-left border-table">Кількість годин на тиждень</td>
             <td v-for="semester in plan.study_term.semesters" class="border-table no-print"
-              :key="'semester_noprint_' + semester"></td>
+              :key="'semester_noprint_d_' + semester"></td>
             <td v-for="(hour, idx) in totalPlan.hours_modules.length > 0
               ? totalPlan.hours_modules
               : plan.study_term.semesters * FORM_ORGANIZATIONS_TABLE[plan.form_organization_id]" :key="'hour_' + idx"
               class="border-table">
               {{ totalPlan.hours_modules.length > 0 ? hour : 0 }}
             </td>
-            <td class="border-table d-print-none" v-for="td in 2" :key="td"></td>
+            <td class="border-table d-print-none" v-for="td in 2" :key="td + 'xcv'"></td>
           </tr>
           <tr class="table-bold">
             <td class="border-table"></td>
             <td colspan="11" class="text-left border-table">Кількість екзаменів</td>
             <td v-for="semester in plan.study_term.semesters" class="border-table no-print"
-              :key="'semester_noprint_' + semester"></td>
+              :key="'semester_noprint_e_' + semester"></td>
             <td class="border-table" v-for="(td, index) in plan.count_exams" :key="'count_exams_' + index">{{ td }}</td>
-            <td class="border-table d-print-none" v-for="td in 2" :key="td"></td>
+            <td class="border-table d-print-none" v-for="td in 2" :key="td + 'fd'"></td>
           </tr>
           <tr class="table-bold">
             <td class="border-table"></td>
             <td colspan="11" class="text-left border-table">Кількість заліків</td>
             <td v-for="semester in plan.study_term.semesters" class="border-table no-print"
-              :key="'semester_noprint_' + semester"></td>
+              :key="'semester_noprint_f_' + semester"></td>
             <td class="border-table" v-for="(td, index) in plan.count_tests" :key="'count_tests_' + index">{{ td }}</td>
             <td class="border-table d-print-none" v-for="td in 2" :key="td"></td>
           </tr>
@@ -488,11 +489,11 @@
             <td class="border-table"></td>
             <td colspan="11" class="text-left border-table">Кількість курсових робіт</td>
             <td v-for="semester in plan.study_term.semesters" class="border-table no-print"
-              :key="'semester_noprint_' + semester"></td>
+              :key="'semester_noprint_g_' + semester"></td>
             <td class="border-table" v-for="(td, index) in plan.count_coursework" :key="'count_coursework_' + index">
               {{ td }}
             </td>
-            <td class="border-table d-print-none" v-for="td in 2" :key="td"></td>
+            <td class="border-table d-print-none" v-for="td in 2" :key="td + 'lmkj'"></td>
           </tr>
           <tr>
             <td colspan="11" class="text-left">
