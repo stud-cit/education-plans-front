@@ -248,7 +248,7 @@
         </tbody>
       </table>
 
-      <table ref="exportablePlan" class="table table-plan mt-5 page-break-before" v-if="plan" width="100%">
+      <table ref="exportablePlan" class="table table-plan mt-5 page-break-before" v-if="plan">
         <ModularCyclicHeaderTable v-if="plan.form_organization_id === FORM_ORGANIZATIONS.modular_cyclic" :plan="plan" />
         <SemesterHeaderTable v-if="plan.form_organization_id === FORM_ORGANIZATIONS.semester" :plan="plan" />
 
@@ -265,7 +265,7 @@
                 {{ cycle.asu_id ? cycle.title : cycle.selective_discipline.title
                 }}<sup v-if="cycle.note">{{
                   plan.subject_notes.indexOf(plan.subject_notes.find((item) => item.id == cycle.id)) + 1
-                  }}</sup>
+                }}</sup>
               </td>
               <td class="border-table">{{ cycle.exams }}</td>
               <!--Екзамени-->
@@ -322,7 +322,7 @@
                   {{ subject.asu_id ? subject.title : subject.selective_discipline.title
                   }}<sup v-if="subject.note">{{
                     plan.subject_notes.indexOf(plan.subject_notes.find((item) => item.id == subject.id)) + 1
-                    }}</sup>
+                  }}</sup>
                 </td>
                 <td class="border-table">{{ subject.exams }}</td>
                 <!--Екзамени-->
@@ -542,7 +542,7 @@
           <v-icon v-else> mdi-cloud-download-outline </v-icon>
         </v-btn>
       </template>
-      <v-btn fab dark small color="red accent-4" v-print="'#printMe'">
+      <v-btn fab dark small color="red accent-4" @click="download">
         <v-icon>mdi-pdf-box</v-icon>
       </v-btn>
       <v-btn fab dark small color="green darken-4" @click="exportExcel('xlsx' /*'xls'*/)">
@@ -575,9 +575,6 @@ export default {
     ModularCyclicHeaderTable,
     SemesterHeaderTable,
     ShortedByYearBtns,
-  },
-  directives: {
-    print,
   },
   data() {
     return {
@@ -634,6 +631,35 @@ export default {
   },
   mixins: [ScheduleEducationalProcess],
   methods: {
+    download() {
+      const id = this.$route.params.id;
+      if (id) {
+        api.get(API.PLANS + '/download/' + id, '', { showLoader: true, responseType: 'arraybuffer' })
+          .then(response => {
+
+            const blob = new Blob([response.data], { type: response.headers['content-type'] });
+            const url = window.URL.createObjectURL(blob);
+
+            // Створюємо посилання для завантаження
+            const link = document.createElement('a');
+            link.href = url;
+            // link.download = fileName;
+            link.download = this.plan.title;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+
+            // Автоматично клікаємо на посилання для початку завантаження
+            link.click();
+
+            // Видаляємо посилання і звільняємо URL
+            link.remove();
+            window.URL.revokeObjectURL(url);
+
+          }).catch((e) => {
+            console.error(e);
+          })
+      }
+    },
     getNoteNumber(note) {
       if (note) {
         this.hasNote += 1;
