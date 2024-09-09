@@ -34,8 +34,8 @@
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn :disabled="readOnly || isShortPlan &&
-      (item.list_cycle_id === CYCLES.PRACTICAL_TRAINING || item.list_cycle_id === CYCLES.ATTESTATION)
-      " small icon @click="editSubject(subject, item)" v-bind="attrs" v-on="on">
+              (item.list_cycle_id === CYCLES.PRACTICAL_TRAINING || item.list_cycle_id === CYCLES.ATTESTATION)
+              " small icon @click="editSubject(subject, item)" v-bind="attrs" v-on="on">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </template>
@@ -94,6 +94,10 @@ export default {
       readOnly: 'plans/readOnly'
     }),
     hasErrors() {
+      if (this.subject.subjects.length > 0) {
+        return false;
+      }
+
       return this.subjectIndexError == this.subject.id ||
         (this.item.has_discipline && !this.subject.checkCountHoursModules) ||
         (this.item.has_discipline && this.subject.checkCountHours) ||
