@@ -212,11 +212,11 @@ export default {
         { text: 'Назва', value: 'title' },
         { text: 'Факультет', value: 'faculty', sortable: false },
         { text: 'Кафедра', value: 'department', sortable: false },
-        { text: 'Рік', value: 'year', width: '80px' },
+        { text: 'Рік', value: 'year', width: '65px' },
         { text: 'Дата створення', value: 'created_at', width: '150px' },
         { text: 'Верифікація', value: 'verification', width: '150px', sortable: false },
-        { text: 'СП', value: 'catalog_speciality', sortable: false },
-        { text: 'ОП', value: 'catalog_education_programs', sortable: false },
+        { text: 'СП', value: 'catalog_speciality', sortable: false, width: '30px' },
+        { text: 'ОП', value: 'catalog_education_programs', sortable: false, width: '30px' },
         { text: 'Дії', value: 'actions', width: '120px', sortable: false },
       ];
 
