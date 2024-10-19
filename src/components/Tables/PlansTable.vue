@@ -45,6 +45,9 @@
           <v-text-field v-model="planId" label="Пошук за ID плану" single-line hide-details type="number"
             clearable></v-text-field>
         </v-col>
+        <v-col cols="12" lg="6" v-if="exceptRoles([ROLES.ID.guest])">
+          <v-checkbox v-model="archived" label="Включити арховані документи"></v-checkbox>
+        </v-col>
       </v-row>
     </template>
 
@@ -160,6 +163,7 @@ export default {
       planId: null,
       planOrTemplate: null,
       planTypes: [],
+      archived: false,
     };
   },
   components: {
@@ -257,6 +261,7 @@ export default {
       this.options.department = null;
       this.division = this.options.divisionWithStatus = null;
       this.planId = this.options.planId = null;
+      this.archived = this.options.archived = null;
       this.planOrTemplate = this.options.planOrTemplate = null;
       this.resetPage();
     },
@@ -279,6 +284,7 @@ export default {
     filterSort(values) {
       values.searchTitle = this.searchTitle;
       values.planId = this.planId;
+      values.archived = +this.archived;
       values.planOrTemplate = this.planOrTemplate;
 
       if (this.exceptRoles([ROLES.ID.department])) {

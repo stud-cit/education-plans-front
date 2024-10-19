@@ -90,6 +90,7 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     faculty: 'faculty',
     department: 'department',
     planId: 'id',
+    archived: 'archived',
     planOrTemplate: 'planOrTemplate',
     divisionWithStatus: 'divisionWithStatus',
   },

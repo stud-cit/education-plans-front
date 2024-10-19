@@ -16,6 +16,10 @@ export default {
         return '';
       }
 
+      if (item.deleted_at) {
+        return 'blue-grey lighten-5';
+      } 
+      
       const role = ROLES.ID.educational_department_deputy;
       if (this.allowedRoles([ROLES.ID.admin]) || this.allowedRoles([ROLES.ID.root])) {
         return item.status + ' lighten-5';
