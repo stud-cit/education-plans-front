@@ -45,10 +45,10 @@
               </validation-provider>
 
               <validation-provider v-slot="{ errors }"
-                name="Загальна компетентність, на формування або розвиток якої спрямована дисципліна" rules="required">
+                name="Компетентності (загальні та/або фахові, на розвиток яких спрямована дисципліна)" rules="required">
                 <v-combobox v-model="generalCompetence" :items="helpersGeneralCompetence" item-value="id"
                   item-text="title" :error-messages="errors"
-                  label="Загальна компетентність, на формування або розвиток якої спрямована дисципліна"></v-combobox>
+                  label="Компетентності (загальні та/або фахові, на розвиток яких спрямована дисципліна)"></v-combobox>
               </validation-provider>
 
               <validation-provider v-slot="{ errors }" name="Результати навчання за навчальною дисципліною"
