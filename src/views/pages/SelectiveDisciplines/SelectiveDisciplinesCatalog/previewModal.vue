@@ -82,7 +82,7 @@
         </div>
 
         <p class="pdf_subtitle" v-if="item && 'year' in item">
-          ДИСЦИПЛІНА ЦИКЛУ ЗАГАЛЬНОЇ ПІДГОТОВКИ на {{ item.year }} – {{ item.year + 1 }}н. р.
+          ДИСЦИПЛІНА ЦИКЛУ ЗАГАЛЬНОЇ ПІДГОТОВКИ на {{ item.year }} – {{ +item.year + 1 }}н. р.
         </p>
         <table class="table">
           <thead>
