@@ -84,3 +84,18 @@ export const NOT_CONVENTIONAL = (state, payload) => {
 export const SET_SHORTENED_RELATION = (state, payload) => {
   state.plan.shorted_by_year.push(payload);
 };
+
+export const SET_SCHEDULE = (state, payload) => {
+  state.plan.schedule_education_process.courses = state.plan.schedule_education_process.courses.map((group, groupIndex) => {
+    return group.map((item, itemIndex) => {
+      const payloadItem = payload[groupIndex]?.[itemIndex];
+      if (payloadItem && payloadItem.val !== undefined) {
+        return {
+          ...item,
+          val: payloadItem.val,
+        };
+      }
+      return item;
+    });
+  });
+}

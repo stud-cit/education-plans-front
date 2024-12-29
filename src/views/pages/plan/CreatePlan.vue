@@ -73,7 +73,7 @@
     </template>
 
     <template v-if="plan">
-      <v-alert outlined dense disable name="info" type="info" v-if="plan.comment && plan.not_conventional">
+      <v-alert outlined dense name="info" type="info" v-if="plan.comment && plan.not_conventional">
         {{ plan.comment }}</v-alert>
     </template>
 

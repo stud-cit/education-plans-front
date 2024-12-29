@@ -44,11 +44,11 @@
     <!-- End Modal Window -->
 
     <div class="d-flex justify-space-between flex-wrap">
-      <v-btn v-if="can" class="flex-grow-1 mb-2 ml-2" small depressed color="primary" @click="openDialog">
+      <v-btn v-if="can" class="flex-grow-1 mt-4 mb-2 ml-2" small depressed color="primary" @click="openDialog">
         Згенерувати скорочений план
       </v-btn>
       <template v-for="item in items">
-        <v-btn v-if="item.id" :key="item.id" class="flex-grow-1 mb-2 ml-2" color="success" small depressed
+        <v-btn v-if="item.id" :key="item.id" class="flex-grow-1 mt-4 mb-2 ml-2" color="success" small depressed
           :to="{ name: 'EditPlan', params: { id: item.id, title: item.title } }" target="_blank">
           {{ item.label }}
         </v-btn>

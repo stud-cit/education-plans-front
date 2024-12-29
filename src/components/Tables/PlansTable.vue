@@ -79,6 +79,17 @@
       </v-tooltip>
     </template>
 
+    <template v-slot:item.created_at="{ item }">
+      <v-tooltip top color="primary">
+        <template v-slot:activator="{ on, attrs }">
+          <div v-bind="attrs" v-on="on">
+            {{ item.created_at.split(' ')[0] }}
+          </div>
+        </template>
+        <span>{{ item.created_at }}</span>
+      </v-tooltip>
+    </template>
+
     <template v-slot:item.catalog_speciality="{ item }">
       <v-tooltip top color="primary">
         <template v-slot:activator="{ on, attrs }">
@@ -216,8 +227,8 @@ export default {
         { text: 'Назва', value: 'title' },
         { text: 'Факультет', value: 'faculty', sortable: false },
         { text: 'Кафедра', value: 'department', sortable: false },
-        { text: 'Рік', value: 'year', width: '65px' },
-        { text: 'Дата створення', value: 'created_at', width: '150px' },
+        { text: 'Рік', value: 'year', width: '70px', align: 'center' },
+        { text: 'Дата створення', value: 'created_at', width: '150px', align: 'center' },
         { text: 'Верифікація', value: 'verification', width: '150px', sortable: false },
         { text: 'СП', value: 'catalog_speciality', sortable: false, width: '30px' },
         { text: 'ОП', value: 'catalog_education_programs', sortable: false, width: '30px' },
@@ -302,4 +313,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.v-data-table>.v-data-table__wrapper>table>tbody>tr>td {
+  padding: 0 10px !important;
+}
+</style>

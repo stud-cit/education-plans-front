@@ -165,3 +165,17 @@ export const markAsDuplicate = (context, payload) => {
     return response;
   });
 };
+
+export const getSchedule = async (context, payload) => {
+  context.commit('SET_LOADING', true);
+  try {
+    const { data } = await api.get(`${API.SCHEDULES}/` + payload);
+    context.commit('SET_SCHEDULE', data);
+    context.commit('SET_LOADING', false);
+    return true;
+  } catch (error) {
+    context.commit('SET_LOADING', false);
+    throw error;
+  }
+
+}

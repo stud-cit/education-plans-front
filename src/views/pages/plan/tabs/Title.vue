@@ -1,5 +1,18 @@
 <template>
   <div>
+    <v-row no-gutters v-if="!readOnly">
+      <v-col cols="12" sm="8" md="10" lg="10">
+        <v-autocomplete :loading="schedulesLoading" v-model="schedule" return-object :items="schedules"
+          item-text="title" item-value="id" class="mt-3 pb-0" label="Графіки" dense>
+        </v-autocomplete>
+      </v-col>
+
+      <v-col cols="12" sm="4" md="2" lg="2" class="d-flex">
+        <v-spacer></v-spacer>
+        <v-btn color="primary" class="mb-3" elevation="2" :disabled="schedule === null"
+          @click="fillTable()">Застосувати</v-btn>
+      </v-col>
+    </v-row>
     <ValidationObserver ref="observer" v-slot="{ valid, invalid, errors }">
       <table>
         <tr>
@@ -91,6 +104,9 @@ export default {
   },
   data() {
     return {
+      schedule: null,
+      schedules: [],
+      schedulesLoading: false,
       rule: 'Т,Т*,С,П,К,А,Д,т,т*,с,п,к,а,д',
       notes: '',
       noteLoaded: false,
@@ -123,10 +139,26 @@ export default {
     }),
   },
   mounted() {
+    this.getSchedules();
     this.getRules();
     this.getScheduleEducationProcessData();
   },
   methods: {
+    fillTable() {
+      this.$swal.fire({
+        title: 'Навчальний графік буде перезаписано!',
+        text: `${this.schedule.title}`,
+        showDenyButton: true,
+        confirmButtonText: 'Так',
+        denyButtonText: `Ні`,
+        focusDeny: true,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.getSchedule(this.schedule.id);
+        }
+      })
+
+    },
     save() {
       this.$refs.observer.validate().then((response) => {
         if (response) {
@@ -200,6 +232,25 @@ export default {
         this.notes = notes;
       });
     },
+    getSchedules() {
+      const { education_level_id, study_term_id } = this.plan;
+      this.schedulesLoading = true;
+      api.get(`${API.SCHEDULES}/?education_level_id=${education_level_id}&study_term_id=${study_term_id}`).then((respose) => {
+        const { data } = respose.data;
+        this.schedules = data;
+        this.schedulesLoading = false;
+      });
+    },
+    getSchedule(id) {
+      const isComplete = this.$store.dispatch('plans/getSchedule', id);
+      if (isComplete) {
+        this.$swal.fire({
+          title: "Успішно оновлено",
+          text: "ГРАФІК НАВЧАЛЬНОГО ПРОЦЕСУ",
+          icon: "success"
+        });
+      }
+    }
   },
 };
 </script>
