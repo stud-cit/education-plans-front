@@ -187,4 +187,8 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     education_program_id: 'education_program_id',
     study_term_id: 'study_term_id'
   },
+  GET_SCHEDULE: {
+    education_level_id: 'education_level_id',
+    study_term_id: 'study_term_id'
+  }
 };

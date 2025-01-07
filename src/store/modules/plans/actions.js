@@ -166,10 +166,19 @@ export const markAsDuplicate = (context, payload) => {
   });
 };
 
-export const getSchedule = async (context, payload) => {
+export const getListSchedule = (context, payload) => {
+  const options = GlobalMixin.methods.GlobalHandlingRequestParameters(ALLOWED_REQUEST_PARAMETERS.GET_SCHEDULE, payload);
+
+  return api.get(API.SCHEDULES, options, { showLoader: true }).then(({ data }) => {
+    context.commit('SET_LOADING', false);
+    return data;
+  });
+}
+
+export const getSchedule = async (context, id) => {
   context.commit('SET_LOADING', true);
   try {
-    const { data } = await api.get(`${API.SCHEDULES}/` + payload);
+    const { data } = await api.get(`${API.SCHEDULES}/${id}`, null);
     context.commit('SET_SCHEDULE', data);
     context.commit('SET_LOADING', false);
     return true;

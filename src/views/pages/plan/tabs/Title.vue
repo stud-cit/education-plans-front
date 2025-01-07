@@ -154,6 +154,7 @@ export default {
         focusDeny: true,
       }).then((result) => {
         if (result.isConfirmed) {
+          console.log('id: ', this.schedule.id);
           this.getSchedule(this.schedule.id);
         }
       })
@@ -233,11 +234,12 @@ export default {
       });
     },
     getSchedules() {
-      const { education_level_id, study_term_id } = this.plan;
       this.schedulesLoading = true;
-      api.get(`${API.SCHEDULES}/?education_level_id=${education_level_id}&study_term_id=${study_term_id}`).then((respose) => {
-        const { data } = respose.data;
-        this.schedules = data;
+
+      this.$store.dispatch('plans/getListSchedule', {
+        education_level_id: this.plan.education_level_id, study_term_id: this.plan.study_term_id
+      }).then((data) => {
+        this.schedules = data.data;
         this.schedulesLoading = false;
       });
     },
