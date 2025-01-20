@@ -26,7 +26,7 @@
           <template v-if="catalog.speciality">
             <br />
             СПЕЦІАЛЬНІСТЬ {{ catalog.speciality }} </template><br />
-          {{ catalog.education_level }} {{ catalog.year }} &mdash; {{ catalog.year + 1 }} н. р.
+          {{ catalog.education_level }} {{ catalog.year }} &mdash; {{ +catalog.year + 1 }} н. р.
         </p>
         <table class="table pdf_table">
           <thead>

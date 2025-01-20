@@ -15,7 +15,7 @@
         <br>
         <p class="pdf_subtitle" v-if="item && 'year' in item">
           ПРОПОЗИЦІЇ ДО КАТАЛОГУ ВИБІРКОВИХ НАВЧАЛЬНИХ ДИСЦИПЛІН ЦИКЛУ ЗАГАЛЬНОЇ ПІДГОТОВКИ на {{ item.year }} &mdash;
-          {{ item.year + 1 }} н. р.
+          {{ +item.year + 1 }} н. р.
         </p>
         <table class="table pdf_table">
           <thead>
