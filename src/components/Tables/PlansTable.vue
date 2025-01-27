@@ -117,7 +117,8 @@
     <template v-slot:item.actions="{ item }">
       <btn-tooltip tooltip="Перегляд">
         <router-link v-if="item.actions.preview"
-          :to="{ name: 'PreviewPlan', params: { id: item.id, title: item.title } }" target="_blank">
+          :to="{ name: 'PreviewPlan', params: { id: item.id, title: item.title.replaceAll('/', '-') } }"
+          target="_blank">
           <v-icon small class="mr-2" color="primary">mdi-eye-outline</v-icon>
         </router-link>
       </btn-tooltip>
