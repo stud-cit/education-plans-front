@@ -10,10 +10,10 @@
       <td class="border-table" rowspan="8" width="50">Кількість кредитів ЄКТС</td>
       <td class="border-table" rowspan="1" colspan="6">Кількість годин</td>
       <td class="border-table no-print" rowspan="1" :colspan="plan.study_term.semesters">
-        Розподіл кредитів за курсами, семестрами і модульними атестаційними циклами
+        Розподіл кредитів за курсами, семестрами і модульними циклами
       </td>
       <td class="border-table" rowspan="1" :colspan="plan.study_term.semesters * 2">
-        Розподіл годин на тиждень за курсами, семестрами і модульними атестаційними циклами
+        Розподіл годин на тиждень за курсами, семестрами і модульними циклами
       </td>
       <td class="border-table d-print-none" rowspan="8">Кафедра викладання</td>
       <td class="border-table d-print-none" rowspan="8">Потоки</td>
@@ -53,14 +53,14 @@
       <td class="border-table" rowspan="4">лекції</td>
       <td class="border-table" rowspan="4">практичні, семінарські</td>
       <td class="border-table" rowspan="4">лабораторні</td>
-      <td class="border-table" rowspan="1" :colspan="plan.study_term.semesters * 2">Модульні атестаційні цикли</td>
+      <td class="border-table" rowspan="1" :colspan="plan.study_term.semesters * 2">Модульні цикли</td>
     </tr>
     <tr>
       <template v-for="course in plan.study_term.course">
         <td class="border-table" rowspan="1" :key="'mod_1_' + course">I</td>
         <td class="border-table" rowspan="1" :key="'mod_2_' + course">II</td>
         <template v-if="plan.study_term.semesters % plan.study_term.course === 0 ||
-        (plan.study_term.semesters % plan.study_term.course > 0 && course !== plan.study_term.course)
+          (plan.study_term.semesters % plan.study_term.course > 0 && course !== plan.study_term.course)
         ">
           <td class="border-table" rowspan="1" :key="'mod_3_' + course">III</td>
           <td class="border-table" rowspan="1" :key="'mod_4_' + course">IV</td>

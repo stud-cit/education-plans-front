@@ -175,13 +175,13 @@
 
               <tr>
                 <td :colspan="objHoursWeeks.length">
-                  Максимальна кількість годин в тижні модульного атестаційного циклу
+                  Максимальна кількість годин в тижні модульного циклу
                 </td>
               </tr>
               <tr>
                 <td v-for="(item, index) in objHoursWeeks" :key="index">
                   <validation-provider v-slot="{ errors }" rules="required|numeric|min_value:0"
-                    name="Максимальна кількість годин в тижні модульного атестаційного циклу"
+                    name="Максимальна кількість годин в тижні модульного циклу"
                     :vid="'hours_' + item.index + '_' + item.course">
                     <v-text-field v-model.number="item.hour" :error-messages="errors" required
                       :readonly="readOnly || isShortPlan" type="number" :min="0" dense hide-details></v-text-field>

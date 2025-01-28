@@ -12,10 +12,10 @@
       <td class="border-table" rowspan="6">Кількість кредитів ЄКТС</td>
       <td class="border-table" rowspan="1" colspan="6">Кількість годин</td>
       <td class="border-table no-print" rowspan="1" :colspan="plan.study_term.semesters">
-        Розподіл кредитів за курсами, семестрами і модульними атестаційними циклами
+        Розподіл кредитів за курсами, семестрами і модульними циклами
       </td>
       <td class="border-table" rowspan="1" :colspan="plan.study_term.semesters">
-        Розподіл годин на тиждень за курсами, семестрами і модульними атестаційними циклами
+        Розподіл годин на тиждень за курсами, семестрами і модульними циклами
       </td>
       <td class="border-table d-print-none" rowspan="6">Кафедра викладання</td>
       <td class="border-table d-print-none" rowspan="6">Потоки</td>

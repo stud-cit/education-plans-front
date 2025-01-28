@@ -103,7 +103,7 @@
         До базового плану
       </v-btn>
       <v-btn small depressed color="primary"
-        :to="{ name: 'PreviewPlan', params: { id: plan.id, title: plan.title.replaceAll('/', '-') } }" target="_blank">
+        :to="{ name: 'PreviewPlan', params: { id: plan.id, title: plan.title?.replaceAll('/', '-') } }" target="_blank">
         Переглянути
       </v-btn>
       <!-- Verification buttons -->
