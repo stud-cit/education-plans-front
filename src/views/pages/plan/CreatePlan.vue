@@ -102,8 +102,8 @@
         :to="{ name: 'EditPlan', params: { id: plan.basePlan.base_id, title: plan.basePlan.title } }" target="_blank">
         До базового плану
       </v-btn>
-      <v-btn small depressed color="primary" :to="{ name: 'PreviewPlan', params: { id: plan.id, title: plan.title } }"
-        target="_blank">
+      <v-btn small depressed color="primary"
+        :to="{ name: 'PreviewPlan', params: { id: plan.id, title: plan.title.replaceAll('/', '-') } }" target="_blank">
         Переглянути
       </v-btn>
       <!-- Verification buttons -->
