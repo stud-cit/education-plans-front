@@ -8,19 +8,9 @@
       <template v-slot:item.value="{ item }">
         <template v-if="item.edit">
           <validation-observer ref="observer">
-            <validation-provider v-slot="{ errors }" name="Значення" rules="required|digits">
-              <v-text-field
-                v-model="item.value"
-                :error-messages="errors"
-                required
-                type="number"
-                min="0"
-                autofocus
-                dense
-                hide-details
-                @change="edit(item)"
-                @blur="closeEdit(item)"
-              ></v-text-field>
+            <validation-provider v-slot="{ errors }" name="Значення" rules="required|double,dot">
+              <v-text-field v-model="item.value" :error-messages="errors" required type="number" min="0" step="0.01"
+                autofocus dense hide-details @change="edit(item)" @blur="closeEdit(item)"></v-text-field>
             </validation-provider>
           </validation-observer>
         </template>
@@ -39,13 +29,8 @@
         </btn-tooltip>
 
         <btn-tooltip tooltip="Видалити">
-          <v-icon
-            v-if="allowedRoles([ROLES.ID.root])"
-            small
-            class="mr-2"
-            color="red"
-            @click="deleteItem(item.id, item.title)"
-          >
+          <v-icon v-if="allowedRoles([ROLES.ID.root])" small class="mr-2" color="red"
+            @click="deleteItem(item.id, item.title)">
             mdi-trash-can-outline
           </v-icon>
         </btn-tooltip>
@@ -68,8 +53,22 @@
 <script>
 import api from '@/api';
 import { API } from '@/api/constants-api';
+import { required, numeric, max, double } from "vee-validate/dist/rules";
 import RolesMixin from '@/mixins/RolesMixin';
 import { ROLES } from '@/utils/constants';
+import {
+  extend,
+  ValidationObserver,
+  ValidationProvider,
+  setInteractionMode,
+} from "vee-validate";
+
+setInteractionMode("eager");
+
+extend("double,dot", {
+  ...double,
+  message: "{_field_} needs to be double. ({_value_})",
+});
 
 export default {
   name: 'RestrictionEditor',

@@ -35,8 +35,8 @@
               <v-col cols="6" class="py-0">
                 <v-text-field type="number" label="Кредитів" min="0" step="0.01" v-model.number="subjectForm.credits"
                   :rules="[
-      (v) => v + subjectForm.sumSubjectsCredits <= cycleForm.credit || 'Перевищена кількість кредитів',
-    ]"></v-text-field>
+                    (v) => v + subjectForm.sumSubjectsCredits <= cycleForm.credit || 'Перевищена кількість кредитів',
+                  ]"></v-text-field>
               </v-col>
               <v-col cols="6" class="py-0">
                 <v-text-field type="number" label="Обсяг годин лекцій" min="0"
@@ -70,7 +70,8 @@
 
             <v-alert dense outlined type="error" class="mb-2"
               v-if="cycleForm.has_discipline && !checkCountHoursModules">
-              Кількість розподілених годин {{ sumHoursWeeksSemesters.toFixed(2) }} має відповідати сумі годин лекцій, практичних, лабораторних {{ sumHours.toFixed(2) }}.
+              Кількість розподілених годин {{ sumHoursWeeksSemesters.toFixed(2) }} має відповідати сумі годин лекцій,
+              практичних, лабораторних {{ sumHours.toFixed(2) }}.
             </v-alert>
 
             <v-alert dense outlined type="error" class="mb-2"
@@ -108,26 +109,19 @@
               <tr>
                 <td :colspan="plan.form_organization.id == 1 ? 0 : 2"
                   v-for="(subject, index) in subjectForm.hours_modules" :key="index" :class="[cycleForm.has_discipline == 1 &&
-      (index === activMod ? 'activMod' : '',
-        checkLastHourModule == index ||
-        checkCountHoursSemester.indexOf(subject.semester) != -1) ? 'error' : '']">
+                    (index === activMod ? 'activMod' : '',
+                      checkLastHourModule == index ||
+                      checkCountHoursSemester.indexOf(subject.semester) != -1) ? 'error' : '']">
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                      <v-text-field 
-                        type="number" 
-                        min="0" 
-                        step="0.01" 
-                        :dark="cycleForm.has_discipline == 1 && (checkLastHourModule == index || checkCountHoursSemester.indexOf(subject.semester) != -1)" 
-                        v-model.number="subject.hour" 
-                        @click="activMod = index; moduleNumber = subject;" 
-                        dense 
-                        hide-details
-                        v-bind="attrs"
-                        v-on="on"
-                      >
+                      <v-text-field type="number" min="0" step="0.01"
+                        :dark="cycleForm.has_discipline == 1 && (checkLastHourModule == index || checkCountHoursSemester.indexOf(subject.semester) != -1)"
+                        v-model.number="subject.hour" @click="activMod = index; moduleNumber = subject;" dense
+                        hide-details v-bind="attrs" v-on="on">
                       </v-text-field>
                     </template>
-                    <span>Години * тижнів = {{ (+subject.hour * +plan.hours_weeks_semesters[index].week).toFixed(2) }}</span>
+                    <span>Години * тижнів = {{ (+subject.hour * +plan.hours_weeks_semesters[index].week).toFixed(2)
+                      }}</span>
                   </v-tooltip>
                 </td>
               </tr>
@@ -156,10 +150,10 @@
               </tr>
               <tr>
                 <td colspan="2" v-for="(item, index) in subjectForm.semesters_credits" :key="index" :class="[
-      cycleForm.has_discipline == 1 && checkCountHoursSemester.indexOf(item.semester) != -1
-        ? 'error'
-        : '',
-    ]">
+                  cycleForm.has_discipline == 1 && checkCountHoursSemester.indexOf(item.semester) != -1
+                    ? 'error'
+                    : '',
+                ]">
                   <v-text-field type="number" min="0" step="0.01"
                     :dark="cycleForm.has_discipline == 1 && checkCountHoursSemester.indexOf(item.semester) != -1"
                     v-model.number="item.credit" dense hide-details>
@@ -184,10 +178,10 @@
                 </validation-provider>
 
                 <v-text-field label="Кредитів" v-model="cycleForm.credit" type="number" min="0" :rules="[
-      (v) =>
-        +v + cycleForm.sumCyclesCredits <= cycleForm.parrentCycleCredit ||
-        'Перевищена кількість кредитів',
-    ]" dense hide-details class="mb-4"></v-text-field>
+                  (v) =>
+                    +v + cycleForm.sumCyclesCredits <= cycleForm.parrentCycleCredit ||
+                    'Перевищена кількість кредитів',
+                ]" dense hide-details class="mb-4"></v-text-field>
 
                 <v-checkbox class="ma-0" v-model="cycleForm.has_discipline"
                   label="Цикл з навчальними дисциплінами"></v-checkbox>
@@ -343,8 +337,12 @@ export default {
     },
     checkCountHours() {
       let sumHours = +this.subjectForm.hours + +this.subjectForm.practices + +this.subjectForm.laboratories;
+
+      const minClassroomLoad = this.minClassroomLoad();
+      console.log("checkCountHours", minClassroomLoad);
+
       return (
-        this.subjectForm.credits * 30 * (this.options['min-classroom-load'] / 100) > sumHours ||
+        this.subjectForm.credits * 30 * (minClassroomLoad / 100) > sumHours ||
         this.subjectForm.credits * 30 * (this.options['max-classroom-load'] / 100) < sumHours
       );
     },
@@ -383,8 +381,10 @@ export default {
             return elem.semester == semesterItem.semester;
           });
         let sumHoursModules = this.sumArray(modules, 'checkHour');
+        const minClassroomLoad = this.minClassroomLoad();
+        console.log(minClassroomLoad);
         if (
-          semesterItem.credit * 30 * (this.options['min-classroom-load'] / 100) > sumHoursModules ||
+          semesterItem.credit * 30 * (minClassroomLoad / 100) > sumHoursModules ||
           semesterItem.credit * 30 * (this.options['max-classroom-load'] / 100) < sumHoursModules
         ) {
           res.push(semesterItem.semester);
@@ -471,6 +471,14 @@ export default {
     });
   },
   methods: {
+    minClassroomLoad() {
+      switch (this.plan.education_level_id) {
+        case 4:
+          return this.options['min-classroom-load-masters'];
+        case 2:
+          return this.options['min-classroom-load'];
+      }
+    },
     hasTaskInSemester() {
       let hasTask = this.subjectForm.hours_modules.find(
         (item) =>

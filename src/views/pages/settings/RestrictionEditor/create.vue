@@ -2,46 +2,17 @@
   <v-container>
     <validation-observer ref="observer" v-slot="{ invalid }">
       <form @submit.prevent="submit">
-        <validation-provider
-          v-slot="{ errors }"
-          name="Ключ"
-          rules="required|max:255"
-        >
-          <v-text-field
-            v-model="key"
-            :counter="255"
-            :error-messages="errors"
-            label="Ключ"
-            required
-          ></v-text-field>
+        <validation-provider v-slot="{ errors }" name="Ключ" rules="required|max:255">
+          <v-text-field v-model="key" :counter="255" :error-messages="errors" label="Ключ" required></v-text-field>
         </validation-provider>
 
-        <validation-provider
-          v-slot="{ errors }"
-          name="Заголовок"
-          rules="required|max:255"
-        >
-          <v-text-field
-            v-model="title"
-            :counter="255"
-            :error-messages="errors"
-            label="Заголовок"
-            required
-          ></v-text-field>
+        <validation-provider v-slot="{ errors }" name="Заголовок" rules="required|max:255">
+          <v-text-field v-model="title" :counter="255" :error-messages="errors" label="Заголовок"
+            required></v-text-field>
         </validation-provider>
 
-        <validation-provider
-          v-slot="{ errors }"
-          name="Значення"
-          rules="required|numeric|min:1|max:3"
-        >
-          <v-text-field
-            v-model="value"
-            :counter="3"
-            :error-messages="errors"
-            label="Значення"
-            required
-          ></v-text-field>
+        <validation-provider v-slot="{ errors }" name="Значення" rules="required|double,dot">
+          <v-text-field v-model="value" :error-messages="errors" label="Значення" required></v-text-field>
         </validation-provider>
 
         <v-btn class="mr-4" type="submit" :disabled="invalid"> Зберегти </v-btn>
@@ -53,7 +24,7 @@
 <script>
 import api from "@/api";
 import { API } from "@/api/constants-api";
-import { required, numeric, max } from "vee-validate/dist/rules";
+import { required, max, double } from "vee-validate/dist/rules";
 import {
   extend,
   ValidationObserver,
@@ -63,9 +34,9 @@ import {
 
 setInteractionMode("eager");
 
-extend("numeric", {
-  ...numeric,
-  message: "{_field_} needs to be {length} digits. ({_value_})",
+extend("double,dot", {
+  ...double,
+  message: "{_field_} needs to be double. ({_value_})",
 });
 
 extend("required", {
@@ -101,15 +72,15 @@ export default {
             value: this.value,
           };
           api.post(API.SETTINGS, options).then((response) => {
-              const { message } = response.data;
-              this.$swal.fire({
-                position: "center",
-                icon: "success",
-                title: message,
-                showConfirmButton: false,
-                timer: 1500,
-              });
+            const { message } = response.data;
+            this.$swal.fire({
+              position: "center",
+              icon: "success",
+              title: message,
+              showConfirmButton: false,
+              timer: 1500,
             });
+          });
         }
       });
     },
