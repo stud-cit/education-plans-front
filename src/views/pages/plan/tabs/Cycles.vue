@@ -477,6 +477,8 @@ export default {
           return this.options['min-classroom-load-masters'];
         case 2:
           return this.options['min-classroom-load'];
+        default:
+          return this.options['min-classroom-load'];
       }
     },
     hasTaskInSemester() {
