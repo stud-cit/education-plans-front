@@ -333,7 +333,10 @@ export default {
       return sumHoursModules;
     },
     checkCountHoursModules() {
-      return this.sumHoursWeeksSemesters == this.sumHours;
+
+      const sumHoursWeeksSemesters = (Math.round(this.sumHoursWeeksSemesters * 100) / 100);
+      const sumHours = (Math.round(this.sumHours * 100) / 100)
+      return sumHoursWeeksSemesters == sumHours;
     },
     checkCountHours() {
       let sumHours = +this.subjectForm.hours + +this.subjectForm.practices + +this.subjectForm.laboratories;
@@ -474,6 +477,8 @@ export default {
     minClassroomLoad() {
       switch (this.plan.education_level_id) {
         case 4:
+        case 10:
+        case 11:
           return this.options['min-classroom-load-masters'];
         case 2:
           return this.options['min-classroom-load'];
