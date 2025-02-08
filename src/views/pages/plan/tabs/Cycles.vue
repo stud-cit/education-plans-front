@@ -1,6 +1,7 @@
 <template>
   <div>
-    <v-dialog v-model="subjectDialog" fullscreen hide-overlay transition="dialog-bottom-transition" scrollable>
+    <v-dialog v-if="subjectDialog" v-model="subjectDialog" fullscreen hide-overlay transition="dialog-bottom-transition"
+      scrollable>
       <v-card tile>
         <v-toolbar flat dark color="primary">
           <v-btn icon dark @click="subjectDialog = false">
@@ -294,6 +295,15 @@ export default {
       },
       deep: true,
     },
+    'subjectForm.selectiveDiscipline':
+      function (newValue, oldValue) {
+        if (newValue === false) {
+          this.subjectForm.selective_discipline_id = null
+        }
+        if (newValue === true) {
+          this.subjectForm.asu_id = null
+        }
+      }
   },
   computed: {
     sebjectTitle() {
@@ -342,7 +352,6 @@ export default {
       let sumHours = +this.subjectForm.hours + +this.subjectForm.practices + +this.subjectForm.laboratories;
 
       const minClassroomLoad = this.minClassroomLoad();
-      console.log("checkCountHours", minClassroomLoad);
 
       return (
         this.subjectForm.credits * 30 * (minClassroomLoad / 100) > sumHours ||
@@ -385,7 +394,6 @@ export default {
           });
         let sumHoursModules = this.sumArray(modules, 'checkHour');
         const minClassroomLoad = this.minClassroomLoad();
-        console.log(minClassroomLoad);
         if (
           semesterItem.credit * 30 * (minClassroomLoad / 100) > sumHoursModules ||
           semesterItem.credit * 30 * (this.options['max-classroom-load'] / 100) < sumHoursModules
