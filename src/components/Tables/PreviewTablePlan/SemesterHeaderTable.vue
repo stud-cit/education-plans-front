@@ -65,7 +65,7 @@
         {{ semester }}
       </td>
       <template v-for="semester in plan.study_term.semesters">
-        <td class="border-table" rowspan="1" colspan="1" :key="semester">
+        <td class="border-table" rowspan="1" colspan="1">
           <template v-if="getMaxHour(semester, plan.hours_weeks_semesters)">
             {{ getMaxHour(semester, plan.hours_weeks_semesters).week }}
           </template>
@@ -80,7 +80,7 @@
       <td class="border-table" v-for="item in plan.study_term.semesters" :key="'num_2_' + item">
         {{ item + 12 }}
       </td>
-      <td class="border-table d-print-none" v-for="item in 2" :key="'num_2_' + item">
+      <td class="border-table d-print-none" v-for="item in 2" :key="'num_3_' + item">
         {{ item + 12 + plan.study_term.semesters }}
       </td>
     </tr>

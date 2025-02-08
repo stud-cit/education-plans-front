@@ -265,7 +265,7 @@
                 {{ cycle.asu_id ? cycle.title : cycle.selective_discipline.title
                 }}<sup v-if="cycle.note">{{
                   plan.subject_notes.indexOf(plan.subject_notes.find((item) => item.id == cycle.id)) + 1
-                }}</sup>
+                  }}</sup>
               </td>
               <td class="border-table">{{ cycle.exams }}</td>
               <!--Екзамени-->
@@ -322,7 +322,7 @@
                   {{ subject.asu_id ? subject.title : subject.selective_discipline.title
                   }}<sup v-if="subject.note">{{
                     plan.subject_notes.indexOf(plan.subject_notes.find((item) => item.id == subject.id)) + 1
-                  }}</sup>
+                    }}</sup>
                 </td>
                 <td class="border-table">{{ subject.exams }}</td>
                 <!--Екзамени-->
@@ -512,25 +512,25 @@
               <td colspan="5">ПОГОДЖЕНО:</td>
             </tr>
 
-            <tr :key="'signature_1_' + signature.id">
+            <tr>
               <td colspan="7" rowspan="3" class="text-left signature-position">
                 {{ signature.position }} {{ signature.manual_position }}
               </td>
               <td rowspan="3"></td>
               <td rowspan="3"></td>
             </tr>
-            <tr :key="'signature_2_' + signature.id">
+            <tr>
               <td class="signature">________________</td>
               <td></td>
               <td colspan="7" class="signature-position name">{{ signature.name }} {{ signature.surname }}</td>
             </tr>
 
-            <tr :key="'signature_3_' + signature.id">
+            <tr>
               <td class="text-center">(підпис)</td>
               <td></td>
               <td></td>
             </tr>
-            <tr :key="'signature_tr_' + signature.id"></tr>
+            <tr></tr>
           </template>
         </tbody>
       </table>
