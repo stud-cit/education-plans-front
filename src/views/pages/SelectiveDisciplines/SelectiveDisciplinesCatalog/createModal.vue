@@ -232,10 +232,8 @@ export default {
   watch: {
     knowledgeSpecialty(v) {
       if (v !== null && v.id === 1) {
-        console.log('Select 1', v);
         this.selectListKnowledgeSpecialties = null;
       } else if (v !== null && v.id === 3) {
-        console.log('Select 3', v);
         this.selectListKnowledgeSpecialties = this.radioBtnListKnowledgeSpecialties[1];
       } else {
         this.selectListKnowledgeSpecialties = this.radioBtnListKnowledgeSpecialties[1];

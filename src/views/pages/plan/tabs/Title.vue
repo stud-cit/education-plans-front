@@ -154,7 +154,6 @@ export default {
         focusDeny: true,
       }).then((result) => {
         if (result.isConfirmed) {
-          console.log('id: ', this.schedule.id);
           this.getSchedule(this.schedule.id);
         }
       })
