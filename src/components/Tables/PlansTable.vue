@@ -48,6 +48,9 @@
         <v-col cols="12" lg="6" v-if="exceptRoles([ROLES.ID.guest])">
           <v-checkbox v-model="archived" label="Включити арховані документи"></v-checkbox>
         </v-col>
+        <v-col cols="12" md="6" v-if="exceptRoles([ROLES.ID.guest])">
+          <v-text-field v-model="filter_year" label="Рік" single-line hide-details></v-text-field>
+        </v-col>
       </v-row>
     </template>
 
@@ -176,6 +179,7 @@ export default {
       planOrTemplate: null,
       planTypes: [],
       archived: false,
+      filter_year: null,
     };
   },
   components: {
@@ -275,6 +279,7 @@ export default {
       this.planId = this.options.planId = null;
       this.archived = this.options.archived = null;
       this.planOrTemplate = this.options.planOrTemplate = null;
+      this.filter_year = this.options.filter_year = null
       this.resetPage();
     },
     apiGetDivisions() {
@@ -298,6 +303,7 @@ export default {
       values.planId = this.planId;
       values.archived = +this.archived;
       values.planOrTemplate = this.planOrTemplate;
+      values.filter_year = +this.filter_year
 
       if (this.exceptRoles([ROLES.ID.department])) {
         values.faculty = this.faculty;

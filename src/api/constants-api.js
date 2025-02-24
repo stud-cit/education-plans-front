@@ -93,6 +93,7 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     archived: 'archived',
     planOrTemplate: 'planOrTemplate',
     divisionWithStatus: 'divisionWithStatus',
+    filter_year: 'year',
   },
   GET_LOGS: {
     itemsPerPage: 'items_per_page',
