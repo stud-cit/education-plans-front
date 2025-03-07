@@ -33,6 +33,7 @@
                 дисципліна</th>
               <th class="text-center" rowspan="2">Результати навчання за навчальною дисципліною</th>
               <th class="text-center" rowspan="2">Види навчальних занять та методи викладання, що пропонуються</th>
+              <th class="text-center" rowspan="2">Кількість здобувачів, які можуть записатися на дисципліну</th>
               <th class="text-center" rowspan="2">Вхідні вимоги до здобувачів, які хочуть обрати дисципліну / вимоги до
                 матеріально-технічного забезпечення</th>
               <th class="text-center" rowspan="2">Обмеження щодо семестру вивчення</th>
@@ -61,6 +62,7 @@
                 <td>{{ subject.general_competence }}</td>
                 <td>{{ subject.learning_outcomes }}</td>
                 <td>{{ subject.types_educational_activities }}</td>
+                <td class="text-center">{{ subject.number_acquirers }}</td>
                 <td>{{ subject.entry_requirements_applicants }}</td>
                 <td>{{ subject.limitation }}</td>
                 <td><a :href="subject.url" target="_blank"> {{ subject.url }}</a></td>
