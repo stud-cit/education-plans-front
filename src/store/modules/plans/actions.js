@@ -30,6 +30,12 @@ export const copy = (context, id) => {
   });
 };
 
+export const project = (context, id) => {
+  api.post(API.PROJECT_PLAN + id, null, { showLoader: true }).then((response) => {
+    document.location.href = encodeURI('plan/edit/' + response.data.id + '/' + response.data.title);
+  });
+};
+
 export const generateShortedByYear = (context, data) => {
   vuexStore.dispatch('loader/show');
   api

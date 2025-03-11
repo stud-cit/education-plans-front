@@ -6,6 +6,7 @@ export const API = {
   AUTH: version + '/auth',
   LOGOUT: version + '/logout',
   COPY_PLAN: version + '/plans/copy/',
+  PROJECT_PLAN: version + '/plans/project/',
   SETTINGS: version + '/settings',
   STUDY_TERMS: version + '/study-terms',
   FORM_STUDIES: version + '/form-studies',

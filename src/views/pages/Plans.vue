@@ -1,7 +1,7 @@
 <template>
   <v-container>
-    <plans-table :items="items" :meta="meta" @update="getPlansList" @copy="apiCopyPlan" @edit="apiEditPlan"
-      @delete="apiDeletePlan" @restore="apiRestore" />
+    <plans-table :items="items" :meta="meta" @update="getPlansList" @copy="apiCopyPlan" @project="apiProjectPlan"
+      @edit="apiEditPlan" @delete="apiDeletePlan" @restore="apiRestore" />
     <v-tooltip left color="info" v-if="allowedRoles(
       [
         ROLES.ID.admin,
@@ -61,6 +61,19 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           this.$store.dispatch('plans/copy', id)
+        }
+      })
+    },
+    apiProjectPlan(id, title = '') {
+      this.$swal.fire({
+        title: `Ви хочете створити проєкт плану ?`,
+        text: `${title}`,
+        showDenyButton: true,
+        confirmButtonText: 'Так',
+        denyButtonText: `Ні`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$store.dispatch('plans/project', id)
         }
       })
     },

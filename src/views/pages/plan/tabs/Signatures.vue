@@ -69,7 +69,7 @@
       </validation-observer>
     </v-container>
 
-    <div class="text-center mt-4">
+    <div class="text-center mt-4" :class="render">
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn :disabled="readOnly || isShortPlan" icon large v-bind="attrs" v-on="on" @click="addItem()">
@@ -101,8 +101,14 @@ export default {
       plan_id: 'plans/id',
       signatures: 'plans/signatures',
       isShortPlan: 'plans/isShortPlan',
-      readOnly: 'plans/readOnly'
+      readOnly: 'plans/readOnly',
+      isPorject: 'plans/project',
     }),
+    render: function () {
+      return {
+        'd-none': this.isPorject
+      }
+    },
   },
   mounted() {
     this.getPositions();

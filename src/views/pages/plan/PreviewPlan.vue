@@ -43,27 +43,27 @@
               {{ plan.faculty }}
             </td>
           </tr>
-          <tr class="table-text">
+          <tr class="table-text" :class="render">
             <td colspan="25">Затверджено рішенням вченої ради.</td>
           </tr>
-          <tr class="table-text">
+          <tr class="table-text" :class="render">
             <td colspan="25">Протокол від ____._____________._____р.№____</td>
           </tr>
-          <tr class="table-text">
+          <tr class="table-text" :class="render">
             <td colspan="25">Голова ради ________________ Анатолій ВАСИЛЬЄВ</td>
           </tr>
-          <tr class="table-text">
+          <tr class="table-text" :class="render">
             <td colspan="7" style="text-align: right">(підпис)</td>
           </tr>
-          <tr class="table-text">
+          <tr class="table-text" :class="render">
             <td colspan="25">______ ________________________ ________ р.</td>
           </tr>
-          <tr class="table-text">
+          <tr class="table-text" :class="render">
             <td colspan="7" style="text-align: right">М.П.</td>
           </tr>
-          <tr></tr>
+          <tr :class="render"></tr>
           <tr class="table-title">
-            <td colspan="100%" align="center">НАВЧАЛЬНИЙ ПЛАН</td>
+            <td colspan="100%" align="center">{{ title }}</td>
           </tr>
           <tr></tr>
           <tr v-for="(td, index) in professions" :key="'tr_' + index">
@@ -625,6 +625,20 @@ export default {
       ],
       actions: [],
     };
+  },
+  computed: {
+    render: function () {
+      return {
+        'd-none': this.plan.project
+      }
+    },
+    title: function () {
+      if (this.plan.project) {
+        return "ПРОЄКТ НАВЧАЛЬНОГО ПЛАНУ"
+      } else {
+        return "НАВЧАЛЬНИЙ ПЛАН"
+      }
+    }
   },
   mounted() {
     this.apiPreviewPlan();

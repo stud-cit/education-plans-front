@@ -130,6 +130,12 @@
           mdi-content-copy
         </v-icon>
       </btn-tooltip>
+      <btn-tooltip tooltip="Створити проєкт плану">
+        <v-icon v-if="item.actions.project" small class="mr-1" color="primary"
+          @click="$emit('project', item.id, item.title)">
+          mdi-folder-cog-outline
+        </v-icon>
+      </btn-tooltip>
       <btn-tooltip tooltip="Редагувати">
         <v-icon v-if="item.actions.edit" small class="mr-1" color="primary" @click="$emit('edit', item.id, item.title)">
           mdi-pencil-outline
@@ -234,7 +240,7 @@ export default {
         { text: 'Кафедра', value: 'department', sortable: false },
         { text: 'Рік', value: 'year', width: '70px', align: 'center' },
         { text: 'Дата створення', value: 'created_at', width: '150px', align: 'center' },
-        { text: 'Верифікація', value: 'verification', width: '150px', sortable: false },
+        { text: 'Верифіковано', value: 'verification', sortable: false, align: 'center' },
         { text: 'СП', value: 'catalog_speciality', sortable: false, width: '30px' },
         { text: 'ОП', value: 'catalog_education_programs', sortable: false, width: '30px' },
         { text: 'Дії', value: 'actions', width: '120px', sortable: false },

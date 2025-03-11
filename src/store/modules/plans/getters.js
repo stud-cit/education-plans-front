@@ -59,3 +59,7 @@ export const readOnly = (state, _, rootState) => {
 
   return false;
 };
+
+export const project = (state) => {
+  return state.plan.project;
+}

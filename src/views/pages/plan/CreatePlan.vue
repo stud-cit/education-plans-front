@@ -175,7 +175,7 @@
       <v-tab>Загальна інформація</v-tab>
       <v-tab :disabled="$route.name == 'CreatePlan'">Цикли / предмети</v-tab>
       <v-tab :disabled="$route.name == 'CreatePlan'">Графіки</v-tab>
-      <v-tab :disabled="$route.name == 'CreatePlan'">Підписи</v-tab>
+      <v-tab :disabled="signatureDidabled">Підписи</v-tab>
     </v-tabs>
 
     <v-tabs-items v-model="tab">
@@ -208,6 +208,7 @@ import Messages from '@c/base/Messages';
 import AlertDuplicate from '@c/base/AlertDuplicate';
 import { ROLES, PLAN_TYPE } from '@/utils/constants';
 import RolesMixin from '@/mixins/RolesMixin';
+import { plan } from '../../../store/modules/plans/getters';
 
 export default {
   name: 'CreatePlan',
@@ -240,7 +241,7 @@ export default {
       hasDuplicate: false,
       duplicateMessage: '',
       version: 0,
-      data: null
+      data: null,
     };
   },
   mixins: [RolesMixin],
@@ -307,7 +308,10 @@ export default {
       return [2, 3, 4, 5, 6].indexOf(this.authUser.role_id) != -1
     },
     checkVerification() {
+      // console.log(this.plan.verification);
+      // console.log(this.verifications);
       return this.verifications.map((element) => {
+        // console.log(element.status);
         let isStatus = this.plan.verification.find((i) => element.id == i.verification_status_id);
         element.titleHead = 'Не перевірено';
         if (isStatus) {
@@ -321,7 +325,12 @@ export default {
     authUser() {
       return JSON.parse(localStorage.getItem('user'));
     },
-
+    signatureDidabled() {
+      if (this.plan.type_id === PLAN_TYPE.PROJECT) {
+        return true;
+      }
+      return this.$route.name == 'CreatePlan';
+    },
     ...mapGetters({
       plan: 'plans/plan',
       errorsPlan: 'plans/errorsPlan',
@@ -491,9 +500,9 @@ export default {
     apiGetOptions() {
       this.$store.dispatch('plans/getOptions');
     },
-
     apiGetVerifications() {
-      api.get(API.VERIFICATIONS).then(({ data }) => {
+      const type = this.plan.type_id === PLAN_TYPE.PROJECT ? 'project' : 'plan';
+      api.get(API.VERIFICATIONS, { type }).then(({ data }) => {
         this.verifications = data.map((item) => {
           item.status = null;
           return item;
@@ -512,12 +521,11 @@ export default {
           this.programsLoading = false;
         });
     },
-
     start() {
       if (this.$route.name === 'EditPlan') {
         this.apiGetPlanId();
         this.apiGetOptions();
-        this.apiGetVerifications();
+        // this.apiGetVerifications();
       } else {
         this.$store.dispatch('plans/clear');
       }
@@ -527,6 +535,14 @@ export default {
   watch: {
     $route() {
       this.start();
+    },
+    plan: {
+      handler(newPlan) {
+        if (newPlan && newPlan.type_id !== undefined) {
+          this.apiGetVerifications();
+        }
+      },
+      immediate: true, // Run the watcher immediately if `plan` already has a value
     },
   },
 };
