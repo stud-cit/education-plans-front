@@ -77,6 +77,14 @@
         {{ plan.comment }}</v-alert>
     </template>
 
+    <template v-if="plan">
+      <v-alert dense name="warning" type="warning" color="red" v-if="plan.actions.forbidden_to_reject_verification">
+        Документ оприлюднено в сервісі ОСВІТНІ ПРОГРАМИ! Для скасування верифікації потрібно спочатку скасувати документ
+        з публікації. <br>
+        (Термін зняття блокування ~ 2 години)
+      </v-alert>
+    </template>
+
     <ShortedByYearBtns v-if="$route.name === 'EditPlan' && plan" :items="plan.shorted_by_year" :plan-id="plan.id"
       :can="plan.actions.can_generate_short_plan" />
 
@@ -126,15 +134,14 @@
           <v-stepper-step :key="`${index}-step`" :step="index + 1" :complete="item.status"
             :rules="[() => item.status == null || item.status]"
             :editable="allowedRoles([ROLES.ID.admin, ROLES.ID.root])">
-            <span role="button" @click="
-              allowedRoles([ROLES.ID.admin, ROLES.ID.root])
-                ? verification({ verification_status_id: item.id, status: item.status ? false : true })
-                : ''
+            <span role="button" :class="{ disabled: plan.actions.forbidden_to_reject_verification }" @click="allowedRoles([ROLES.ID.admin, ROLES.ID.root])
+              ? verification({ verification_status_id: item.id, status: item.status ? false : true })
+              : ''
               ">{{ item.titleHead }}</span>
             <v-btn icon small v-if="item.comment" @click="openDialog(item.comment)" color="error">
               <v-icon small>mdi-bell-ring</v-icon>
             </v-btn>
-            <small role="button" @click="
+            <small role="button" :class="{ disabled: plan.actions.forbidden_to_reject_verification }" @click="
               allowedRoles([ROLES.ID.admin, ROLES.ID.root])
                 ? verification({ verification_status_id: item.id, status: item.status ? false : true })
                 : ''
@@ -154,7 +161,7 @@
       </v-col>
     </v-row>
     <AlertDuplicate @save="save" @cancel="cancel" v-if="plan && hasDuplicate" :id="plan.id" :hasDuplicate="hasDuplicate"
-      :version="version" />
+      :version="version" :plans="dublicatePlans" />
 
     <v-alert dense outlined type="error" class="mb-2" v-for="(error, errorIndex) in plan.errors"
       :key="'error' + errorIndex">
@@ -208,7 +215,6 @@ import Messages from '@c/base/Messages';
 import AlertDuplicate from '@c/base/AlertDuplicate';
 import { ROLES, PLAN_TYPE } from '@/utils/constants';
 import RolesMixin from '@/mixins/RolesMixin';
-import { plan } from '../../../store/modules/plans/getters';
 
 export default {
   name: 'CreatePlan',
@@ -239,6 +245,7 @@ export default {
         comment: '',
       },
       hasDuplicate: false,
+      dublicatePlans: [],
       duplicateMessage: '',
       version: 0,
       data: null,
@@ -291,6 +298,10 @@ export default {
       return [2, 3, 4, 5, 6].indexOf(this.authUser.role_id) != -1;
     },
     cancelVerificationBtn() {
+      if (this.plan.actions.forbidden_to_reject_verification) {
+        return false;
+      }
+
       if (this.plan.need_verification === false) {
         return false;
       }
@@ -449,6 +460,7 @@ export default {
         this.apiGetSearchDuplicate().then((res) => {
           this.hasDuplicate = res.data.hasDuplicate;
           this.version = res.data.version;
+          this.dublicatePlans = res.data.plans;
         }).then(() => {
           if (this.hasDuplicate === false) {
             this.sendRequest(data)
@@ -551,5 +563,10 @@ export default {
 <style scoped>
 .gap-1 {
   gap: 1rem;
+}
+
+.disabled {
+  pointer-events: none;
+  cursor: not-allowed;
 }
 </style>
