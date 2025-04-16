@@ -2,7 +2,7 @@
   <v-dialog v-model="dialog" v-if="item" hide-overlay persistent width="800" transition="dialog-bottom-transition">
     <v-card>
       <v-toolbar dark color="primary">
-        <v-toolbar-title>Копиювання каталога</v-toolbar-title>
+        <v-toolbar-title>Копіювання каталога</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon dark @click="close">
           <v-icon>mdi-close</v-icon>
@@ -27,8 +27,8 @@
               </validation-provider>
               <validation-provider v-slot="{ errors }" name="Рівень освіти" rules="required">
                 <v-autocomplete v-model="item.education_level_id" :items="object.education_levels"
-                  :error-messages="errors" item-text="title" item-value="id" persistent-hint hint="(перший/другий/третій)"
-                  disabled label="Рівень освіти"></v-autocomplete>
+                  :error-messages="errors" item-text="title" item-value="id" persistent-hint
+                  hint="(перший/другий/третій)" disabled label="Рівень освіти"></v-autocomplete>
               </validation-provider>
               <validation-provider v-slot="{ errors }" name="Кафедра, що пропонує дисципліну" rules="required">
                 <v-autocomplete v-model="item.department_id" :items="departments" :error-messages="errors"
@@ -116,7 +116,8 @@ export default {
             catalog_education_level_id: this.item.education_level_id,
             faculty_id: this.item.faculty_id,
             department_id: this.item.department_id,
-            education_program_id: this.education_program
+            education_program_id: this.education_program,
+            speciality_id: this.object.education_programs.find(p => p.id == this.education_program)?.speciality_id,
           });
         }
       });
