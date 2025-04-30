@@ -593,21 +593,21 @@ export default {
         [
           { title: 'Галузь знань', colspan: 6 },
           { key: 'field_knowledge', acolspan: 6 },
-          { title: 'Кваліфікація', colspan: 6 },
+          { title: 'Кваліфікація', colspan: 8 },
           { key: 'qualification', acolspan: 6 },
         ],
         [],
         [
           { title: 'Спеціальність', colspan: 6 },
           { key: 'speciality', acolspan: 6 },
-          { title: 'Термін навчання', colspan: 6 },
+          { title: 'Термін навчання', colspan: 8 },
           { key: 'study_term.title', acolspan: 6 },
         ],
         [],
         [
           { title: 'Спеціалізація', colspan: 6 },
           { key: 'specialization', acolspan: 6 },
-          { title: 'Форма навчання', colspan: 6 },
+          { key: 'title_form_education', colspan: 8 },
           { key: 'form_study.title', acolspan: 6 },
         ],
         [],
@@ -639,6 +639,7 @@ export default {
         return "НАВЧАЛЬНИЙ ПЛАН"
       }
     }
+
   },
   mounted() {
     this.apiPreviewPlan();
@@ -685,6 +686,7 @@ export default {
       if (id) {
         api.show(API.PLANS, id, { showLoader: true }).then((response) => {
           if (response.status === 200) {
+            console.log(response.data.data);
             this.plan = response.data.data;
             (this.actions = response.data.actions), this.getFullColspan();
             this.generateTable(this.plan);
