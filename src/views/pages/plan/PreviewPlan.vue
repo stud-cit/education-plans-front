@@ -84,7 +84,7 @@
                   {{ parseKey(item.key, plan) }}
                 </template>
                 <template v-else>
-                  <div style="border-bottom: 1px solid black; height: 10pt"></div>
+                  <div v-if="!item.remove_underline" style="border-bottom: 1px solid black; height: 10pt"></div>
                 </template>
               </template>
             </td>
@@ -265,7 +265,7 @@
                 {{ cycle.asu_id ? cycle.title : cycle.selective_discipline.title
                 }}<sup v-if="cycle.note">{{
                   plan.subject_notes.indexOf(plan.subject_notes.find((item) => item.id == cycle.id)) + 1
-                  }}</sup>
+                }}</sup>
               </td>
               <td class="border-table">{{ cycle.exams }}</td>
               <!--Екзамени-->
@@ -322,7 +322,7 @@
                   {{ subject.asu_id ? subject.title : subject.selective_discipline.title
                   }}<sup v-if="subject.note">{{
                     plan.subject_notes.indexOf(plan.subject_notes.find((item) => item.id == subject.id)) + 1
-                    }}</sup>
+                  }}</sup>
                 </td>
                 <td class="border-table">{{ subject.exams }}</td>
                 <!--Екзамени-->
@@ -589,11 +589,11 @@ export default {
       fullColspanPlan: 22,
       FORM_ORGANIZATIONS: FORM_ORGANIZATIONS,
       FORM_ORGANIZATIONS_TABLE: FORM_ORGANIZATIONS_TABLE,
-      professions: [
+      professions1: [
         [
           { title: 'Галузь знань', colspan: 6 },
           { key: 'field_knowledge', acolspan: 6 },
-          { title: 'Кваліфікація', colspan: 8 },
+          { key: 'qualification_title', colspan: 8 },
           { key: 'qualification', acolspan: 6 },
         ],
         [],
@@ -638,8 +638,25 @@ export default {
       } else {
         return "НАВЧАЛЬНИЙ ПЛАН"
       }
-    }
+    },
+    professions: function () {
+      if (this.plan.year >= 2025) {
+        const firstPart = this.professions1.slice(0, 1);
+        const secondPart = this.professions1.slice(1, this.professions1.length);
 
+        return [
+          ...firstPart,
+          [
+            { title: '', colspan: 6 },
+            { key: '', acolspan: 6, remove_underline: true },
+            { title: 'Професійна кваліфікація', colspan: 8 },
+            { key: 'profession_qualification', acolspan: 6 },
+          ],
+          ...secondPart,
+        ];
+      }
+      return this.professions1;
+    },
   },
   mounted() {
     this.apiPreviewPlan();
@@ -686,8 +703,10 @@ export default {
       if (id) {
         api.show(API.PLANS, id, { showLoader: true }).then((response) => {
           if (response.status === 200) {
-            console.log(response.data.data);
+            console.log(response.data.data.qualification_label);
+            console.log(response.data.data.education_level);
             this.plan = response.data.data;
+
             (this.actions = response.data.actions), this.getFullColspan();
             this.generateTable(this.plan);
             this.updateCycles(this.getCyclesRow(this.plan.cycles));
