@@ -30,8 +30,12 @@
                 <v-autocomplete v-else v-model="subjectForm.asu_id" :items="subjects" label="Дисципліна"
                   item-text="title" item-value="id" value="number"></v-autocomplete>
               </v-col>
-              <v-col cols="12" class="py-0">
+              <!-- <v-col cols="12" class="py-0">
                 <v-text-field type="text" label="Виноска" v-model.number="subjectForm.note"></v-text-field>
+              </v-col> -->
+              <v-col cols="12" class="py-0">
+                <v-combobox v-model="subjectForm.note" :items="noteHelpers" label="Виноска"
+                  item-text="title"></v-combobox>
               </v-col>
               <v-col cols="6" class="py-0">
                 <v-text-field type="number" label="Кредитів" min="0" step="0.01" v-model.number="subjectForm.credits"
@@ -122,7 +126,7 @@
                       </v-text-field>
                     </template>
                     <span>Години * тижнів = {{ (+subject.hour * +plan.hours_weeks_semesters[index].week).toFixed(2)
-                      }}</span>
+                    }}</span>
                   </v-tooltip>
                 </td>
               </tr>
@@ -161,6 +165,34 @@
                   </v-text-field>
                 </td>
               </tr>
+            </table>
+
+            <v-alert dense outlined type="error" class="mb-2" v-if="true">
+              Неправильно розподілено навчальне навантаження за дисципліною.
+            </v-alert>
+
+            <table class="table-modules mt-3">
+              <caption>
+                <b>Калькулятор розподілу самостійної роботи за дисципліною</b>
+              </caption>
+              <tbody>
+                <tr>
+                  <td>Підготовка до лекцій</td>
+                  <td>Підготовка до практичних</td>
+                  <td>Підготовка до лабораторних</td>
+                  <td>Підсумкова форма контролю передбачена навчальним планом</td>
+                  <td>Позааудиторні індивідуальні завдання передбачені планом</td>
+                  <td>Позааудиторна самостійна робота, що має бути додатково розподілена у силабусі</td>
+                </tr>
+                <tr>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                </tr>
+              </tbody>
             </table>
           </v-container>
         </v-card-text>
@@ -279,6 +311,7 @@ export default {
         faculty_id: null,
         department_id: null,
         note: '',
+        noteHelpers: [],
       },
       moduleNumber: null,
       activMod: null,
@@ -468,6 +501,7 @@ export default {
       this.apiGetCycles();
       this.apiGetSelectiveDiscipline();
       this.apiGetFaculty();
+      this.apiGetNoteHelpers();
     } else {
       this.$store.dispatch('plans/clear');
     }
@@ -835,6 +869,12 @@ export default {
       api.get(API.FACULTIES).then(({ data }) => {
         this.faculties = data.data;
         this.facultiesLoading = false;
+      });
+    },
+    apiGetNoteHelpers() {
+      api.get(API.SUBJECT_HELPERS + '/plan').then(({ data }) => {
+        console.log('helopers', data.data);
+        this.noteHelpers = data.data;
       });
     },
   },
