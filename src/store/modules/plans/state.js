@@ -10,6 +10,7 @@ const planDefault = {
   specialization_id: null,
   education_program_id: null,
   qualification_id: null,
+  profession_qualification_id: null,
   field_knowledge_id: null,
   form_organization_id: null,
   credits: null,

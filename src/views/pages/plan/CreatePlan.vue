@@ -319,10 +319,7 @@ export default {
       return [2, 3, 4, 5, 6].indexOf(this.authUser.role_id) != -1
     },
     checkVerification() {
-      // console.log(this.plan.verification);
-      // console.log(this.verifications);
       return this.verifications.map((element) => {
-        // console.log(element.status);
         let isStatus = this.plan.verification.find((i) => element.id == i.verification_status_id);
         element.titleHead = 'Не перевірено';
         if (isStatus) {

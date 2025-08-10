@@ -52,10 +52,19 @@
       </v-row>
       <v-row>
         <v-col cols="12" class="pb-0">
-          <validation-provider v-slot="{ errors }" name="Кваліфікація" rules="">
+          <validation-provider v-slot="{ errors }" name="Освітня кваліфікація" rules="">
             <v-autocomplete v-model="plan.qualification_id" :items="qualifications" :error-messages="errors"
               :disabled="readOnly || isShortPlan" item-text="title" item-value="id"
-              label="Кваліфікація"></v-autocomplete>
+              label="Освітня кваліфікація"></v-autocomplete>
+          </validation-provider>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" class="pb-0">
+          <validation-provider v-slot="{ errors }" name="Професійна кваліфікація" rules="">
+            <v-autocomplete v-model="plan.profession_qualification_id" :items="profession_qualifications"
+              :error-messages="errors" :disabled="readOnly || isShortPlan" item-text="title" item-value="id"
+              label="Професійна кваліфікація"></v-autocomplete>
           </validation-provider>
         </v-col>
       </v-row>
@@ -232,6 +241,7 @@ export default {
       educationalPrograms: [],
       educationalProgramsLoading: false,
       qualifications: [],
+      profession_qualifications: [],
       fieldsKnowledge: [],
       formsOrganizationStudy: [],
       objHoursWeeks: [],
@@ -302,6 +312,7 @@ export default {
         this.formsStudy = data.forms_study ?? [];
         this.termsStudy = data.terms_study ?? [];
         this.qualifications = data.qualifications ?? [];
+        this.profession_qualifications = data.profession_qualifications ?? [];
         this.fieldsKnowledge = data.fields_knowledge ?? [];
         this.formsOrganizationStudy = data.forms_organizationStudy ?? [];
       });
@@ -324,10 +335,7 @@ export default {
     },
     apiGetSpecialities() {
       this.specialitiesLoading = true;
-      // api.show(API.SPECIALITIES, id).then(({data}) => {
-      //   this.specialities = data.data
-      //   this.specialitiesLoading = false;
-      // })
+
       api.get(API.SPECIALITIES).then(({ data }) => {
         this.specialities = data.data;
         this.specialitiesLoading = false;
@@ -389,7 +397,6 @@ export default {
             const data = {
               ...this.plan,
               study_term_id: this.plan.study_term.id,
-              //   year: this.year,
               number_semesters: this.numberSemesters,
               hours_weeks_semesters: JSON.stringify(this.objHoursWeeks),
             };
