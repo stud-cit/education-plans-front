@@ -225,7 +225,7 @@ export default {
       }
     },
     getRules() {
-      api.get(`${API.NOTES}/rules`).then((response) => {
+      api.get(`${API.NOTES}/rules/${this.plan.year}`).then((response) => {
         this.noteLoaded = true;
         const { rule, notes } = response.data.data;
         this.rule = rule + ',Т*'; // TODO: MAY BY LOOP OVER JSON GET UNIQUE LETTERS

@@ -26,26 +26,17 @@
       <span>Додати</span>
     </v-tooltip>
 
-    <CreateNoteModal
-      :dialog="showCreate"
-      @close="
-        () => {
-          this.showCreate = false;
-        }
-      "
-      @submit="create"
-    />
+    <CreateNoteModal :dialog="showCreate" @close="
+      () => {
+        this.showCreate = false;
+      }
+    " @submit="create" />
 
-    <EditNoteModal
-      :dialog="showEdit"
-      :item="item"
-      @close="
-        () => {
-          this.showEdit = false;
-        }
-      "
-      @submit="edit"
-    />
+    <EditNoteModal :dialog="showEdit" :item="item" @close="
+      () => {
+        this.showEdit = false;
+      }
+    " @submit="edit" />
   </v-container>
 </template>
 
@@ -64,6 +55,7 @@ export default {
         { text: '№', value: 'index', sortable: false, width: '20px' },
         { text: 'Абревіатура', value: 'abbreviation', sortable: false, width: '110px' },
         { text: 'Опис', value: 'explanation', sortable: false },
+        { text: 'Дата', value: 'date', sortable: false },
         { text: 'Дії', value: 'actions', width: '80px', sortable: false },
       ],
       items: [],
@@ -86,17 +78,17 @@ export default {
       return api.get(API.NOTES, null, { showLoader: true });
     },
     openEdit(item) {
-      const { id, abbreviation, explanation } = item;
+      const { id, abbreviation, explanation, date } = item;
       this.showEdit = true;
-      this.item = { id, abbreviation, explanation };
+      this.item = { id, abbreviation, explanation, date };
     },
     edit(data) {
-      let { id, abbreviation, explanation } = data;
+      let { id, abbreviation, explanation, date } = data;
 
       if (abbreviation === '' && explanation === '') return;
 
       api
-        .put(`${API.NOTES}/${id}`, { abbreviation, explanation })
+        .put(`${API.NOTES}/${id}`, { abbreviation, explanation, date })
         .then((response) => {
           this.showEdit = false;
           const { message } = response.data;
