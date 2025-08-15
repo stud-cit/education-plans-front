@@ -57,3 +57,17 @@ export const PLAN_TYPE = {
   SHORT_PLAN: 3,
   PROJECT: 4,
 };
+
+export const INDIVIDUAL_TASK_TYPE = {
+  CONTROLWORK: 1,
+  COURSEWORK: 2,
+  WITHOUT_TASK: 3,
+};
+
+export const FORM_CONTROL = {
+  EXAM: 1,
+  DIFFERENTIATED_CREDIT: 2,
+  CREDIT: 3,
+  DEFENSE: 8,
+  NO_CERTIFICATION: 10,
+}

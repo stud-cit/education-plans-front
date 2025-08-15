@@ -30,9 +30,6 @@
                 <v-autocomplete v-else v-model="subjectForm.asu_id" :items="subjects" label="Дисципліна"
                   item-text="title" item-value="id" value="number"></v-autocomplete>
               </v-col>
-              <!-- <v-col cols="12" class="py-0">
-                <v-text-field type="text" label="Виноска" v-model.number="subjectForm.note"></v-text-field>
-              </v-col> -->
               <v-col cols="12" class="py-0">
                 <v-combobox v-model="subjectForm.note" :items="noteHelpers" label="Виноска"
                   item-text="title"></v-combobox>
@@ -167,7 +164,7 @@
               </tr>
             </table>
 
-            <v-alert dense outlined type="error" class="mb-2" v-if="true">
+            <v-alert dense outlined type="error" class="mb-2" v-if="independentWorkHasError">
               Неправильно розподілено навчальне навантаження за дисципліною.
             </v-alert>
 
@@ -185,12 +182,12 @@
                   <td>Позааудиторна самостійна робота, що має бути додатково розподілена у силабусі</td>
                 </tr>
                 <tr>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
+                  <td>{{ gettingReadyLectures }}</td>
+                  <td>{{ gettingReadyPractices }}</td>
+                  <td>{{ gettingReadyLaboratories }}</td>
+                  <td>{{ finalFormAssessment }}</td>
+                  <td>{{ extraIndividualTasks }}</td>
+                  <td>{{ independentWork }}</td>
                 </tr>
               </tbody>
             </table>
@@ -257,7 +254,7 @@ import api from '@/api';
 import { API } from '@/api/constants-api';
 import { eventBus } from '@/main';
 import { mapState, mapGetters } from 'vuex';
-import { ROLES } from '@/utils/constants';
+import { ROLES, INDIVIDUAL_TASK_TYPE, FORM_CONTROL } from '@/utils/constants';
 import RolesMixin from '@/mixins/RolesMixin';
 export default {
   name: 'Cycles',
@@ -317,6 +314,7 @@ export default {
       activMod: null,
       individualTasks: [],
       formControls: [],
+      independentWorkHasError: false,
     };
   },
   watch: {
@@ -485,6 +483,52 @@ export default {
         }
       });
       return result.join(', ');
+    },
+    gettingReadyLectures() {
+      return this.subjectForm.hours * 0.25;
+    },
+    gettingReadyPractices() {
+      return this.subjectForm.practices * 0.25;
+    },
+    gettingReadyLaboratories() {
+      return this.subjectForm.laboratories * 0.5;
+    },
+    finalFormAssessment() {
+      const formControlElemnt = this.subjectForm.hours_modules.findLast((element) =>
+        element.form_control_id == FORM_CONTROL.EXAM || element.form_control_id == FORM_CONTROL.DIFFERENTIATED_CREDIT);
+      const formControlId = formControlElemnt?.form_control_id || 0;
+      if (formControlId === 1) {
+        return 30;
+      } else if (formControlId === 2) {
+        return 10;
+      } else {
+        return 0;
+      }
+    },
+    extraIndividualTasks() {
+      const coursework = this.subjectForm.hours_modules.filter(element => element.individual_task_id === INDIVIDUAL_TASK_TYPE.COURSEWORK);
+      const controlwork = this.subjectForm.hours_modules.filter(element => element.individual_task_id === INDIVIDUAL_TASK_TYPE.CONTROLWORK);
+
+      if (coursework.length > 0) {
+        return coursework.length * 30;
+      } else if (controlwork.length > 0) {
+        return controlwork.length * 10;
+      } else {
+        return 0;
+      }
+    },
+    independentWork() {
+      const allHours = this.subjectForm.credits * 30;
+      const classroomWork = this.subjectForm.hours + this.subjectForm.practices + this.subjectForm.laboratories;
+      const allIndependetWork = this.gettingReadyLectures + this.gettingReadyPractices + this.gettingReadyLaboratories - this.finalFormAssessment - this.extraIndividualTasks;
+      const result = allHours - classroomWork - allIndependetWork;
+      const rule = allHours * 0.1;
+
+      if (result < rule) {
+        return this.independentWorkHasError = true;
+      }
+
+      return result;
     },
     ...mapGetters({
       errorsPlan: 'plans/errorsPlan',
@@ -873,7 +917,6 @@ export default {
     },
     apiGetNoteHelpers() {
       api.get(API.SUBJECT_HELPERS + '/plan').then(({ data }) => {
-        console.log('helopers', data.data);
         this.noteHelpers = data.data;
       });
     },
