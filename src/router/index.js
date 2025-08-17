@@ -448,8 +448,8 @@ const routes = [
         meta: {
           requiresAuth: true,
           accessIsAllowed: [ROLES.ID.admin, ROLES.ID.root],
-          header: 'Підказки для каталогів',
-          breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Підказки для каталогів' }],
+          header: 'Підказки',
+          breadCrumb: [...BREADCRUMBS.SETTINGS, { text: 'Підказки' }],
         },
       },
       {
@@ -536,8 +536,8 @@ router.beforeEach(async (to, from, next) => {
     } else {
       window.location.replace(
         process.env.VUE_APP_CABINET_APP_URL +
-          process.env.VUE_APP_CABINET_APP_SERVICE +
-          process.env.VUE_APP_CABINET_APP_TOKEN,
+        process.env.VUE_APP_CABINET_APP_SERVICE +
+        process.env.VUE_APP_CABINET_APP_TOKEN,
       );
     }
   }
