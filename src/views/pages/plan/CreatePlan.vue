@@ -80,7 +80,7 @@
     <template v-if="plan">
       <v-alert dense name="warning" type="warning" color="red" v-if="plan.actions.forbidden_to_reject_verification">
         Документ оприлюднено в сервісі ОСВІТНІ ПРОГРАМИ! Для скасування верифікації потрібно спочатку скасувати документ
-        з публікації. <br>
+        з публікації. ({{ plan.actions.forbidden_to_reject_verification.program_ids }}) <br>
         (Термін зняття блокування ~ 2 години)
       </v-alert>
     </template>
@@ -225,6 +225,7 @@ import Messages from '@c/base/Messages';
 import AlertDuplicate from '@c/base/AlertDuplicate';
 import { ROLES, PLAN_TYPE } from '@/utils/constants';
 import RolesMixin from '@/mixins/RolesMixin';
+import { plan } from '../../../store/modules/plans/getters';
 
 export default {
   name: 'CreatePlan',
