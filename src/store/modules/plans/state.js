@@ -19,6 +19,7 @@ const planDefault = {
   submitLoader: false,
   signatures: [],
   errors: [],
+  subject_errors: [],
   status_op: 0,
   status: '',
   comment: '',

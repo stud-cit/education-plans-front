@@ -5,6 +5,7 @@
       hasErrors || subjectIndexError == subject.id || !subject.verification ? 'error' : '',
       'ma-0',
       'mb-1',
+      getSubjectError(subject.id) == subject.id ? 'error' : ''
     ]">
       <v-col cols="5" class="pa-0 text-left">
         <v-icon v-if="subject.subjects.length > 0">mdi-chevron-down</v-icon>
@@ -28,7 +29,7 @@
         {{ subject.credits }}
       </v-col>
       <v-col class="pa-0">
-        {{ subject.exams ? subject.exams.map((item) => item.semester)[0] : '' }}
+        {{subject.exams ? subject.exams.map((item) => item.semester)[0] : ''}}
       </v-col>
       <v-col class="pa-0 text-right">
         <v-tooltip bottom>
@@ -91,7 +92,8 @@ export default {
   computed: {
     ...mapGetters({
       isShortPlan: 'plans/isShortPlan',
-      readOnly: 'plans/readOnly'
+      readOnly: 'plans/readOnly',
+      subjectCalculatorError: 'plans/subjectCalculatorError',
     }),
     hasErrors() {
       if (this.subject.subjects.length > 0) {
@@ -110,6 +112,9 @@ export default {
     this.checkCredit();
   },
   methods: {
+    getSubjectError(id) {
+      return this.subjectCalculatorError(id);
+    },
     sumHour(array, field) {
       return array.map((item) => item[field]).reduce((prev, curr) => +prev + +curr, 0);
     },

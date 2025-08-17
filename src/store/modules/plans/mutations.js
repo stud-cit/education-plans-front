@@ -98,4 +98,8 @@ export const SET_SCHEDULE = (state, payload) => {
       return item;
     });
   });
-}
+};
+
+export const REMOVE_INDEMENDENT_WORK_ERROR = (state, payload) => {
+  state.plan.subject_errors = state.plan.subject_errors.filter((error) => error.subject_id !== payload);
+};

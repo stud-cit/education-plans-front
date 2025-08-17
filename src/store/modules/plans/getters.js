@@ -63,3 +63,8 @@ export const readOnly = (state, _, rootState) => {
 export const project = (state) => {
   return state.plan.project;
 }
+
+export const subjectCalculatorError = (state) => (id) => {
+  const data = state.plan.subject_errors.find((error) => error.subject_id === id);
+  return data?.subject_id || false;
+}

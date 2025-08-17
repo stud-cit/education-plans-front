@@ -496,18 +496,24 @@ export default {
     finalFormAssessment() {
       const formControlElemnt = this.subjectForm.hours_modules.findLast((element) =>
         element.form_control_id == FORM_CONTROL.EXAM || element.form_control_id == FORM_CONTROL.DIFFERENTIATED_CREDIT);
+
       const formControlId = formControlElemnt?.form_control_id || 0;
-      if (formControlId === 1) {
+
+      if (formControlId === FORM_CONTROL.EXAM) {
         return 30;
-      } else if (formControlId === 2) {
+      } else if (formControlId === FORM_CONTROL.DIFFERENTIATED_CREDIT) {
         return 10;
       } else {
         return 0;
       }
     },
     extraIndividualTasks() {
-      const coursework = this.subjectForm.hours_modules.filter(element => element.individual_task_id === INDIVIDUAL_TASK_TYPE.COURSEWORK);
-      const controlwork = this.subjectForm.hours_modules.filter(element => element.individual_task_id === INDIVIDUAL_TASK_TYPE.CONTROLWORK);
+      const coursework = this.subjectForm.hours_modules.filter(element =>
+        element.individual_task_id === INDIVIDUAL_TASK_TYPE.COURSEWORK
+      );
+      const controlwork = this.subjectForm.hours_modules.filter(element =>
+        element.individual_task_id === INDIVIDUAL_TASK_TYPE.CONTROLWORK
+      );
 
       if (coursework.length > 0) {
         return coursework.length * 30;
@@ -519,13 +525,25 @@ export default {
     },
     independentWork() {
       const allHours = this.subjectForm.credits * 30;
+
       const classroomWork = this.subjectForm.hours + this.subjectForm.practices + this.subjectForm.laboratories;
-      const allIndependetWork = this.gettingReadyLectures + this.gettingReadyPractices + this.gettingReadyLaboratories - this.finalFormAssessment - this.extraIndividualTasks;
+
+      const allIndependetWork = this.gettingReadyLectures +
+        this.gettingReadyPractices +
+        this.gettingReadyLaboratories +
+        this.finalFormAssessment +
+        this.extraIndividualTasks;
+
       const result = allHours - classroomWork - allIndependetWork;
+
       const rule = allHours * 0.1;
 
       if (result < rule) {
-        return this.independentWorkHasError = true;
+        this.independentWorkHasError = true;
+      } else {
+        this.independentWorkHasError = false;
+
+        this.$store.dispatch('plans/removeIndependentWorkError', this.subjectForm.id);
       }
 
       return result;

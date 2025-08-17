@@ -167,6 +167,16 @@
       :key="'error' + errorIndex">
       {{ error }}
     </v-alert>
+    <template v-if="plan.subject_errors && plan.subject_errors.length > 0">
+      <v-alert dense outlined type="error" class="mb-2">
+        <u>Неправильно розподілено навчальне навантаження за дисципліно:</u>
+        <ul>
+          <li v-for="item in plan.subject_errors" :key="item.subject_id">
+            {{ item.title }}
+          </li>
+        </ul>
+      </v-alert>
+    </template>
 
     <template v-if="errorsPlan && errorsPlan.length > 0">
       <v-alert dense outlined type="error" class="mb-2">
@@ -534,7 +544,6 @@ export default {
       if (this.$route.name === 'EditPlan') {
         this.apiGetPlanId();
         this.apiGetOptions();
-        // this.apiGetVerifications();
       } else {
         this.$store.dispatch('plans/clear');
       }

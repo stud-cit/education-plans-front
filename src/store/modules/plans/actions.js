@@ -193,4 +193,8 @@ export const getSchedule = async (context, id) => {
     throw error;
   }
 
+};
+
+export const removeIndependentWorkError = (context, payload) => {
+  context.commit('REMOVE_INDEMENDENT_WORK_ERROR', payload);
 }
