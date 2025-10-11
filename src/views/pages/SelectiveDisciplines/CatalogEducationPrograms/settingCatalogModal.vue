@@ -1,32 +1,14 @@
 <template>
-  <v-dialog
-    v-model="dialog"
-    fullscreen
-    hide-overlay
-    persistent
-    transition="dialog-bottom-transition"
-  >
+  <v-dialog v-model="dialog" fullscreen hide-overlay persistent transition="dialog-bottom-transition">
     <v-card>
-      <v-toolbar
-        dark
-        color="primary"
-      >
-        <v-toolbar-title>Налаштування: <span v-if="catalog">{{catalog.title}}</span></v-toolbar-title>
+      <v-toolbar dark color="primary">
+        <v-toolbar-title>Налаштування: <span v-if="catalog">{{ catalog.title }}</span></v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn
-          icon
-          dark
-          @click="close"
-        >
+        <v-btn icon dark @click="close">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
-      <v-tabs
-        fixed-tabs
-        background-color="primary"
-        dark
-        v-model="tab"
-      >
+      <v-tabs fixed-tabs background-color="primary" dark v-model="tab">
         <v-tab>
           Обмеження доступу
         </v-tab>
@@ -37,36 +19,15 @@
 
       <v-tabs-items v-model="tab">
         <v-tab-item>
-          <v-card max-width="1024" class="mx-auto py-10" elevation="0" >
-            <validation-observer
-              ref="create"
-              v-slot="{ invalid }"
-            >
+          <v-card max-width="1024" class="mx-auto py-10" elevation="0">
+            <validation-observer ref="create" v-slot="{ invalid }">
               <form @submit.prevent="saveOwners" @keyup.enter="saveOwners">
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="Кафедрам, яким буде наданий доступ"
-                >
-                  <v-autocomplete
-                    v-model="department"
-                    :items="departments"
-                    :error-messages="errors"
-                    item-text="name"
-                    item-value="id"
-                    return-object
-                    class="mt-3"
-                    chips
-                    deletable-chips
-                    multiple
-                    :loading="departmentsLoading"
-                    label="Кафедрам, яким буде наданий доступ"
-                  ></v-autocomplete>
+                <validation-provider v-slot="{ errors }" name="Кафедрам, яким буде наданий доступ">
+                  <v-autocomplete v-model="department" :items="departments" :error-messages="errors" item-text="name"
+                    item-value="id" return-object class="mt-3" chips deletable-chips multiple
+                    :loading="departmentsLoading" label="Кафедрам, яким буде наданий доступ"></v-autocomplete>
                 </validation-provider>
-                <v-btn
-                  color="primary"
-                  @click="saveOwners"
-                  :disabled="invalid"
-                >
+                <v-btn color="primary" @click="saveOwners" :disabled="invalid">
                   Зберегти
                 </v-btn>
               </form>
@@ -75,95 +36,40 @@
           </v-card>
         </v-tab-item>
         <v-tab-item>
-          <v-card max-width="1024" class="mx-auto py-10" elevation="0" >
-            <validation-observer
-              ref="signatures"
-              v-slot="{ invalid }"
-            >
+          <v-card max-width="1024" class="mx-auto py-10" elevation="0">
+            <validation-observer ref="signatures" v-slot="{ invalid }">
               <form @submit.prevent="saveSignatures" @keyup.enter="saveSignatures">
 
-                <v-row v-for="(signature, index)  in signatures" :key="index">
+                <v-row v-for="(signature, index) in signatures" :key="index">
                   <v-col v-if="signature.catalog_signature_type_id !== CATALOG_SIGNATURE_TYPE.manager.id">
-                    <validation-provider
-                      v-slot="{ errors }"
-                      rules="required"
-                      :name="Object.values(CATALOG_SIGNATURE_TYPE).find(el => el.id === signature.catalog_signature_type_id).label"
-                    >
-                      <v-autocomplete
-                        v-model="signature.asu_id"
-                        :items="workers"
-                        :error-messages="errors"
-                        item-text="full_name"
-                        item-value="asu_id"
-                        class="mt-3"
-                        :label="Object.values(CATALOG_SIGNATURE_TYPE).find(el => el.id === signature.catalog_signature_type_id).label"
-                      ></v-autocomplete>
+                    <validation-provider v-slot="{ errors }" rules="required"
+                      :name="Object.values(CATALOG_SIGNATURE_TYPE).find(el => el.id === signature.catalog_signature_type_id).label">
+                      <v-autocomplete v-model="signature.asu_id" :items="workers" :error-messages="errors"
+                        item-text="full_name" item-value="asu_id" class="mt-3"
+                        :label="Object.values(CATALOG_SIGNATURE_TYPE).find(el => el.id === signature.catalog_signature_type_id).label"></v-autocomplete>
                     </validation-provider>
                   </v-col>
 
                   <template v-else>
                     <v-col cols="12" lg="6" class="py-0">
-                      <validation-provider
-                        v-slot="{ errors }"
-                        name="Кафедра"
-                        rules="required"
-                      >
-                        <v-autocomplete
-                          v-model="signature.department_id"
-                          :items="departments"
-                          :error-messages="errors"
-                          item-text="name"
-                          item-value="id"
-                          class="mt-3"
-                          return-object
-                          :loading="departmentsLoading"
-                          label="Кафедра"
-                          @change="setFacultySignature(signature, index)"
-                        ></v-autocomplete>
+                      <validation-provider v-slot="{ errors }" name="Кафедра" rules="required">
+                        <v-autocomplete v-model="signature.department_id" :items="departments" :error-messages="errors"
+                          item-text="name" item-value="id" class="mt-3" return-object :loading="departmentsLoading"
+                          label="Кафедра" @change="setFacultySignature(signature, index)"></v-autocomplete>
                       </validation-provider>
                     </v-col>
                     <v-col cols="12" lg="6" class="py-0">
-                      <validation-provider
-                        v-slot="{ errors }"
+                      <validation-provider v-slot="{ errors }"
                         :name="Object.values(CATALOG_SIGNATURE_TYPE).find(el => el.id === signature.catalog_signature_type_id).label"
-                        rules="required"
-                      >
-                        <v-autocomplete
-                          v-model="signature.asu_id"
-                          :items="workers"
-                          :error-messages="errors"
-                          item-text="full_name"
-                          item-value="asu_id"
-                          class="mt-3"
-                          :label="Object.values(CATALOG_SIGNATURE_TYPE).find(el => el.id === signature.catalog_signature_type_id).label"
-                        ></v-autocomplete>
+                        rules="required">
+                        <v-autocomplete v-model="signature.asu_id" :items="workers" :error-messages="errors"
+                          item-text="full_name" item-value="asu_id" class="mt-3"
+                          :label="Object.values(CATALOG_SIGNATURE_TYPE).find(el => el.id === signature.catalog_signature_type_id).label"></v-autocomplete>
                       </validation-provider>
                     </v-col>
-<!--                    <v-col cols="12" lg="1" class="d-flex align-center justify-center py-0">-->
-<!--                      <v-btn outlined fab small color="red" @click="removeManager(index)">-->
-<!--                        <v-icon aria-hidden="false"> mdi-trash-can-outline </v-icon>-->
-<!--                      </v-btn>-->
-<!--                    </v-col>-->
                   </template>
                 </v-row>
-
-<!--                <div class="text-center my-4">-->
-<!--                  <v-tooltip bottom>-->
-<!--                    <template v-slot:activator="{ on, attrs }">-->
-<!--                      <v-btn icon large v-bind="attrs" v-on="on" @click="addManager">-->
-<!--                        <v-icon>mdi-plus</v-icon>-->
-<!--                      </v-btn>-->
-<!--                    </template>-->
-<!--                    <span>Додати завідувача кафедри</span>-->
-<!--                  </v-tooltip>-->
-<!--                </div>-->
-
-                <v-btn
-                  class="mt-5"
-                  color="primary"
-                  @click="saveSignatures"
-                  :disabled="invalid"
-                >
+                <v-btn class="mt-5" color="primary" @click="saveSignatures" :disabled="invalid || submitingSignatures">
                   Зберегти
                 </v-btn>
               </form>
@@ -177,8 +83,8 @@
 
 <script>
 import api from '@/api';
-import {API} from '@/api/constants-api';
-import {CATALOG_SIGNATURE_TYPE} from '@/utils/constants';
+import { API } from '@/api/constants-api';
+import { CATALOG_SIGNATURE_TYPE } from '@/utils/constants';
 
 export default {
   name: "settingCatalogModal",
@@ -191,6 +97,7 @@ export default {
       signatures: [],
       tab: null,
       CATALOG_SIGNATURE_TYPE,
+      submitingSignatures: false,
     }
   },
   watch: {
@@ -294,6 +201,7 @@ export default {
     },
 
     saveSignatures() {
+      this.submitingSignatures = true;
       api.patch(API.SAVE_EDUCATION_PROGRAM_SIGNATURE, this.catalog.id, { signatures: this.signatures }).then((response) => {
         const { message } = response.data;
         this.$emit('init');
@@ -305,6 +213,7 @@ export default {
           showConfirmButton: false,
           timer: 1500,
         });
+        this.submitingSignatures = false;
       })
     },
 
