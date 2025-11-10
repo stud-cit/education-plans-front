@@ -62,8 +62,8 @@
       <v-row>
         <v-col cols="12" class="pb-0">
           <validation-provider v-slot="{ errors }" name="Професійна кваліфікація" rules="">
-            <v-autocomplete v-model="plan.profession_qualification_id" :items="qualifications" :error-messages="errors"
-              :disabled="readOnly || isShortPlan" item-text="title" item-value="id"
+            <v-autocomplete v-model="plan.profession_qualification_id" :items="professionQualifications"
+              :error-messages="errors" :disabled="readOnly || isShortPlan" item-text="title" item-value="id"
               label="Професійна кваліфікація"></v-autocomplete>
           </validation-provider>
         </v-col>
@@ -241,6 +241,7 @@ export default {
       educationalPrograms: [],
       educationalProgramsLoading: false,
       qualifications: [],
+      professionQualifications: [],
       fieldsKnowledge: [],
       formsOrganizationStudy: [],
       objHoursWeeks: [],
@@ -311,6 +312,7 @@ export default {
         this.formsStudy = data.forms_study ?? [];
         this.termsStudy = data.terms_study ?? [];
         this.qualifications = data.qualifications ?? [];
+        this.professionQualifications = data.professionQualifications ?? [];
         this.fieldsKnowledge = data.fields_knowledge ?? [];
         this.formsOrganizationStudy = data.forms_organizationStudy ?? [];
       });
