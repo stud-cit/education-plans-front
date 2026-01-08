@@ -50,6 +50,7 @@
               </th>
               <th class="text-center" rowspan="2">Обмеження щодо семестру вивчення</th>
               <th class="text-center" rowspan="2">Посилання на силабус</th>
+              <th class="text-center" rowspan="2">Посилання на НМК дисципліни на платформі Mix</th>
             </tr>
             <tr>
               <th class="text-center">Лекції</th>
@@ -70,6 +71,7 @@
               <td>{{ subject.entry_requirements_applicants }}</td>
               <td>{{ subject.limitation }}</td>
               <td><a :href="subject.url" target="_blank"> {{ subject.url }}</a></td>
+              <td><a :href="subject.url_mix" target="_blank"> {{ subject.url_mix }}</a></td>
             </tr>
             <tr v-else>
               <td colspan="13" class="text-center">Данні відсутні</td>

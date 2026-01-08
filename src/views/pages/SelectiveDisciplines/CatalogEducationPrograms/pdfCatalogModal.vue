@@ -49,6 +49,7 @@
               </th>
               <th class="text-center" rowspan="2">Обмеження щодо семестру вивчення</th>
               <th class="text-center d-print-none" rowspan="2">Посилання на силабус</th>
+              <th class="text-center d-print-none" rowspan="2">Посилання на НМК дисципліни на платформі Mix</th>
             </tr>
             <tr>
               <th class="text-center">Лекції</th>
@@ -57,10 +58,10 @@
           </thead>
           <tbody>
             <tr>
-              <td class="text-center" v-for="number in 12" :key="number">{{ number }}</td>
+              <td class="text-center" v-for="number in 13" :key="number">{{ number }}</td>
             </tr>
             <tr v-if="item && 'group_name' in item">
-              <td class="pdf_table-group" colspan="12">
+              <td class="pdf_table-group" colspan="13">
                 {{ item.group_name }}
               </td>
             </tr>
@@ -78,6 +79,7 @@
                 <td>{{ subject.entry_requirements_applicants }}</td>
                 <td>{{ subject.limitation }}</td>
                 <td><a :href="subject.url" target="_blank"> {{ subject.url }}</a></td>
+                <td><a :href="subject.url_mix" target="_blank"> {{ subject.url_mix }}</a></td>
               </tr>
             </template>
             <template v-else>
@@ -270,7 +272,7 @@ export default {
 }
 
 @media print {
-  table tr td:last-child {
+  table tr td:nth-last-child(-n+2) {
     display: none;
   }
 }

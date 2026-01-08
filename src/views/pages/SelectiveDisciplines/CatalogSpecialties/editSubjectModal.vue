@@ -96,6 +96,12 @@
                   label="Посилання на силабус"></v-text-field>
               </validation-provider>
 
+              <validation-provider v-slot="{ errors }" name="Посилання на НМК дисципліни на платформі Mix"
+                rules="required|max:2048">
+                <v-text-field v-model="url_mix" :error-messages="errors" type="url"
+                  label="Посилання на НМК дисципліни на платформі Mix"></v-text-field>
+              </validation-provider>
+
             </v-container>
           </v-card-text>
           <v-card-actions>
@@ -153,6 +159,7 @@ export default {
       catalog: null,
       subject: null,
       url: null,
+      url_mix: null,
     };
   },
   created() {
@@ -205,6 +212,7 @@ export default {
           number_acquirers,
           limitation,
           url,
+          url_mix,
         } = data.data;
 
         this.subject = data.data;
@@ -224,6 +232,7 @@ export default {
         this.restrictionsSemester = this.radioRestrictionsSemester.find((el) => el.label === limitation.label);
         this.semesters = limitation.semesters;
         this.url = url;
+        this.url_mix = url_mix;
       });
     },
     apiGetCreate() {
@@ -277,6 +286,7 @@ export default {
             entry_requirements_applicants: this.requirements,
             limitation: JSON.stringify(limitation),
             url: this.url,
+            url_mix: this.url_mix,
           });
         }
       });
@@ -299,6 +309,7 @@ export default {
       this.restrictionsSemester = this.radioRestrictionsSemester[0];
       this.semesters = null;
       this.url = null;
+      this.url_mix = null;
       this.$refs.observer.reset();
     },
   },

@@ -38,6 +38,7 @@
                 матеріально-технічного забезпечення</th>
               <th class="text-center" rowspan="2">Обмеження щодо семестру вивчення</th>
               <th class="text-center d-print-none" rowspan="2">Посилання на силабус</th>
+              <th class="text-center d-print-none" rowspan="2">Посилання на НМК дисципліни на платформі Mix</th>
             </tr>
             <tr>
               <th class="text-center">Лекції</th>
@@ -46,7 +47,7 @@
           </thead>
           <tbody>
             <tr v-if="item && 'group_name' in item">
-              <td class="pdf_table-group" colspan="12">
+              <td class="pdf_table-group" colspan="15">
                 {{ item.group_name }}
               </td>
             </tr>
@@ -66,11 +67,12 @@
                 <td>{{ subject.entry_requirements_applicants }}</td>
                 <td>{{ subject.limitation }}</td>
                 <td><a :href="subject.url" target="_blank"> {{ subject.url }}</a></td>
+                <td><a :href="subject.url_mix" target="_blank"> {{ subject.url_mix }}</a></td>
               </tr>
             </template>
             <template v-else>
               <tr>
-                <td colspan="12" class="pdf_table-noresult text-center">Данні відсутні</td>
+                <td colspan="15" class="pdf_table-noresult text-center">Данні відсутні</td>
               </tr>
             </template>
           </tbody>
@@ -156,7 +158,7 @@ export default {
 }
 
 @media print {
-  table tr td:last-child {
+  table tr td:nth-last-child(-n+2) {
     display: none;
   }
 }
