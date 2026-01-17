@@ -80,7 +80,7 @@
     <template v-if="plan">
       <v-alert dense name="warning" type="warning" color="red" v-if="plan.actions.forbidden_to_reject_verification">
         Документ оприлюднено в сервісі ОСВІТНІ ПРОГРАМИ! Для скасування верифікації потрібно спочатку скасувати документ
-        з публікації. ({{ plan.actions.forbidden_to_reject_verification.program_ids }}) <br>
+        з публікації. ({{ plan.actions.forbidden_to_reject_verification }}) <br>
         (Термін зняття блокування ~ 2 години)
       </v-alert>
     </template>
