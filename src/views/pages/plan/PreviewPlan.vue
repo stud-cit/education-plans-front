@@ -640,7 +640,7 @@ export default {
       }
     },
     professions: function () {
-      if (this.plan.year >= 2025) {
+      if (this.plan.year >= 2025 || this.plan.profession_qualification_id) {
         const firstPart = this.professions1.slice(0, 1);
         const secondPart = this.professions1.slice(1, this.professions1.length);
 
