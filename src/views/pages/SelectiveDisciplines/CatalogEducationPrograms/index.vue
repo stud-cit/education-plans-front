@@ -251,6 +251,7 @@ export default {
         });
     },
     clear() {
+      this.options.page = 1;
       this.options.year = null;
       this.education_program = this.options.education_program = null;
       this.faculty = this.options.faculty = null;
@@ -259,6 +260,7 @@ export default {
       this.apiGetItems();
     },
     search() {
+      this.options.page = 1;
       this.options.year = this.year;
       this.options.education_program = this.education_program;
       this.options.faculty = this.faculty;

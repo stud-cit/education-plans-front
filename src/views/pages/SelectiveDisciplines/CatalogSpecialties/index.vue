@@ -1,88 +1,37 @@
 <template>
   <v-container>
-    <v-data-table
-      :headers="headers"
-      :items="items"
-      class="elevation-1"
-      :server-items-length="meta.total"
-      :item-class="this.itemRowBackground"
-      :options.sync="options"
-      :footer-props="{ 'items-per-page-options': [15, 25, 50] }"
-      :loading="itemsLoading"
-    >
+    <v-data-table :headers="headers" :items="items" class="elevation-1" :server-items-length="meta.total"
+      :item-class="this.itemRowBackground" :options.sync="options"
+      :footer-props="{ 'items-per-page-options': [15, 25, 50] }" :loading="itemsLoading">
       <template v-slot:top>
         <v-row class="px-4">
           <v-col cols="12" md="6">
-            <v-autocomplete
-              v-model="year"
-              :items="filters.years"
-              item-text="year"
-              item-value="id"
-              label="Рік"
-              hide-details
-              clearable
-            ></v-autocomplete>
+            <v-autocomplete v-model="year" :items="filters.years" item-text="year" item-value="id" label="Рік"
+              hide-details clearable></v-autocomplete>
           </v-col>
           <v-col cols="12" md="6">
-            <v-autocomplete
-              v-model="speciality"
-              :items="filters.specialties"
-              item-text="title"
-              item-value="id"
-              label="Спеціальність"
-              hide-details
-              clearable
-            ></v-autocomplete>
+            <v-autocomplete v-model="speciality" :items="filters.specialties" item-text="title" item-value="id"
+              label="Спеціальність" hide-details clearable></v-autocomplete>
           </v-col>
         </v-row>
 
         <v-row class="px-4 pb-4">
           <v-col cols="12" lg="6">
-            <v-autocomplete
-              v-model="faculty"
-              :items="filters.faculties"
-              item-text="name"
-              item-value="id"
-              label="Факультет"
-              hide-details
-              clearable
-            ></v-autocomplete>
+            <v-autocomplete v-model="faculty" :items="filters.faculties" item-text="name" item-value="id"
+              label="Факультет" hide-details clearable></v-autocomplete>
           </v-col>
           <v-col cols="12" lg="6">
-            <v-autocomplete
-              v-model="department"
-              :items="departments"
-              item-text="name"
-              item-value="id"
-              label="Кафедра"
-              hide-details
-              :loading="departmentsLoading"
-              clearable
-            ></v-autocomplete>
+            <v-autocomplete v-model="department" :items="departments" item-text="name" item-value="id" label="Кафедра"
+              hide-details :loading="departmentsLoading" clearable></v-autocomplete>
           </v-col>
           <v-col cols="12" lg="6">
-            <v-autocomplete
-              v-model="division"
-              :items="filters.divisions"
-              item-text="title"
-              item-value="id"
-              hide-details
-              label="Представник відділу"
-              clearable
-            ></v-autocomplete>
+            <v-autocomplete v-model="division" :items="filters.divisions" item-text="title" item-value="id" hide-details
+              label="Представник відділу" clearable></v-autocomplete>
           </v-col>
           <v-col cols="12" lg="6">
-            <v-select
-              v-model="verificationDivisionStatus"
-              :items="filters.verificationsStatus"
-              :disabled="division === null"
-              item-text="title"
-              item-value="id"
-              select
-              hide-details
-              label="Статус верифікації"
-              clearable
-            ></v-select>
+            <v-select v-model="verificationDivisionStatus" :items="filters.verificationsStatus"
+              :disabled="division === null" item-text="title" item-value="id" select hide-details
+              label="Статус верифікації" clearable></v-select>
           </v-col>
         </v-row>
         <v-row class="px-4 pb-4">
@@ -99,33 +48,20 @@
       </template>
       <template v-slot:item.actions="{ item }">
         <btn-tooltip tooltip="Перегляд/Редагувати">
-          <router-link
-            v-if="item.actions.preview"
-            :to="{ name: 'CatalogSpecialty', params: { id: item.id } }"
-            target="_blank"
-          >
+          <router-link v-if="item.actions.preview" :to="{ name: 'CatalogSpecialty', params: { id: item.id } }"
+            target="_blank">
             <v-icon small class="mr-2" color="primary">mdi-pencil</v-icon>
           </router-link>
         </btn-tooltip>
         <btn-tooltip tooltip="Скопіювати">
-          <v-icon
-            v-if="item.actions.copy"
-            small
-            class="mr-1 cursor-pointer"
-            color="primary"
-            @click="openDialogCopy(item)"
-          >
+          <v-icon v-if="item.actions.copy" small class="mr-1 cursor-pointer" color="primary"
+            @click="openDialogCopy(item)">
             mdi-content-copy
           </v-icon>
         </btn-tooltip>
         <btn-tooltip tooltip="Видалити">
-          <v-icon
-            v-if="item.actions.delete"
-            small
-            class="mr-2 cursor-pointer"
-            color="red"
-            @click="deleted(item.id, item.speciality, item.year)"
-          >
+          <v-icon v-if="item.actions.delete" small class="mr-2 cursor-pointer" color="red"
+            @click="deleted(item.id, item.speciality, item.year)">
             mdi-trash-can-outline
           </v-icon>
         </btn-tooltip>
@@ -134,21 +70,10 @@
 
     <AddButton @show="() => (this.createModal = true)">Створити каталог</AddButton>
 
-    <createCatalogModal
-      :dialog="createModal"
-      @close="closeDialogCreate"
-      @submit="store"
-      ref="createModal"
-      :object="filters"
-    />
-    <copyCatalogModal
-      :dialog="copyModal"
-      @close="closeDialogCopy"
-      :item="item"
-      @submit="copy"
-      :object="filters"
-      ref="copyModal"
-    />
+    <createCatalogModal :dialog="createModal" @close="closeDialogCreate" @submit="store" ref="createModal"
+      :object="filters" />
+    <copyCatalogModal :dialog="copyModal" @close="closeDialogCopy" :item="item" @submit="copy" :object="filters"
+      ref="copyModal" />
   </v-container>
 </template>
 
@@ -325,6 +250,7 @@ export default {
         });
     },
     clear() {
+      this.options.page = 1;
       this.options.year = null;
       this.speciality = this.options.speciality = null;
       this.faculty = this.options.faculty = null;
@@ -333,6 +259,7 @@ export default {
       this.apiGetItems();
     },
     search() {
+      this.options.page = 1;
       this.options.year = this.year;
       this.options.speciality = this.speciality;
       this.options.faculty = this.faculty;

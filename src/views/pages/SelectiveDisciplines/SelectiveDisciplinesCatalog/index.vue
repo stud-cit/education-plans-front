@@ -281,6 +281,7 @@ export default {
       });
     },
     clear() {
+      this.options.page = 1;
       this.options.year = new Date().getFullYear();
       this.group = this.options.group = null;
       this.faculty = this.options.faculty = null;
@@ -289,6 +290,7 @@ export default {
       this.apiGetItems();
     },
     search() {
+      this.options.page = 1;
       this.options.year = this.year;
       this.options.group = this.group;
       this.options.faculty = this.faculty;
