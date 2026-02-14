@@ -1,6 +1,6 @@
 <template>
-  <v-data-table :headers="headers" :items="items" :server-items-length="meta.total" :options.sync="options"
-    :footer-props="{ 'items-per-page-options': [15, 25, 50] }" class="elevation-1 plans-table"
+  <v-data-table :headers="headers" :items="items" :server-items-length="meta && meta.total ? meta.total : -1"
+    :options.sync="options" :footer-props="{ 'items-per-page-options': [15, 25, 50] }" class="elevation-1 plans-table"
     :item-class="this.itemRowBackground">
 
     <template v-slot:top>
@@ -10,8 +10,8 @@
             class="mx-4"></v-text-field>
         </v-col>
         <v-col cols="12" md="2">
-          <v-select v-model="planOrTemplate" :items="planTypes" item-text="title" item-value="id" select hide-details
-            label="Тип" clearable class="mx-4"></v-select>
+          <v-select v-model="type" :items="planTypes" item-text="title" item-value="id" select hide-details label="Тип"
+            clearable class="mx-4"></v-select>
         </v-col>
         <v-col align-self="center">
           <v-btn color="primary" outlined class="ml-2" @click="search"> Пошук </v-btn>
@@ -168,6 +168,7 @@ export default {
   name: 'PlansTable',
   data() {
     return {
+      isRestoring: false,
       ROLES,
       filterToggle: false,
       searchTitle: '',
@@ -182,7 +183,7 @@ export default {
       verificationDivisionStatus: 1,
       verificationsDivisionsStatus: [],
       planId: null,
-      planOrTemplate: null,
+      type: null,
       planTypes: [],
       archived: false,
       filter_year: null,
@@ -210,13 +211,35 @@ export default {
         return this.$store.state.plans.options;
       },
       set: function (newValue) {
+
+        // --- ЛОГІКА ЗАХИСТУ ВІД СКИДАННЯ ---
+
+        if (this.isRestoring && newValue.page === 1 && this.$store.state.plans.options.page > 1) {
+          this.$nextTick(() => {
+            this.options = { ...this.options };
+          });
+          return;
+        }
+
         this.$store.dispatch('plans/setOptions', this.filterSort(newValue));
-        this.update();
+        this.updateUrlParameters(newValue);
+        this.$emit('update', this.options);
       },
     },
   },
   mixins: [RolesMixin, BackgroundRowMixin],
   watch: {
+    items() {
+      this.isRestoring = false;
+
+      if (this.meta && this.meta.current_page && this.meta.current_page !== this.options.page) {
+        const correctOptions = {
+          ...this.options,
+          page: this.meta.current_page
+        };
+        this.$store.dispatch('plans/setOptions', correctOptions);
+      }
+    },
     faculty(v) {
       v !== null ? this.apiGetDepartments(v) : (this.departments = []);
     },
@@ -229,8 +252,94 @@ export default {
   mounted() {
     this.apiGetDivisions();
     this.generateHeader();
+    this.restoreStateFromUrl();
   },
   methods: {
+
+    restoreStateFromUrl() {
+      const q = this.$route.query;
+      console.log(q);
+      if (q.search) this.searchTitle = q.search;
+      if (q.year) this.filter_year = q.year;
+      if (q.planId) this.planId = q.planId;
+
+      if (q.type) this.type = Number(q.type);
+
+      if (q.faculty && this.exceptRoles([ROLES.ID.department])) {
+        this.faculty = Number(q.faculty)
+      } else {
+        this.faculty = this.user.faculty_id;
+      }
+
+      const departmentPresentInFaculty = this.departments
+      console.log('departments from store:', this.departments);
+      // .some((department) => department.id === Number(q.department));
+      console.log('departmentPresentInFaculty:', departmentPresentInFaculty);
+
+      if (q.department && departmentPresentInFaculty) {
+        this.department = Number(q.department);
+      } else {
+        this.department = null;
+        delete q.department;
+      }
+      if (q.division) this.division = Number(q.division);
+      if (q.verificationStatus) this.verificationDivisionStatus = Number(q.verificationStatus);
+
+      if (q.archived) this.archived = q.archived === 'true';
+
+      if (q.faculty || q.department || q.division || q.planId || q.archived || q.year) {
+        this.filterToggle = true;
+      }
+
+      // 5. Відновлюємо пагінацію для Store
+      if (q.page || q.items_per_page) {
+        const restoredPage = q.page ? Number(q.page) : 1;
+        const restoredItemsPerPage = q.items_per_page ? Number(q.items_per_page) : 15;
+
+        if (restoredPage > 1) {
+          this.isRestoring = true;
+        }
+
+        this.options = {
+          ...this.options,
+          page: restoredPage,
+          itemsPerPage: restoredItemsPerPage,
+        };
+      } else {
+        this.search();
+      }
+    },
+
+    updateUrlParameters(newOptions = null) {
+      const options = newOptions || this.options;
+      const query = {
+        search: this.searchTitle,
+        type: this.type,
+        faculty: this.faculty,
+        department: this.department,
+        division: this.division,
+        verificationStatus: this.division ? this.verificationDivisionStatus : null, // Пишемо статус тільки якщо обраний відділ
+        planId: this.planId,
+        archived: this.archived ? 'true' : null,
+        year: this.filter_year,
+
+        page: options.page,
+        items_per_page: options.itemsPerPage
+      }
+
+      Object.keys(query).forEach(key => {
+        if (query[key] === null || query[key] === undefined || query[key] === '') {
+          delete query[key];
+        }
+      });
+
+      const currentQuery = this.$route.query;
+      const isSame = JSON.stringify(query) === JSON.stringify(currentQuery); // спрощена перевірка
+
+      if (!isSame) {
+        this.$router.replace({ query }).catch(() => { });
+      }
+    },
     generateHeader() {
       let headers = [
         { text: '№', value: 'index', sortable: false },
@@ -259,13 +368,16 @@ export default {
       this.$emit('update', this.options);
     },
     search() {
-      this.$store.dispatch('plans/setOptions', this.filterSort({ ...this.options, page: 1 }));
+      const newOptions = { ...this.options, page: 1 };
+      this.$store.dispatch('plans/setOptions', this.filterSort(newOptions));
+      this.updateUrlParameters();
     },
     resetPage() {
-      if (this.options.page == 1) {
-        this.update();
+      if (this.options.page === 1) {
+        this.$store.dispatch('plans/setOptions', this.filterSort(this.options));
+        this.updateUrlParameters();
       } else {
-        this.options.page = 1;
+        this.options = { ...this.options, page: 1 };
       }
     },
     clear() {
@@ -284,7 +396,7 @@ export default {
       this.division = this.options.divisionWithStatus = null;
       this.planId = this.options.planId = null;
       this.archived = this.options.archived = null;
-      this.planOrTemplate = this.options.planOrTemplate = null;
+      this.type = this.options.type = null;
       this.filter_year = this.options.filter_year = null
       this.resetPage();
     },
@@ -305,22 +417,33 @@ export default {
       });
     },
     filterSort(values) {
-      values.searchTitle = this.searchTitle;
-      values.planId = this.planId;
-      values.archived = +this.archived;
-      values.planOrTemplate = this.planOrTemplate;
-      values.filter_year = +this.filter_year
+      const params = {
+        ...values, // тут можуть бути sortBy, sortDesc
+
+        // Явно вказуємо пагінацію для бекенду
+        page: values.page,
+        items_per_page: values.itemsPerPage, // Перетворення для API
+
+        // Інші фільтри
+        searchTitle: this.searchTitle,
+        planId: this.planId,
+        archived: +this.archived,
+        type: this.type,
+        filter_year: this.filter_year ? +this.filter_year : null,
+      };
 
       if (this.exceptRoles([ROLES.ID.department])) {
-        values.faculty = this.faculty;
-        values.department = this.department;
+        params.faculty = this.faculty;
+        params.department = this.department;
       }
 
       if (this.division !== null) {
-        values.divisionWithStatus = [this.division, this.verificationDivisionStatus];
+        params.divisionWithStatus = [this.division, this.verificationDivisionStatus];
+      } else {
+        params.divisionWithStatus = null;
       }
 
-      return values;
+      return params;
     },
   },
 };

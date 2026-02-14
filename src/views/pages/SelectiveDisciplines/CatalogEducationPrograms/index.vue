@@ -136,6 +136,22 @@ export default {
   mixins: [RolesMixin, BackgroundRowMixin],
   mounted() {
     this.apiGetFilters();
+    const q = this.$route.query;
+    if (q.year) this.year = Number(q.year);
+    if (q.education_program) this.education_program = Number(q.education_program);
+    if (q.faculty) this.faculty = Number(q.faculty);
+    if (q.department) this.department = Number(q.department);
+    if (q.division) this.division = Number(q.division);
+    if (q.verificationDivisionStatus) this.verificationDivisionStatus = Number(q.verificationDivisionStatus);
+
+    if (q.page || q.itemsPerPage) {
+      this.options = {
+        ...this.options,
+        page: q.page ? Number(q.page) : 1,
+        itemsPerPage: q.itemsPerPage ? Number(q.itemsPerPage) : 15,
+      };
+    }
+
   },
   watch: {
     faculty(v) {
@@ -146,11 +162,34 @@ export default {
         this.faculty = v[0].id;
       }
     },
-    options() {
-      this.apiGetItems();
-    },
+    // options() {
+    //   this.apiGetItems();
+    // },
+    options: {
+      handler() {
+        this.updateUrlParameters();
+        this.apiGetItems();
+      },
+      deep: true
+    }
   },
   methods: {
+    updateUrlParameters() {
+      const query = {
+        year: this.year,
+        education_program: this.education_program,
+        faculty: this.faculty,
+        department: this.department,
+        division: this.division,
+        verificationDivisionStatus: this.verificationDivisionStatus,
+        page: this.options.page,
+        itemsPerPage: this.options.itemsPerPage
+      }
+
+      Object.keys(query).forEach(key => (query[key] == null) && delete query[key]);
+
+      this.$router.replace({ query }).catch(() => { });
+    },
     async apiGetItems() {
       const options = GlobalMixin.methods.GlobalHandlingRequestParameters(
         ALLOWED_REQUEST_PARAMETERS.GET_CATALOG_EDUCATION_PROGRAMS,
@@ -268,6 +307,7 @@ export default {
       if (this.division !== null) {
         this.options.divisionWithStatus = [this.division, this.verificationDivisionStatus];
       }
+      this.updateUrlParameters();
       this.apiGetItems();
     },
     closeDialogCreate() {

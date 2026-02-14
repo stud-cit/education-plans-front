@@ -83,7 +83,7 @@ export const API = {
 
 export const ALLOWED_REQUEST_PARAMETERS = {
   GET_PLANS: {
-    itemsPerPage: 'items_per_page',
+    items_per_page: 'items_per_page',
     page: 'page',
     searchTitle: 'title',
     sortBy: 'sort_by',
@@ -92,7 +92,7 @@ export const ALLOWED_REQUEST_PARAMETERS = {
     department: 'department',
     planId: 'id',
     archived: 'archived',
-    planOrTemplate: 'planOrTemplate',
+    type: 'type',
     divisionWithStatus: 'divisionWithStatus',
     filter_year: 'year',
   },
