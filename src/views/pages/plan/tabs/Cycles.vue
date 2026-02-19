@@ -537,8 +537,8 @@ export default {
       const result = allHours - classroomWork - allIndependetWork;
 
       const rule = allHours * 0.1;
-
-      if (result < rule) {
+      const isNotAttestacionCycle = this.cycleForm.list_cycle_id != 10;
+      if (result < rule && isNotAttestacionCycle) {
         this.independentWorkHasError = true;
       } else {
         this.independentWorkHasError = false;
