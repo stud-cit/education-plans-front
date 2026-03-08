@@ -265,7 +265,7 @@
                 {{ cycle.asu_id ? cycle.title : cycle.selective_discipline.title
                 }}<sup v-if="cycle.note">{{
                   plan.subject_notes.indexOf(plan.subject_notes.find((item) => item.id == cycle.id)) + 1
-                }}</sup>
+                  }}</sup>
               </td>
               <td class="border-table">{{ cycle.exams }}</td>
               <!--Екзамени-->
@@ -322,7 +322,7 @@
                   {{ subject.asu_id ? subject.title : subject.selective_discipline.title
                   }}<sup v-if="subject.note">{{
                     plan.subject_notes.indexOf(plan.subject_notes.find((item) => item.id == subject.id)) + 1
-                  }}</sup>
+                    }}</sup>
                 </td>
                 <td class="border-table">{{ subject.exams }}</td>
                 <!--Екзамени-->
@@ -640,7 +640,7 @@ export default {
       }
     },
     professions: function () {
-      if (this.plan.year >= 2025 || this.plan.profession_qualification_id) {
+      if (this.plan.profession_qualification_id) {
         const firstPart = this.professions1.slice(0, 1);
         const secondPart = this.professions1.slice(1, this.professions1.length);
 
