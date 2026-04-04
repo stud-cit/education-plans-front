@@ -212,8 +212,6 @@ export default {
       },
       set: function (newValue) {
 
-        // --- ЛОГІКА ЗАХИСТУ ВІД СКИДАННЯ ---
-
         if (this.isRestoring && newValue.page === 1 && this.$store.state.plans.options.page > 1) {
           this.$nextTick(() => {
             this.options = { ...this.options };
@@ -258,7 +256,15 @@ export default {
 
     restoreStateFromUrl() {
       const q = this.$route.query;
-      console.log(q);
+
+      let restoredSortBy = [];
+      let restoredSortDesc = [];
+
+      if (q.sort_by) {
+        restoredSortBy = [q.sort_by];
+        restoredSortDesc = [q.sort_desc === 'true'];
+      }
+
       if (q.search) this.searchTitle = q.search;
       if (q.year) this.filter_year = q.year;
       if (q.planId) this.planId = q.planId;
@@ -272,9 +278,6 @@ export default {
       }
 
       const departmentPresentInFaculty = this.departments
-      console.log('departments from store:', this.departments);
-      // .some((department) => department.id === Number(q.department));
-      console.log('departmentPresentInFaculty:', departmentPresentInFaculty);
 
       if (q.department && departmentPresentInFaculty) {
         this.department = Number(q.department);
@@ -291,8 +294,7 @@ export default {
         this.filterToggle = true;
       }
 
-      // 5. Відновлюємо пагінацію для Store
-      if (q.page || q.items_per_page) {
+      if (q.page || q.items_per_page || q.sort_by) {
         const restoredPage = q.page ? Number(q.page) : 1;
         const restoredItemsPerPage = q.items_per_page ? Number(q.items_per_page) : 15;
 
@@ -304,6 +306,8 @@ export default {
           ...this.options,
           page: restoredPage,
           itemsPerPage: restoredItemsPerPage,
+          sortBy: restoredSortBy,
+          sortDesc: restoredSortDesc,
         };
       } else {
         this.search();
@@ -318,13 +322,16 @@ export default {
         faculty: this.faculty,
         department: this.department,
         division: this.division,
-        verificationStatus: this.division ? this.verificationDivisionStatus : null, // Пишемо статус тільки якщо обраний відділ
+        verificationStatus: this.division ? this.verificationDivisionStatus : null,
         planId: this.planId,
         archived: this.archived ? 'true' : null,
         year: this.filter_year,
 
         page: options.page,
-        items_per_page: options.itemsPerPage
+        items_per_page: options.itemsPerPage,
+
+        sort_by: this.options.sortBy && this.options.sortBy.length ? this.options.sortBy[0] : null,
+        sort_desc: this.options.sortDesc && this.options.sortDesc.length ? this.options.sortDesc[0] : null,
       }
 
       Object.keys(query).forEach(key => {
@@ -334,7 +341,7 @@ export default {
       });
 
       const currentQuery = this.$route.query;
-      const isSame = JSON.stringify(query) === JSON.stringify(currentQuery); // спрощена перевірка
+      const isSame = JSON.stringify(query) === JSON.stringify(currentQuery);
 
       if (!isSame) {
         this.$router.replace({ query }).catch(() => { });
@@ -372,16 +379,8 @@ export default {
       this.$store.dispatch('plans/setOptions', this.filterSort(newOptions));
       this.updateUrlParameters();
     },
-    resetPage() {
-      if (this.options.page === 1) {
-        this.$store.dispatch('plans/setOptions', this.filterSort(this.options));
-        this.updateUrlParameters();
-      } else {
-        this.options = { ...this.options, page: 1 };
-      }
-    },
     clear() {
-      this.searchTitle = this.options.searchTitle = '';
+      this.searchTitle = '';
 
       if (this.exceptRoles([ROLES.ID.department])) {
         this.department = null;
@@ -391,14 +390,18 @@ export default {
         this.faculty = null;
       }
 
-      this.options.faculty = null;
-      this.options.department = null;
-      this.division = this.options.divisionWithStatus = null;
-      this.planId = this.options.planId = null;
-      this.archived = this.options.archived = null;
-      this.type = this.options.type = null;
-      this.filter_year = this.options.filter_year = null
-      this.resetPage();
+      this.division = null;
+      this.planId = null;
+      this.archived = false;
+      this.type = null;
+      this.filter_year = null;
+
+      this.options = {
+        ...this.options,
+        page: 1,
+        sortBy: [],
+        sortDesc: [],
+      };
     },
     apiGetDivisions() {
       api.get(API.PLAN_FILTERS).then(({ data }) => {
@@ -418,13 +421,11 @@ export default {
     },
     filterSort(values) {
       const params = {
-        ...values, // тут можуть бути sortBy, sortDesc
-
-        // Явно вказуємо пагінацію для бекенду
+        ...values,
         page: values.page,
-        items_per_page: values.itemsPerPage, // Перетворення для API
-
-        // Інші фільтри
+        items_per_page: values.itemsPerPage,
+        sort_by: values.sortBy && values.sortBy.length ? values.sortBy[0] : null,
+        sort_desc: values.sortDesc && values.sortDesc.length ? values.sortDesc[0] : false,
         searchTitle: this.searchTitle,
         planId: this.planId,
         archived: +this.archived,
