@@ -123,7 +123,7 @@
                       </v-text-field>
                     </template>
                     <span>Години * тижнів = {{ (+subject.hour * +plan.hours_weeks_semesters[index].week).toFixed(2)
-                    }}</span>
+                      }}</span>
                   </v-tooltip>
                 </td>
               </tr>
@@ -254,7 +254,7 @@ import api from '@/api';
 import { API } from '@/api/constants-api';
 import { eventBus } from '@/main';
 import { mapState, mapGetters } from 'vuex';
-import { ROLES, INDIVIDUAL_TASK_TYPE, FORM_CONTROL } from '@/utils/constants';
+import { ROLES, INDIVIDUAL_TASK_TYPE, FORM_CONTROL, DEGREE } from '@/utils/constants';
 import RolesMixin from '@/mixins/RolesMixin';
 export default {
   name: 'Cycles',
@@ -580,12 +580,14 @@ export default {
   methods: {
     minClassroomLoad() {
       switch (this.plan.education_level_id) {
-        case 4:
-        case 10:
-        case 11:
+        case DEGREE.MAGISTER:
+        case DEGREE.BACHELOR_FOREIGN:
+        case DEGREE.BACHELOR_ENGLISH_PROGRAMS:
           return this.options['min-classroom-load-masters'];
-        case 2:
+        case DEGREE.BACHELOR:
           return this.options['min-classroom-load'];
+        case DEGREE.POSTGRADUATE:
+          return this.options['min-classroom-load-postgraduate'];
         default:
           return this.options['min-classroom-load'];
       }
