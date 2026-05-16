@@ -1,7 +1,7 @@
 <template>
   <v-data-table :headers="headers" :items="items" :server-items-length="meta && meta.total ? meta.total : -1"
     :options.sync="options" :footer-props="{ 'items-per-page-options': [15, 25, 50] }" class="elevation-1 plans-table"
-    :item-class="this.itemRowBackground">
+    :item-class="this.itemRowBackground" :loading="!items.length">
 
     <template v-slot:top>
       <v-row>
@@ -219,6 +219,7 @@ export default {
           return;
         }
 
+        this.$store.dispatch('loader/show');
         this.$store.dispatch('plans/setOptions', this.filterSort(newValue));
         this.updateUrlParameters(newValue);
         this.$emit('update', this.options);
@@ -375,11 +376,14 @@ export default {
       this.$emit('update', this.options);
     },
     search() {
+      this.$store.dispatch('loader/show');
       const newOptions = { ...this.options, page: 1 };
       this.$store.dispatch('plans/setOptions', this.filterSort(newOptions));
       this.updateUrlParameters();
+      this.$emit('update', this.options);
     },
     clear() {
+      this.$store.dispatch('loader/show');
       this.searchTitle = '';
 
       if (this.exceptRoles([ROLES.ID.department])) {

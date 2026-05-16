@@ -224,6 +224,7 @@ const routes = [
             ROLES.ID.practice_department,
             ROLES.ID.educational_department_deputy,
             ROLES.ID.educational_department_chief,
+            ROLES.ID.admin_department_postgraduate,
           ],
           header: 'Створення нового плану',
           breadCrumb: [

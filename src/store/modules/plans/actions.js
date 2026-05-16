@@ -80,12 +80,14 @@ export const show = (context, id) => {
 };
 
 export const getOptions = (context) => {
+  context.commit('SET_LOADING', true);
   return api.get(API.SETTINGS).then((response) => {
     let data = {};
     response.data.data.forEach((item) => {
       data[item.key] = item.value;
     });
     context.commit('SET_OPTIONS', data);
+    context.commit('SET_LOADING', false);
     return response;
   });
 };

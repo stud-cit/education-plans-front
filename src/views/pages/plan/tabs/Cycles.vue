@@ -236,7 +236,8 @@
       :key="'cycle' + item.id + indexComponent" :indexComponent="indexComponent" :data="plan" :cycles="cycles"
       @addSubject="addSubject" @addCycle="addCycle" @saveCycle="saveCycle" @delCycle="delCycle" />
 
-    <div class="text-center mt-4" v-if="allowedRoles([ROLES.ID.admin, ROLES.ID.root])">
+    <div class="text-center mt-4"
+      v-if="allowedRoles([ROLES.ID.admin, ROLES.ID.root, ROLES.ID.admin_department_postgraduate])">
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon large v-bind="attrs" v-on="on" @click="addCycle({}, true)">

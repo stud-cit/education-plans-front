@@ -25,7 +25,8 @@
       <v-col class="pa-0 text-right">
         <v-tooltip bottom v-if="cycleIndex != item.id">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn :disabled="readOnly || isShortPlan" small icon @click="cycleIndex = item.id" v-bind="attrs" v-on="on">
+            <v-btn :disabled="readOnly || isShortPlan" small icon @click="cycleIndex = item.id" v-bind="attrs"
+              v-on="on">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </template>
@@ -39,7 +40,7 @@
           </template>
           <span>Зберегти</span>
         </v-tooltip>
-        <v-tooltip bottom v-if="allowedRoles([ROLES.ID.admin, ROLES.ID.root])">
+        <v-tooltip bottom v-if="allowedRoles([ROLES.ID.admin, ROLES.ID.root, ROLES.ID.admin_department_postgraduate])">
           <template v-slot:activator="{ on, attrs }">
             <v-btn :disabled="readOnly || isShortPlan" small icon @click="delCycle(item)" v-bind="attrs" v-on="on">
               <v-icon>mdi-delete</v-icon>
@@ -59,7 +60,8 @@
             </v-tooltip>
           </template>
           <v-list>
-            <v-list-item link v-if="allowedRoles([ROLES.ID.admin, ROLES.ID.root])">
+            <v-list-item link
+              v-if="allowedRoles([ROLES.ID.admin, ROLES.ID.root, ROLES.ID.admin_department_postgraduate])">
               <v-list-item-title @click="addCycle(item)">Цикл</v-list-item-title>
             </v-list-item>
             <v-list-item link>
