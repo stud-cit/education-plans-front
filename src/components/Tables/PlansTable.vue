@@ -67,7 +67,7 @@
 
     <template v-slot:item.type_id="{ item }">
       <span class="text-no-wrap">
-        <PublishedBadge :published="item.published" /> {{ item.type_id }}
+        <PublishedBadge :published="item.published" /><span class="text-wrap">{{ item.type_id }}</span>
       </span>
     </template>
 
