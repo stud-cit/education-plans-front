@@ -31,6 +31,7 @@ export default {
         case ROLES.ID.educational_department_deputy:
         case ROLES.ID.educational_department_chief:
         case ROLES.ID.department:
+        case ROLES.ID.admin_department_postgraduate:
           rows.push(ListPlans, SelectiveDisciplines);
           break;
       }
