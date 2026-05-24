@@ -1,31 +1,14 @@
 <template>
-  <v-dialog
-    v-model="dialog"
-    fullscreen
-    hide-overlay
-    transition="dialog-bottom-transition"
-  >
+  <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
     <v-card>
-      <v-toolbar
-        dark
-        color="primary"
-      >
+      <v-toolbar dark color="primary">
         <v-toolbar-title>Налаштування каталогів</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn
-          icon
-          dark
-          @click="close"
-        >
+        <v-btn icon dark @click="close">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
-      <v-tabs
-        fixed-tabs
-        background-color="primary"
-        dark
-        v-model="tab"
-      >
+      <v-tabs fixed-tabs background-color="primary" dark v-model="tab">
         <v-tab>
           Каталоги
         </v-tab>
@@ -39,38 +22,18 @@
 
       <v-tabs-items v-model="tab">
         <v-tab-item>
-          <v-card max-width="1024" class="mx-auto py-10" elevation="0" >
-            <v-data-table
-              :headers="headers"
-              :items="items"
-              class="elevation-1"
-              :server-items-length="meta.total"
-              :options.sync="options"
-              :footer-props="{ 'items-per-page-options': [15, 25, 50] }"
-            >
+          <v-card max-width="1024" class="mx-auto py-10" elevation="0">
+            <v-data-table :headers="headers" :items="items" class="elevation-1" :server-items-length="meta.total"
+              :options.sync="options" :footer-props="{ 'items-per-page-options': [15, 25, 50] }">
               <template v-slot:top>
                 <v-row class="px-4">
                   <v-col cols="12" md="6">
-                    <v-autocomplete
-                      v-model="year"
-                      :items="years"
-                      item-text="year"
-                      item-value="id"
-                      label="Рік"
-                      hide-details
-                      clearable
-                    ></v-autocomplete>
+                    <v-autocomplete v-model="year" :items="years" item-text="year" item-value="id" label="Рік"
+                      hide-details clearable></v-autocomplete>
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-autocomplete
-                      v-model="group"
-                      :items="groups"
-                      item-text="title"
-                      item-value="id"
-                      label="Група"
-                      hide-details
-                      clearable
-                    ></v-autocomplete>
+                    <v-autocomplete v-model="group" :items="groups" item-text="title" item-value="id" label="Група"
+                      hide-details clearable></v-autocomplete>
                   </v-col>
                 </v-row>
                 <v-row class="px-4 pb-4">
@@ -89,59 +52,27 @@
           </v-card>
         </v-tab-item>
         <v-tab-item>
-          <validation-observer
-            ref="create"
-            v-slot="{ invalid }"
-          >
+          <validation-observer ref="create" v-slot="{ invalid }">
             <form @submit.prevent="submit" @keyup.enter="submit">
               <v-card-text>
                 <v-container>
-                  <validation-provider
-                    v-slot="{ errors }"
-                    name="Оберіть рік"
-                    rules="required"
-                    vid="title"
-                  >
-                    <v-autocomplete
-                      v-model="year"
-                      :items="years"
-                      :error-messages="errors"
-                      item-text="title"
-                      item-value="id"
-                      label="Оберіть рік"
-                    ></v-autocomplete>
+                  <validation-provider v-slot="{ errors }" name="Оберіть рік" rules="required" vid="title">
+                    <v-autocomplete v-model="year" :items="years" :error-messages="errors" item-text="title"
+                      item-value="id" label="Оберіть рік"></v-autocomplete>
                   </validation-provider>
-                  <validation-provider
-                    v-slot="{ errors }"
-                    name="Оберіть групу"
-                    rules="required"
-                    vid="title"
-                  >
-                    <v-autocomplete
-                      v-model="group"
-                      :items="groups"
-                      :error-messages="errors"
-                      item-text="title"
-                      item-value="id"
-                      label="Оберіть групу"
-                    ></v-autocomplete>
+                  <validation-provider v-slot="{ errors }" name="Оберіть групу" rules="required" vid="title">
+                    <v-autocomplete v-model="group" :items="groups" :error-messages="errors" item-text="title"
+                      item-value="id" label="Оберіть групу"></v-autocomplete>
                   </validation-provider>
 
                 </v-container>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn
-                  color="secondary"
-                  @click="close"
-                >
+                <v-btn color="secondary" @click="close">
                   Закрити
                 </v-btn>
-                <v-btn
-                  color="primary"
-                  @click="create"
-                  :disabled="invalid"
-                >
+                <v-btn color="primary" @click="create" :disabled="invalid">
                   Створити
                 </v-btn>
                 <v-spacer></v-spacer>
@@ -150,74 +81,31 @@
           </validation-observer>
         </v-tab-item>
         <v-tab-item v-if="this.$route.name !== 'SelectiveDisciplinesCatalog'">
-          <validation-observer
-            ref="copy"
-            v-slot="{ invalid }"
-          >
+          <validation-observer ref="copy" v-slot="{ invalid }">
             <form @submit.prevent="submit" @keyup.enter="submit">
               <v-card-text>
                 <v-container>
-                  <validation-provider
-                    v-slot="{ errors }"
-                    name="Оберіть каталог"
-                    rules="required"
-                    vid="title"
-                  >
-                    <v-autocomplete
-                      v-model="catalog"
-                      :items="catalogs"
-                      :error-messages="errors"
-                      item-text="title"
-                      item-value="id"
-                      label="Оберіть каталог"
-                    ></v-autocomplete>
+                  <validation-provider v-slot="{ errors }" name="Оберіть каталог" rules="required" vid="title">
+                    <v-autocomplete v-model="catalog" :items="catalogs" :error-messages="errors" item-text="title"
+                      item-value="id" label="Оберіть каталог"></v-autocomplete>
                   </validation-provider>
 
-                  <validation-provider
-                    v-slot="{ errors }"
-                    name="Оберіть рік"
-                    rules="required"
-                    vid="title"
-                  >
-                    <v-autocomplete
-                      v-model="year"
-                      :items="years"
-                      :error-messages="errors"
-                      item-text="name"
-                      item-value="id"
-                      label="Оберіть рік"
-                    ></v-autocomplete>
+                  <validation-provider v-slot="{ errors }" name="Оберіть рік" rules="required" vid="title">
+                    <v-autocomplete v-model="year" :items="years" :error-messages="errors" item-text="name"
+                      item-value="id" label="Оберіть рік"></v-autocomplete>
                   </validation-provider>
-                  <validation-provider
-                    v-slot="{ errors }"
-                    name="Оберіть групу"
-                    rules="required"
-                    vid="title"
-                  >
-                    <v-autocomplete
-                      v-model="group"
-                      :items="groups"
-                      :error-messages="errors"
-                      item-text="title"
-                      item-value="id"
-                      label="Оберіть групу"
-                    ></v-autocomplete>
+                  <validation-provider v-slot="{ errors }" name="Оберіть групу" rules="required" vid="title">
+                    <v-autocomplete v-model="group" :items="groups" :error-messages="errors" item-text="title"
+                      item-value="id" label="Оберіть групу"></v-autocomplete>
                   </validation-provider>
                 </v-container>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn
-                  color="secondary"
-                  @click="close"
-                >
+                <v-btn color="secondary" @click="close">
                   Закрити
                 </v-btn>
-                <v-btn
-                  color="primary"
-                  @click="copy"
-                  :disabled="invalid"
-                >
+                <v-btn color="primary" @click="copy" :disabled="invalid">
                   Скопіювати
                 </v-btn>
                 <v-spacer></v-spacer>
@@ -232,7 +120,7 @@
 
 <script>
 import api from '@/api';
-import {ALLOWED_REQUEST_PARAMETERS, API} from '@/api/constants-api';
+import { ALLOWED_REQUEST_PARAMETERS, API } from '@/api/constants-api';
 import GlobalMixin from "@/mixins/GlobalMixin";
 
 export default {
@@ -253,7 +141,7 @@ export default {
       groups: [],
       group: null,
       years: [],
-      year: null,
+      year: new Date().getFullYear(),
       tab: null
     }
   },
@@ -263,8 +151,13 @@ export default {
     this.apiGetYears();
   },
   watch: {
+    year(v) {
+      if (!this.options) return;
+      this.options.year = v;
+    },
     options(v) {
-      v.year = new Date().getFullYear();
+      const cYear = new Date().getFullYear();
+      v.year = cYear === this.year ? cYear : this.year;
       this.apiGetItems();
     },
     tab(v) {
@@ -273,7 +166,7 @@ export default {
           this.apiGetYears();
           break;
         case 1:
-          this.years = this.GlobalFakerYears();
+          this.years = this.GlobalFakerYears().map(y => ({ id: y, year: y, title: y, name: y }));
           break;
         default:
           this.apiGetYears();
@@ -305,11 +198,26 @@ export default {
     },
     async apiGetYears() {
       const response = await api.get(API.CATALOG_SUBJECTS + '/years');
-      const { data } = response.data;
-      this.years = data;
+      let data = response.data;
+      // normalize response shape: may be { data: [...] } or [...]
+      if (data && data.data) data = data.data;
+      this.years = (data || []).map((y) => {
+        if (typeof y === 'object') {
+          const raw = y.id ?? y.year ?? y.name ?? y.title ?? y;
+          const num = Number(raw);
+          return {
+            id: Number.isNaN(num) ? String(raw) : num,
+            year: Number.isNaN(num) ? String(raw) : num,
+            title: String(y.title ?? y.year ?? y.name ?? y.id ?? y),
+            name: String(y.name ?? y.year ?? y.title ?? y.id ?? y),
+          };
+        }
+        const num = Number(y);
+        return { id: Number.isNaN(num) ? String(y) : num, year: Number.isNaN(num) ? String(y) : num, title: String(y), name: String(y) };
+      });
     },
     apiGetCatalogs() {
-      api.get(API.CATALOG_SUBJECTS_TITLES).then( ({ data }) => {
+      api.get(API.CATALOG_SUBJECTS_TITLES).then(({ data }) => {
         this.catalogs = data.data;
       })
     },

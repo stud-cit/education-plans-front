@@ -75,7 +75,7 @@
           <v-icon v-else> mdi-dots-vertical </v-icon>
         </v-btn>
       </template>
-      <v-tooltip left color="info">
+      <v-tooltip left color="info" v-if="exceptRoles([ROLES.ID.guest])">
         <template v-slot:activator="{ on, attrs }">
           <v-fab-transition>
             <v-btn color="warning" small dark fab v-bind="attrs" v-on="on" @click="openDialogCatalog">
@@ -121,6 +121,7 @@
 <script>
 import api from '@/api';
 import { ALLOWED_REQUEST_PARAMETERS, API } from '@/api/constants-api';
+import { ROLES } from '@/utils/constants';
 import GlobalMixin from '@/mixins/GlobalMixin';
 import RolesMixin from '@/mixins/RolesMixin';
 import BackgroundRowMixin from '@/mixins/BackgroundRowMixin';
@@ -179,6 +180,7 @@ export default {
       editModal: false,
       pdfModal: false,
       catalogModal: false,
+      ROLES,
     };
   },
   mounted() {
